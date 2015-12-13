@@ -27,7 +27,6 @@ public class SysLogger {
 	private static String grep;
 
 	public static boolean Init() {
-		System.currentTimeMillis();
 		syslogInterface = Syslog.getInstance("udp");
 		syslogInterface.getConfig().setHost(Global.getSyslogHost());
 		syslogInterface.getConfig().setPort(514);
