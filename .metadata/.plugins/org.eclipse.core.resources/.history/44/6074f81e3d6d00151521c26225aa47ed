@@ -1,0 +1,200 @@
+package lycus;
+
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.HashMap;
+import java.util.Map;
+import java.util.Set;
+import java.util.concurrent.Executors;
+import java.util.concurrent.ScheduledExecutorService;
+import java.util.concurrent.TimeUnit;
+
+import org.json.simple.JSONObject;
+
+import com.google.gson.GsonBuilder;
+
+public class RunnableProbesHistory implements Runnable {
+	private HashMap<String,RunnableProbeResults> results;
+	private MemoryDump memDump;
+	private ScheduledExecutorService rollupsDumpExecuter;
+	private ScheduledExecutorService resultsInsertorExecuter;
+	private int retrieveExistingRollupsCounter;
+	
+	public RunnableProbesHistory(ArrayList<User> allUsers,String existingRollups) {
+		this.results=this.getAllResultsUsers(allUsers);
+		this.memDump=new MemoryDump(this);
+		this.rollupsDumpExecuter=Executors.newSingleThreadScheduledExecutor();
+		this.resultsInsertorExecuter=Executors.newSingleThreadScheduledExecutor();
+		this.retrieveExistingRollupsCounter=0;
+	}
+	public void run(){
+		if(this.getRetrieveExistingRollupsCounter()!=-1)
+		{
+//			if(this.getRetrieveExistingRollupsCounter()>10)
+//				this.setRetrieveExistingRollupsCounter(-1);
+//			else
+			this.mergeExistingRollupsFromMemDump();
+		}
+			try{
+		String results=this.getResultsDBFormat();
+		SysLogger.Record(new Log("Sending collected data to API...",LogType.Info));
+        System.out.println(results);
+		ApiStages.insertDatapointsBatches(GeneralFunctions.Base64Encode(results));
+		}
+		catch(Exception e)
+		{
+			e.printStackTrace();
+			SysLogger.Record(new Log("Results insertion failed! does not run anymore!",LogType.Error,e));
+		}
+    }
+	private String getResultsDBFormat() {
+		HashMap<String,RunnableProbeResults> rprs=this.getResults();
+		HashMap<String,HashMap<String,HashMap<String,String>>> results=new HashMap<String,HashMap<String,HashMap<String,String>>>();
+		results.put("RAW", new HashMap<String,HashMap<String,String>>());
+		results.put("4mRollups", new HashMap<String,HashMap<String,String>>());
+		results.put("20mRollups", new HashMap<String,HashMap<String,String>>());
+		results.put("1hRollups", new HashMap<String,HashMap<String,String>>());
+		results.put("6hRollups", new HashMap<String,HashMap<String,String>>());
+		results.put("36hRollups", new HashMap<String,HashMap<String,String>>());
+		results.put("11dRollups", new HashMap<String,HashMap<String,String>>());
+		for(RunnableProbeResults rpr:rprs.values())
+		{
+			RunnableProbe rp=rpr.getRp();
+			HashMap<String,String> probeResults=rpr.getResults();
+			for(Map.Entry<String, String> probeResult:probeResults.entrySet())
+			{
+				String resultKey=probeResult.getKey();
+				String resultValue=probeResult.getValue();
+				if(resultKey.contains("RAW"))
+				{
+					results.get("RAW").put(rp.getRPString(),rawResultsDBFormat(rpr,resultKey,resultValue));
+				}
+				if(resultKey.contains("ROLLUP_4minutes"))
+				{
+					results.get("4mRollups").put(rp.getRPString(),rollupResultsDBFormat(rpr,resultKey,resultValue));
+				}
+				if(resultKey.contains("ROLLUP_20minutes"))
+				{
+					results.get("20mRollups").put(rp.getRPString(),rollupResultsDBFormat(rpr,resultKey,resultValue));
+				}
+				if(resultKey.contains("ROLLUP_1hour"))
+				{
+					results.get("1hRollups").put(rp.getRPString(),rollupResultsDBFormat(rpr,resultKey,resultValue));
+				}
+				if(resultKey.contains("ROLLUP_6hour"))
+				{
+					results.get("6hRollups").put(rp.getRPString(),rollupResultsDBFormat(rpr,resultKey,resultValue));
+				}
+				if(resultKey.contains("ROLLUP_36hour"))
+				{
+					results.get("36hRollups").put(rp.getRPString(),rollupResultsDBFormat(rpr,resultKey,resultValue));
+				}
+				if(resultKey.contains("ROLLUP_11day"))
+				{
+					results.get("11dRollups").put(rp.getRPString(),rollupResultsDBFormat(rpr,resultKey,resultValue));
+				}
+			}
+		}
+		return ((new GsonBuilder().setPrettyPrinting().create()).toJson(results));
+	}
+	private void startMemoryDump()
+	{
+		this.rollupsDumpExecuter.scheduleWithFixedDelay(this.getMemDump(), 0, 5, TimeUnit.MINUTES);
+	}
+	private void startHistoryInsertion()
+	{
+		this.resultsInsertorExecuter.scheduleAtFixedRate(this, 0, 30, TimeUnit.SECONDS);
+	}
+	public void startHistory()
+	{
+		this.startHistoryInsertion();
+		this.startMemoryDump();
+	}
+	private HashMap<String, String> rollupResultsDBFormat(RunnableProbeResults rpr, String resultkey,
+			String resultvalue) {
+		HashMap<String,String> tableResults;
+		tableResults=new HashMap<String,String>();
+		RunnableProbe rp=rpr.getRp();
+		tableResults.put("USER_ID", rp.getProbe().getUser().getUserId().toString());
+		try {
+			tableResults.put("PROBE_TYPE", rp.getProbeType().name());
+		} catch (Exception e) {
+			SysLogger.Record(new Log("Wrong RP type: "+rp.getRPString()+", unable to save results!",LogType.Error));
+			return null;
+		}
+		tableResults.put("RESULTS_TIME", resultkey.split("@")[2]);
+		tableResults.put("RESULTS_NAME", resultkey.split("@")[1]);
+		tableResults.put("RESULTS", resultvalue);
+		return tableResults;
+	}
+	private HashMap<String,String> rawResultsDBFormat(RunnableProbeResults rpr,String resultkey,String resultvalue)
+	{
+		HashMap<String,String> tableResults;
+		tableResults=new HashMap<String,String>();
+		RunnableProbe rp=rpr.getRp();
+		tableResults.put("USER_ID", rp.getProbe().getUser().getUserId().toString());
+		try {
+			tableResults.put("PROBE_TYPE", rp.getProbeType().name());
+		} catch (Exception e) {
+			SysLogger.Record(new Log("Wrong RP type: "+rp.getRPString()+", unable to save results!",LogType.Error));
+			return null;
+		}
+		tableResults.put("RESULTS_TIME", resultkey.split("@")[2]);
+		tableResults.put("RESULTS_NAME", resultkey.split("@")[1]);
+		tableResults.put("RESULTS", resultvalue);
+		return tableResults;
+		}
+	
+	public HashMap<String,RunnableProbeResults> getResults() {
+		return results;
+	}
+	public void setResults(HashMap<String,RunnableProbeResults> results) {
+		this.results = results;
+	}
+	public int getRetrieveExistingRollupsCounter() {
+		return retrieveExistingRollupsCounter;
+	}
+	public void setRetrieveExistingRollupsCounter(int retrieveExistingRollupsCounter) {
+		this.retrieveExistingRollupsCounter = retrieveExistingRollupsCounter;
+	}
+	public MemoryDump getMemDump() {
+		return memDump;
+	}
+	public void setMemDump(MemoryDump memDump) {
+		this.memDump = memDump;
+	}
+	private HashMap<String,RunnableProbeResults> getAllResultsUsers(ArrayList<User> users)
+	{
+		HashMap<String,RunnableProbeResults> rprs=new HashMap<String,RunnableProbeResults>();
+		for(User u:users)
+		{
+			Collection<RunnableProbe> usersRPs=u.getAllRunnableProbes().values();
+			for(RunnableProbe rp:usersRPs)
+			{
+				rprs.put(rp.getRPString(),rp.getResult());
+			}
+		}
+		return rprs;
+	}
+	public void mergeExistingRollupsFromMemDump()
+	{
+		SysLogger.Record(new Log("Retrieving existing rollups from DB...",LogType.Debug));
+		String rollups=ApiStages.retrieveExistingRollups();
+		if(rollups==null)
+		{
+			SysLogger.Record(new Log("Unable to retrieve existing rollups, trying again in about 30 secs...",LogType.Warn));
+			this.setRetrieveExistingRollupsCounter(this.getRetrieveExistingRollupsCounter()+1);
+			return;
+		}
+		this.setRetrieveExistingRollupsCounter(-1);
+		ArrayList<DataPointsRollup[][]> rollupses=this.getMemDump().deserializeRollups(rollups);
+		System.out.println(rollupses.get(0)[0][0]);
+		for(DataPointsRollup[][] rollupsResult: rollupses)
+		{
+			DataPointsRollup sampleRollup=rollupsResult[0][0];
+			String rpID=sampleRollup.getRunnableProbeId();
+			RunnableProbeResults rpr=this.getResults().get(rpID);
+			rpr.insertExistingRollups(rollupsResult);
+		}
+	}
+}

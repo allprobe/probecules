@@ -1,0 +1,111 @@
+package lycus;
+
+import java.util.ArrayList;
+import java.util.HashMap;
+
+import org.json.simple.JSONArray;
+
+public class RunnablePorterProbeResults extends RunnableProbeResults {
+	private Boolean portStatus;
+	private Long responseTime;
+	private DataPointsRollup[] responseTimeRollups;
+	
+	public RunnablePorterProbeResults(RunnableProbe rp) {
+		super(rp);
+		this.responseTimeRollups=this.initRollupSeries(new DataPointsRollup[6]);
+	}
+	
+	public Boolean isPortStatus() {
+		return portStatus;
+	}
+
+	public void setPortStatus(Boolean portStatus) {
+		this.portStatus = portStatus;
+	}
+
+	public Long getResponseTime() {
+		return responseTime;
+	}
+
+	public void setResponseTime(Long responseTime) {
+		this.responseTime = responseTime;
+	}
+
+	public DataPointsRollup[] getResponseTimeRollups() {
+		return responseTimeRollups;
+	}
+
+	public void setResponseTimeRollups(DataPointsRollup[] responseTimeRollups) {
+		this.responseTimeRollups = responseTimeRollups;
+	}
+
+	@Override
+	public void acceptResults(ArrayList<Object> results) {
+		long lastTimestamp=(long)results.get(0);
+		boolean status=(boolean)results.get(1);
+		long time=(long)results.get(2);
+		
+		this.setLastTimestamp(lastTimestamp);
+		this.setPortStatus(status);
+		this.setResponseTime(time);
+		
+		for(int i=0;i<6;i++)
+		{
+			DataPointsRollup responseTimeRollups=this.getResponseTimeRollups()[i];
+			if(responseTimeRollups==null)
+				continue;
+			responseTimeRollups.add(lastTimestamp,time);
+		}
+	}
+	
+	
+	@Override
+	public void insertExistingRollups(DataPointsRollup[][] existing)
+	{
+		this.addRollupsFromExistingMemoryDump(this.getResponseTimeRollups(), existing[0]);
+	}
+	@Override
+	public DataPointsRollup[][] retrieveExistingRollups() {
+		DataPointsRollup[][] existing = new DataPointsRollup[1][6];
+		existing[0] = this.getResponseTimeRollups();
+		return existing;
+	}
+	
+	@Override
+	public HashMap<String,String> getResults() {
+		HashMap<String, String> results = super.getResults();
+		JSONArray rawResults = new JSONArray();
+		rawResults.add(this.isPortStatus());
+		this.setPortStatus(null);
+		rawResults.add(this.getResponseTime());
+		this.setResponseTime(null);
+		results.put("RAW@portState_responseTime@" + this.getLastTimestamp(), rawResults.toJSONString());
+		int rollupsNumber = this.getNumberOfRollupTables();
+		for (int i = 0; i < rollupsNumber; i++) {
+			
+			DataPointsRollup currentResponseTimeRollup=this.getResponseTimeRollups()[i];
+			DataPointsRollup finishedResponseTimeRollup = currentResponseTimeRollup.getLastFinishedRollup();
+			if(currentResponseTimeRollup==null)
+			{
+				SysLogger.Record(new Log("Wrong Rollup Tables Number Of: "+this.getRp().getRPString(),LogType.Debug));
+				continue;
+			}
+				if (finishedResponseTimeRollup!=null) {
+					JSONArray responseTimeRollupResults = new JSONArray();
+					responseTimeRollupResults.add(finishedResponseTimeRollup.getMin());
+					responseTimeRollupResults.add(finishedResponseTimeRollup.getMax());
+					responseTimeRollupResults.add(finishedResponseTimeRollup.getAvg());
+					responseTimeRollupResults.add(finishedResponseTimeRollup.getResultsCounter());
+					
+					JSONArray fullRollupResults= new JSONArray();
+					fullRollupResults.add(responseTimeRollupResults);
+					
+				results.put("ROLLUP" + finishedResponseTimeRollup.getTimePeriod().getName() + "@responseTime@"
+						+ finishedResponseTimeRollup.getEndTime(), fullRollupResults.toJSONString());
+				
+				currentResponseTimeRollup.setLastFinishedRollup(null);
+			}
+		}
+		return results;
+	}
+}

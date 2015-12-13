@@ -1,0 +1,37 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<qualifiedTypeNameHistroy>
+<fullyQualifiedTypeName name="org.json.simple.JSONObject"/>
+<fullyQualifiedTypeName name="com.google.gson.JsonParser"/>
+<fullyQualifiedTypeName name="com.google.gson.JsonObject"/>
+<fullyQualifiedTypeName name="com.google.gson.JsonElement"/>
+<fullyQualifiedTypeName name="com.google.gson.JsonArray"/>
+<fullyQualifiedTypeName name="java.util.Map"/>
+<fullyQualifiedTypeName name="lycus.ApiStages"/>
+<fullyQualifiedTypeName name="java.net.InetAddress"/>
+<fullyQualifiedTypeName name="lycus.GeneralFunctions"/>
+<fullyQualifiedTypeName name="java.util.ArrayList"/>
+<fullyQualifiedTypeName name="java.lang.Double"/>
+<fullyQualifiedTypeName name="java.io.PrintWriter"/>
+<fullyQualifiedTypeName name="java.util.regex.Pattern"/>
+<fullyQualifiedTypeName name="org.json.simple.parser.JSONParser"/>
+<fullyQualifiedTypeName name="java.util.Iterator"/>
+<fullyQualifiedTypeName name="java.util.UUID"/>
+<fullyQualifiedTypeName name="lycus.LogType"/>
+<fullyQualifiedTypeName name="java.io.IOException"/>
+<fullyQualifiedTypeName name="java.util.Map.Entry"/>
+<fullyQualifiedTypeName name="lycus.RunnableProbesHistory"/>
+<fullyQualifiedTypeName name="com.sun.org.glassfish.gmbal.ManagedAttribute"/>
+<fullyQualifiedTypeName name="com.google.gson.Gson"/>
+<fullyQualifiedTypeName name="java.util.HashMap"/>
+<fullyQualifiedTypeName name="org.json.simple.JSONArray"/>
+<fullyQualifiedTypeName name="org.productivity.java.syslog4j.Syslog"/>
+<fullyQualifiedTypeName name="org.productivity.java.syslog4j.SyslogIF"/>
+<fullyQualifiedTypeName name="lycus.Global"/>
+<fullyQualifiedTypeName name="java.util.concurrent.ScheduledFuture"/>
+<fullyQualifiedTypeName name="lycus.RunInnerProbesChecks"/>
+<fullyQualifiedTypeName name="java.io.StringWriter"/>
+<fullyQualifiedTypeName name="lycus.RunnableTracerouteProbeResults"/>
+<fullyQualifiedTypeName name="lycus.SnmpProbesBatch"/>
+<fullyQualifiedTypeName name="lycus.BashColor"/>
+<fullyQualifiedTypeName name="lycus.SysLogger"/>
+</qualifiedTypeNameHistroy>

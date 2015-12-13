@@ -1,0 +1,245 @@
+package lycus;
+
+import java.util.ArrayList;
+import java.util.HashMap;
+
+import org.json.simple.JSONArray;
+
+public class RunnableSnmpProbeResults extends RunnableProbeResults {
+
+	private String stringData;
+	private Double numData;
+	private DataPointsRollup[] dataRollups;
+	private boolean snmpError;
+
+	public RunnableSnmpProbeResults(RunnableProbe rp) {
+		super(rp);
+		this.snmpError=false;
+		switch (((SnmpProbe) rp.getProbe()).getDataType()) {
+		case Numeric: {
+			this.dataRollups = this.initRollupSeries(new DataPointsRollup[6]);
+			this.stringData = null;
+			break;
+		}
+		case Text: {
+			this.dataRollups = null;
+			this.stringData = "";
+			break;
+		}
+		default:
+			SysLogger.Record(new Log(
+					"Unable to determine snmp probe type: " + rp.getRPString() + ", RP results didn't initialized!",
+					LogType.Error));
+		}
+	}
+
+	public String getStringData() {
+		return stringData;
+	}
+
+	public void setStringData(String stringData) {
+		this.stringData = stringData;
+	}
+
+	public Double getNumData() {
+		return numData;
+	}
+
+	public void setNumData(Double numData) {
+		this.numData = numData;
+	}
+
+	public boolean isSnmpError() {
+		return snmpError;
+	}
+
+	public void setSnmpError(boolean snmpError) {
+		this.snmpError = snmpError;
+	}
+
+	public DataPointsRollup[] getDataRollups() {
+		return dataRollups;
+	}
+
+	public void setDataRollups(DataPointsRollup[] dataRollups) {
+		this.dataRollups = dataRollups;
+	}
+
+	@Override
+	public void acceptResults(ArrayList<Object> results) {
+		long lastTimestamp = (long) results.get(0);
+		this.setLastTimestamp(lastTimestamp);
+		String stringData=(String)results.get(1);
+		if(stringData!=null);
+		{
+			this.setStringData(stringData);
+		}
+		Double data=null;
+		if (((SnmpProbe)(this.getRp().getProbe())).getDataType() == SnmpDataType.Numeric) {
+			try {
+				data = (double)results.get(1);
+			} catch (NumberFormatException nfe) {
+				SysLogger.Record(new Log("Error parsing snmp probe results: "+this.getRp().getRPString(),LogType.Warn));
+				this.setStringData("WRONG_VALUE_FORMAT");
+				this.setNumData(null);
+				data=null;
+				return;
+			}
+		}
+		
+		if(data!=null)
+		{
+		this.setNumData(data);
+		this.setStringData(null);
+		for (int i = 0; i < 6; i++) {
+			DataPointsRollup numDataRollup = this.getDataRollups()[i];
+			numDataRollup.add(lastTimestamp, data);
+		}
+		}
+		checkIfTriggerd(stringData,data);
+		}
+	
+
+	private void checkIfTriggerd(String stringData, Double numData) {
+		ArrayList<Trigger> triggers = this.getRp().getProbe().getTriggers();
+		for (Trigger trigger : triggers) {
+			boolean triggered = false;
+			switch (((SnmpProbe) this.getRp().getProbe()).getDataType()) {
+			case Numeric:
+				triggered = checkForNumberTrigger(trigger);
+				break;
+			case Text:
+				triggered = checkForTextTrigger(trigger);
+				break;
+			}
+			TriggerEvent lastEvent = this.getEvents().get(trigger);
+			if (lastEvent != null && !triggered) {
+				lastEvent.setStatus(true);
+				lastEvent.setSent(false);
+				SysLogger
+						.Record(new Log(
+								"Trigger " + trigger.getTriggerId() + " of Runnable Probe: "
+										+ this.getRp().getRPString() + " deactivated, will send event to API...",
+								LogType.Debug));
+			} else if (lastEvent == null) {
+				TriggerEvent event = new TriggerEvent(this.getRp(), trigger, false);
+				event.setSent(false);
+				this.getEvents().put(trigger, event);
+			}
+
+		}
+	}
+
+	private boolean checkForNumberTrigger(Trigger trigger) {
+		boolean flag = false;
+		for (TriggerCondition condition : trigger.getCondtions()) {
+			int x = Integer.parseInt(condition.getxValue());
+			double lastValue = this.getNumData();
+			switch (condition.getCode()) {
+			case 1:
+				if (lastValue > x)
+					flag = true;
+				break;
+			case 2:
+				if (lastValue < x)
+					flag = true;
+				break;
+			case 3:
+				if (lastValue == x)
+					flag = true;
+				break;
+			case 4:
+				if (lastValue != x)
+					flag = true;
+				break;
+			}
+			if (flag && condition.getAndOr().equals("or"))
+				return true;
+			else if (!flag && condition.getAndOr().equals("and"))
+				return false;
+		}
+		return flag;
+	}
+
+	private boolean checkForTextTrigger(Trigger trigger) {
+		boolean flag = false;
+		for (TriggerCondition condition : trigger.getCondtions()) {
+			String x = condition.getxValue();
+			String lastValue = this.getStringData();
+			switch (condition.getCode()) {
+			case 3:
+				if (lastValue.equals(x))
+					flag = true;
+				break;
+			case 4:
+				if (!lastValue.equals(x))
+					flag = true;
+				break;
+			}
+			if (flag && condition.getAndOr().equals("or"))
+				return true;
+			else if (!flag && condition.getAndOr().equals("and"))
+				return false;
+		}
+		return flag;
+	}
+
+	@Override
+	public void insertExistingRollups(DataPointsRollup[][] existing) {
+		this.addRollupsFromExistingMemoryDump(this.getDataRollups(), existing[0]);
+	}
+
+	@Override
+	public DataPointsRollup[][] retrieveExistingRollups() {
+		DataPointsRollup[][] existing = new DataPointsRollup[1][6];
+		existing[0] = this.getDataRollups();
+		return existing;
+	}
+
+	@Override
+	public HashMap<String, String> getResults() {
+		HashMap<String, String> results = super.getResults();
+		JSONArray rawResults = new JSONArray();
+		rawResults.add(4);
+		if (this.getDataRollups() == null||this.getStringData()!=null) {
+			rawResults.add(this.getStringData());
+			this.setStringData(null);
+			results.put("RAW@data@" + this.getLastTimestamp(), rawResults.toJSONString());
+			return results;
+		}
+		rawResults.add(this.getNumData());
+		this.setNumData(null);
+
+		results.put("RAW@data@" + this.getLastTimestamp(), rawResults.toJSONString());
+		int rollupsNumber = this.getNumberOfRollupTables();
+		for (int i = 0; i < rollupsNumber; i++) {
+
+			DataPointsRollup currentDataRollup = this.getDataRollups()[i];
+			DataPointsRollup finishedDataRollup = currentDataRollup.getLastFinishedRollup();
+
+			if (currentDataRollup == null) {
+				SysLogger
+						.Record(new Log("Wrong Rollup Tables Number Of: " + this.getRp().getRPString(), LogType.Debug));
+				continue;
+			}
+			if (finishedDataRollup != null) {
+				JSONArray dataRollupResults = new JSONArray();
+				dataRollupResults.add(finishedDataRollup.getMin());
+				dataRollupResults.add(finishedDataRollup.getMax());
+				dataRollupResults.add(finishedDataRollup.getAvg());
+				dataRollupResults.add(finishedDataRollup.getResultsCounter());
+
+				JSONArray fullRollupResults = new JSONArray();
+				fullRollupResults.add(dataRollupResults);
+
+				results.put("ROLLUP" + finishedDataRollup.getTimePeriod().getName() + "@data@"
+						+ finishedDataRollup.getEndTime(), fullRollupResults.toJSONString());
+
+				currentDataRollup.setLastFinishedRollup(null);
+			}
+		}
+		this.setLastTimestamp((long) 0);
+
+		return results;
+	}
+}
