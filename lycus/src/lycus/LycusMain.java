@@ -34,6 +34,7 @@ import com.google.gson.Gson;
 public class LycusMain  {
 
 	public static void main(String[] args) {
+		Global.setConfPath(args[0]);
 		if(!Global.Initialize())
 			return;
 		SysLogger.Init();

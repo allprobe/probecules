@@ -27,6 +27,8 @@ import org.json.simple.parser.ParseException;
  */
 public class Global {
 	
+	private static String confPath=null;
+	
 	private static String dateFormat = "yyyy-MM-dd HH:mm:ss";
 	private static String ThisHostIP=null;
 	private static String ThisHostToken=null;
@@ -178,6 +180,16 @@ public class Global {
 	}
 
 
+	public static String getConfPath() {
+		return confPath;
+	}
+
+
+	public static void setConfPath(String confPath) {
+		Global.confPath = confPath;
+	}
+
+
 	public static String getApiAuthToken() {
 		return apiAuthToken;
 	}
@@ -192,7 +204,10 @@ public class Global {
   		Properties prop = new Properties();
   		InputStream input = null;
   		try {
+  			if(getConfPath()==null)
   			input = new FileInputStream("../config.properties");
+  			else
+  				input = new FileInputStream(getConfPath());
   			prop.load(input);
             ThisHostIP = prop.getProperty("Server_IP");
             ThisHostToken = prop.getProperty("Server_token");
