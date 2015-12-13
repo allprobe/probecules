@@ -27,7 +27,7 @@ public class SysLogger {
 	private static String grep;
 
 	public static boolean Init() {
-		deef
+	
 		syslogInterface = Syslog.getInstance("udp");
 		syslogInterface.getConfig().setHost(Global.getSyslogHost());
 		syslogInterface.getConfig().setPort(514);
