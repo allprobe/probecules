@@ -174,6 +174,9 @@ public class SnmpProbesBatch implements Runnable {
 //						.getSnmpTemp().getCryptType(), listOids,this.getTransport(),this.getSnmp());
 			}
 			if (response == null) {
+				for (RunnableProbe runnableProbe : snmpProbes) {
+					SysLogger.Record(new Log("Unable Probing Runnable Probe of: "+runnableProbe.getRPString(),LogType.Warn));
+				}
 				SysLogger.Record(new Log("Failed running  snmp batch - host: "+this.getHost().getHostIp()+", snmp template:"+this.getHost().getSnmpTemp().toString(), LogType.Info));
 				return;
 //				switch (Net.checkHostSnmpActive(host)) {
