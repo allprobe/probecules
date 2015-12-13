@@ -699,6 +699,10 @@ public class Net {
 
 	public static Map<String, String> Snmp3GETBULK(String ip, int port, int timeout, String userName, String userPass,
 			String authAlgo, String cryptPass, String cryptAlgo, List<String> oids) {
+		
+		if(ip.contains("62.90.132.119"))
+			System.out.println("test");
+		
 		OID _authAlgo = authAlgo == null ? null
 				: authAlgo.equals("md5") ? AuthMD5.ID : authAlgo.equals("sha1") ? AuthSHA.ID : null;
 		OctetString _authPass = userPass == null ? null : new OctetString(userPass);

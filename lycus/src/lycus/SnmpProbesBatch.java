@@ -121,15 +121,15 @@ public class SnmpProbesBatch implements Runnable {
 		
 		if (this.getHost().isHostStatus() && this.getHost().isSnmpStatus()) {
 			Host host = this.getHost();
+
+			List<RunnableProbe> snmpProbes = new ArrayList<RunnableProbe>(this
+					.getSnmpProbes().values());
 			
-			String rpStr = this.getHost().getHostId().toString();
+			String rpStr = host.getHostId().toString();
 			if (rpStr.contains(
 					"788b1b9e-d753-4dfa-ac46-61c4374eeb84"))
 				System.out.println("TEST");
-
 			
-			List<RunnableProbe> snmpProbes = new ArrayList<RunnableProbe>(this
-					.getSnmpProbes().values());
 			if(host.getSnmpTemp()==null)
 			{
 				for(RunnableProbe rp:snmpProbes)
@@ -175,27 +175,29 @@ public class SnmpProbesBatch implements Runnable {
 //						.getSnmpTemp().getCryptType(), listOids,this.getTransport(),this.getSnmp());
 			}
 			if (response == null) {
-				switch (Net.checkHostSnmpActive(host)) {
-				case "host problem":
-					SysLogger.Record(new Log(
-							"Snmp Batch Failed - caused By Host: "
-									+ this.getHost().toString()
-									+ " didn't responsed! ", LogType.Debug));
-					break;
-				case "snmp problem":
-					SysLogger.Record(new Log(
-							"Snmp Batch Failed - caused By Snmp Template: "
-									+ this.getHost().getSnmpTemp().toString(),
-							LogType.Debug));
-					this.setSnmpError(true);
-					break;
-				case "no problem":
-					SysLogger.Record(new Log(
-							"Snmp Batch Failed - caused By Unknown, SNMP Batch:"
-									+ this.toString(),
-							LogType.Error));
-					break;
-				}
+				SysLogger.Record(new Log("Failed running  snmp batch - host: "+this.getHost().getHostIp()+", snmp template:"+this.getHost().getSnmpTemp().toString(), LogType.Info));
+				return;
+//				switch (Net.checkHostSnmpActive(host)) {
+//				case "host problem":
+//					SysLogger.Record(new Log(
+//							"Snmp Batch Failed - caused By Host: "
+//									+ this.getHost().toString()
+//									+ " didn't responsed! ", LogType.Debug));
+//					break;
+//				case "snmp problem":
+//					SysLogger.Record(new Log(
+//							"Snmp Batch Failed - caused By Snmp Template: "
+//									+ this.getHost().getSnmpTemp().toString(),
+//							LogType.Debug));
+//					this.setSnmpError(true);
+//					break;
+//				case "no problem":
+//					SysLogger.Record(new Log(
+//							"Snmp Batch Failed - caused By Unknown, SNMP Batch:"
+//									+ this.toString(),
+//							LogType.Error));
+//					break;
+//				}
 			} else {
 				long resultsTimestamp=System.currentTimeMillis();
 //				if(this.isSnmpError())
@@ -204,6 +206,11 @@ public class SnmpProbesBatch implements Runnable {
 					
 					
 					if (_rp.isActive()) {
+//						String rpStr = this.getHost().getHostId().toString();
+						if (rpStr.contains(
+								"788b1b9e-d753-4dfa-ac46-61c4374eeb84@inner_10e61538-b4e1-44c6-aa12-b81ef6a5528d"))
+							System.out.println("TEST");
+
 						SnmpProbe snmpProbe=(SnmpProbe) _rp.getProbe();
 						String _value = response.get(snmpProbe.getOid().toString());
 						ArrayList<Object> results=new ArrayList<Object>();
