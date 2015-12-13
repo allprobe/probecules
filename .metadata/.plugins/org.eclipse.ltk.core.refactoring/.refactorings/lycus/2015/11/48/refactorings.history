@@ -1,4 +1,0 @@
-<?xml version="1.0" encoding="UTF-8"?>
-<session version="1.0">
-<refactoring comment="Encapsulate field &apos;lycus.Global.syslogHost&apos; in &apos;lycus.Global&apos;&#x0A;- Original project: &apos;lycus&apos;&#x0A;- Original element: &apos;lycus.Global.syslogHost&apos;&#x0A;- Getter method name: &apos;getSyslogHost&apos;&#x0A;- Setter method name: &apos;setSyslogHost&apos;&#x0A;- Field visibility: &apos;public&apos;&#x0A;- Use getter and setter methods in declaring type" comments="false" declaring="true" description="Encapsulate field &apos;syslogHost&apos;" flags="589830" getter="getSyslogHost" id="org.eclipse.jdt.ui.self.encapsulate" input="/src&lt;lycus{Global.java[Global^syslogHost" insertion="11" setter="setSyslogHost" stamp="1448407916734" version="1.0" visibility="1"/>
-</session>
