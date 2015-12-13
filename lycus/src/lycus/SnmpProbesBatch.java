@@ -139,10 +139,9 @@ public class SnmpProbesBatch implements Runnable {
 			return;	
 			}
 			List<String> listOids = new ArrayList<String>();
-			for (RunnableProbe rp : snmpProbes) {
-				
-				
-				
+			for (RunnableProbe rp : snmpProbes) {				
+				SysLogger.Record(new Log("Running Probe: "+rp.getRPString()+" at Host: "+this.getHost().getHostIp()+"("+this.getHost().getName()+")...",LogType.Debug));
+
 				if (rp.isActive()) {
 					listOids.add(((SnmpProbe) rp.getProbe()).getOid()
 							.toString());
