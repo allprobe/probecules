@@ -38,7 +38,12 @@ public class LycusMain  {
 		if(!Global.Initialize())
 			return;
 		SysLogger.Init();
-//		SysLogger.setGrep("788b1b9e-d753-4dfa-ac46-61c4374eeb84@inner_6ae83673-71f8-4131-93fd-66268f90890e");
+		List<String> oids=new ArrayList<String>();
+//		oids.add("1.3.6.1.4.1.2021.10.1.3.3");
+		oids.add("1.3.6.1.4.1.2021.10.1.3.3");
+		Map<String,String> results=Net.Snmp3GETBULK("62.90.132.119",161, 3000, "ADCD-SNMPv3", "1234567a","sha1",null, null,oids);
+		System.out.println(results);
+		//		SysLogger.setGrep("788b1b9e-d753-4dfa-ac46-61c4374eeb84@inner_6ae83673-71f8-4131-93fd-66268f90890e");
 		boolean apiInit=ApiStages.Initialize();
 		if(apiInit)
 		UsersManager.Initialize();

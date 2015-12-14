@@ -125,9 +125,9 @@ public class SnmpProbesBatch implements Runnable {
 			List<RunnableProbe> snmpProbes = new ArrayList<RunnableProbe>(this
 					.getSnmpProbes().values());
 			
-			String rpStr = host.getHostId().toString();
+			String rpStr = host.getHostIp().toString();
 			if (rpStr.contains(
-					"788b1b9e-d753-4dfa-ac46-61c4374eeb84"))
+					"62.90.132.119"))
 				System.out.println("TEST");
 			
 			if(host.getSnmpTemp()==null)

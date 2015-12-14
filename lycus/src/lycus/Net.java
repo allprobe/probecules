@@ -35,9 +35,12 @@ import org.snmp4j.mp.SnmpConstants;
 import org.snmp4j.security.AuthMD5;
 import org.snmp4j.security.AuthSHA;
 import org.snmp4j.security.PrivAES128;
+import org.snmp4j.security.PrivAES192;
+import org.snmp4j.security.PrivAES256;
 import org.snmp4j.security.PrivDES;
 import org.snmp4j.security.PrivAES;
 import org.snmp4j.security.SecurityLevel;
+import org.snmp4j.security.SecurityModel;
 import org.snmp4j.security.SecurityModels;
 import org.snmp4j.security.SecurityProtocols;
 import org.snmp4j.security.USM;
@@ -700,23 +703,22 @@ public class Net {
 	public static Map<String, String> Snmp3GETBULK(String ip, int port, int timeout, String userName, String userPass,
 			String authAlgo, String cryptPass, String cryptAlgo, List<String> oids) {
 		
-		if(ip.contains("62.90.132.119"))
-			System.out.println("test");
 		
+		OctetString _username= userName == null ? null : new OctetString(userName);
 		OID _authAlgo = authAlgo == null ? null
 				: authAlgo.equals("md5") ? AuthMD5.ID : authAlgo.equals("sha1") ? AuthSHA.ID : null;
 		OctetString _authPass = userPass == null ? null : new OctetString(userPass);
 		OID _cryptAlgo = cryptAlgo == null ? null
-				: cryptAlgo.equals("des") ? PrivDES.ID : cryptAlgo.equals("aes") ? PrivAES128.ID : null;
+				: cryptAlgo.equals("des") ? PrivDES.ID : cryptAlgo.equals("aes") ? PrivAES256.ID : null;
 		OctetString _cryptPass = cryptPass == null ? null : new OctetString(cryptPass);
 		Map<String, String> oidsValues = new HashMap<String, String>();
 		Address targetAddress = GenericAddress.parse("udp:" + ip + "/" + port);
 		UserTarget target = new UserTarget();
 		target.setAddress(targetAddress);
-		target.setRetries(3);
+		target.setRetries(1);
 		target.setTimeout(timeout);
 		target.setVersion(SnmpConstants.version3);
-		target.setSecurityName(new OctetString(userName));
+		target.setSecurityName(_username);
 		UsmUser usera = null;
 		if (userPass == null)
 			target.setSecurityLevel(SecurityLevel.NOAUTH_NOPRIV);
@@ -724,7 +726,7 @@ public class Net {
 			target.setSecurityLevel(SecurityLevel.AUTH_NOPRIV);
 		else
 			target.setSecurityLevel(SecurityLevel.AUTH_PRIV);
-		usera = new UsmUser(new OctetString(userName), // security
+		usera = new UsmUser(_username, // security
 				_authAlgo, // authprotocol
 				_authPass, // authpassphrase
 				_cryptAlgo, // privacyprotocol
@@ -737,11 +739,12 @@ public class Net {
 		try {
 			transport=new DefaultUdpTransportMapping();
 			snmp=new Snmp(transport);
+			transport.listen();
 			USM usm;
 			usm = new USM(SecurityProtocols.getInstance(), new OctetString(MPv3.createLocalEngineID()), 0);
 			SecurityModels.getInstance().addSecurityModel(usm);
 			if (usera != null) {
-				snmp.getUSM().addUser(usera);
+				snmp.getUSM().addUser(usera.getSecurityName(),usera);
 			} else {
 				return null;
 			}
@@ -942,6 +945,8 @@ public class Net {
 
 	}
 
+	
+	
 	// #endregion
 
 	public static ArrayList<Object> Traceroute(String ip) {
