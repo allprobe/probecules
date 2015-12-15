@@ -574,7 +574,7 @@ public class Net {
 			
 			transport=new DefaultUdpTransportMapping();
 			snmp=new Snmp(transport);
-			
+			transport.listen();
 			PDU pdu = new PDU();
 			pdu.setType(PDU.GETBULK);
 			pdu.setMaxRepetitions(1);
