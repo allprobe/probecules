@@ -327,8 +327,7 @@ public class Net {
 		webResults.add(System.currentTimeMillis());
 		if (user != null && pass != null) {
 			UserPass = user + ":" + pass;
-			request = new HttpRequest(url, requestType.equals("POST") ? RequestTypes.POST : RequestTypes.GET, timeout,
-					UserPass);
+			request = new HttpRequest(url, requestType.equals("POST") ? RequestTypes.POST : RequestTypes.GET, timeout,UserPass);
 		} else {
 			request = new HttpRequest(url, requestType.equals("POST") ? RequestTypes.POST : RequestTypes.GET, timeout);
 		}

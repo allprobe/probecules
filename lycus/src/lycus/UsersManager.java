@@ -271,10 +271,7 @@ public class UsersManager {
 					break;
 				}
 				case "snmp": {
-					String rpStr = probeId;
-					if (rpStr.contains(
-							"inner_aecc1485-6849-471d-b446-8e4ba05519da"))
-						System.out.println("TEST");
+					
 					OID oid = new OID((String) key.get("snmp_oid"));
 					int storeValue = Integer.parseInt((String) key.get("store_value_as"));
 					String valueType = (String) key.get("value_type");
@@ -447,6 +444,8 @@ public class UsersManager {
 		for (Map.Entry<String, UUID> rp : runnableProbesIds.entrySet()) {
 			UUID userID = rp.getValue();
 			String rpID = rp.getKey();
+			
+			
 			
 			User u = getUsers().get(userID);
 			u.addRunnableProbe(rpID);

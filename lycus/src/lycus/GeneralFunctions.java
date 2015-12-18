@@ -39,7 +39,7 @@ public class GeneralFunctions {
     }
 
     public static String Base64Decode(String uri) {
-        String s = new String(Base64.decodeBase64(uri.getBytes()));
+			s = new String(Base64.decodeBase64(uri.getBytes("UTF-8")));
         return s;
     }
 
