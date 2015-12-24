@@ -84,7 +84,9 @@ public class RunnableWeberProbeResults extends RunnableProbeResults {
 		}
 	}
 	
-	private void checkIfTriggerd() throws Exception {
+	@Override
+	protected void checkIfTriggerd() throws Exception {
+		super.checkIfTriggerd();
 		HashMap<String,Trigger> triggers = this.getRp().getProbe().getTriggers();
 		for (Trigger trigger : triggers.values()) {
 			boolean triggered = false;

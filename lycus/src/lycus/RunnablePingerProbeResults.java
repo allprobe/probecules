@@ -96,15 +96,14 @@ public class RunnablePingerProbeResults extends RunnableProbeResults {
 		}
 
 	}
-
-	private void checkIfTriggerd() throws Exception {
-		
-		SysLogger.Record(new Log("Triggering Runnable Probe: "+this.getRp().getRPString(),LogType.Info));
+	@Override
+	protected void checkIfTriggerd() throws Exception {
+		super.checkIfTriggerd();
 		HashMap<String,Trigger> triggers = this.getRp().getProbe().getTriggers();
 		for (Trigger trigger : triggers.values()) {
 			boolean triggered = false;
 			if(trigger.getElementType()==null)
-				
+				return;
 			switch (trigger.getElementType()) {
 			case "pl":
 				triggered = checkForPacketLostTrigger(trigger);

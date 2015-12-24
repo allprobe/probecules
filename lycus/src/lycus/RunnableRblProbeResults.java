@@ -46,7 +46,8 @@ public class RunnableRblProbeResults extends RunnableProbeResults {
 		
 	}
 	
-	private void checkIfTriggerd() throws Exception {
+	@Override
+	protected void checkIfTriggerd() throws Exception {
 		HashMap<String,Trigger> triggers = this.getRp().getProbe().getTriggers();
 		for (Trigger trigger : triggers.values()) {
 			boolean triggered = false;

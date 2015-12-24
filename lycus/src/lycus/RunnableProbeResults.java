@@ -181,6 +181,9 @@ public class RunnableProbeResults {
 			}
 		}
 	}
+	protected void checkIfTriggerd() throws Exception {
+	SysLogger.Record(new Log("Triggering Runnable Probe: "+this.getRp().getRPString(),LogType.Info));
+	}
 	
 }
 
