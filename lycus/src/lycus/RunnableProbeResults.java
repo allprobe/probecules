@@ -142,7 +142,7 @@ public class RunnableProbeResults {
 	 */
 	public void acceptResults(ArrayList<Object> results) throws Exception
 	{
-		
+		SysLogger.Record(new Log("Processing results for Runnable Probe: "+this.getRp().getRPString(),LogType.Debug));
 	}
 	
    /**
@@ -182,7 +182,7 @@ public class RunnableProbeResults {
 		}
 	}
 	protected void checkIfTriggerd() throws Exception {
-	SysLogger.Record(new Log("Triggering Runnable Probe: "+this.getRp().getRPString(),LogType.Info));
+	SysLogger.Record(new Log("Triggering Runnable Probe: "+this.getRp().getRPString(),LogType.Debug));
 	}
 	
 }

@@ -67,7 +67,7 @@ public class RunnableSnmpProbeResults extends RunnableProbeResults {
 
 	@Override
 	public void acceptResults(ArrayList<Object> results) throws Exception{
-		
+		super.acceptResults(results);
 		
 
 		long lastTimestamp = (long) results.get(0);
@@ -75,45 +75,11 @@ public class RunnableSnmpProbeResults extends RunnableProbeResults {
 
 		switch (((SnmpProbe) (this.getRp().getProbe())).getDataType()) {
 		case Numeric:
-			Double data = null;
-			try {
-				data = Double.parseDouble((String) results.get(1));
-			} catch (/* NumberFormat */Exception nfe) {
-				SysLogger.Record(
-						new Log("Error parsing snmp probe results: " + this.getRp().getRPString(), LogType.Warn));
-				if (((String) results.get(1)).equals("WRONG_OID")) {
-					this.setSnmpResultError("WRONG_OID");
-				} else {
-					this.setSnmpResultError("WRONG_VALUE_FORMAT");
-				}
-				this.setNumData(null);
-				data = null;
-				return;
-			}
-			this.setSnmpResultError(null);
-			this.setNumData(data);
-			this.setStringData(null);
-			for (int i = 0; i <this.getNumberOfRollupTables(); i++) {
-				DataPointsRollup numDataRollup = this.getDataRollups()[i];
-				numDataRollup.add(lastTimestamp, data);
-			}
+			acceptNumericResults(lastTimestamp,results);
 			break;
 		case Text:
-			String stringData = (String) results.get(1);
-			if (stringData == null) {
-				SysLogger.Record(
-						new Log("Error parsing snmp probe results: " + this.getRp().getRPString(), LogType.Warn));
-				this.setStringData(null);
-				return;
-			} else if (stringData.equals("WRONG_OID")) {
-				this.setSnmpResultError("WRONG_OID");
-				return;
-			} else {
-				this.setSnmpResultError(null);
-				this.setNumData(null);
-				this.setStringData(stringData);
-				break;
-			}
+			acceptTextResults(results);
+			break;
 		}
 		try{
 			checkIfTriggerd();
@@ -121,6 +87,47 @@ public class RunnableSnmpProbeResults extends RunnableProbeResults {
 		catch(Exception e)
 		{
 			SysLogger.Record(new Log("Error triggering RunnableProbe: "+this.getRp(),LogType.Warn,e));
+		}
+	}
+
+	private void acceptTextResults(ArrayList<Object> results) {
+		String stringData = (String) results.get(1);
+		if (stringData == null) {
+			SysLogger.Record(
+					new Log("Error parsing snmp probe results: " + this.getRp().getRPString(), LogType.Warn));
+			this.setStringData(null);
+			return;
+		} else if (stringData.equals("WRONG_OID")) {
+			this.setSnmpResultError("WRONG_OID");
+			return;
+		} else {
+			this.setSnmpResultError(null);
+			this.setNumData(null);
+			this.setStringData(stringData);
+		}
+	}
+
+	private void acceptNumericResults(long lastTimestamp, ArrayList<Object> results) {
+		Double data = null;
+		try {
+			data = Double.parseDouble((String) results.get(1));
+		} catch (/* NumberFormat */Exception nfe) {
+			SysLogger.Record(
+					new Log("Error parsing snmp probe results: " + this.getRp().getRPString(), LogType.Warn));
+			if (((String) results.get(1)).equals("WRONG_OID")) {
+				this.setSnmpResultError("WRONG_OID");
+			} else {
+				this.setSnmpResultError("WRONG_VALUE_FORMAT");
+			}
+			this.setNumData(null);
+			return;
+		}
+		this.setSnmpResultError(null);
+		this.setNumData(data);
+		this.setStringData(null);
+		for (int i = 0; i <this.getNumberOfRollupTables(); i++) {
+			DataPointsRollup numDataRollup = this.getDataRollups()[i];
+			numDataRollup.add(lastTimestamp, data);
 		}
 	}
 

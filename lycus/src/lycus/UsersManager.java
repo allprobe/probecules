@@ -329,6 +329,12 @@ public class UsersManager {
 				UUID templateId = UUID.fromString((String) triggerJson.get("template_id"));
 				String probeId = (String) triggerJson.get("probe_id");
 				String triggerId = (String) triggerJson.get("trigger_id");
+				
+				String rpStr = triggerId;
+				if (rpStr.contains(
+						"761b1106-7d62-43b6-8f16-b559a806d366"))
+					System.out.println("BREAKPOINT - UsersManager");
+				
 				String name = (String) triggerJson.get("trigger_name");
 				TriggerSeverity severity = getTriggerSev((String) triggerJson.get("severity"));
 				if (severity == null)

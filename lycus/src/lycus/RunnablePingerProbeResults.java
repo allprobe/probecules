@@ -85,8 +85,8 @@ public class RunnablePingerProbeResults extends RunnableProbeResults {
 
 		String rpStr = this.getRp().getRPString();
 		if (rpStr.contains(
-				"761b1106-7d62-43b6-8f16-b559a806d366@9dc99972-e28a-4e90-aabd-7e8bad61b232@inner_6ae83673-71f8-4131-93fd-66268f90890e"))
-			System.out.println("TEST");
+				"761b1106-7d62-43b6-8f16-b559a806d366@d382d15a-19e2-4c7f-b544-7de9357ed304@inner_33695a83-654d-4177-b90d-0a89c5f0120d"))
+			System.out.println("BREAKPOINT - RunnablePingerProbeResults");
 		try{
 		checkIfTriggerd();
 		}
