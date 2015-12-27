@@ -5,9 +5,12 @@
 package lycus;
 
 import java.io.BufferedReader;
+import java.io.File;
+import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.io.OutputStreamWriter;
+import java.io.PrintWriter;
 import java.net.HttpURLConnection;
 import java.net.MalformedURLException;
 import java.net.ProtocolException;
@@ -15,6 +18,8 @@ import java.net.URL;
 import java.net.URLEncoder;
 import java.nio.ByteBuffer;
 import java.nio.charset.Charset;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.HashSet;
@@ -40,7 +45,7 @@ import org.json.simple.parser.ParseException;
 public class ApiStages {
 
 	private static String apiUrl;
-
+	private static File failedApiRequests;
 	public static boolean Initialize() {
 		String fullUrl = "";
 		if (Global.getApiSSL())
@@ -49,7 +54,15 @@ public class ApiStages {
 			fullUrl += "http://";
 		fullUrl += Global.getApiUrl();
 		apiUrl = fullUrl;
+		setFailedApiRequests(new File("failed_api"));
+		getFailedApiRequests().mkdir();
+		processOfflineRequests();
 		return true;
+	}
+
+	private static void processOfflineRequests() {
+		File[] listOfFiles = getFailedApiRequests().listFiles();
+		
 	}
 
 	public static String getApiUrl() {
@@ -58,6 +71,14 @@ public class ApiStages {
 
 	public static void setApiUrl(String apiUrl) {
 		ApiStages.apiUrl = apiUrl;
+	}
+
+	public static File getFailedApiRequests() {
+		return failedApiRequests;
+	}
+
+	public static void setFailedApiRequests(File failedApiRequests) {
+		ApiStages.failedApiRequests = failedApiRequests;
 	}
 
 	public static JSONObject InitServer() {
@@ -472,5 +493,18 @@ public class ApiStages {
 		fullData = sb.toString();
 		return fullData;
 	}
-
+	
+	public static void createFailedRequestFile(String apiStage,String data)
+	{
+		String fileName=System.currentTimeMillis()+"_"+apiStage+".log";
+		PrintWriter writer;
+		try {
+			writer = new PrintWriter(getFailedApiRequests().getName()+fileName);
+			writer.println(data);
+			writer.close();
+		} catch (FileNotFoundException e) {
+			SysLogger.Record(new Log("DATA LOST! unable to write failed api request to file!", LogType.Error, e));
+		}
+		
+	}
 }
