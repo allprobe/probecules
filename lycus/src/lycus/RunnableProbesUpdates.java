@@ -68,7 +68,7 @@ public class RunnableProbesUpdates implements Runnable {
 	}
 
 	public void run() {
-		//LinkedHashMap<UUID, JSONObject> updates = ApiStages.GETthreads_updates_by_server();
+		//LinkedHashMap<UUID, JSONObject> updates = ApiInterface.GETthreads_updates_by_server();
 		if (updates == null) {
 			SysLogger.Record(
 					new Log("==============================Failed Receive Probes Updates/There Isnt Any Update!==============================",
@@ -111,7 +111,7 @@ public class RunnableProbesUpdates implements Runnable {
 //			else
 //				return;
 //			if (updateSucceed)
-//				ApiStages.deleteThreadUpdate(update.getUpdateId());
+//				ApiInterface.deleteThreadUpdate(update.getUpdateId());
 //			else
 //			{
 //				this.addUpdate(update);

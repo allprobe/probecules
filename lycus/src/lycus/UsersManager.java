@@ -59,7 +59,7 @@ public class UsersManager {
 		HashMap<UUID, User> user_s = UsersManager.getUsers();
 		JSONObject initServer = UsersManager.getServerInfoFromApi();
 
-		HashMap<String, UUID> runnableProbesIds = ApiStages.getInitRPs(initServer.get("long_ids"));
+		HashMap<String, UUID> runnableProbesIds = ApiInterface.getInitRPs(initServer.get("long_ids"));
 		HashMap<String, UUID> probeByUser = getProbeByUser(runnableProbesIds);
 
 		if (runnableProbesIds == null) {
@@ -515,9 +515,9 @@ public class UsersManager {
 	}
 
 	private static JSONObject getServerInfoFromApi() {
-		JSONObject initServer;
+		Object initServer;
 		while (true) {
-			initServer = ApiStages.InitServer();
+			initServer = ApiInterface.executeRequest(ApiStages.InitServer, "GET", null);
 			if (initServer == null) {
 				SysLogger.Record(new Log("Error starting server, no API connectivity! trying again in 1 minutes...",
 						LogType.Error));
@@ -527,7 +527,8 @@ public class UsersManager {
 					SysLogger.Record(new Log("Main Thread Interrupted!", LogType.Error, e));
 				}
 			} else {
-				return initServer;
+				JSONObject jsonInitServer=(JSONObject)(initServer);
+				return jsonInitServer;
 			}
 		}
 	}

@@ -38,7 +38,7 @@ public class LycusMain  {
 		if(!Global.Initialize())
 			return;
 		SysLogger.Init();
-		boolean apiInit=ApiStages.Initialize();
+		boolean apiInit=ApiInterface.Initialize();
 		if(apiInit)
 		UsersManager.Initialize();
 //		ApiBuffer failedApiBuffer=new ApiBuffer();
@@ -68,7 +68,7 @@ public class LycusMain  {
 		
 //		for(int i=0;i<10;i++)
 //		{
-//		ApiStages.insertDatapointsBatches("TEST "+i);
+//		ApiInterface.insertDatapointsBatches("TEST "+i);
 //		try {
 //			Thread.sleep(5000);
 //		} catch (InterruptedException e) {

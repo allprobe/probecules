@@ -31,6 +31,7 @@ public class RunnableProbesHistory implements Runnable {
 	private EventHandler events;
 	private ScheduledExecutorService rollupsDumpExecuter;
 	private ScheduledFuture<?> rollupsDumpExecuterThread;
+	private boolean isRollupsMerged;
 	private ScheduledExecutorService resultsInsertorExecuter;
 	private ScheduledFuture<?> resultsInsertorExecuterThread;
 	private ScheduledExecutorService eventsInsertorExecuter;
@@ -45,8 +46,7 @@ public class RunnableProbesHistory implements Runnable {
 		this.setRollupsDumpExecuter(Executors.newSingleThreadScheduledExecutor());
 		this.setResultsInsertorExecuter(Executors.newSingleThreadScheduledExecutor());
 		this.setEventsInsertorExecuter(Executors.newSingleThreadScheduledExecutor());
-		this.retrieveExistingRollupsCounter = 0;
-
+		this.isRollupsMerged=false;
 	}
 
 	public Gson getGson() {
@@ -65,20 +65,24 @@ public class RunnableProbesHistory implements Runnable {
 		this.events = events;
 	}
 
+	public boolean isRollupsMerged() {
+		return isRollupsMerged;
+	}
+
+	public void setRollupsMerged(boolean isRollupsMerged) {
+		this.isRollupsMerged = isRollupsMerged;
+	}
+
 	public void run() {
 		try {
-			if (this.getRetrieveExistingRollupsCounter() != -1) {
-				// if(this.getRetrieveExistingRollupsCounter()>10)
-				// this.setRetrieveExistingRollupsCounter(-1);
-				// else
+			if (!this.isRollupsMerged()) 
 				this.mergeExistingRollupsFromMemDump();
-			}
+			
 			SysLogger.Record(new Log("Sending collected data to API...", LogType.Info));
 			String results = this.getResultsDBFormat();
 		
-			
-			
-			ApiStages.insertDatapointsBatches(results);
+			String sendString = "{\"results\" : \"" + results + "\"}";
+			ApiInterface.executeRequest(ApiStages.InsertDatapointsBatches, "PUT", sendString);
 		} catch (Throwable thrown) {
 			SysLogger.Record(new Log("Sending collected data to API failed!", LogType.Error));
 			StringWriter sw = new StringWriter();
@@ -336,14 +340,17 @@ public class RunnableProbesHistory implements Runnable {
 
 	public void mergeExistingRollupsFromMemDump() {
 		SysLogger.Record(new Log("Retrieving existing rollups from DB...", LogType.Debug));
-		String rollups = ApiStages.retrieveExistingRollups();
-		SysLogger.Record(new Log(rollups, LogType.Debug));
-		if (rollups == null) {
+		Object rollupsUnDecoded = ApiInterface.executeRequest(ApiStages.GetServerMemoryDump, "GET", null);
+		
+		if (rollupsUnDecoded == null||((String)rollupsUnDecoded).equals("0\n")) {
 			SysLogger.Record(
 					new Log("Unable to retrieve existing rollups, trying again in about 30 secs...", LogType.Warn));
 			this.setRetrieveExistingRollupsCounter(this.getRetrieveExistingRollupsCounter() + 1);
 			return;
 		}
+		
+		String rollups=((String)rollupsUnDecoded).substring(1, ((String)rollupsUnDecoded).length() - 1);
+		
 		this.setRetrieveExistingRollupsCounter(-1);
 		ArrayList<DataPointsRollup[][]> rollupses = this.getMemDump().deserializeRollups(rollups);
 		for (DataPointsRollup[][] rollupsResult : rollupses) {
@@ -361,7 +368,7 @@ public class RunnableProbesHistory implements Runnable {
 	public void setCurrentLiveEvents() {
 		while (true) {
 			SysLogger.Record(new Log("Retrieving existing live events from REDIS...", LogType.Debug));
-			String events = ApiStages.retrieveExistingEvents();
+			String events = ApiInterface.retrieveExistingEvents();
 			SysLogger.Record(new Log(events, LogType.Debug));
 			if (events == null) {
 				SysLogger.Record(new Log("Unable to retrieve existing live events, trying again in about 30 secs...",

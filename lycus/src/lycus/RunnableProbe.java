@@ -216,7 +216,7 @@ public class RunnableProbe implements Runnable {
 //		String stringResults;
 //		stringResults = GeneralFunctions.valuesFormat(result);
 //		SysLogger.Record(new Log("Probe: " + this.getRPString() + " Results: " + stringResults, LogType.Debug));
-//		ApiStages.InsertProbeHistory(this, stringResults);
+//		ApiInterface.InsertProbeHistory(this, stringResults);
 //
 //		// TODO Here Check Triggers of Probe
 //

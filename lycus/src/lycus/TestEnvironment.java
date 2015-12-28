@@ -63,7 +63,7 @@
 //		List<String> oids = new ArrayList<String>();
 //		if (!Global.Initialize())
 //			System.exit(0);
-//		ApiStages.Initialize();
+//		ApiInterface.Initialize();
 //		SysLogger.Init();
 //
 //		// HostAndPort hnp=HostAndPortUtil.getRedisServers().get(0);
@@ -98,13 +98,13 @@
 //		// System.out.println(Net.TcpPorter("62.90.102.43", 22, 3000));
 //		// System.out.println(Net.Pinger("62.90.102.55", 4, 64, 3000));
 //		// LinkedHashMap<UUID, JSONObject> updates =
-//		// ApiStages.GETthreads_updates_by_server();
+//		// ApiInterface.GETthreads_updates_by_server();
 //		// for(Map.Entry<UUID, JSONObject> update:updates.entrySet())
 //		// {
 //		//
 //		// System.out.println(GeneralFunctions.valuesOrdered(update.getValue().get("update_value").toString()).get(1));
 //		// }
-//		// System.out.println(ApiStages.cleanThreadsUpdates());
+//		// System.out.println(ApiInterface.cleanThreadsUpdates());
 //		// DataPointsRollup[][] rollups=new DataPointsRollup[2][6];
 //		// rollups[0][0]=new
 //		// DataPointsRollup("PROBEID1,1",DataPointsRollupSize._4minutes);
@@ -156,10 +156,10 @@
 ////		System.out.println(dpr.getAvg());
 //		
 //		boolean exit = true;
-////		HashMap<String,UUID> test=ApiStages.getInitRPs(ApiStages.InitServer().get("long_ids"));
+////		HashMap<String,UUID> test=ApiInterface.getInitRPs(ApiInterface.InitServer().get("long_ids"));
 ////		GeneralFunctions.printMap(test);
 //		
-//		System.out.println(ApiStages.insertDatapointsBatches("BlABLA"));
+//		System.out.println(ApiInterface.insertDatapointsBatches("BlABLA"));
 //		if (exit)
 //			return;
 //		Host h = new Host(UUID.randomUUID(), "^HOSTNAME^", "^HOSTIP^", null, true, false);
@@ -202,7 +202,7 @@
 //				e.printStackTrace();
 //			}
 //		}
-//		// ApiStages.insertExistingRollups("{\"error\": {\"code\":
+//		// ApiInterface.insertExistingRollups("{\"error\": {\"code\":
 //		// 404,\"message\": \"Not Found\"}}");
 //		// Gson g=new Gson();
 //	}

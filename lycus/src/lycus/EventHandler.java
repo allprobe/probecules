@@ -33,7 +33,10 @@ public class EventHandler implements Runnable {
 				SysLogger.Record(new Log("Sending events to API...", LogType.Info));
 				String stringEvents=this.getHistory().getGson().toJson(events);
 				if(!stringEvents.equals("[]"))
-					ApiStages.putEvents(stringEvents);
+				{
+					String sendString = "{\"events\" : \"" + stringEvents + "\"}";				
+					ApiInterface.executeRequest(ApiStages.PutEvents, "PUT", sendString);
+				}
 			} else {
 				SysLogger.Record(new Log("Unable to process events! events did not sent to API...", LogType.Error));
 			}

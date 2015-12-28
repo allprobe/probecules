@@ -35,7 +35,8 @@ public class MemoryDump implements Runnable {
 		if(this.getHistory().getRetrieveExistingRollupsCounter()==-1)//check if existing rollups pulled from API, only after pull it push
 		{
 			SysLogger.Record(new Log("Sending MEMDUMP of rollups to DB...",LogType.Debug));
-			ApiStages.insertExistingRollups(rollups);
+			String sendString="{\"last_rollups\":\"" + rollups + "\"}";
+			ApiInterface.executeRequest(ApiStages.FlushServerMemory, "PUT", sendString);
 		}
 		}
 	private ArrayList<DataPointsRollup[][]> getAllRollups()
