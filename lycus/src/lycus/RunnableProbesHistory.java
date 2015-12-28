@@ -28,7 +28,7 @@ public class RunnableProbesHistory implements Runnable {
 	private HashMap<String, RunnableProbeResults> results;
 	private Gson gson;
 	private MemoryDump memDump;
-	private EventHandler events;
+	private EventHandler eventsHandler;
 	private ScheduledExecutorService rollupsDumpExecuter;
 	private ScheduledFuture<?> rollupsDumpExecuterThread;
 	private boolean isRollupsMerged;
@@ -42,11 +42,11 @@ public class RunnableProbesHistory implements Runnable {
 		this.results = this.getAllResultsUsers(allUsers);
 		this.setGson(new GsonBuilder().setPrettyPrinting().create());
 		this.memDump = new MemoryDump(this);
-		this.events = new EventHandler(this);
+		this.eventsHandler = new EventHandler(this);
 		this.setRollupsDumpExecuter(Executors.newSingleThreadScheduledExecutor());
 		this.setResultsInsertorExecuter(Executors.newSingleThreadScheduledExecutor());
 		this.setEventsInsertorExecuter(Executors.newSingleThreadScheduledExecutor());
-		this.isRollupsMerged=false;
+		this.isRollupsMerged = false;
 	}
 
 	public Gson getGson() {
@@ -58,11 +58,11 @@ public class RunnableProbesHistory implements Runnable {
 	}
 
 	public EventHandler getEvents() {
-		return events;
+		return eventsHandler;
 	}
 
 	public void setEvents(EventHandler events) {
-		this.events = events;
+		this.eventsHandler = events;
 	}
 
 	public boolean isRollupsMerged() {
@@ -75,12 +75,12 @@ public class RunnableProbesHistory implements Runnable {
 
 	public void run() {
 		try {
-			if (!this.isRollupsMerged()) 
+			if (!this.isRollupsMerged())
 				this.mergeExistingRollupsFromMemDump();
-			
+
 			SysLogger.Record(new Log("Sending collected data to API...", LogType.Info));
 			String results = this.getResultsDBFormat();
-		
+
 			String sendString = "{\"results\" : \"" + results + "\"}";
 			ApiInterface.executeRequest(ApiStages.InsertDatapointsBatches, "PUT", sendString);
 		} catch (Throwable thrown) {
@@ -96,10 +96,9 @@ public class RunnableProbesHistory implements Runnable {
 	}
 
 	private String getResultsDBFormat() {
-		
+
 		HashMap<String, RunnableProbeResults> rprs = this.getResults();
 
-		
 		HashMap<String, HashMap<String, HashMap<String, String>>> results = new HashMap<String, HashMap<String, HashMap<String, String>>>();
 		results.put("RAW", new HashMap<String, HashMap<String, String>>());
 		results.put("4mRollups", new HashMap<String, HashMap<String, String>>());
@@ -114,22 +113,23 @@ public class RunnableProbesHistory implements Runnable {
 			RunnableProbe rp = rpr.getRp();
 
 			String rpStr = rp.getRPString();
-			if (rpStr.contains(
-					"788b1b9e-d753-4dfa-ac46-61c4374eeb84@inner_10e61538-b4e1-44c6-aa12-b81ef6a5528d"))
-				System.out.println("TEST");
+			if (rpStr.contains("788b1b9e-d753-4dfa-ac46-61c4374eeb84@inner_10e61538-b4e1-44c6-aa12-b81ef6a5528d"))
+				System.out.println("BREAKPOINT - RunnableProbesHistory");
 			
-			
-//			SysLogger.Record(new Log("Delay of "+RunInnerProbesChecks.getRunnableProbeThread(rp).getDelay(TimeUnit.SECONDS)+"s for last check of Runnable Probe: "+rp.getRPString(),LogType.Debug));
-			
+			// SysLogger.Record(new Log("Delay of
+			// "+RunInnerProbesChecks.getRunnableProbeThread(rp).getDelay(TimeUnit.SECONDS)+"s
+			// for last check of Runnable Probe:
+			// "+rp.getRPString(),LogType.Debug));
+
 			if (rpr.getLastTimestamp() == null || rpr.getLastTimestamp() == 0)
 				continue;
 
 			HashMap<String, String> probeResults;
 
 			try {
-				
+
 				probeResults = rpr.getResults();
-				
+
 				if (probeResults.containsKey("error")) {
 					SysLogger.Record(
 							new Log("Seriious error getting runnable probe results of: " + rpr.getRp().getRPString(),
@@ -140,10 +140,6 @@ public class RunnableProbesHistory implements Runnable {
 					String resultKey = probeResult.getKey();
 					String resultValue = probeResult.getValue();
 
-					
-					
-					
-					
 					if (resultKey.contains("RAW")) {
 						HashMap<String, String> test = rawResultsDBFormat(rpr, resultKey, resultValue);
 						results.get("RAW").put(rp.getRPString(), rawResultsDBFormat(rpr, resultKey, resultValue));
@@ -202,12 +198,12 @@ public class RunnableProbesHistory implements Runnable {
 
 	private void startEventsInsertion() {
 
+		pullCurrentLiveEvents();
 		this.setEventsInsertorExecuterThread(
 				this.getEventsInsertorExecuter().scheduleAtFixedRate(this.getEvents(), 0, 15, TimeUnit.SECONDS));
 	}
 
 	public void startHistory() {
-		setCurrentLiveEvents();
 		this.startHistoryInsertion();
 		this.startMemoryDump();
 		this.startEventsInsertion();
@@ -217,7 +213,6 @@ public class RunnableProbesHistory implements Runnable {
 	private HashMap<String, String> rollupResultsDBFormat(RunnableProbeResults rpr, String resultkey,
 			String resultvalue) {
 
-		
 		HashMap<String, String> tableResults;
 		tableResults = new HashMap<String, String>();
 		RunnableProbe rp = rpr.getRp();
@@ -331,7 +326,7 @@ public class RunnableProbesHistory implements Runnable {
 		for (User u : users) {
 			Collection<RunnableProbe> usersRPs = u.getAllRunnableProbes().values();
 			for (RunnableProbe rp : usersRPs) {
-				
+
 				rprs.put(rp.getRPString(), rp.getResult());
 			}
 		}
@@ -341,16 +336,16 @@ public class RunnableProbesHistory implements Runnable {
 	public void mergeExistingRollupsFromMemDump() {
 		SysLogger.Record(new Log("Retrieving existing rollups from DB...", LogType.Debug));
 		Object rollupsUnDecoded = ApiInterface.executeRequest(ApiStages.GetServerMemoryDump, "GET", null);
-		
-		if (rollupsUnDecoded == null||((String)rollupsUnDecoded).equals("0\n")) {
+
+		if (rollupsUnDecoded == null || ((String) rollupsUnDecoded).equals("0\n")) {
 			SysLogger.Record(
 					new Log("Unable to retrieve existing rollups, trying again in about 30 secs...", LogType.Warn));
 			this.setRetrieveExistingRollupsCounter(this.getRetrieveExistingRollupsCounter() + 1);
 			return;
 		}
-		
-		String rollups=((String)rollupsUnDecoded).substring(1, ((String)rollupsUnDecoded).length() - 1);
-		
+
+		String rollups = ((String) rollupsUnDecoded).substring(1, ((String) rollupsUnDecoded).length() - 1);
+
 		this.setRetrieveExistingRollupsCounter(-1);
 		ArrayList<DataPointsRollup[][]> rollupses = this.getMemDump().deserializeRollups(rollups);
 		for (DataPointsRollup[][] rollupsResult : rollupses) {
@@ -365,13 +360,13 @@ public class RunnableProbesHistory implements Runnable {
 		}
 	}
 
-	public void setCurrentLiveEvents() {
+	public void pullCurrentLiveEvents() {
 		while (true) {
-			SysLogger.Record(new Log("Retrieving existing live events from REDIS...", LogType.Debug));
-			String events = ApiInterface.retrieveExistingEvents();
-			SysLogger.Record(new Log(events, LogType.Debug));
-			if (events == null) {
-				SysLogger.Record(new Log("Unable to retrieve existing live events, trying again in about 30 secs...",
+			SysLogger.Record(new Log("Retrieving existing live eventsHandler from REDIS...", LogType.Debug));
+			Object eventsObject = ApiInterface.executeRequest(ApiStages.GetServerLiveEvents, "GET", null);
+
+			if (eventsObject == null) {
+				SysLogger.Record(new Log("Unable to retrieve existing live eventsHandler, trying again in about 30 secs...",
 						LogType.Warn));
 				try {
 					Thread.sleep(30000);
@@ -382,48 +377,32 @@ public class RunnableProbesHistory implements Runnable {
 				continue;
 			}
 
-			if(events.equals("[]\n"))
-				return;
-			JSONObject json = null;
-			try {
-				json = (JSONObject) new JSONParser().parse(events);
-			} catch (ParseException e) {
-				SysLogger.Record(new Log("Unable to parse live events! server not starting.",LogType.Error));
-				try {
-					Thread.sleep(30000);
-				} catch (InterruptedException ie) {
-					SysLogger.Record(new Log("Main thread interrupted!", LogType.Error, ie));
-					continue;
-				}
-
-			}
-						
-			if(json.size()==0)
+			JSONObject events = (JSONObject) eventsObject;
+			
+			if (events.size() == 0)
 				return;
 
-			for (Iterator iterator = json.keySet().iterator(); iterator.hasNext();) {
+			for (Iterator iterator = events.keySet().iterator(); iterator.hasNext();) {
 				String it = (String) iterator.next();
-				try{
-				UUID hostId = UUID.fromString(it.split("@")[0]);
-				UUID templateId = UUID.fromString(it.split("@")[1]);
-				String probeId = it.split("@")[2];
-				UUID triggerId = UUID.fromString(it.split("@")[3]);
-				long timestamp = Long.parseLong((String) json.get(it));
+				try {
+					UUID hostId = UUID.fromString(it.split("@")[0]);
+					UUID templateId = UUID.fromString(it.split("@")[1]);
+					String probeId = it.split("@")[2];
+					UUID triggerId = UUID.fromString(it.split("@")[3]);
+					long timestamp = Long.parseLong((String) events.get(it));
 
-				RunnableProbeResults rpr = this.getResults()
-						.get(templateId.toString() + "@" + hostId.toString() + "@" + probeId);
-				Trigger trigger = rpr.getRp().getProbe().getTriggers()
-						.get(templateId.toString() + "@" + probeId + "@" + triggerId.toString());
+					RunnableProbeResults rpr = this.getResults()
+							.get(templateId.toString() + "@" + hostId.toString() + "@" + probeId);
+					Trigger trigger = rpr.getRp().getProbe().getTriggers()
+							.get(templateId.toString() + "@" + probeId + "@" + triggerId.toString());
 
-				TriggerEvent event = new TriggerEvent(rpr.getRp(), trigger, false);
-				event.setTime(timestamp);
-				event.setSent(true);
+					TriggerEvent event = new TriggerEvent(rpr.getRp(), trigger, false);
+					event.setTime(timestamp);
+					event.setSent(true);
 
-				rpr.getEvents().put(trigger, event);
-				}
-				catch(Exception e)
-				{
-					SysLogger.Record(new Log("Unable to process live event: "+it,LogType.Error));
+					rpr.getEvents().put(trigger, event);
+				} catch (Exception e) {
+					SysLogger.Record(new Log("Unable to process live event: " + it, LogType.Error));
 				}
 			}
 			return;

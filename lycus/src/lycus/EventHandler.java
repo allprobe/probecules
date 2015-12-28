@@ -34,7 +34,7 @@ public class EventHandler implements Runnable {
 				String stringEvents=this.getHistory().getGson().toJson(events);
 				if(!stringEvents.equals("[]"))
 				{
-					String sendString = "{\"events\" : \"" + stringEvents + "\"}";				
+					String sendString = "{\"events\" : " + stringEvents + "}";				
 					ApiInterface.executeRequest(ApiStages.PutEvents, "PUT", sendString);
 				}
 			} else {
