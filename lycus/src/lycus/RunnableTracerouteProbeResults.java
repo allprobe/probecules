@@ -22,7 +22,7 @@ public class RunnableTracerouteProbeResults extends RunnableProbeResults {
 	public void acceptResults(ArrayList<Object> results) {
 		long lastTimestamp = (long) results.get(0);
 		ArrayList<String> routes = (ArrayList<String>) results.get(1);
-
+		
 		this.setLastTimestamp(lastTimestamp);
 		this.setRoutes(routes);
 		

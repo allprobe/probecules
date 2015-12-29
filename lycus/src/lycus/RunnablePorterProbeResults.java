@@ -40,7 +40,7 @@ public class RunnablePorterProbeResults extends RunnableProbeResults {
 	}
 
 	@Override
-	public void acceptResults(ArrayList<Object> results) throws Exception {
+	public synchronized void acceptResults(ArrayList<Object> results) throws Exception {
 		long lastTimestamp = (long) results.get(0);
 		boolean status = (boolean) results.get(1);
 		long time = Long.parseLong(String.valueOf(results.get(2)));
@@ -77,20 +77,8 @@ public class RunnablePorterProbeResults extends RunnableProbeResults {
 				triggered = checkForResponseTimeTrigger(trigger);
 				break;
 			}
-			TriggerEvent lastEvent = this.getEvents().get(trigger);
-			if (lastEvent != null && !triggered) {
-				lastEvent.setStatus(true);
-				lastEvent.setSent(false);
-				SysLogger
-						.Record(new Log(
-								"Trigger " + trigger.getTriggerId() + " of Runnable Probe: "
-										+ this.getRp().getRPString() + " deactivated, will send event to API...",
-								LogType.Debug));
-			} else if (lastEvent == null) {
-				TriggerEvent event = new TriggerEvent(this.getRp(), trigger, false);
-				event.setSent(false);
-				this.getEvents().put(trigger, event);
-			}
+			
+			super.processTriggerResult(trigger, triggered);
 
 		}
 	}

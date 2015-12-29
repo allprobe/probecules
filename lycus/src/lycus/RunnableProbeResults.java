@@ -140,7 +140,7 @@ public class RunnableProbeResults {
 	 * @param results - results in arrayList.
 	 * @throws Exception 
 	 */
-	public void acceptResults(ArrayList<Object> results) throws Exception
+	public synchronized void acceptResults(ArrayList<Object> results) throws Exception
 	{
 		SysLogger.Record(new Log("Processing results for Runnable Probe: "+this.getRp().getRPString(),LogType.Debug));
 	}
@@ -183,6 +183,19 @@ public class RunnableProbeResults {
 	}
 	protected void checkIfTriggerd() throws Exception {
 	SysLogger.Record(new Log("Triggering Runnable Probe: "+this.getRp().getRPString(),LogType.Debug));
+	}
+	public void processTriggerResult(Trigger trigger, boolean triggered) {
+		TriggerEvent lastEvent = this.getEvents().get(trigger);
+		if (lastEvent != null && !triggered) {
+			//if trigger event became true and normal again send event to api
+			lastEvent.setStatus(true);
+			lastEvent.setSent(false);
+			SysLogger.Record(new Log("Trigger "+trigger.getTriggerId()+" of Runnable Probe: "+this.getRp().getRPString()+" deactivated, will send event to API...",LogType.Debug));
+		} else if (lastEvent == null && triggered) {
+			TriggerEvent event = new TriggerEvent(this.getRp(), trigger, true);
+			event.setSent(false);
+			this.getEvents().put(trigger, event);
+		}
 	}
 	
 }

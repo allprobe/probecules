@@ -59,7 +59,13 @@ public class RunnableWeberProbeResults extends RunnableProbeResults {
 
 
 	@Override
-	public void acceptResults(ArrayList<Object> results) throws Exception{
+	public synchronized void acceptResults(ArrayList<Object> results) throws Exception{
+		
+		String rpStr = this.getRp().getRPString();
+		if (rpStr.contains(
+				"d934aa3b-f703-4d4b-99c6-66b470c782f2@inner_62baf829-81fd-4184-b7d7-9d44616386f4"))
+			System.out.println("BREAKPOINT - RunnableWeberProbeResults");
+		
 		long lastTimestamp=(long)results.get(0);
 		int statusCode=(int)results.get(1);
 		long responseTime=(long)results.get(2);
@@ -101,17 +107,8 @@ public class RunnableWeberProbeResults extends RunnableProbeResults {
 				triggered = checkForPageSizeTrigger(trigger);
 				break;
 			}
-			TriggerEvent lastEvent = this.getEvents().get(trigger);
-			if (lastEvent != null && !triggered) {
-				lastEvent.setStatus(true);
-				lastEvent.setSent(false);
-				SysLogger.Record(new Log("Trigger "+trigger.getTriggerId()+" of Runnable Probe: "+this.getRp().getRPString()+" deactivated, will send event to API...",LogType.Debug));
-			} else if (lastEvent == null) {
-				TriggerEvent event = new TriggerEvent(this.getRp(), trigger, false);
-				event.setSent(false);
-				this.getEvents().put(trigger, event);
-			}
-
+			
+			super.processTriggerResult(trigger, triggered);
 		}
 	}
 

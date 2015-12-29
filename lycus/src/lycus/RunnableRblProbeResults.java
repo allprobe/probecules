@@ -27,7 +27,7 @@ public class RunnableRblProbeResults extends RunnableProbeResults {
 	
 
 	@Override
-	public void acceptResults(ArrayList<Object> results) throws Exception
+	public synchronized void acceptResults(ArrayList<Object> results) throws Exception
 	{
 		long lastTimestamp=(long)results.get(0);
 		boolean isListed=(boolean)results.get(1);
@@ -48,21 +48,13 @@ public class RunnableRblProbeResults extends RunnableProbeResults {
 	
 	@Override
 	protected void checkIfTriggerd() throws Exception {
+		super.checkIfTriggerd();
 		HashMap<String,Trigger> triggers = this.getRp().getProbe().getTriggers();
 		for (Trigger trigger : triggers.values()) {
 			boolean triggered = false;
 			triggered = checkForRblTrigger(trigger);
 
-			TriggerEvent lastEvent = this.getEvents().get(trigger);
-			if (lastEvent != null && !triggered) {
-				lastEvent.setStatus(true);
-				lastEvent.setSent(false);
-				SysLogger.Record(new Log("Trigger "+trigger.getTriggerId()+" of Runnable Probe: "+this.getRp().getRPString()+" deactivated, will send event to API...",LogType.Debug));
-			} else if (lastEvent == null) {
-				TriggerEvent event = new TriggerEvent(this.getRp(), trigger, false);
-				event.setSent(false);
-				this.getEvents().put(trigger, event);
-			}
+			super.processTriggerResult(trigger, triggered);
 
 		}
 	}

@@ -97,7 +97,7 @@ public class RunnablePingerProbeResults extends RunnableProbeResults {
 
 	}
 	@Override
-	protected void checkIfTriggerd() throws Exception {
+	protected synchronized void checkIfTriggerd() throws Exception {
 		super.checkIfTriggerd();
 		HashMap<String,Trigger> triggers = this.getRp().getProbe().getTriggers();
 		for (Trigger trigger : triggers.values()) {
@@ -112,16 +112,7 @@ public class RunnablePingerProbeResults extends RunnableProbeResults {
 				triggered = checkForRttTrigger(trigger);
 				break;
 			}
-			TriggerEvent lastEvent = this.getEvents().get(trigger);
-			if (lastEvent != null && !triggered) {
-				lastEvent.setStatus(true);
-				lastEvent.setSent(false);
-				SysLogger.Record(new Log("Trigger "+trigger.getTriggerId()+" of Runnable Probe: "+this.getRp().getRPString()+" deactivated, will send event to API...",LogType.Debug));
-			} else if (lastEvent == null) {
-				TriggerEvent event = new TriggerEvent(this.getRp(), trigger, false);
-				event.setSent(false);
-				this.getEvents().put(trigger, event);
-			}
+			super.processTriggerResult(trigger,triggered);
 
 		}
 	}
