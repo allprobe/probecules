@@ -27,26 +27,23 @@ import com.sun.org.glassfish.gmbal.ManagedAttribute;
 public class RunnableProbesHistory implements Runnable {
 	private HashMap<String, RunnableProbeResults> results;
 	private Gson gson;
-	private MemoryDump memDump;
+	private RollupsMemoryDump memDump;
 	private EventHandler eventsHandler;
 	private ScheduledExecutorService rollupsDumpExecuter;
 	private ScheduledFuture<?> rollupsDumpExecuterThread;
-	private boolean isRollupsMerged;
 	private ScheduledExecutorService resultsInsertorExecuter;
 	private ScheduledFuture<?> resultsInsertorExecuterThread;
 	private ScheduledExecutorService eventsInsertorExecuter;
 	private ScheduledFuture<?> eventsInsertorExecuterThread;
-	private int retrieveExistingRollupsCounter;
 
 	public RunnableProbesHistory(ArrayList<User> allUsers, String existingRollups) {
 		this.results = this.getAllResultsUsers(allUsers);
 		this.setGson(new GsonBuilder().setPrettyPrinting().create());
-		this.memDump = new MemoryDump(this);
+		this.memDump = new RollupsMemoryDump(this);
 		this.eventsHandler = new EventHandler(this);
 		this.setRollupsDumpExecuter(Executors.newSingleThreadScheduledExecutor());
 		this.setResultsInsertorExecuter(Executors.newSingleThreadScheduledExecutor());
 		this.setEventsInsertorExecuter(Executors.newSingleThreadScheduledExecutor());
-		this.isRollupsMerged = false;
 	}
 
 	public Gson getGson() {
@@ -65,24 +62,15 @@ public class RunnableProbesHistory implements Runnable {
 		this.eventsHandler = events;
 	}
 
-	public boolean isRollupsMerged() {
-		return isRollupsMerged;
-	}
-
-	public void setRollupsMerged(boolean isRollupsMerged) {
-		this.isRollupsMerged = isRollupsMerged;
-	}
+	
 
 	public void run() {
 		try {
-			if (!this.isRollupsMerged())
-				this.mergeExistingRollupsFromMemDump();
-
 			SysLogger.Record(new Log("Sending collected data to API...", LogType.Info));
 			String results = this.getResultsDBFormat();
 
 			String sendString = "{\"results\" : \"" + results + "\"}";
-			ApiInterface.executeRequest(ApiStages.InsertDatapointsBatches, "PUT", sendString);
+			ApiInterface.executeRequest(ApiStages.insertDatapointsBatches, "PUT", sendString);
 		} catch (Throwable thrown) {
 			SysLogger.Record(new Log("Sending collected data to API failed!", LogType.Error));
 			StringWriter sw = new StringWriter();
@@ -305,19 +293,11 @@ public class RunnableProbesHistory implements Runnable {
 		this.rollupsDumpExecuterThread = rollupsDumpExecuterThread;
 	}
 
-	public int getRetrieveExistingRollupsCounter() {
-		return retrieveExistingRollupsCounter;
-	}
-
-	public void setRetrieveExistingRollupsCounter(int retrieveExistingRollupsCounter) {
-		this.retrieveExistingRollupsCounter = retrieveExistingRollupsCounter;
-	}
-
-	public MemoryDump getMemDump() {
+	public RollupsMemoryDump getMemDump() {
 		return memDump;
 	}
 
-	public void setMemDump(MemoryDump memDump) {
+	public void setMemDump(RollupsMemoryDump memDump) {
 		this.memDump = memDump;
 	}
 
@@ -333,32 +313,6 @@ public class RunnableProbesHistory implements Runnable {
 		return rprs;
 	}
 
-	public void mergeExistingRollupsFromMemDump() {
-		SysLogger.Record(new Log("Retrieving existing rollups from DB...", LogType.Debug));
-		Object rollupsUnDecoded = ApiInterface.executeRequest(ApiStages.GetServerMemoryDump, "GET", null);
-
-		if (rollupsUnDecoded == null || ((String) rollupsUnDecoded).equals("0\n")) {
-			SysLogger.Record(
-					new Log("Unable to retrieve existing rollups, trying again in about 30 secs...", LogType.Warn));
-			this.setRetrieveExistingRollupsCounter(this.getRetrieveExistingRollupsCounter() + 1);
-			return;
-		}
-
-		String rollups = ((String) rollupsUnDecoded).substring(1, ((String) rollupsUnDecoded).length() - 1);
-
-		this.setRetrieveExistingRollupsCounter(-1);
-		ArrayList<DataPointsRollup[][]> rollupses = this.getMemDump().deserializeRollups(rollups);
-		for (DataPointsRollup[][] rollupsResult : rollupses) {
-			DataPointsRollup sampleRollup = rollupsResult[0][0];
-			String rpID = sampleRollup.getRunnableProbeId();
-			RunnableProbeResults rpr = this.getResults().get(rpID);
-			if (rpr != null)
-				rpr.insertExistingRollups(rollupsResult);
-			else {
-				// handle runnable probe without results object
-			}
-		}
-	}
 
 	public void pullCurrentLiveEvents() {
 		while (true) {

@@ -8,6 +8,7 @@ import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.IOException;
+import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.io.OutputStreamWriter;
 import java.io.PrintWriter;
@@ -134,7 +135,9 @@ public class ApiInterface {
 		OutputStreamWriter out = new OutputStreamWriter(conn.getOutputStream());
 		out.write(pUT);
 		out.close();
-		if (GeneralFunctions.convertStreamToString(conn.getInputStream()).equals("1"))
+		
+		InputStream inputStream=conn.getInputStream();
+		if (GeneralFunctions.convertStreamToString(inputStream).equals("1"))
 			return true;
 		return false;
 	}
