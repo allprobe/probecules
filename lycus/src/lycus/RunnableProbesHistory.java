@@ -69,14 +69,14 @@ public class RunnableProbesHistory implements Runnable {
 		try {
 			SysLogger.Record(new Log("Sending collected data to API...", LogType.Info));
 			String results = this.getResultsDBFormat();
+			String encodedResults = GeneralFunctions.Base64Encode(results);
 			
-			String sendString = "{\"results\" : \"" + results + "\"}";
-			String encodedSendString = GeneralFunctions.Base64Encode(sendString);
+			String sendString = "{\"results\" : \"" + encodedResults + "\"}";
 			
 			
-			if(sendString.contains("788b1b9e-d753-4dfa-ac46-61c4374eeb84@inner_10e61538-b4e1-44c6-aa12-b81ef6a5528d"))
+			if(results.contains("788b1b9e-d753-4dfa-ac46-61c4374eeb84@inner_10e61538-b4e1-44c6-aa12-b81ef6a5528d"))
 				System.out.println("BREAKPOINT - RunnableProbesHistory");
-			ApiInterface.executeRequest(ApiStages.InsertDatapointsBatches, "PUT",encodedSendString);
+			ApiInterface.executeRequest(ApiStages.InsertDatapointsBatches, "PUT",sendString);
 		
 		
 		} catch (Throwable thrown) {

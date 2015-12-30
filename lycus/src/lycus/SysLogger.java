@@ -27,13 +27,16 @@ public class SysLogger {
 	private static String grep;
 
 	public static boolean Init() {
-	
+
 		syslogInterface = Syslog.getInstance("udp");
 		syslogInterface.getConfig().setHost(Global.getSyslogHost());
 		syslogInterface.getConfig().setPort(514);
 		syslogInterface.getConfig().setFacility("local3");
 		syslogInterface.getConfig().setLocalName("PROBECULES");
-		syslogInterface.getConfig().setIdent(Global.getDataCenterID() + "_" + Global.getThisHostToken());
+		if (Global.getDevelopment())
+			syslogInterface.getConfig().setIdent(Global.getDataCenterID() + "_" + Global.getThisHostToken() + " - DEV");
+		else
+			syslogInterface.getConfig().setIdent(Global.getDataCenterID() + "_" + Global.getThisHostToken());
 
 		debug = Global.getDebug();
 		development = Global.getDevelopment();
@@ -65,49 +68,52 @@ public class SysLogger {
 		if (getGrep() != null)
 			if (!log.getInfo().contains(getGrep()))
 				return;
-		
-		String fullMessage="";
-		
-		Throwable t=log.getException();
+
+		String fullMessage = "";
+
+		Throwable t = log.getException();
 		if (t != null) {
-			fullMessage+="Exception message: "+t.getMessage()+" \n";
+			fullMessage += "Exception message: " + t.getMessage() + " \n";
 			StringWriter sw = new StringWriter();
 			PrintWriter pw = new PrintWriter(sw);
 			t.printStackTrace(pw);
-			fullMessage+="Exception stacktrace: "+sw.toString()+" \n";
+			fullMessage += "Exception stacktrace: " + sw.toString() + " \n";
 		}
-		fullMessage+="Log info: "+log.getInfo();
-		
+		fullMessage += "Log info: " + log.getInfo();
+
 		switch (log.getLogType()) {
 		case Info:
 			if (Global.getSyslogHost() == null)
 				RecordInfo(log);
-			else
-			{	fullMessage=BashColor.GREEN+fullMessage+BashColor.NO_COLOR;
+			else {
+				fullMessage = BashColor.GREEN + fullMessage + BashColor.NO_COLOR;
 				syslogInterface.info(fullMessage);
 			}
 			break;
 		case Warn:
 			if (Global.getSyslogHost() == null)
 				RecordWarn(log);
-			else{
-				fullMessage=BashColor.YELLOW+fullMessage+BashColor.NO_COLOR;
+			else {
+				fullMessage = BashColor.YELLOW + fullMessage + BashColor.NO_COLOR;
 				syslogInterface.warn(fullMessage);
-			}break;
+			}
+			break;
 		case Error:
 			if (Global.getSyslogHost() == null)
 				RecordError(log);
-			else
-			{	fullMessage=BashColor.RED+fullMessage+BashColor.NO_COLOR;
+			else {
+				fullMessage = BashColor.RED + fullMessage + BashColor.NO_COLOR;
 				syslogInterface.error(fullMessage);
-			}break;
+			}
+			break;
 		case Debug:
 			if (Global.getSyslogHost() == null)
 				RecordDebug(log);
-			else
-			{	fullMessage=BashColor.PURPLE+fullMessage+BashColor.NO_COLOR;
+			else {
+				fullMessage = BashColor.PURPLE + fullMessage + BashColor.NO_COLOR;
 				syslogInterface.debug(fullMessage);
-			}break;
+			}
+			break;
 		}
 	}
 
