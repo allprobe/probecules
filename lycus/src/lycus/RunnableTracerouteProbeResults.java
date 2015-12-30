@@ -19,7 +19,7 @@ public class RunnableTracerouteProbeResults extends RunnableProbeResults {
 	}
 
 	@Override
-	public void acceptResults(ArrayList<Object> results) {
+	public synchronized void acceptResults(ArrayList<Object> results) {
 		long lastTimestamp = (long) results.get(0);
 		ArrayList<String> routes = (ArrayList<String>) results.get(1);
 		

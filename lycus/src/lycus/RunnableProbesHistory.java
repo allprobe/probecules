@@ -38,7 +38,8 @@ public class RunnableProbesHistory implements Runnable {
 
 	public RunnableProbesHistory(ArrayList<User> allUsers, String existingRollups) {
 		this.results = this.getAllResultsUsers(allUsers);
-		this.setGson(new GsonBuilder().setPrettyPrinting().create());
+//		this.setGson(new GsonBuilder().setPrettyPrinting().create());
+		this.setGson(new GsonBuilder().create());
 		this.memDump = new RollupsMemoryDump(this);
 		this.eventsHandler = new EventHandler(this);
 		this.setRollupsDumpExecuter(Executors.newSingleThreadScheduledExecutor());
@@ -70,7 +71,12 @@ public class RunnableProbesHistory implements Runnable {
 			String results = this.getResultsDBFormat();
 
 			String sendString = "{\"results\" : \"" + results + "\"}";
+		
+			if(sendString.contains("788b1b9e-d753-4dfa-ac46-61c4374eeb84@inner_10e61538-b4e1-44c6-aa12-b81ef6a5528d"))
+				System.out.println("BREAKPOINT - RunnableProbesHistory");
 			ApiInterface.executeRequest(ApiStages.InsertDatapointsBatches, "PUT", sendString);
+		
+		
 		} catch (Throwable thrown) {
 			SysLogger.Record(new Log("Sending collected data to API failed!", LogType.Error));
 			StringWriter sw = new StringWriter();
