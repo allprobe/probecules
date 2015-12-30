@@ -70,7 +70,7 @@ public class RunnableProbesHistory implements Runnable {
 			String results = this.getResultsDBFormat();
 
 			String sendString = "{\"results\" : \"" + results + "\"}";
-			ApiInterface.executeRequest(ApiStages.insertDatapointsBatches, "PUT", sendString);
+			ApiInterface.executeRequest(ApiStages.InsertDatapointsBatches, "PUT", sendString);
 		} catch (Throwable thrown) {
 			SysLogger.Record(new Log("Sending collected data to API failed!", LogType.Error));
 			StringWriter sw = new StringWriter();
