@@ -63,8 +63,11 @@ public class RunnableWeberProbeResults extends RunnableProbeResults {
 		
 		String rpStr = this.getRp().getRPString();
 		if (rpStr.contains(
-				"d934aa3b-f703-4d4b-99c6-66b470c782f2@inner_62baf829-81fd-4184-b7d7-9d44616386f4"))
+				"d934aa3b-f703-4d4b-99c6-66b470c782f2@http_8eacbc31-ec97-45a7-96bc-13d4af8b3887"))
 			System.out.println("BREAKPOINT - RunnableWeberProbeResults");
+		
+		if(results==null)
+			return;
 		
 		long lastTimestamp=(long)results.get(0);
 		int statusCode=(int)results.get(1);

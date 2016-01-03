@@ -62,6 +62,7 @@ public class RunnablePingerProbeResults extends RunnableProbeResults {
 	@Override
 	public void acceptResults(ArrayList<Object> results) throws Exception {
 		
+		super.acceptResults(results);
 		if(results==null)
 			return;
 		

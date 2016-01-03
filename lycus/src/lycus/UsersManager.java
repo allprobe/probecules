@@ -259,12 +259,24 @@ public class UsersManager {
 					break;
 				}
 				case "http": {
+					String rpStr = probeId;
+					if (rpStr.contains(
+							"http_8eacbc31-ec97-45a7-96bc-13d4af8b3887"))
+						System.out.println("BREAKPOINT - RunnableWeberProbeResults");
+					
+
+					
 					String url = GeneralFunctions.Base64Decode((String) key.get("urls"));
 					String method = (String) key.get("http_method");
 					String auth = (String) key.get("http_auth");
 					String authUser = GeneralFunctions.Base64Decode((String) key.get("http_auth_user"));
 					String authPass = GeneralFunctions.Base64Decode((String) key.get("http_auth_password"));
 					int timeout = Integer.parseInt((String) key.get("timeout"));
+					
+					if(auth.equals("no"))
+						probe = new WeberProbe(user, probeId, templateId, name, interval, multiplier, status, timeout,
+								method, url);
+					else
 					probe = new WeberProbe(user, probeId, templateId, name, interval, multiplier, status, timeout,
 							method, url, auth, authUser, authPass);
 					break;

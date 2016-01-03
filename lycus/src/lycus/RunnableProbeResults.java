@@ -143,6 +143,7 @@ public class RunnableProbeResults {
 	public synchronized void acceptResults(ArrayList<Object> results) throws Exception
 	{
 		SysLogger.Record(new Log("Processing results for Runnable Probe: "+this.getRp().getRPString(),LogType.Debug));
+		
 	}
 	
    /**

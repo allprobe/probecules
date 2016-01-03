@@ -35,7 +35,7 @@ public class EventHandler implements Runnable {
 				if(!stringEvents.equals("[]"))
 				{
 					String eventsEncoded=GeneralFunctions.Base64Encode(stringEvents);
-					String sendString = "{\"events\" : " + eventsEncoded + "}";				
+					String sendString = "{\"events\" : \"" + eventsEncoded + "\"}";				
 					ApiInterface.executeRequest(ApiStages.PutEvents, "PUT", sendString);
 				}
 			} else {

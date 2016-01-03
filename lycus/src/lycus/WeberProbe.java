@@ -14,7 +14,7 @@ import java.util.UUID;
 public class WeberProbe extends Probe {
 
     private String httpRequestType;
-    private String authStatus;//none,basic,...
+    private String authMethod;//none,basic,...
     private String authUsername;
     private String authPassword;
     private String url;
@@ -26,12 +26,24 @@ public class WeberProbe extends Probe {
     WeberProbe(User user, String probe_id,UUID template_id,String name,long interval, float multiplier,boolean status, int timeout, String type,String url, String authStatus, String authUsername, String authPassword) {
         super(user,probe_id,template_id,name,interval,multiplier,status);
         this.httpRequestType = type;
-        this.authStatus = authStatus;
+        this.authMethod = authStatus;
         this.authUsername = authUsername;
      this.authPassword = authPassword;
      this.url=url;
      this.timeout=timeout;
     }
+    
+    WeberProbe(User user, String probe_id,UUID template_id,String name,long interval, float multiplier,boolean status, int timeout, String type,String url) {
+        super(user,probe_id,template_id,name,interval,multiplier,status);
+        this.httpRequestType = type;
+        this.authMethod = null;
+        this.authUsername = null;
+     this.authPassword = null;
+     this.url=url;
+     this.timeout=timeout;
+    }
+
+    
  // Getters/Setters
 
     /**
@@ -52,14 +64,14 @@ public class WeberProbe extends Probe {
      * @return the authStatus
      */
     public String getAuthStatus() {
-        return authStatus;
+        return authMethod;
     }
 
     /**
      * @param authStatus the authStatus to set
      */
     public void setAuthStatus(String authStatus) {
-        this.authStatus = authStatus;
+        this.authMethod = authStatus;
     }
 
     /**
@@ -126,6 +138,10 @@ public class WeberProbe extends Probe {
 	@Override
     public ArrayList<Object> Check(Host h)
     {
+		String rpStr = h.getHostId().toString()+"@"+this.getProbe_id();
+		if (rpStr.contains(
+				"d934aa3b-f703-4d4b-99c6-66b470c782f2@http_8eacbc31-ec97-45a7-96bc-13d4af8b3887"))
+			System.out.println("BREAKPOINT - RunnableWeberProbeResults");
 		ArrayList<Object> results=Net.Weber(this.getUrl(), this.getHttpRequestType(), this.getAuthUsername(), this.getAuthPassword(), this.getTimeout());
     	return results;
     }
