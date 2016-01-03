@@ -112,7 +112,7 @@ public class PorterProbe extends Probe {
 		String rpStr = h.getHostId().toString();
 		if (rpStr.contains(
 				"b631bd96-e2e6-4163-940b-ff376d7d2138"))
-			System.out.println("TEST");
+			System.out.println("BREAKPOINT - PorterProbe");
 		ArrayList<Object> results=null;
 		switch(this.getType())
 		{

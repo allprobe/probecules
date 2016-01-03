@@ -175,7 +175,6 @@ public class RunnableProbesHistory implements Runnable {
 				th.printStackTrace(pw);
 
 				SysLogger.Record(new Log(sw.toString(), LogType.Error));
-				System.out.println("TEST");
 			}
 		}
 

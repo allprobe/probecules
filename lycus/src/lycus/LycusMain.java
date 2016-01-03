@@ -66,19 +66,6 @@ public class LycusMain  {
 		// Net.UdpPorter("208.67.222.222", 53, 5000,new String(send),null);
 		//
 		
-//		for(int i=0;i<10;i++)
-//		{
-//		ApiInterface.insertDatapointsBatches("TEST "+i);
-//		try {
-//			Thread.sleep(5000);
-//		} catch (InterruptedException e) {
-//			// TODO Auto-generated catch block
-//			e.printStackTrace();
-//		}
-//		}
-//		if(1+2==3)
-//		return;
-//		
 		
 		if (UsersManager.isInitialized()) {
 			RunnableProbesHistory history=new RunnableProbesHistory(new ArrayList<User>(UsersManager.getUsers().values()),null);

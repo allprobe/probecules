@@ -150,9 +150,6 @@ public class SnmpProbesBatch implements Runnable {
 
 				List<RunnableProbe> snmpProbes = new ArrayList<RunnableProbe>(this.getSnmpProbes().values());
 
-				String rpStr = host.getHostIp().toString();
-				if (rpStr.contains("62.90.132.119"))
-					System.out.println("TEST");
 
 				if (host.getSnmpTemp() == null) {
 					for (RunnableProbe rp : snmpProbes) {
@@ -232,11 +229,6 @@ public class SnmpProbesBatch implements Runnable {
 					for (RunnableProbe _rp : snmpProbes) {
 
 						if (_rp.isActive()) {
-							// String rpStr =
-							// this.getHost().getHostId().toString();
-							if (rpStr.contains(
-									"788b1b9e-d753-4dfa-ac46-61c4374eeb84@inner_10e61538-b4e1-44c6-aa12-b81ef6a5528d"))
-								System.out.println("TEST");
 
 							SnmpProbe snmpProbe = (SnmpProbe) _rp.getProbe();
 							String _value = response.get(snmpProbe.getOid().toString());
