@@ -81,6 +81,8 @@ public class RunnableWeberProbeResults extends RunnableProbeResults {
 			DataPointsRollup responseTimeRollup=this.getResponseTimeRollups()[i];
 			responseTimeRollup.add(lastTimestamp, responseTime);
 		}
+		
+	
 		try{
 		checkIfTriggerd();
 		}
