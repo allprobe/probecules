@@ -192,7 +192,7 @@ public class RunnableProbeResults {
 			lastEvent.setSent(false);
 			SysLogger.Record(new Log("Trigger "+trigger.getTriggerId()+" of Runnable Probe: "+this.getRp().getRPString()+" deactivated, will send event to API...",LogType.Debug));
 		} else if (lastEvent == null && triggered) {
-			TriggerEvent event = new TriggerEvent(this.getRp(), trigger, true);
+			TriggerEvent event = new TriggerEvent(this.getRp(), trigger, false);
 			event.setSent(false);
 			this.getEvents().put(trigger, event);
 		}
