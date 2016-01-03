@@ -51,6 +51,9 @@ import org.snmp4j.smi.OID;
 import org.snmp4j.smi.OctetString;
 import org.snmp4j.smi.VariableBinding;
 import org.snmp4j.transport.DefaultUdpTransportMapping;
+import org.snmp4j.util.DefaultPDUFactory;
+import org.snmp4j.util.TreeEvent;
+import org.snmp4j.util.TreeUtils;
 
 import com.google.common.collect.Lists;
 
@@ -327,7 +330,8 @@ public class Net {
 		webResults.add(System.currentTimeMillis());
 		if (user != null && pass != null) {
 			UserPass = user + ":" + pass;
-			request = new HttpRequest(url, requestType.equals("POST") ? RequestTypes.POST : RequestTypes.GET, timeout,UserPass);
+			request = new HttpRequest(url, requestType.equals("POST") ? RequestTypes.POST : RequestTypes.GET, timeout,
+					UserPass);
 		} else {
 			request = new HttpRequest(url, requestType.equals("POST") ? RequestTypes.POST : RequestTypes.GET, timeout);
 		}
@@ -430,85 +434,85 @@ public class Net {
 
 	/** host problem || snmp problem || no problem */
 	public static String checkHostSnmpActive(Host h) {
-		
-		
+
 		ArrayList<Object> pingResults = Net.Pinger(h.getHostIp(), 1, 64, 5000);
 		if (((int) pingResults.get(1)) != 0)
 			return "host problem";
 		int version = h.getSnmpTemp().getVersion();
 
-		TransportMapping transport=null;
-	    Snmp snmp=null;
-		
+		TransportMapping transport = null;
+		Snmp snmp = null;
+
 		try {
-			transport=new DefaultUdpTransportMapping();
-		
-		snmp=new Snmp(transport);
+			transport = new DefaultUdpTransportMapping();
 
-		switch (h.getSnmpTemp().getVersion()) {
-		case 1: {
-			ArrayList<Object> results = Net.runSnmpCheckVer1(h.getHostIp(), h.getSnmpTemp().getPort(),
-					h.getSnmpTemp().getCommunityName(), Global.getHostSnmpOK(), h.getSnmpTemp().getTimeout());
-			if (results == null) {
-				return "snmp problem";
-			} else {
-				if (((String) results.get(0)).equals("wrongOID")) {
-					return "snmp problem";
-				} else {
-					return "no problem";
-				}
-			}
-		}
-		case 2: {
-			String results = Net.Snmp2GET(h.getHostIp(), h.getSnmpTemp().getPort(), h.getSnmpTemp().getTimeout(),
-					h.getSnmpTemp().getCommunityName(), Global.getHostSnmpOK(),transport,snmp);
-			if (results == null) {
-				return "snmp problem";
-			} else {
-				if (results.equals("wrongOID")) {
-					return "snmp problem";
-				} else {
-					return "no problem";
-				}
-			}
+			snmp = new Snmp(transport);
 
-		}
-		case 3: {
-			String results = Net.Snmp3GET(h.getHostIp(), h.getSnmpTemp().getPort(), h.getSnmpTemp().getPort(),
-					Global.getHostSnmpOK(), h.getSnmpTemp().getUserName(), h.getSnmpTemp().getAuthPass(),
-					h.getSnmpTemp().getAlgo(), h.getSnmpTemp().getCryptPass(), h.getSnmpTemp().getCryptType(),transport,snmp);
-			if (results == null) {
-				return "snmp problem";
-			} else {
-				if (results.equals("wrongOID")) {
+			switch (h.getSnmpTemp().getVersion()) {
+			case 1: {
+				ArrayList<Object> results = Net.runSnmpCheckVer1(h.getHostIp(), h.getSnmpTemp().getPort(),
+						h.getSnmpTemp().getCommunityName(), Global.getHostSnmpOK(), h.getSnmpTemp().getTimeout());
+				if (results == null) {
 					return "snmp problem";
 				} else {
-					return "no problem";
+					if (((String) results.get(0)).equals("wrongOID")) {
+						return "snmp problem";
+					} else {
+						return "no problem";
+					}
 				}
 			}
-		}
-		}
+			case 2: {
+				String results = Net.Snmp2GET(h.getHostIp(), h.getSnmpTemp().getPort(), h.getSnmpTemp().getTimeout(),
+						h.getSnmpTemp().getCommunityName(), Global.getHostSnmpOK(), transport, snmp);
+				if (results == null) {
+					return "snmp problem";
+				} else {
+					if (results.equals("wrongOID")) {
+						return "snmp problem";
+					} else {
+						return "no problem";
+					}
+				}
+
+			}
+			case 3: {
+				String results = Net.Snmp3GET(h.getHostIp(), h.getSnmpTemp().getPort(), h.getSnmpTemp().getPort(),
+						Global.getHostSnmpOK(), h.getSnmpTemp().getUserName(), h.getSnmpTemp().getAuthPass(),
+						h.getSnmpTemp().getAlgo(), h.getSnmpTemp().getCryptPass(), h.getSnmpTemp().getCryptType(),
+						transport, snmp);
+				if (results == null) {
+					return "snmp problem";
+				} else {
+					if (results.equals("wrongOID")) {
+						return "snmp problem";
+					} else {
+						return "no problem";
+					}
+				}
+			}
+			}
 		} catch (IOException e) {
-			SysLogger.Record(new Log("Socket binding for failed for checkHostSnmpActive:"+h.getHostId().toString(), LogType.Error, e));
-		}
-		finally {
-			try{
-	        	if (snmp != null) {
-	        			snmp.close();
-	        	}
-	        	if (transport != null) {
-						transport.close();
+			SysLogger.Record(new Log("Socket binding for failed for checkHostSnmpActive:" + h.getHostId().toString(),
+					LogType.Error, e));
+		} finally {
+			try {
+				if (snmp != null) {
+					snmp.close();
 				}
-	        }catch(Exception e){
-	            SysLogger.Record(new Log("Memory leak, unable to close network connection!",LogType.Error,e));
-	        }
+				if (transport != null) {
+					transport.close();
+				}
+			} catch (Exception e) {
+				SysLogger.Record(new Log("Memory leak, unable to close network connection!", LogType.Error, e));
+			}
 		}
 		return "host problem";
 	}
 
 	// #region snmp requests
-	public static Map<String, String> Snmp2GETBULK(String ip, int port, int timeout, String comName,
-			List<String> oids,TransportMapping transportMapping,Snmp snmpInterface) {
+	public static Map<String, String> Snmp2GETBULK(String ip, int port, int timeout, String comName, List<String> oids,
+			TransportMapping transportMapping, Snmp snmpInterface) {
 		Map<String, String> oidsValues = new HashMap<String, String>();
 		Address targetAddress = GenericAddress.parse("udp:" + ip + "/" + port);
 		CommunityTarget target = new CommunityTarget();
@@ -519,12 +523,12 @@ public class Net {
 		target.setCommunity(new OctetString(comName));
 		TransportMapping transport = transportMapping;
 		Snmp snmp = snmpInterface;
-		
-		if(transport==null||snmp==null)
+
+		if (transport == null || snmp == null)
 			return null;
-		
+
 		try {
-			
+
 			PDU pdu = new PDU();
 			pdu.setType(PDU.GETBULK);
 			pdu.setMaxRepetitions(1);
@@ -551,10 +555,10 @@ public class Net {
 		} catch (Exception e) {
 			SysLogger.Record(new Log("Unable to run Snmp2 GETBULK check!", LogType.Error, e));
 			return null;
-		} 
+		}
 		return oidsValues;
 	}
-	
+
 	public static Map<String, String> Snmp2GETBULK(String ip, int port, int timeout, String comName,
 			List<String> oids) {
 		Map<String, String> oidsValues = new HashMap<String, String>();
@@ -565,14 +569,14 @@ public class Net {
 		target.setTimeout(timeout);
 		target.setVersion(SnmpConstants.version2c);
 		target.setCommunity(new OctetString(comName));
-		
-		TransportMapping transport =null;
+
+		TransportMapping transport = null;
 		Snmp snmp = null;
-		
+
 		try {
-			
-			transport=new DefaultUdpTransportMapping();
-			snmp=new Snmp(transport);
+
+			transport = new DefaultUdpTransportMapping();
+			snmp = new Snmp(transport);
 			transport.listen();
 			PDU pdu = new PDU();
 			pdu.setType(PDU.GETBULK);
@@ -600,8 +604,7 @@ public class Net {
 		} catch (Exception e) {
 			SysLogger.Record(new Log("Unable to run Snmp2 GETBULK check!", LogType.Error, e));
 			return null;
-		} 
-		finally {
+		} finally {
 			if (transport != null) {
 				try {
 					transport.close();
@@ -621,10 +624,10 @@ public class Net {
 		}
 		return oidsValues;
 	}
-	
 
 	public static Map<String, String> Snmp3GETBULK(String ip, int port, int timeout, String userName, String userPass,
-			String authAlgo, String cryptPass, String cryptAlgo, List<String> oids,TransportMapping transportMapping,Snmp snmpInterface) {
+			String authAlgo, String cryptPass, String cryptAlgo, List<String> oids, TransportMapping transportMapping,
+			Snmp snmpInterface) {
 		OID _authAlgo = authAlgo == null ? null
 				: authAlgo.equals("md5") ? AuthMD5.ID : authAlgo.equals("sha1") ? AuthSHA.ID : null;
 		OctetString _authPass = userPass == null ? null : new OctetString(userPass);
@@ -654,11 +657,11 @@ public class Net {
 		);
 		TransportMapping transport = transportMapping;
 		Snmp snmp = snmpInterface;
-		if(transport==null||snmp==null)
+		if (transport == null || snmp == null)
 			return null;
-		
+
 		try {
-			
+
 			USM usm;
 			usm = new USM(SecurityProtocols.getInstance(), new OctetString(MPv3.createLocalEngineID()), 0);
 			SecurityModels.getInstance().addSecurityModel(usm);
@@ -694,16 +697,15 @@ public class Net {
 		} catch (Exception e) {
 			SysLogger.Record(new Log("Unable to run Snmp3 GETBULK check!", LogType.Error, e));
 			return null;
-		} 
+		}
 
 		return oidsValues;
 	}
 
 	public static Map<String, String> Snmp3GETBULK(String ip, int port, int timeout, String userName, String userPass,
 			String authAlgo, String cryptPass, String cryptAlgo, List<String> oids) {
-		
-		
-		OctetString _username= userName == null ? null : new OctetString(userName);
+
+		OctetString _username = userName == null ? null : new OctetString(userName);
 		OID _authAlgo = authAlgo == null ? null
 				: authAlgo.equals("md5") ? AuthMD5.ID : authAlgo.equals("sha1") ? AuthSHA.ID : null;
 		OctetString _authPass = userPass == null ? null : new OctetString(userPass);
@@ -733,17 +735,16 @@ public class Net {
 		);
 		TransportMapping transport = null;
 		Snmp snmp = null;
-		
-		
+
 		try {
-			transport=new DefaultUdpTransportMapping();
-			snmp=new Snmp(transport);
+			transport = new DefaultUdpTransportMapping();
+			snmp = new Snmp(transport);
 			transport.listen();
 			USM usm;
 			usm = new USM(SecurityProtocols.getInstance(), new OctetString(MPv3.createLocalEngineID()), 0);
 			SecurityModels.getInstance().addSecurityModel(usm);
 			if (usera != null) {
-				snmp.getUSM().addUser(usera.getSecurityName(),usera);
+				snmp.getUSM().addUser(usera.getSecurityName(), usera);
 			} else {
 				return null;
 			}
@@ -774,8 +775,7 @@ public class Net {
 		} catch (Exception e) {
 			SysLogger.Record(new Log("Unable to run Snmp3 GETBULK check!", LogType.Error, e));
 			return null;
-		} 
-		finally {
+		} finally {
 			if (transport != null) {
 				try {
 					transport.close();
@@ -796,9 +796,9 @@ public class Net {
 
 		return oidsValues;
 	}
-	
-	
-	public static String Snmp2GET(String ip, int port, int timeout, String comName, String oid,TransportMapping transportMapping,Snmp snmpInterface) {
+
+	public static String Snmp2GET(String ip, int port, int timeout, String comName, String oid,
+			TransportMapping transportMapping, Snmp snmpInterface) {
 		Address targetAddress = GenericAddress.parse("udp:" + ip + "/" + port);
 		CommunityTarget target = new CommunityTarget();
 		target.setAddress(targetAddress);
@@ -808,9 +808,9 @@ public class Net {
 		target.setCommunity(new OctetString(comName));
 		TransportMapping transport = transportMapping;
 		Snmp snmp = snmpInterface;
-		if(transport==null||snmp==null)
+		if (transport == null || snmp == null)
 			return null;
-		
+
 		try {
 
 			PDU pdu = new PDU();
@@ -829,30 +829,33 @@ public class Net {
 		} catch (Exception e) {
 			SysLogger.Record(new Log("Unable to run Snmp2 GET check!", LogType.Error, e));
 			return null;
-		} 
-//		finally {
-//			if (transport != null) {
-//				try {
-//					transport.close();
-//				} catch (IOException e) {
-//					SysLogger.Record(
-//							new Log("Unable to close TransportMapping! may cause memory leak!", LogType.Error, e));
-//				}
-//			}
-//			if (snmp != null) {
-//				try {
-//					snmp.close();
-//				} catch (IOException e) {
-//					SysLogger.Record(new Log("Unable to close SNMP! may cause memory leak!", LogType.Error, e));
-//
-//				}
-//			}
-//		}
+		}
+		// finally {
+		// if (transport != null) {
+		// try {
+		// transport.close();
+		// } catch (IOException e) {
+		// SysLogger.Record(
+		// new Log("Unable to close TransportMapping! may cause memory leak!",
+		// LogType.Error, e));
+		// }
+		// }
+		// if (snmp != null) {
+		// try {
+		// snmp.close();
+		// } catch (IOException e) {
+		// SysLogger.Record(new Log("Unable to close SNMP! may cause memory
+		// leak!", LogType.Error, e));
+		//
+		// }
+		// }
+		// }
 
 	}
 
 	public static String Snmp3GET(String ip, int port, int timeout, String oid, String userName, String userPass,
-			String authAlgo, String cryptPass, String cryptAlgo,TransportMapping transportMapping,Snmp snmpInterface) {
+			String authAlgo, String cryptPass, String cryptAlgo, TransportMapping transportMapping,
+			Snmp snmpInterface) {
 		Address targetAddress = GenericAddress.parse("udp:" + ip + "/" + port);
 		UserTarget target = new UserTarget();
 		target.setAddress(targetAddress);
@@ -888,11 +891,11 @@ public class Net {
 		}
 		TransportMapping transport = transportMapping;
 		Snmp snmp = snmpInterface;
-		if(transport==null||snmp==null)
+		if (transport == null || snmp == null)
 			return null;
-		
+
 		try {
-			
+
 			USM usm;
 			usm = new USM(SecurityProtocols.getInstance(), new OctetString(MPv3.createLocalEngineID()), 0);
 			SecurityModels.getInstance().addSecurityModel(usm);
@@ -922,30 +925,152 @@ public class Net {
 		} catch (Exception e) {
 			SysLogger.Record(new Log("Unable to run Snmp3 GET check!", LogType.Error, e));
 			return null;
-		} 
-//		finally {
-//			if (transport != null) {
-//				try {
-//					transport.close();
-//				} catch (IOException e) {
-//					SysLogger.Record(
-//							new Log("Unable to close TransportMapping! may cause memory leak!", LogType.Error, e));
-//				}
-//			}
-//			if (snmp != null) {
-//				try {
-//					snmp.close();
-//				} catch (IOException e) {
-//					SysLogger.Record(new Log("Unable to close SNMP! may cause memory leak!", LogType.Error, e));
-//
-//				}
-//			}
-//		}
+		}
+		// finally {
+		// if (transport != null) {
+		// try {
+		// transport.close();
+		// } catch (IOException e) {
+		// SysLogger.Record(
+		// new Log("Unable to close TransportMapping! may cause memory leak!",
+		// LogType.Error, e));
+		// }
+		// }
+		// if (snmp != null) {
+		// try {
+		// snmp.close();
+		// } catch (IOException e) {
+		// SysLogger.Record(new Log("Unable to close SNMP! may cause memory
+		// leak!", LogType.Error, e));
+		//
+		// }
+		// }
+		// }
 
 	}
 
-	
-	
+	public static Map<String, String> Snmp2Walk(String ip, int port, int timeout, String comName, String oidStr) {
+		Map<String, String> results = new HashMap<String, String>();
+		Address targetAddress = GenericAddress.parse("udp:" + ip + "/" + port);
+		CommunityTarget target = new CommunityTarget();
+		target.setAddress(targetAddress);
+		target.setRetries(3);
+		target.setTimeout(timeout);
+		target.setVersion(SnmpConstants.version2c);
+		target.setCommunity(new OctetString(comName));
+
+		TransportMapping transport = null;
+		Snmp snmp = null;
+		OID oid = null;
+
+		try {
+			transport = new DefaultUdpTransportMapping();
+			snmp = new Snmp(transport);
+			oid = new OID(oidStr);
+
+			TreeUtils treeUtils = new TreeUtils(snmp, new DefaultPDUFactory());
+			List<TreeEvent> events = treeUtils.getSubtree(target, oid);
+			if (events == null || events.size() == 0)
+				throw new Exception("no results returned for snmp walk - " + oidStr);
+
+			// Get snmpwalk result.
+			for (TreeEvent event : events) {
+				if (event != null) {
+					if (event.isError()) {
+						SysLogger.Record(
+								new Log("Error getting oid object for: oid [" + oidStr + "] " + event.getErrorMessage(),
+										LogType.Error));
+						continue;
+					}
+
+					VariableBinding[] varBindings = event.getVariableBindings();
+					if (varBindings == null || varBindings.length == 0) {
+						SysLogger.Record(
+								new Log("Error getting oid object for: oid [" + oidStr + "] " + event.getErrorMessage(),
+										LogType.Error));
+						continue;
+					}
+					for (VariableBinding varBinding : varBindings) {
+						results.put(varBinding.getOid().toString(),
+								varBinding.getVariable().getSyntaxString() + " : " + varBinding.getVariable());
+					}
+				}
+			}
+		} catch (Exception e) {
+			SysLogger.Record(new Log("Unable to run Snmp2 WALK check!", LogType.Error, e));
+			return null;
+		} finally {
+			if (transport != null) {
+				try {
+					transport.close();
+				} catch (IOException e) {
+					SysLogger.Record(
+							new Log("Unable to close TransportMapping! may cause memory leak!", LogType.Error, e));
+				}
+			}
+			if (snmp != null) {
+				try {
+					snmp.close();
+				} catch (IOException e) {
+					SysLogger.Record(new Log("Unable to close SNMP! may cause memory leak!", LogType.Error, e));
+
+				}
+			}
+		}
+		return results;
+	}
+
+//	public static String Snmp3Walk(String ip, int port, int timeout, String oid, String userName, String userPass,
+//			String authAlgo, String cryptPass, String cryptAlgo, TransportMapping transportMapping,
+//			Snmp snmpInterface) {
+//		Address targetAddress = GenericAddress.parse("udp:" + targetAddr + "/" + portNum);
+//		TransportMapping transport = new DefaultUdpTransportMapping();
+//		Snmp snmp = new Snmp(transport);
+//		transport.listen();
+//
+//		// setting up target
+//		CommunityTarget target = new CommunityTarget();
+//		target.setCommunity(new OctetString(commStr));
+//		target.setAddress(targetAddress);
+//		target.setRetries(3);
+//		target.setTimeout(1000 * 3);
+//		target.setVersion(snmpVersion);
+//
+//		OID oid = null;
+//		try {
+//			oid = new OID(oidStr);
+//		} catch (RuntimeException ex) {
+//			System.out.println("OID is not specified correctly.");
+//			System.exit(1);
+//		}
+//
+//		TreeUtils treeUtils = new TreeUtils(snmp, new DefaultPDUFactory());
+//		List<TreeEvent> events = treeUtils.getSubtree(target, oid);
+//		if (events == null || events.size() == 0) {
+//			System.out.println("No result returned.");
+//			System.exit(1);
+//		}
+//
+//		// Get snmpwalk result.
+//		for (TreeEvent event : events) {
+//			if (event != null) {
+//				if (event.isError()) {
+//					System.err.println("oid [" + oid + "] " + event.getErrorMessage());
+//				}
+//
+//				VariableBinding[] varBindings = event.getVariableBindings();
+//				if (varBindings == null || varBindings.length == 0) {
+//					System.out.println("No result returned.");
+//				}
+//				for (VariableBinding varBinding : varBindings) {
+//					System.out.println(varBinding.getOid() + " : " + varBinding.getVariable().getSyntaxString() + " : "
+//							+ varBinding.getVariable());
+//				}
+//			}
+//		}
+//		snmp.close();
+//	}
+
 	// #endregion
 
 	public static ArrayList<Object> Traceroute(String ip) {

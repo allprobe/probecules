@@ -195,5 +195,10 @@ public class SysLogger {
 			}
 		}
 	}
+	
+	public void start()
+	{
+	
+	}
 
 }

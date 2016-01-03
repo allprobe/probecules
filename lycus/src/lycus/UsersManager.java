@@ -176,28 +176,26 @@ public class UsersManager {
 				String bucket = ((String) hostJson.get("bucket"));
 
 				UUID notif_groups;
-				try{
-				notif_groups=UUID.fromString((String) hostJson.get("notifications_group"));
-				}
-				catch(Exception e)
-				{
-					SysLogger.Record(new Log("Unable to parse notifications group for host: "+hostJson.toString(), LogType.Warn, e));
-					notif_groups=null;
+				try {
+					notif_groups = UUID.fromString((String) hostJson.get("notifications_group"));
+				} catch (Exception e) {
+					SysLogger.Record(new Log("Unable to parse notifications group for host: " + hostJson.toString(),
+							LogType.Warn, e));
+					notif_groups = null;
 				}
 
 				UUID snmp_template;
-				try{
-				snmp_template = UUID.fromString((String) hostJson.get("snmp_template"));
+				try {
+					snmp_template = UUID.fromString((String) hostJson.get("snmp_template"));
+				} catch (Exception e) {
+					SysLogger.Record(
+							new Log("Unable to parse snmp template for host: " + hostJson.toString(), LogType.Warn, e));
+					snmp_template = null;
 				}
-				catch(Exception e)
-				{
-					SysLogger.Record(new Log("Unable to parse snmp template for host: "+hostJson.toString(), LogType.Warn, e));
-					snmp_template=null;
-				}
-				
+
 				Host host;
 
-				if (snmp_template==null) {
+				if (snmp_template == null) {
 					host = new Host(host_id, name, ip, status, true, bucket, notif_groups);
 				} else {
 					SnmpTemplate snmpTemp = user.getSnmpTemplates().get(snmp_template);
@@ -212,23 +210,24 @@ public class UsersManager {
 		}
 	}
 
-//	private static ArrayList<UUID> convertNotificationGroupsArray(Object notifs) {
-//		if (notifs == null)
-//			return null;
-//		JSONArray notifGroups = (JSONArray) notifs;
-//		ArrayList<UUID> groups = new ArrayList<UUID>();
-//		for (int i = 0; i < notifGroups.size(); i++) {
-//			groups.add(UUID.fromString((String) (notifGroups.get(i))));
-//		}
-//		return groups;
-//	}
+	// private static ArrayList<UUID> convertNotificationGroupsArray(Object
+	// notifs) {
+	// if (notifs == null)
+	// return null;
+	// JSONArray notifGroups = (JSONArray) notifs;
+	// ArrayList<UUID> groups = new ArrayList<UUID>();
+	// for (int i = 0; i < notifGroups.size(); i++) {
+	// groups.add(UUID.fromString((String) (notifGroups.get(i))));
+	// }
+	// return groups;
+	// }
 
 	private static void addTemplates(JSONArray allTemplateProbesJson, HashMap<String, UUID> probeByUser) {
 		for (int i = 0; i < allTemplateProbesJson.size(); i++) {
 			JSONObject probeJson = (JSONObject) allTemplateProbesJson.get(i);
 			try {
 				UUID templateId = UUID.fromString((String) probeJson.get("template_id"));
-				String probeId = (String) probeJson.get("probe_id");		
+				String probeId = (String) probeJson.get("probe_id");
 				String name = (String) probeJson.get("probe_name");
 				long interval = Long.parseLong((String) probeJson.get("probe_interval"));
 				float multiplier = Float.parseFloat((String) probeJson.get("probe_multiplier"));
@@ -271,7 +270,7 @@ public class UsersManager {
 					break;
 				}
 				case "snmp": {
-					
+
 					OID oid = new OID((String) key.get("snmp_oid"));
 					int storeValue = Integer.parseInt((String) key.get("store_value_as"));
 					String valueType = (String) key.get("value_type");
@@ -297,10 +296,15 @@ public class UsersManager {
 					}
 					}
 
-					SnmpUnit unit=getSnmpUnit(valueUnit);
-					
+					SnmpUnit unit = getSnmpUnit(valueUnit);
+
 					probe = new SnmpProbe(user, probeId, templateId, name, interval, multiplier, status, oid, dataType,
 							unit, storeValue);
+					break;
+				}
+				case "discovery": {
+					DiscoveryType discoveryType = DiscoveryType.BandWidth.equalsName(
+							(String) key.get("discovery_type")) ? DiscoveryType.BandWidth : DiscoveryType.Disk;
 					break;
 				}
 				case "rbl": {
@@ -329,7 +333,7 @@ public class UsersManager {
 				UUID templateId = UUID.fromString((String) triggerJson.get("template_id"));
 				String probeId = (String) triggerJson.get("probe_id");
 				String triggerId = (String) triggerJson.get("trigger_id");
-				
+
 				String name = (String) triggerJson.get("trigger_name");
 				TriggerSeverity severity = getTriggerSev((String) triggerJson.get("severity"));
 				if (severity == null)
@@ -403,7 +407,7 @@ public class UsersManager {
 		case "":
 			unit = null;
 			break;
-			
+
 		default: {
 			throw new IOException("Unable to create SnmpUnit unreadble value: " + unitType);
 		}
@@ -445,9 +449,7 @@ public class UsersManager {
 		for (Map.Entry<String, UUID> rp : runnableProbesIds.entrySet()) {
 			UUID userID = rp.getValue();
 			String rpID = rp.getKey();
-			
-			
-			
+
 			User u = getUsers().get(userID);
 			u.addRunnableProbe(rpID);
 		}
@@ -469,35 +471,43 @@ public class UsersManager {
 		}
 	}
 
-//	public static boolean updateRunnableProbe(UUID userId, UUID templateId, String probeNewName, String probeId,
-//			String probeType, long probeNewInterval, float probeNewMultiplier, boolean probeNewStatus,
-//			List<String> probeKey) {
-//		User user = getUsers().get(userId);
-//		if (user == null) {
-//			SysLogger.Record(
-//					new Log("User: " + userId.toString() + " Doesn't Exists! Probe Update Failed!", LogType.Error));
-//			return false;
-//		}
-//		switch (probeType) {
-//		case "ICMP":
-//			return user.updatePingerProbe(templateId, probeId, probeNewName, probeNewInterval, probeNewMultiplier,
-//					probeNewStatus, probeKey);
-//
-//		case "PORT":
-//			return user.updatePorterProbe(templateId, probeId, probeNewName, probeNewInterval, probeNewMultiplier,
-//					probeNewStatus, probeKey);
-//		case "HTTP":
-//			return user.updateWeberProbe(templateId, probeId, probeNewName, probeNewInterval, probeNewMultiplier,
-//					probeNewStatus, probeKey);
-//		case "SNMP":
-//			return user.updateSnmpProbe(templateId, probeId, probeNewName, probeNewInterval, probeNewMultiplier,
-//					probeNewStatus, probeKey);
-//		case "RBL":
-//			return user.updateRBLProbe(templateId, probeId, probeNewName, probeNewInterval, probeNewMultiplier,
-//					probeNewStatus, probeKey);
-//		}
-//		return false;
-//	}
+	// public static boolean updateRunnableProbe(UUID userId, UUID templateId,
+	// String probeNewName, String probeId,
+	// String probeType, long probeNewInterval, float probeNewMultiplier,
+	// boolean probeNewStatus,
+	// List<String> probeKey) {
+	// User user = getUsers().get(userId);
+	// if (user == null) {
+	// SysLogger.Record(
+	// new Log("User: " + userId.toString() + " Doesn't Exists! Probe Update
+	// Failed!", LogType.Error));
+	// return false;
+	// }
+	// switch (probeType) {
+	// case "ICMP":
+	// return user.updatePingerProbe(templateId, probeId, probeNewName,
+	// probeNewInterval, probeNewMultiplier,
+	// probeNewStatus, probeKey);
+	//
+	// case "PORT":
+	// return user.updatePorterProbe(templateId, probeId, probeNewName,
+	// probeNewInterval, probeNewMultiplier,
+	// probeNewStatus, probeKey);
+	// case "HTTP":
+	// return user.updateWeberProbe(templateId, probeId, probeNewName,
+	// probeNewInterval, probeNewMultiplier,
+	// probeNewStatus, probeKey);
+	// case "SNMP":
+	// return user.updateSnmpProbe(templateId, probeId, probeNewName,
+	// probeNewInterval, probeNewMultiplier,
+	// probeNewStatus, probeKey);
+	// case "RBL":
+	// return user.updateRBLProbe(templateId, probeId, probeNewName,
+	// probeNewInterval, probeNewMultiplier,
+	// probeNewStatus, probeKey);
+	// }
+	// return false;
+	// }
 
 	public static boolean unMergeTemplateHost(UUID userId, UUID templateId, UUID hostId) {
 		User user = getUsers().get(userId);
@@ -527,7 +537,7 @@ public class UsersManager {
 					SysLogger.Record(new Log("Main Thread Interrupted!", LogType.Error, e));
 				}
 			} else {
-				JSONObject jsonInitServer=(JSONObject)(initServer);
+				JSONObject jsonInitServer = (JSONObject) (initServer);
 				return jsonInitServer;
 			}
 		}

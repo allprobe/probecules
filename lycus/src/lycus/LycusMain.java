@@ -43,7 +43,7 @@ public class LycusMain  {
 		UsersManager.Initialize();
 //		ApiBuffer failedApiBuffer=new ApiBuffer();
 
-		//		Net.Traceroute("62.90.45.85");
+//		Net.Snmp2Walk("62.90.132.131", 161, 3000, "ADCD-LAN2", "1.3.6.1.2.1.2.2.1.2.0");
 //		System.err.println("Finished getting messages");
 
 		// byte[]
