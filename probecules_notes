@@ -36,4 +36,7 @@ apt-get install visualvm
 
 
 -snmp checks impelementation
+-traceroute dedicated implementation
+-upgrade logger to log4j
+-
 

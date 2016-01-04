@@ -315,8 +315,9 @@ public class UsersManager {
 					break;
 				}
 				case "discovery": {
-					DiscoveryType discoveryType = DiscoveryType.BandWidth.equalsName(
-							(String) key.get("discovery_type")) ? DiscoveryType.BandWidth : DiscoveryType.Disk;
+					DiscoveryType discoveryType = DiscoveryType.valueOf((String) key.get("discovery_type"));
+					System.out.println("test");
+//							DiscoveryType.BandWidth.equalsName((String) key.get("discovery_type")) ? DiscoveryType.BandWidth : DiscoveryType.Disk;
 					break;
 				}
 				case "rbl": {

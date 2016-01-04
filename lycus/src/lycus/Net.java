@@ -10,11 +10,13 @@ import java.io.InputStreamReader;
 import java.io.InterruptedIOException;
 import java.net.DatagramPacket;
 import java.net.DatagramSocket;
+import java.net.HttpURLConnection;
 import java.net.InetAddress;
 import java.net.InetSocketAddress;
 import java.net.Socket;
 import java.net.SocketException;
 import java.net.SocketTimeoutException;
+import java.net.URL;
 import java.net.UnknownHostException;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -328,7 +330,7 @@ public class Net {
 		ArrayList<Object> webResults = new ArrayList<Object>();
 
 		webResults.add(System.currentTimeMillis());
-		
+
 		if (user != null && pass != null) {
 			UserPass = user + ":" + pass;
 			request = new HttpRequest(url, requestType.equals("POST") ? RequestTypes.POST : RequestTypes.GET, timeout,
@@ -374,6 +376,52 @@ public class Net {
 
 		}
 
+	}
+
+	public static ArrayList<Object> builtInWeber(String url, String requestType, String user, String pass,
+			int timeout) {
+
+		String USER_AGENT = "Mozilla/5.0";
+
+		String urlString = "http://www.google.com/search?q=mkyong";
+
+		BufferedReader in=null;
+		
+		try {
+
+			URL obj = new URL(urlString);
+			HttpURLConnection con = (HttpURLConnection) obj.openConnection();
+
+			con.setRequestMethod("GET");
+
+			con.setRequestProperty("User-Agent", USER_AGENT);
+
+			int responseCode = con.getResponseCode();
+			System.out.println("\nSending 'GET' request to URL : " + urlString);
+			System.out.println("Response Code : " + responseCode);
+
+			in = new BufferedReader(new InputStreamReader(con.getInputStream()));
+			String inputLine;
+			StringBuffer response = new StringBuffer();
+
+			while ((inputLine = in.readLine()) != null) {
+				response.append(inputLine);
+			}
+
+			System.out.println(response.toString());
+			
+		} catch (Exception e) {
+			// failed http request
+		} finally {
+			if(in!=null)
+				try {
+					in.close();
+				} catch (IOException e) {
+					// might  cause memory leak!
+				}
+
+		}
+		return null;
 	}
 
 	public static ArrayList<Object> runSnmpCheckVer1(String ip, int port, String communityName, String oid,
@@ -1021,56 +1069,60 @@ public class Net {
 		return results;
 	}
 
-//	public static String Snmp3Walk(String ip, int port, int timeout, String oid, String userName, String userPass,
-//			String authAlgo, String cryptPass, String cryptAlgo, TransportMapping transportMapping,
-//			Snmp snmpInterface) {
-//		Address targetAddress = GenericAddress.parse("udp:" + targetAddr + "/" + portNum);
-//		TransportMapping transport = new DefaultUdpTransportMapping();
-//		Snmp snmp = new Snmp(transport);
-//		transport.listen();
-//
-//		// setting up target
-//		CommunityTarget target = new CommunityTarget();
-//		target.setCommunity(new OctetString(commStr));
-//		target.setAddress(targetAddress);
-//		target.setRetries(3);
-//		target.setTimeout(1000 * 3);
-//		target.setVersion(snmpVersion);
-//
-//		OID oid = null;
-//		try {
-//			oid = new OID(oidStr);
-//		} catch (RuntimeException ex) {
-//			System.out.println("OID is not specified correctly.");
-//			System.exit(1);
-//		}
-//
-//		TreeUtils treeUtils = new TreeUtils(snmp, new DefaultPDUFactory());
-//		List<TreeEvent> events = treeUtils.getSubtree(target, oid);
-//		if (events == null || events.size() == 0) {
-//			System.out.println("No result returned.");
-//			System.exit(1);
-//		}
-//
-//		// Get snmpwalk result.
-//		for (TreeEvent event : events) {
-//			if (event != null) {
-//				if (event.isError()) {
-//					System.err.println("oid [" + oid + "] " + event.getErrorMessage());
-//				}
-//
-//				VariableBinding[] varBindings = event.getVariableBindings();
-//				if (varBindings == null || varBindings.length == 0) {
-//					System.out.println("No result returned.");
-//				}
-//				for (VariableBinding varBinding : varBindings) {
-//					System.out.println(varBinding.getOid() + " : " + varBinding.getVariable().getSyntaxString() + " : "
-//							+ varBinding.getVariable());
-//				}
-//			}
-//		}
-//		snmp.close();
-//	}
+	// public static String Snmp3Walk(String ip, int port, int timeout, String
+	// oid, String userName, String userPass,
+	// String authAlgo, String cryptPass, String cryptAlgo, TransportMapping
+	// transportMapping,
+	// Snmp snmpInterface) {
+	// Address targetAddress = GenericAddress.parse("udp:" + targetAddr + "/" +
+	// portNum);
+	// TransportMapping transport = new DefaultUdpTransportMapping();
+	// Snmp snmp = new Snmp(transport);
+	// transport.listen();
+	//
+	// // setting up target
+	// CommunityTarget target = new CommunityTarget();
+	// target.setCommunity(new OctetString(commStr));
+	// target.setAddress(targetAddress);
+	// target.setRetries(3);
+	// target.setTimeout(1000 * 3);
+	// target.setVersion(snmpVersion);
+	//
+	// OID oid = null;
+	// try {
+	// oid = new OID(oidStr);
+	// } catch (RuntimeException ex) {
+	// System.out.println("OID is not specified correctly.");
+	// System.exit(1);
+	// }
+	//
+	// TreeUtils treeUtils = new TreeUtils(snmp, new DefaultPDUFactory());
+	// List<TreeEvent> events = treeUtils.getSubtree(target, oid);
+	// if (events == null || events.size() == 0) {
+	// System.out.println("No result returned.");
+	// System.exit(1);
+	// }
+	//
+	// // Get snmpwalk result.
+	// for (TreeEvent event : events) {
+	// if (event != null) {
+	// if (event.isError()) {
+	// System.err.println("oid [" + oid + "] " + event.getErrorMessage());
+	// }
+	//
+	// VariableBinding[] varBindings = event.getVariableBindings();
+	// if (varBindings == null || varBindings.length == 0) {
+	// System.out.println("No result returned.");
+	// }
+	// for (VariableBinding varBinding : varBindings) {
+	// System.out.println(varBinding.getOid() + " : " +
+	// varBinding.getVariable().getSyntaxString() + " : "
+	// + varBinding.getVariable());
+	// }
+	// }
+	// }
+	// snmp.close();
+	// }
 
 	// #endregion
 
