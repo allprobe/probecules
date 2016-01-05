@@ -326,4 +326,10 @@ public class ApiInterface {
 		}
 
 	}
+	
+	public static void enableFileFailOver()
+	{
+		
+	}
+	
 }

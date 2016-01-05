@@ -140,7 +140,7 @@ public class WeberProbe extends Probe {
     {
 		String rpStr = h.getHostId().toString()+"@"+this.getProbe_id();
 		if (rpStr.contains(
-				"d934aa3b-f703-4d4b-99c6-66b470c782f2@http_8eacbc31-ec97-45a7-96bc-13d4af8b3887"))
+				"d934aa3b-f703-4d4b-99c6-66b470c782f2"))
 			System.out.println("BREAKPOINT - RunnableWeberProbeResults");
 		ArrayList<Object> results=Net.Weber(this.getUrl(), this.getHttpRequestType(), this.getAuthUsername(), this.getAuthPassword(), this.getTimeout());
     	return results;

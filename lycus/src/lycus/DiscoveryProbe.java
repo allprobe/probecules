@@ -57,7 +57,7 @@ public class DiscoveryProbe extends Probe {
 		return results;
 	}
 
-	private ArrayList<Object> checkForDisksElements(Host h.) {
+	private ArrayList<Object> checkForDisksElements(Host h) {
 		// TODO Auto-generated method stub
 		return null;
 	}
@@ -73,8 +73,8 @@ public class DiscoveryProbe extends Probe {
 		for(Map.Entry<String, String> entry:ifDescrResults.entrySet())
 		{
 			int index=0;
-			if(entry.getKey().length()==(ifDescr.length()+2))
-				index=Integer.parseInt(entry.getKey().charAt(ifDescr.length()+1));
+//			if(entry.getKey().length()==(ifDescr.length()+2))
+//				index=Integer.parseInt(entry.getKey().charAt(ifDescr.length()+1));
 			
 		}
 		return null;

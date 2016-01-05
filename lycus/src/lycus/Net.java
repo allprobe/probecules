@@ -6,6 +6,7 @@ package lycus;
 
 import java.io.BufferedReader;
 import java.io.IOException;
+import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.io.InterruptedIOException;
 import java.net.DatagramPacket;
@@ -25,6 +26,8 @@ import java.util.List;
 import java.util.Map;
 import java.util.StringTokenizer;
 
+import org.apache.commons.io.IOUtils;
+import org.apache.commons.io.input.CountingInputStream;
 import org.snmp4j.CommunityTarget;
 import org.snmp4j.PDU;
 import org.snmp4j.ScopedPDU;
@@ -76,7 +79,7 @@ public class Net {
 			SysLogger.Record(new Log("Problem With Host IP:" + ip, "Net", "pinger", LogType.Debug, ex));
 			pingResults.add(System.currentTimeMillis());
 			pingResults.add(100);
-			pingResults.add(0);
+			pingResults.add(0.0);
 			pingResults.add(0);
 			return pingResults;
 		}
@@ -88,20 +91,20 @@ public class Net {
 					if (inet.isReachable(timeout)) {
 						pingResults.add(System.currentTimeMillis());
 						pingResults.add(0);
-						pingResults.add(0);
+						pingResults.add(0.0);
 						pingResults.add(0);
 						return pingResults;
 					} else {
 						pingResults.add(System.currentTimeMillis());
 						pingResults.add(100);
-						pingResults.add(0);
+						pingResults.add(0.0);
 						pingResults.add(0);
 						return pingResults;
 					}
 				} catch (IOException ex) {
 					pingResults.add(System.currentTimeMillis());
 					pingResults.add(100);
-					pingResults.add(0);
+					pingResults.add(0.0);
 					pingResults.add(0);
 					SysLogger.Record(new Log("windows pinger problem " + ip, LogType.Error, ex));
 					return pingResults;
@@ -148,7 +151,7 @@ public class Net {
 					if ("100".equals(PacketLoss)) {
 						pingResults.add(System.currentTimeMillis());
 						pingResults.add(100);
-						pingResults.add(0);
+						pingResults.add(0.0);
 						pingResults.add(0);
 						return pingResults;
 
@@ -163,7 +166,7 @@ public class Net {
 				} catch (Exception e) {
 					pingResults.add(System.currentTimeMillis());
 					pingResults.add(100);
-					pingResults.add(0);
+					pingResults.add(0.0);
 					pingResults.add(0);
 					return pingResults;
 				}
@@ -171,7 +174,7 @@ public class Net {
 		} else {
 			pingResults.add(System.currentTimeMillis());
 			pingResults.add(100);
-			pingResults.add(0);
+			pingResults.add(0.0);
 			pingResults.add(0);
 			return pingResults;
 		}
@@ -378,50 +381,75 @@ public class Net {
 
 	}
 
-	public static ArrayList<Object> builtInWeber(String url, String requestType, String user, String pass,
+
+	public static ArrayList<Object> builtInWeber(String _url, String requestType,String authType, String user, String pass,
 			int timeout) {
-
-		String USER_AGENT = "Mozilla/5.0";
-
-		String urlString = "http://www.google.com/search?q=mkyong";
-
-		BufferedReader in=null;
 		
+		ArrayList<Object> webResults = new ArrayList<Object>();
+
+		URL url;
+		HttpURLConnection con;
+		String UserPass;
+		
+		webResults.add(System.currentTimeMillis());
+
 		try {
+			if (authType!=null)
+				UserPass = user + ":" + pass;
+			 else 
+				UserPass=null;
+			
 
-			URL obj = new URL(urlString);
-			HttpURLConnection con = (HttpURLConnection) obj.openConnection();
+			url = new URL(_url);
+			con = (HttpURLConnection) url.openConnection();
 
-			con.setRequestMethod("GET");
+			con.setRequestMethod(requestType);
 
-			con.setRequestProperty("User-Agent", USER_AGENT);
+			if(requestType.equals("POST"))
+				con.setDoOutput(true);
+			
+			if(UserPass!=null)
+				con.setRequestProperty("Authorization", "Basic "+javax.xml.bind.DatatypeConverter.printBase64Binary(UserPass.getBytes()));
+			
+			con.setConnectTimeout(timeout);
+			
+			long start=System.currentTimeMillis();
+			
+			con.connect();
+			int code = con.getResponseCode();
+			InputStream is=null;
+			if(code==200)
+				is=con.getInputStream();
+			
+			long end=System.currentTimeMillis();
+			
+			String body=null;
+			if(is!=null)
+				body = IOUtils.toString(is, "UTF-8");
+			
 
-			int responseCode = con.getResponseCode();
-			System.out.println("\nSending 'GET' request to URL : " + urlString);
-			System.out.println("Response Code : " + responseCode);
+//			BufferedReader in=null;
+//			if(is!=null)
+//			in= new BufferedReader(
+//					new InputStreamReader(is));
 
-			in = new BufferedReader(new InputStreamReader(con.getInputStream()));
-			String inputLine;
-			StringBuffer response = new StringBuffer();
+			
+			int responseCode=code;
+			long responseTime= end-start;
+			long responseSize=body==null?-1:body.getBytes().length;
+//			long responseSize=con.getContentLength();
+			
+			webResults.add(responseCode);
+			webResults.add(responseTime);
+			webResults.add(responseSize);
 
-			while ((inputLine = in.readLine()) != null) {
-				response.append(inputLine);
-			}
 
-			System.out.println(response.toString());
 			
 		} catch (Exception e) {
-			// failed http request
-		} finally {
-			if(in!=null)
-				try {
-					in.close();
-				} catch (IOException e) {
-					// might  cause memory leak!
-				}
-
+			SysLogger.Record(new Log("Unable to process http request for URL: " + _url, LogType.Error, e));
+			return null;
 		}
-		return null;
+		return webResults;
 	}
 
 	public static ArrayList<Object> runSnmpCheckVer1(String ip, int port, String communityName, String oid,

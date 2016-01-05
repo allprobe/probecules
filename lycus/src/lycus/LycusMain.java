@@ -46,6 +46,9 @@ public class LycusMain  {
 //		Net.Snmp2Walk("62.90.132.131", 161, 3000, "ADCD-LAN2", "1.3.6.1.2.1.2.2.1.2.0");
 //		System.err.println("Finished getting messages");
 
+		Net.builtInWeber("http://www.allprobe.com/ca/","GET", null,null, null,5000);
+
+		
 		// byte[]
 		// tryMe=Encoding.hexStringToByteArray("bc855616fc5b801f020e0cd2080045000028a64e00003a1173e63e5a6626c0a801680035e84e0014a4275c78b0110000000000000000");
 		// for(byte b:tryMe)

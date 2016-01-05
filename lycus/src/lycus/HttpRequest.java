@@ -47,7 +47,9 @@ public class HttpRequest {
         this.timeOut = timeOut;
         //set time out to http client
         this.requestConfig = RequestConfig.custom().setConnectTimeout(timeOut).build();
+      
         this.httpClient = HttpClientBuilder.create().setDefaultRequestConfig(requestConfig).build();
+        
         //initialize request
         this.request = (type == RequestTypes.POST) ? new HttpPost(url) : new HttpGet(url);
     }
