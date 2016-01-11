@@ -24,6 +24,7 @@ import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
 import org.json.simple.parser.JSONParser;
 import org.json.simple.parser.ParseException;
+import org.snmp4j.smi.OID;
 
 import com.google.common.collect.Lists;
 import com.google.gson.Gson;
@@ -42,11 +43,15 @@ public class LycusMain  {
 		if(apiInit)
 		UsersManager.Initialize();
 //		ApiBuffer failedApiBuffer=new ApiBuffer();
+		OID[] ifaces=new OID[3];
+		ifaces[0]=new OID("1.3.6.1.2.1.2.2.1.2");//ifDescr
+		ifaces[1]=new OID("1.3.6.1.2.1.2.2.1.10");//ifInOctets
+		ifaces[2]=new OID("1.3.6.1.2.1.2.2.1.16");//ifOutOctets
 
-//		Net.Snmp2Walk("62.90.132.131", 161, 3000, "ADCD-LAN2", "1.3.6.1.2.1.2.2.1.2.0");
+		Net.Snmp2Walk("62.90.132.131", 161, 5000, "ADCD-LAN2", "1.3.6.1.2.1.2.2.0");
 //		System.err.println("Finished getting messages");
 
-		Net.builtInWeber("http://www.allprobe.com/ca/","GET", null,null, null,5000);
+//		Net.builtInWeber("http://www.allprobe.com/ca/","GET", null,null, null,5000);
 
 		
 		// byte[]

@@ -62,22 +62,20 @@ public class DiscoveryProbe extends Probe {
 		return null;
 	}
 
-	private ArrayList<Object> checkForBandwidthElements(Host h) {
-		HashMap<String, Integer> ifaceByName=this.ifaceIndexByName(h);
-		return null;
-	}
 
-	private HashMap<String, Integer> ifaceIndexByName(Host h) {
-		String ifDescr="1.3.6.1.2.1.2.2.1.2";
-		Map<String,String> ifDescrResults=Net.Snmp2Walk(h.getHostIp(),h.getSnmpTemp().getPort(),h.getSnmpTemp().getTimeout(),h.getSnmpTemp().getCommunityName(), ifDescr);
-		for(Map.Entry<String, String> entry:ifDescrResults.entrySet())
-		{
-			int index=0;
-//			if(entry.getKey().length()==(ifDescr.length()+2))
-//				index=Integer.parseInt(entry.getKey().charAt(ifDescr.length()+1));
-			
-		}
-		return null;
+	private ArrayList<Object> checkForBandwidthElements(Host h) {
+				
+		String ifAll="1.3.6.1.2.1.2.2.1";
+
+		Map<String,String> ifDescrResults=null;
+		ifDescrResults=Net.Snmp2Walk(h.getHostIp(),h.getSnmpTemp().getPort(),h.getSnmpTemp().getTimeout(),h.getSnmpTemp().getCommunityName(), ifAll);
+		
+		if(ifDescrResults==null)
+			return null;
+		
+		ArrayList<Object> results=new ArrayList<Object>();
+		results.add(ifDescrResults);
+		return results;
 	}
 
 }

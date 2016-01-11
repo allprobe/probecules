@@ -30,6 +30,7 @@ public class Global {
 	private static String confPath=null;
 	
 	private static String dateFormat = "yyyy-MM-dd HH:mm:ss";
+	private static String ThisHostname=null;
 	private static String ThisHostIP=null;
 	private static String ThisHostToken=null;
 	private static String DataCenterID=null;
@@ -93,7 +94,17 @@ public class Global {
   	}
 
 
-  	public static String getThisHostToken() {
+  	public static String getThisHostname() {
+		return ThisHostname;
+	}
+
+
+	public static void setThisHostname(String thisHostname) {
+		ThisHostname = thisHostname;
+	}
+
+
+	public static String getThisHostToken() {
   		return ThisHostToken;
   	}
 
@@ -210,6 +221,7 @@ public class Global {
   				input = new FileInputStream(getConfPath());
   			prop.load(input);
             ThisHostIP = prop.getProperty("Server_IP");
+            ThisHostname=prop.getProperty("Hostname");
             ThisHostToken = prop.getProperty("Server_token");
             DataCenterID = prop.getProperty("DataCenter_id");
             setApiUser(prop.getProperty("API_user"));

@@ -34,7 +34,7 @@ public class SysLogger {
 		syslogInterface.getConfig().setFacility("local3");
 		syslogInterface.getConfig().setLocalName("PROBECULES");
 		if (Global.getDevelopment())
-			syslogInterface.getConfig().setIdent(Global.getDataCenterID() + "_" + Global.getThisHostToken() + " - DEV");
+			syslogInterface.getConfig().setIdent(Global.getDataCenterID() + "_" + Global.getThisHostToken() + " - DEV "+Global.getThisHostname());
 		else
 			syslogInterface.getConfig().setIdent(Global.getDataCenterID() + "_" + Global.getThisHostToken());
 

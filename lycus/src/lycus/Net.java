@@ -1026,7 +1026,7 @@ public class Net {
 
 	}
 
-	public static Map<String, String> Snmp2Walk(String ip, int port, int timeout, String comName, String oidStr) {
+	public static Map<String, String> Snmp2Walk(String ip, int port, int timeout, String comName, String _oid) {
 		Map<String, String> results = new HashMap<String, String>();
 		Address targetAddress = GenericAddress.parse("udp:" + ip + "/" + port);
 		CommunityTarget target = new CommunityTarget();
@@ -1038,32 +1038,33 @@ public class Net {
 
 		TransportMapping transport = null;
 		Snmp snmp = null;
-		OID oid = null;
+		OID oid = new OID(_oid);
 
 		try {
 			transport = new DefaultUdpTransportMapping();
 			snmp = new Snmp(transport);
-			oid = new OID(oidStr);
 
 			TreeUtils treeUtils = new TreeUtils(snmp, new DefaultPDUFactory());
 			List<TreeEvent> events = treeUtils.getSubtree(target, oid);
+//			List<TreeEvent> events = treeUtils.walk(target, ifaces);
+
 			if (events == null || events.size() == 0)
-				throw new Exception("no results returned for snmp walk - " + oidStr);
+				throw new Exception("no results returned for snmp walk - " + oid);
 
 			// Get snmpwalk result.
 			for (TreeEvent event : events) {
 				if (event != null) {
 					if (event.isError()) {
 						SysLogger.Record(
-								new Log("Error getting oid object for: oid [" + oidStr + "] " + event.getErrorMessage(),
+								new Log("Error getting oid object for: oid [" + oid + "] " + event.getErrorMessage(),
 										LogType.Error));
-						continue;
+//						continue;
 					}
 
 					VariableBinding[] varBindings = event.getVariableBindings();
 					if (varBindings == null || varBindings.length == 0) {
 						SysLogger.Record(
-								new Log("Error getting oid object for: oid [" + oidStr + "] " + event.getErrorMessage(),
+								new Log("Error getting oid object for: oid [" + oid + "] " + event.getErrorMessage(),
 										LogType.Error));
 						continue;
 					}
