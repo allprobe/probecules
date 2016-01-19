@@ -39,6 +39,8 @@ import org.snmp4j.transport.DefaultUdpTransportMapping;
 import com.google.common.collect.Lists;
 import com.google.gson.Gson;
 
+import lycus.Config.Updates;
+
 
 /**
  * 
@@ -94,7 +96,10 @@ public class LycusMain  {
 //			sysInfo.start();
 			UsersManager.runAtStart();
 			history.startHistory();
-		}
+			
+			Updates updates = new Updates();
+			Executors.newSingleThreadScheduledExecutor().scheduleAtFixedRate(updates, 0, 30, TimeUnit.SECONDS);
+		} 
 		
 		//
 		// RunnableProbesUpdates updates=new RunnableProbesUpdates(5);

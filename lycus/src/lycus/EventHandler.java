@@ -36,7 +36,7 @@ public class EventHandler implements Runnable {
 				{
 					String eventsEncoded=GeneralFunctions.Base64Encode(stringEvents);
 					String sendString = "{\"events\" : \"" + eventsEncoded + "\"}";				
-					ApiInterface.executeRequest(ApiStages.PutEvents, "PUT", sendString);
+					ApiInterface.executeRequest(Enums.ApiAction.PutEvents, "PUT", sendString);
 				}
 			} else {
 				SysLogger.Record(new Log("Unable to process events! events did not sent to API...", LogType.Error));

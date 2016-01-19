@@ -45,7 +45,7 @@ public class RollupsMemoryDump implements Runnable {
 			this.mergeExistingRollupsFromMemDump();
 		SysLogger.Record(new Log("Sending MEMDUMP of rollups to DB...", LogType.Debug));
 		String sendString = "{\"last_rollups\":\"" + rollups + "\"}";
-		ApiInterface.executeRequest(ApiStages.FlushServerMemory, "PUT", sendString);
+		ApiInterface.executeRequest(Enums.ApiAction.FlushServerMemory, "PUT", sendString);
 	}
 
 	private ArrayList<DataPointsRollup[][]> getAllRollups() {
@@ -94,7 +94,7 @@ public class RollupsMemoryDump implements Runnable {
 
 	public void mergeExistingRollupsFromMemDump() {
 		SysLogger.Record(new Log("Retrieving existing rollups from DB...", LogType.Debug));
-		Object rollupsUnDecoded = ApiInterface.executeRequest(ApiStages.GetServerMemoryDump, "GET", null);
+		Object rollupsUnDecoded = ApiInterface.executeRequest(Enums.ApiAction.GetServerMemoryDump, "GET", null);
 
 		if (rollupsUnDecoded == null || ((String) rollupsUnDecoded).equals("0\n")) {
 			SysLogger.Record(

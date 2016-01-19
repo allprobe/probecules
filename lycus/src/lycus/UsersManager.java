@@ -540,7 +540,7 @@ public class UsersManager {
 	private static JSONObject getServerInfoFromApi() {
 		Object initServer;
 		while (true) {
-			initServer = ApiInterface.executeRequest(ApiStages.InitServer, "GET", null);
+			initServer = ApiInterface.executeRequest(Enums.ApiAction.InitServer, "GET", null);
 			if (initServer == null) {
 				SysLogger.Record(new Log("Error starting server, no API connectivity! trying again in 1 minutes...",
 						LogType.Error));

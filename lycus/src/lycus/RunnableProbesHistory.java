@@ -76,7 +76,7 @@ public class RunnableProbesHistory implements Runnable {
 			
 			if(results.contains("788b1b9e-d753-4dfa-ac46-61c4374eeb84@inner_10e61538-b4e1-44c6-aa12-b81ef6a5528d"))
 				System.out.println("BREAKPOINT - RunnableProbesHistory");
-			ApiInterface.executeRequest(ApiStages.InsertDatapointsBatches, "PUT",sendString);
+			ApiInterface.executeRequest(Enums.ApiAction.InsertDatapointsBatches, "PUT",sendString);
 		
 		
 		} catch (Throwable thrown) {
@@ -324,7 +324,7 @@ public class RunnableProbesHistory implements Runnable {
 	public void pullCurrentLiveEvents() {
 		while (true) {
 			SysLogger.Record(new Log("Retrieving existing live eventsHandler from REDIS...", LogType.Debug));
-			Object eventsObject = ApiInterface.executeRequest(ApiStages.GetServerLiveEvents, "GET", null);
+			Object eventsObject = ApiInterface.executeRequest(Enums.ApiAction.GetServerLiveEvents, "GET", null);
 
 			if (eventsObject == null) {
 				SysLogger.Record(new Log("Unable to retrieve existing live eventsHandler, trying again in about 30 secs...",
