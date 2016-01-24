@@ -57,7 +57,8 @@ public class LycusMain  {
 			return;
 		SysLogger.Init();
 		boolean apiInit=ApiInterface.Initialize();
-		if(apiInit)
+		if(!apiInit)
+			return;
 		UsersManager.Initialize();
 
 //		Net.Snmp2Walk("62.90.132.131", 161, 5000, "ADCD-LAN2", "1.3.6.1.2.1.2.2.1");
@@ -89,9 +90,10 @@ public class LycusMain  {
 		// Net.UdpPorter("208.67.222.222", 53, 5000,new String(send),null);
 		//
 		
+		if(!UsersManager.isInitialized())
+			return;
 		
-		if (UsersManager.isInitialized()) {
-			RunnableProbesHistory history=new RunnableProbesHistory(new ArrayList<User>(UsersManager.getUsers().values()),null);
+		RunnableProbesHistory history=new RunnableProbesHistory(new ArrayList<User>(UsersManager.getUsers().values()),null);
 //			SysInfo sysInfo=new SysInfo(history);
 //			sysInfo.start();
 			UsersManager.runAtStart();
@@ -99,7 +101,7 @@ public class LycusMain  {
 			
 			Updates updates = new Updates();
 			Executors.newSingleThreadScheduledExecutor().scheduleAtFixedRate(updates, 0, 30, TimeUnit.SECONDS);
-		} 
+ 
 		
 		//
 		// RunnableProbesUpdates updates=new RunnableProbesUpdates(5);
