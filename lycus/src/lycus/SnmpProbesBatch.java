@@ -161,6 +161,7 @@ public class SnmpProbesBatch implements Runnable {
 				}
 				List<String> listOids = new ArrayList<String>();
 				for (RunnableProbe rp : snmpProbes) {
+					
 					SysLogger.Record(new Log("Running Probe: " + rp.getRPString() + " at Host: "
 							+ this.getHost().getHostIp() + "(" + this.getHost().getName() + ")...", LogType.Debug));
 
@@ -227,7 +228,10 @@ public class SnmpProbesBatch implements Runnable {
 					// if(this.isSnmpError())
 					// this.setSnmpError(false);
 					for (RunnableProbe _rp : snmpProbes) {
-
+						String rpStr = _rp.getRPString();
+						if (rpStr.contains(
+								"inner_10e61538-b4e1-44c6-aa12-b81ef6a5528d"))
+							System.out.println("BREAKPOINT - RunnableSnmpProbeResults");
 						if (_rp.isActive()) {
 
 							SnmpProbe snmpProbe = (SnmpProbe) _rp.getProbe();

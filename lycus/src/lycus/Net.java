@@ -1140,94 +1140,136 @@ public class Net {
 
 	public static Map<String, String> Snmp3Walk(String ip, int port, int timeout, String userName, String userPass,
 			String authAlgo, String cryptPass, String cryptAlgo, String _oid) {
-//		OctetString _username = userName == null ? null : new OctetString(userName);
-//		OID _authAlgo = authAlgo == null ? null
-//				: authAlgo.equals("md5") ? AuthMD5.ID : authAlgo.equals("sha1") ? AuthSHA.ID : null;
-//		OctetString _authPass = userPass == null ? null : new OctetString(userPass);
-//		OID _cryptAlgo = cryptAlgo == null ? null
-//				: cryptAlgo.equals("des") ? PrivDES.ID : cryptAlgo.equals("aes") ? PrivAES256.ID : null;
-//		OctetString _cryptPass = cryptPass == null ? null : new OctetString(cryptPass);
-//		Map<String, String> oidsValues = new HashMap<String, String>();
-//		Address targetAddress = GenericAddress.parse("udp:" + ip + "/" + port);
-//		UserTarget target = new UserTarget();
-//		target.setAddress(targetAddress);
-//		target.setRetries(1);
-//		target.setTimeout(timeout);
-//		target.setVersion(SnmpConstants.version3);
-//		target.setSecurityName(_username);
-//		UsmUser usera = null;
-//		if (userPass == null)
-//			target.setSecurityLevel(SecurityLevel.NOAUTH_NOPRIV);
-//		else if (cryptPass == null)
-//			target.setSecurityLevel(SecurityLevel.AUTH_NOPRIV);
-//		else
-//			target.setSecurityLevel(SecurityLevel.AUTH_PRIV);
-//		usera = new UsmUser(_username, // security
-//				_authAlgo, // authprotocol
-//				_authPass, // authpassphrase
-//				_cryptAlgo, // privacyprotocol
-//				_cryptPass // privacypassphrase
-//		);
-//		TransportMapping transport = null;
-//		Snmp snmp = null;
-//
-//		try {
-//			transport = new DefaultUdpTransportMapping();
-//			snmp = new Snmp(transport);
-//			transport.listen();
-//			USM usm;
-//			usm = new USM(SecurityProtocols.getInstance(), new OctetString(MPv3.createLocalEngineID()), 0);
-//			SecurityModels.getInstance().addSecurityModel(usm);
-//			if (usera != null) {
-//				snmp.getUSM().addUser(usera.getSecurityName(), usera);
-//			} else {
-//				return null;
-//			}
-//
-//			ScopedPDU request = new ScopedPDU();
-//			OID oid=new OID(_oid);
-//			ScopedPDU response=new ScopedPDU();
-//			pdu.setType(PDU.GETBULK);
-//			pdu.setMaxRepetitions(1);
-//			pdu.setNonRepeaters(0);
-//			ResponseEvent event = null;
-//			event = snmp.send(pdu, target, null);
-//			if (event.getResponse() == null
-//					|| event.getResponse().getErrorStatus() == SnmpConstants.SNMP_ERROR_TOO_BIG) {
-//				return null;
-//			} else {
-//				for (VariableBinding var : event.getResponse().getVariableBindings()) {
-//					String  = var.getOid().toString();
-//					String _value = var.getVariable().toString();
-//					if (oidsValues.containsKey(_oid) && (!_value.equals("endOfMibView"))) {
-//						oidsValues.put(_oid, _value);
-//					}
-//				}
-//			}
-//
-//		} catch (Exception e) {
-//			SysLogger.Record(new Log("Unable to run Snmp3 GETBULK check!", LogType.Error, e));
-//			return null;
-//		} finally {
-//			if (transport != null) {
-//				try {
-//					transport.close();
-//				} catch (IOException e) {
-//					SysLogger.Record(
-//							new Log("Unable to close TransportMapping! may cause memory leak!", LogType.Error, e));
-//				}
-//			}
-//			if (snmp != null) {
-//				try {
-//					snmp.close();
-//				} catch (IOException e) {
-//					SysLogger.Record(new Log("Unable to close SNMP! may cause memory leak!", LogType.Error, e));
-//
-//				}
-//			}
-//		}
-//
-		return null;
+		Map<String, String> results = new HashMap<String, String>();
+		
+		OctetString _username = userName == null ? null : new OctetString(userName);
+		OID _authAlgo = authAlgo == null ? null
+				: authAlgo.equals("md5") ? AuthMD5.ID : authAlgo.equals("sha1") ? AuthSHA.ID : null;
+		OctetString _authPass = userPass == null ? null : new OctetString(userPass);
+		OID _cryptAlgo = cryptAlgo == null ? null
+				: cryptAlgo.equals("des") ? PrivDES.ID : cryptAlgo.equals("aes") ? PrivAES256.ID : null;
+		OctetString _cryptPass = cryptPass == null ? null : new OctetString(cryptPass);
+		
+		Address targetAddress = GenericAddress.parse("udp:" + ip + "/" + port);
+		UserTarget target = new UserTarget();
+		target.setAddress(targetAddress);
+		target.setRetries(3);
+		target.setTimeout(timeout);
+		target.setVersion(SnmpConstants.version3);
+//		target.setMaxSizeRequestPDU(65535);
+		UsmUser usera = null;
+		if (userPass == null)
+			target.setSecurityLevel(SecurityLevel.NOAUTH_NOPRIV);
+		else if (cryptPass == null)
+			target.setSecurityLevel(SecurityLevel.AUTH_NOPRIV);
+		else
+			target.setSecurityLevel(SecurityLevel.AUTH_PRIV);
+		usera = new UsmUser(_username, // security
+				_authAlgo, // authprotocol
+				_authPass, // authpassphrase
+				_cryptAlgo, // privacyprotocol
+				_cryptPass // privacypassphrase
+		);
+
+		TransportMapping transport = null;
+		Snmp snmp = null;
+		final SnmpWalkCounts counts = new SnmpWalkCounts();
+		
+		try {
+
+			transport = new DefaultUdpTransportMapping();
+			snmp = new Snmp(transport);
+			snmp.listen();
+			
+			PDU request = new PDU();
+			request.setType(PDU.GETBULK);
+			request.add(new VariableBinding(new OID(_oid)));
+			request.setMaxRepetitions(10);
+			request.setNonRepeaters(0);
+			
+			PDU response=null;
+			
+			TreeUtils treeUtils = new TreeUtils(snmp, new DefaultPDUFactory());
+			OID[] oids=new OID[1];
+			oids[0]=new OID(_oid);
+			List<TreeEvent> resulllts=treeUtils.getSubtree(target, new OID(_oid));
+//			List<TreeEvent> events = treeUtils.getSubtree(target, oid);
+//			List<TreeEvent> events = treeUtils.walk(target, ifaces);
+
+			final long startTime=System.nanoTime();
+			TreeListener treeListener = new TreeListener() {
+
+			      private boolean finished;
+
+			      public boolean next(TreeEvent e) {
+			        counts.requests++;
+			        if (e.getVariableBindings() != null) {
+			          VariableBinding[] vbs = e.getVariableBindings();
+			          counts.objects += vbs.length;
+			          for (VariableBinding vb : vbs) {
+			            System.out.println(vb.toString());
+			          }
+			        }
+			        return true;
+			      }
+
+			      public void finished(TreeEvent e) {
+			        if ((e.getVariableBindings() != null) &&
+			            (e.getVariableBindings().length > 0)) {
+			          next(e);
+			        }
+			        System.out.println();
+			        System.out.println("Total requests sent:    "+counts.requests);
+			        System.out.println("Total objects received: "+counts.objects);
+					System.out.println("Total walk time:        "+
+			                           (System.nanoTime()-startTime)/SnmpConstants.MILLISECOND_TO_NANOSECOND+" milliseconds");
+			        if (e.isError()) {
+			          System.err.println("The following error occurred during walk:");
+			          System.err.println(e.getErrorMessage());
+			        }
+			        finished = true;
+			        synchronized(this) {
+			          this.notify();
+			        }
+			      }
+
+			      public boolean isFinished() {
+			        return finished;
+			      }
+
+			    };
+			    synchronized (treeListener) {
+			      treeUtils.getSubtree(target, new OID(_oid), null, treeListener);
+			      try {
+			        treeListener.wait();
+			      }
+			      catch (InterruptedException ex) {
+			        System.err.println("Tree retrieval interrupted: " + ex.getMessage());
+			        Thread.currentThread().interrupt();
+			      }
+			    }
+		} catch (Exception e) {
+			SysLogger.Record(new Log("Unable to run Snmp2 WALK check!", LogType.Error, e));
+			return null;
+		} finally {
+			if (transport != null) {
+				try {
+					transport.close();
+				} catch (IOException e) {
+					SysLogger.Record(
+							new Log("Unable to close TransportMapping! may cause memory leak!", LogType.Error, e));
+				}
+			}
+			if (snmp != null) {
+				try {
+					snmp.close();
+				} catch (IOException e) {
+					SysLogger.Record(new Log("Unable to close SNMP! may cause memory leak!", LogType.Error, e));
+
+				}
+			}
+		}
+		return results;
 	}
 	
 	// public static String Snmp3Walk(String ip, int port, int timeout, String

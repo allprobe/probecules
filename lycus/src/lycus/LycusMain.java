@@ -60,9 +60,9 @@ public class LycusMain  {
 		if(apiInit)
 		UsersManager.Initialize();
 
-		Net.Snmp2Walk("62.90.132.131", 161, 5000, "ADCD-LAN2", "1.3.6.1.2.1.2.2.1.2");
-		
-		
+//		Net.Snmp2Walk("62.90.132.131", 161, 5000, "ADCD-LAN2", "1.3.6.1.2.1.2.2.1");
+//		Net.Snmp3Walk("62.90.132.131",161,5000,"snmpv3user","snmpv3allp","md5",null,null,"1.3.6.1.2.1.2.2.1");
+//		System.out.println("TEST");
 		
 //		System.err.println("Finished getting messages");
 

@@ -66,7 +66,6 @@ public class DiscoveryProbe extends Probe {
 	private ArrayList<Object> checkForBandwidthElements(Host h) {
 				
 		String ifAll="1.3.6.1.2.1.2.2.1";
-
 		Map<String,String> ifDescrResults=null;
 		ifDescrResults=Net.Snmp2Walk(h.getHostIp(),h.getSnmpTemp().getPort(),h.getSnmpTemp().getTimeout(),h.getSnmpTemp().getCommunityName(), ifAll);
 		

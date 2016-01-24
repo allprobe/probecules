@@ -69,6 +69,12 @@ public class RunnableProbesHistory implements Runnable {
 		try {
 			SysLogger.Record(new Log("Sending collected data to API...", LogType.Info));
 			String results = this.getResultsDBFormat();
+			
+			String rpStr = results;
+			if (rpStr.contains(
+					"788b1b9e-d753-4dfa-ac46-61c4374eeb84@inner_e69656ce-6835-41ec-8399-18bcf939fa9b"))
+				System.out.println("TEST");
+			
 			String encodedResults = GeneralFunctions.Base64Encode(results);
 			
 			String sendString = "{\"results\" : \"" + encodedResults + "\"}";

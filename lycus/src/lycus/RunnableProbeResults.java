@@ -154,6 +154,7 @@ public class RunnableProbeResults {
 
 	public HashMap<String,String> getResults() throws Throwable
 	{
+		SysLogger.Record(new Log("Collecting DATA for Runnable Probe: "+this.getRp().getRPString(),LogType.Debug));
 		HashMap<String,String> results=new HashMap<String,String>();
 		results.put("rpID", this.getRp().getRPString());
 		return results;

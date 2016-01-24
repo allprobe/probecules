@@ -69,6 +69,7 @@ public class RunnableSnmpProbeResults extends RunnableProbeResults {
 	public synchronized void acceptResults(ArrayList<Object> results) throws Exception{
 		super.acceptResults(results);
 		
+		
 
 		long lastTimestamp = (long) results.get(0);
 		this.setLastTimestamp(lastTimestamp);
@@ -220,11 +221,6 @@ public class RunnableSnmpProbeResults extends RunnableProbeResults {
 	@Override
 	public HashMap<String, String> getResults() throws Throwable {
 		HashMap<String, String> results = super.getResults();
-		
-		String rpStr = this.getRp().getRPString();
-		if (rpStr.contains(
-				"788b1b9e-d753-4dfa-ac46-61c4374eeb84@inner_10e61538-b4e1-44c6-aa12-b81ef6a5528d"))
-			System.out.println("TEST");
 		
 		
 		HashMap<String,String> rawResults=this.getRaw();
