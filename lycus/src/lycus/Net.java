@@ -1156,6 +1156,7 @@ public class Net {
 		target.setRetries(3);
 		target.setTimeout(timeout);
 		target.setVersion(SnmpConstants.version3);
+		target.setSecurityName(_username);
 //		target.setMaxSizeRequestPDU(65535);
 		UsmUser usera = null;
 		if (userPass == null)
@@ -1181,6 +1182,16 @@ public class Net {
 			snmp = new Snmp(transport);
 			snmp.listen();
 			
+			USM usm;
+			usm = new USM(SecurityProtocols.getInstance(), new OctetString(MPv3.createLocalEngineID()), 0);
+			SecurityModels.getInstance().addSecurityModel(usm);
+			if (usera != null) {
+				snmp.getUSM().addUser(usera.getSecurityName(), usera);
+			} else {
+				return null;
+			}
+
+//			ScopedPDU request = new ScopedPDU();
 			PDU request = new PDU();
 			request.setType(PDU.GETBULK);
 			request.add(new VariableBinding(new OID(_oid)));
@@ -1192,7 +1203,7 @@ public class Net {
 			TreeUtils treeUtils = new TreeUtils(snmp, new DefaultPDUFactory());
 			OID[] oids=new OID[1];
 			oids[0]=new OID(_oid);
-			List<TreeEvent> resulllts=treeUtils.getSubtree(target, new OID(_oid));
+//			List<TreeEvent> resulllts=treeUtils.getSubtree(target, new OID(_oid));
 //			List<TreeEvent> events = treeUtils.getSubtree(target, oid);
 //			List<TreeEvent> events = treeUtils.walk(target, ifaces);
 
