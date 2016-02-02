@@ -315,9 +315,18 @@ public class UsersManager {
 					break;
 				}
 				case "discovery": {
-					DiscoveryType discoveryType = DiscoveryType.valueOf((String) key.get("discovery_type"));
-					System.out.println("test");
-//							DiscoveryType.BandWidth.equalsName((String) key.get("discovery_type")) ? DiscoveryType.BandWidth : DiscoveryType.Disk;
+					long elementsInterval=Long.parseLong((String) key.get("element_interval"));
+					int triggerCode = Integer.parseInt((String) key.get("discovery_trigger"));
+					double triggerXValue = Double.parseDouble((String) key.get("discovery_trigger_x_value"));
+					SnmpDataType dataType=SnmpDataType.Numeric;
+					String unitType = (String) key.get("discovery_trigger_unit");
+					SnmpUnit trigValueUnit = getSnmpUnit(unitType);
+					Enums.DiscoveryElementType discoveryType = ((String) key.get("discovery_type")).equals("bw")?Enums.DiscoveryElementType.nics:null;
+					
+					probe=new DiscoveryProbe(user, probeId, templateId, name, interval, multiplier,status,discoveryType,elementsInterval);
+					
+					Trigger discoveryTrigger=new Trigger(triggerId, name, probe, svrty, status, elementType, trigValueUnit, condtions)
+					
 					break;
 				}
 				case "rbl": {

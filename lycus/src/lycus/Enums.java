@@ -5,4 +5,9 @@ public class Enums {
 	{
 		InitServer,GetServerMemoryDump,FlushServerMemory,InsertDatapointsBatches,PutEvents,GetServerLiveEvents,GetThreadsUpdates
 	}
+		public static enum DiscoveryElementType
+		{
+		nics,disks	
+		}
+	
 }

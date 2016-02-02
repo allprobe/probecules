@@ -52,6 +52,11 @@ public class RunInnerProbesChecks extends Thread {
 	private static Integer SnmpProbeBatchFutureCounter = 0;
 	private static ScheduledExecutorService SnmpBatchExec = Executors
 			.newScheduledThreadPool(Global.getSnmpBatchThreadCount());
+	
+	private static ConcurrentHashMap<String, ScheduledFuture<?>> DiscoveryFutureMap = new ConcurrentHashMap<>();
+	private static Integer DiscoveryFutureCounter = 0;
+	private static ScheduledExecutorService DiscoveryExec = Executors
+			.newScheduledThreadPool(Global.getSnmpBatchThreadCount());
 
 	// Getters/Setters
 	public static ConcurrentHashMap<String, ScheduledFuture<?>> getPingerFutureMap() {
@@ -72,6 +77,14 @@ public class RunInnerProbesChecks extends Thread {
 
 	public static ConcurrentHashMap<String, ScheduledFuture<?>> getSnmpProbeFutureMap() {
 		return SnmpProbeFutureMap;
+	}
+
+	public static ConcurrentHashMap<String, ScheduledFuture<?>> getDiscoveryFutureMap() {
+		return DiscoveryFutureMap;
+	}
+
+	public static void setDiscoveryFutureMap(ConcurrentHashMap<String, ScheduledFuture<?>> discoveryFutureMap) {
+		DiscoveryFutureMap = discoveryFutureMap;
 	}
 
 	public static ConcurrentHashMap<String, ScheduledFuture<?>> getWeberFutureMap() {
@@ -107,6 +120,14 @@ public class RunInnerProbesChecks extends Thread {
 	}
 
 	
+
+	public static Integer getDiscoveryFutureCounter() {
+		return DiscoveryFutureCounter;
+	}
+
+	public static void setDiscoveryFutureCounter(Integer discoveryFutureCounter) {
+		DiscoveryFutureCounter = discoveryFutureCounter;
+	}
 
 	// Run Threads
 	public static void RunPingerThreads(final RunnableProbe probe) {
@@ -165,6 +186,8 @@ public class RunInnerProbesChecks extends Thread {
 		SnmpProbeBatchFutureCounter+=batch.getSnmpProbes().size();
 		SnmpBatchFutureCounter++;
 	}
+	
+	
 
 	public static boolean addRegularRP(RunnableProbe rp) {
 		if(rp==null)

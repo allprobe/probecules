@@ -6,33 +6,34 @@ import java.util.Map;
 import java.util.UUID;
 
 public class DiscoveryProbe extends Probe {
-	private DiscoveryType type;
-	private int elementInterval;
+	private Enums.DiscoveryElementType type;
+	private long elementsInterval;
 
 	public DiscoveryProbe() {
 		// TODO Auto-generated constructor stub
 	}
 
 	public DiscoveryProbe(User user, String probe_id, UUID template_id, String name, long interval, float multiplier,
-			boolean status) {
+			boolean status,Enums.DiscoveryElementType discoveryType,long elementsInterval) {
 		super(user, probe_id, template_id, name, interval, multiplier, status);
-		// TODO Auto-generated constructor stub
+		this.type=discoveryType;
+		this.elementsInterval=elementsInterval;
 	}
 
-	public DiscoveryType getType() {
+	public Enums.DiscoveryElementType getType() {
 		return type;
 	}
 
-	public void setType(DiscoveryType type) {
+	public void setType(Enums.DiscoveryElementType type) {
 		this.type = type;
 	}
 
-	public int getElementInterval() {
-		return elementInterval;
+	public long getElementInterval() {
+		return elementsInterval;
 	}
 
-	public void setElementInterval(int elementInterval) {
-		this.elementInterval = elementInterval;
+	public void setElementInterval(long  elementInterval) {
+		this.elementsInterval = elementInterval;
 	}
 
 	@Override
@@ -41,10 +42,10 @@ public class DiscoveryProbe extends Probe {
 		ArrayList<Object> results = null;
 		try {
 			switch (this.getType()) {
-			case BandWidth:
+			case nics:
 				results = this.checkForBandwidthElements(h);
 				break;
-			case Disk:
+			case disks:
 				results = this.checkForDisksElements(h);
 				break;
 			}
@@ -67,8 +68,13 @@ public class DiscoveryProbe extends Probe {
 				
 		String ifAll="1.3.6.1.2.1.2.2.1";
 		Map<String,String> ifDescrResults=null;
-		ifDescrResults=Net.Snmp2Walk(h.getHostIp(),h.getSnmpTemp().getPort(),h.getSnmpTemp().getTimeout(),h.getSnmpTemp().getCommunityName(), ifAll);
 		
+		int snmpVersion=h.getSnmpTemp().getVersion();
+		if(snmpVersion==2)
+		ifDescrResults=Net.Snmp2Walk(h.getHostIp(),h.getSnmpTemp().getPort(),h.getSnmpTemp().getTimeout(),h.getSnmpTemp().getCommunityName(), ifAll);
+		else if(snmpVersion==3)
+			ifDescrResults=Net.Snmp3Walk(h.getHostIp(),h.getSnmpTemp().getPort(),h.getSnmpTemp().getTimeout(),h.getSnmpTemp().getUserName(),h.getSnmpTemp().getAuthPass(),h.getSnmpTemp().getAlgo(),h.getSnmpTemp().getCryptPass(),h.getSnmpTemp().getCryptType(),ifAll);
+
 		if(ifDescrResults==null)
 			return null;
 		

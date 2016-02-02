@@ -16,6 +16,7 @@ public class Host {
 	private String bucket;
 	private UUID notificationGroups;
 	private HashMap<String,RunnableProbe> runnableProbes;
+	
 
 	public Host(UUID host_id, String name, String host_ip,
 			SnmpTemplate snmpTemp,boolean hostStatus, boolean snmpStatus,String bucket,UUID notifGroups) {
