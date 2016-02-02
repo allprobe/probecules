@@ -317,16 +317,22 @@ public class UsersManager {
 				case "discovery": {
 					long elementsInterval=Long.parseLong((String) key.get("element_interval"));
 					int triggerCode = Integer.parseInt((String) key.get("discovery_trigger"));
-					double triggerXValue = Double.parseDouble((String) key.get("discovery_trigger_x_value"));
+					String triggerXValue = (String) key.get("discovery_trigger_x_value");
 					SnmpDataType dataType=SnmpDataType.Numeric;
 					String unitType = (String) key.get("discovery_trigger_unit");
+					String triggerUuid=(String) key.get("trigger_id");
+					TriggerSeverity severity = getTriggerSev((String) key.get("trigger_severity"));
 					SnmpUnit trigValueUnit = getSnmpUnit(unitType);
 					Enums.DiscoveryElementType discoveryType = ((String) key.get("discovery_type")).equals("bw")?Enums.DiscoveryElementType.nics:null;
 					
 					probe=new DiscoveryProbe(user, probeId, templateId, name, interval, multiplier,status,discoveryType,elementsInterval);
 					
-					Trigger discoveryTrigger=new Trigger(triggerId, name, probe, svrty, status, elementType, trigValueUnit, condtions)
-					
+					String triggerId=templateId.toString()+"@"+probeId+"@"+triggerUuid;
+					ArrayList<TriggerCondition> conditions=new ArrayList<TriggerCondition>();
+					TriggerCondition condition=new TriggerCondition(triggerCode, "and",triggerXValue,"");
+					conditions.add(condition);
+					Trigger discoveryTrigger=new Trigger(triggerId, name, probe, severity, status, "", trigValueUnit,conditions);
+					probe.addTrigger(discoveryTrigger);
 					break;
 				}
 				case "rbl": {

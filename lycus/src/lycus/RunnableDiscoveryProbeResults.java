@@ -62,9 +62,9 @@ public class RunnableDiscoveryProbeResults extends RunnableProbeResults {
 			String name=walkResults.get("1.3.6.1.2.1.2.2.1.2."+index);
 			long ifInOctets=Long.parseLong(walkResults.get("1.3.6.1.2.1.2.2.1.10."+index));
 			long ifOutOctets=Long.parseLong(walkResults.get("1.3.6.1.2.1.2.2.1.16."+index));
-			DiscoveryElement element=new DiscoveryElement(this,"1.3.6.1.2.1.2.2.1",index,name);
-			element.getValues().put("IN", ifInOctets);			
-			element.getValues().put("OUT",ifOutOctets);
+			DiscoveryNicElement element=new DiscoveryNicElement(this,"1.3.6.1.2.1.2.2.1",index,name);
+//			element.getValues().put("IN", ifInOctets);			
+//			element.getValues().put("OUT",ifOutOctets);
 			lastElements.put(index, element);
 		}
 		

@@ -35,6 +35,8 @@ public class RunnableProbe implements Runnable {
 		break;
 		case TRACEROUTE:results=new RunnableTracerouteProbeResults(this);
 		break;
+		case DISCOVERY:results=new RunnableDiscoveryProbeResults(this);
+		break;
 		}
 		
 	}
