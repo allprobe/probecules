@@ -69,7 +69,7 @@ public class RunnableDiscoveryProbeResults extends RunnableProbeResults {
 		}
 		
 		boolean theSame=this.isElementsIdentical(lastElements);
-		if(theSame)
+//		if(theSame)
 			
 		
 		return null;
@@ -93,6 +93,7 @@ public class RunnableDiscoveryProbeResults extends RunnableProbeResults {
 
 	private boolean[] ifaceGetIndexes(Map<String,String> walkResults)
 	{
-		for()
+//		for()
+		return null;
 	}
 }
