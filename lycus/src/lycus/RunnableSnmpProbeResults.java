@@ -159,13 +159,6 @@ public class RunnableSnmpProbeResults extends RunnableProbeResults {
 		}
 	}
 
-	private void setDeltaValue(Double data)
-	{
-		if(this.getNumData()==null&&this.getTmpDeltaVar()==null)
-		{	this.setTmpDeltaVar(data);
-			return;
-		}
-	}
 	
 	@Override
 	protected void checkIfTriggerd() throws Exception {
