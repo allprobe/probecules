@@ -284,7 +284,7 @@ public class UsersManager {
 				case "snmp": {
 
 					OID oid = new OID((String) key.get("snmp_oid"));
-					int storeValue = Integer.parseInt((String) key.get("store_value_as"));
+					Enums.SnmpStoreAs storeValue = Integer.parseInt((String) key.get("store_value_as"))==1?Enums.SnmpStoreAs.asIs:Enums.SnmpStoreAs.delta;	
 					String valueType = (String) key.get("value_type");
 					String valueUnit = (String) key.get("value_unit");
 					SnmpDataType dataType;

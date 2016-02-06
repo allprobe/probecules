@@ -11,14 +11,14 @@ public class RunnableSnmpProbeResults extends RunnableProbeResults {
 	private Double numData;
 	private DataPointsRollup[] dataRollups;
 	private String snmpResultError;
-
+	private Double tmpDeltaVar;//last results when probe "save results as" delta
+	
 	public RunnableSnmpProbeResults(RunnableProbe rp) {
 		super(rp);
 		this.setSnmpResultError(null);
 		switch (((SnmpProbe) rp.getProbe()).getDataType()) {
 		case Numeric: {
 			this.dataRollups = this.initRollupSeries(new DataPointsRollup[6]);
-			this.stringData = null;
 			break;
 		}
 		case Text: {
@@ -47,6 +47,14 @@ public class RunnableSnmpProbeResults extends RunnableProbeResults {
 
 	public void setNumData(Double numData) {
 		this.numData = numData;
+	}
+
+	public Double getTmpDeltaVar() {
+		return tmpDeltaVar;
+	}
+
+	public void setTmpDeltaVar(Double tmpDeltaVar) {
+		this.tmpDeltaVar = tmpDeltaVar;
 	}
 
 	public synchronized DataPointsRollup[] getDataRollups() {
@@ -124,14 +132,41 @@ public class RunnableSnmpProbeResults extends RunnableProbeResults {
 			return;
 		}
 		this.setSnmpResultError(null);
+		
+		
+		switch(((SnmpProbe)this.getRp().getProbe()).getStoreAs())
+		{
+		case asIs: 
 		this.setNumData(data);
+		break;
+		case delta:
+			if(this.getTmpDeltaVar()==null)
+			{
+				this.setTmpDeltaVar(data);
+				return;
+			}
+			this.setNumData(data-this.getTmpDeltaVar());
+			this.setTmpDeltaVar(data);
+			break;
+		}
+		
 		this.setStringData(null);
+		if(this.getNumData()==null)
+			return;
 		for (int i = 0; i <this.getNumberOfRollupTables(); i++) {
 			DataPointsRollup numDataRollup = this.getDataRollups()[i];
-			numDataRollup.add(lastTimestamp, data);
+			numDataRollup.add(lastTimestamp, this.getNumData());
 		}
 	}
 
+	private void setDeltaValue(Double data)
+	{
+		if(this.getNumData()==null&&this.getTmpDeltaVar()==null)
+		{	this.setTmpDeltaVar(data);
+			return;
+		}
+	}
+	
 	@Override
 	protected void checkIfTriggerd() throws Exception {
 		super.checkIfTriggerd();

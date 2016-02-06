@@ -18,14 +18,16 @@ import org.snmp4j.smi.Variable;
 import org.snmp4j.smi.VariableBinding;
 import org.snmp4j.transport.DefaultUdpTransportMapping;
 
+import lycus.Enums.SnmpStoreAs;
+
 
 public class SnmpProbe extends Probe {
 private OID oid;
 private SnmpDataType dataType;
 private SnmpUnit unit;
-private int storeAs; //0 - as is, 1 - bits, 2 - diff
+private SnmpStoreAs storeAs; //0 - as is, 1 - bits, 2 - diff
 
-public SnmpProbe(User user,String probe_id,UUID template_id,String name,long interval,float multiplier,boolean status,OID oid,SnmpDataType dataType,SnmpUnit unit,int storeAs) {
+public SnmpProbe(User user,String probe_id,UUID template_id,String name,long interval,float multiplier,boolean status,OID oid,SnmpDataType dataType,SnmpUnit unit,SnmpStoreAs storeAs) {
 	super(user,probe_id,template_id,name,interval,multiplier,status);
 	this.setOid(oid);
 	this.setDataType(dataType);
@@ -46,10 +48,10 @@ public SnmpDataType getDataType() {
 public void setDataType(SnmpDataType dataType) {
 	this.dataType = dataType;
 }
-public int getStoreAs() {
+public SnmpStoreAs getStoreAs() {
 	return storeAs;
 }
-public void setStoreAs(int storeAs) {
+public void setStoreAs(SnmpStoreAs storeAs) {
 	this.storeAs = storeAs;
 }
 public SnmpUnit getUnit() {
@@ -59,14 +61,6 @@ public void setUnit(SnmpUnit unit) {
 	this.unit = unit;
 }
 
-public void updateProbeAttributes(String probeNewName, long probeNewInterval, float probeNewMultiplier,
-		boolean probeNewStatus,OID newOID,int newStoreAs,SnmpDataType newDataType)
-{
-	super.updateProbe(probeNewName, probeNewInterval, probeNewMultiplier, probeNewStatus);
-	this.setOid(newOID);
-	this.setStoreAs(newStoreAs);
-	this.setDataType(newDataType);
-}
 
 @Override
 public ArrayList<Object> Check(Host h) //Only V1

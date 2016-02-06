@@ -9,5 +9,8 @@ public class Enums {
 		{
 		nics,disks	
 		}
-	
+	public static enum SnmpStoreAs
+	{
+		asIs,delta
+	}
 }
