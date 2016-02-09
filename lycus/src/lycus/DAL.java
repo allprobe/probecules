@@ -222,7 +222,7 @@ public class DAL implements IDAL {
 			return true;
 		return false;
 	}
-	
+
 	public void createFailedRequestFile(String apiStage, String data) {
 		String fileName = System.currentTimeMillis() + "_" + apiStage + ".log";
 		PrintWriter writer;

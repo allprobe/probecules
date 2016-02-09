@@ -43,6 +43,10 @@ public class UsersManager {
 		return users;
 	}
 
+	public static User getUser(UUID uid) {
+		return getUsers().get(uid);
+	}
+	
 	public static void setUsers(HashMap<UUID, User> users) {
 		UsersManager.users = users;
 	}

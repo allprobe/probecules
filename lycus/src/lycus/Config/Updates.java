@@ -3,10 +3,19 @@
  */
 package lycus.Config;
 
+import javax.print.attribute.standard.PrinterLocation;
+
+import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
+
+import Model.ThreadsUpdates;
+import Model.UpdateModel;
+import Utils.JsonUtil;
 import lycus.DAL;
 import lycus.Enums.ApiAction;
 import lycus.Interfaces.IDAL;
+import lycus.Updates.BaseUpdate;
+import lycus.Updates.UpdateFactory;
 
 /**
  * @author orenharari
@@ -22,7 +31,7 @@ public class Updates implements Runnable {
 		}
 		else
 		{
-			JSONObject jsonObject = dal.get(ApiAction.GetThreadsUpdates);
+			JSONObject jsonObject = dal.get(ApiAction.DevGetThreadsUpdates);
 			runUpdates(jsonObject);
 		}
 		
@@ -30,8 +39,24 @@ public class Updates implements Runnable {
 	}
 
 	private Boolean runUpdates(JSONObject jsonObject) {
-		// TODO Auto-generated method stub
-		return null;
+		try
+		{
+			ThreadsUpdates threadsUpdates = (ThreadsUpdates)JsonUtil.ToObject(jsonObject, ThreadsUpdates.class);
+			if (threadsUpdates.threads_updates.length < 1)
+				return false;
+			
+			for (UpdateModel update : threadsUpdates.threads_updates)
+			{
+				BaseUpdate baseUpdate = UpdateFactory.getUpdate(update);
+				baseUpdate.Run();
+			}
+		}
+		catch (Exception ex)
+		{
+			System.out.println(ex.getMessage());
+		}
+	
+		return true;
 	}
 
 	@Override

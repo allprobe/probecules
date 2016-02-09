@@ -56,7 +56,11 @@ public class User {
 		this.email = email;
 	}
 
-
+	public Host getHost(UUID uid)
+	{
+		return getHosts().get(uid);
+	}
+	
 	public Map<UUID, SnmpTemplate> getSnmpTemplates() {
 		return snmpTemplates;
 	}

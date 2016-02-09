@@ -93,19 +93,28 @@ public class Host {
 	public String getBucket() {
 		return bucket;
 	}
+	
 	public void setBucket(String bucket) {
 		this.bucket = bucket;
 	}
+	
 	public UUID getNotificationGroups() {
 		return notificationGroups;
 	}
+	
 	public void setNotificationGroups(UUID notificationGroups) {
 		this.notificationGroups = notificationGroups;
 	}
+	
 	public HashMap<String,RunnableProbe> getRunnableProbes() {
 		return runnableProbes;
 	}
 
+	public RunnableProbe getRunnableProbe(UUID uid)
+	{
+		return getRunnableProbes().get(uid);
+	}
+	
 	private void setRunnableProbes(HashMap<String,RunnableProbe> runnableProbes) {
 		this.runnableProbes = runnableProbes;
 	}
