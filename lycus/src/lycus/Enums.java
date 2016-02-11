@@ -12,15 +12,16 @@ public class Enums {
 		GetThreadsUpdates, 
 		DevGetThreadsUpdates
 	}
-		public static enum DiscoveryElementType
-		{
+	
+	public static enum DiscoveryElementType
+	{
 		nics,disks	
 	}
+	
 	public static enum SnmpStoreAs
 	{
 		asIs,delta
 	}
-	
 	
 	public static enum UpdateType
 	{
