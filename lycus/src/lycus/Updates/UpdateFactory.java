@@ -15,41 +15,28 @@ public class UpdateFactory {
 				case Constants.newTrigger:
 				case Constants.updateTrigger:
 				case Constants.deleteTrigger:
-					
-					
-					break;
+					return new TriggerUpdate(update);
 					
 				case Constants.updateBucket:
 				case Constants.deleteBucket:
+					return new BucketUpdate(update);
 					
-					break;
-					
-					
+				case Constants.updateElement:
 				case Constants.updateDiscovery:
 				case Constants.deleteDiscovery:
-					
-					
+					return new DiscoveryUpdate(update);
 					
 				case Constants.updateHost:
 				case Constants.deleteHost:
-					
-					break;
+					return new HostUpdate(update);
 				
 				case Constants.updateTemplate:	
 				case Constants.deleteTemplate:
-					break;
-				
-				
-				
-					
-				case Constants.updateElement:
-					
-					break;
+					return new TemplateUpdate(update);
 					
 				case Constants.updateSnmp:
 				case Constants.deleteSnmp:
-			
-					break;
+					return new SnmpUpdate(update);
 			}
 	      
 	      return null;
