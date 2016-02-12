@@ -7,8 +7,7 @@ public class DiscoveryElement implements Runnable {
 	RunnableDiscoveryProbeResults container;
 	private int index;
 	private String name;
-	public DiscoveryElement(RunnableDiscoveryProbeResults dp,String parentOidString,int index,String name) {
-//		this.parentOid=parentOidString;
+	public DiscoveryElement(RunnableDiscoveryProbeResults dp,int index,String name) {
 		this.container=dp;
 		this.index=index;
 		this.name=name;

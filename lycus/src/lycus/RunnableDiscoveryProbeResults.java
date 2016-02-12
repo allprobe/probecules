@@ -4,6 +4,10 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
 
+import org.snmp4j.smi.OID;
+
+import lycus.Enums.SnmpStoreAs;
+
 public class RunnableDiscoveryProbeResults extends RunnableProbeResults {
 
 	private HashMap<Integer,DiscoveryElement> elements;
@@ -25,56 +29,87 @@ public class RunnableDiscoveryProbeResults extends RunnableProbeResults {
 	public synchronized void acceptResults(ArrayList<Object> results) throws Exception{
 		super.acceptResults(results);
 		
+		HashMap<Integer,DiscoveryElement> lastScanElements=null;
+		
 		switch (((DiscoveryProbe)this.getRp().getProbe()).getType()) {
 		case nics:
-			results = this.acceptResultsForNics(results);
+			lastScanElements = this.convertSnmpWalkToNicsElements(results);
 			break;
 		case disks:
-			results = this.acceptResultsForDisks(results);
+			lastScanElements = this.acceptResultsForDisks(results);
 			break;
 		}
-
-		
-				try{
-			checkIfTriggerd();
-		}
-		catch(Exception e)
-		{
-			SysLogger.Record(new Log("Error triggering RunnableProbe: "+this.getRp(),LogType.Warn,e));
-		}
+	
+		boolean theSame=this.isElementsIdentical(lastScanElements);
+		if(theSame)
+			return;
+		this.stopElementsThreads();
+		this.mergeNewElements();
+		this.startElementsThreads();
+			
 	}
 
-	private ArrayList<Object> acceptResultsForDisks(ArrayList<Object> results) {
+	private void startElementsThreads() {
+		// TODO Auto-generated method stub
+		
+	}
+
+	private void mergeNewElements() {
+		// TODO Auto-generated method stub
+		
+	}
+
+	private void stopElementsThreads() {
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	protected void checkIfTriggerd() throws Exception {
+		super.checkIfTriggerd();
+	}
+	
+	
+	private HashMap<Integer,DiscoveryElement> acceptResultsForDisks(ArrayList<Object> results) {
 		// TODO Auto-generated method stub
 		return null;
 	}
 
-	private ArrayList<Object> acceptResultsForNics(ArrayList<Object> results) {
+	private HashMap<Integer,DiscoveryElement> convertSnmpWalkToNicsElements(ArrayList<Object> results) {
 		
 		HashMap<Integer,DiscoveryElement> lastElements=new HashMap<Integer,DiscoveryElement>();
 		
+		Long ifInOctets=null;
+		Long ifOutOctets=null;
 		Map<String,String> walkResults=(Map<String,String>)results.get(0);
 		for(Map.Entry<String, String> entry:walkResults.entrySet())
 		{
 			if(!entry.getKey().toString().contains("1.3.6.1.2.1.2.2.1.1"))
 			continue;
 			int index=Integer.parseInt(entry.getValue());
+			if(index==0)
+				SysLogger.Record(new Log("snmp OID index cannot be zero!",LogType.Warn));
+			
 			String name=walkResults.get("1.3.6.1.2.1.2.2.1.2."+index);
-			long ifInOctets=Long.parseLong(walkResults.get("1.3.6.1.2.1.2.2.1.10."+index));
-			long ifOutOctets=Long.parseLong(walkResults.get("1.3.6.1.2.1.2.2.1.16."+index));
-			DiscoveryNicElement element=new DiscoveryNicElement(this,"1.3.6.1.2.1.2.2.1",index,name);
-//			element.getValues().put("IN", ifInOctets);			
-//			element.getValues().put("OUT",ifOutOctets);
+			
+//			ifInOctets=Long.parseLong(walkResults.get("1.3.6.1.2.1.2.2.1.10."+index));
+//			ifOutOctets=Long.parseLong(walkResults.get("1.3.6.1.2.1.2.2.1.16."+index));
+
+			DiscoveryNicElement element=new DiscoveryNicElement(this,index,name);
 			lastElements.put(index, element);
 		}
+
+		if(lastElements.size()==0)
+			return null;
 		
-		boolean theSame=this.isElementsIdentical(lastElements);
-//		if(theSame)
+		return lastElements;
+		
 			
-		
-		return null;
 	}
 	private boolean isElementsIdentical(HashMap<Integer,DiscoveryElement> lastElements) {
+		
+		if(this.getElements()==null&&lastElements==null)
+			return true;
 		if(lastElements!=null)
 				if(this.getElements()==null)
 					return false;

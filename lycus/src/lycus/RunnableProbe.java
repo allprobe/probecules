@@ -98,6 +98,8 @@ public class RunnableProbe implements Runnable {
 			return ProbeTypes.SNMP;
 		if (getProbe() instanceof RBLProbe)
 			return ProbeTypes.RBL;
+		if (getProbe() instanceof DiscoveryProbe)
+			return ProbeTypes.DISCOVERY;
 		throw new Exception("Bad RunnableProbe Type > " + this.getRPString());
 	}
 

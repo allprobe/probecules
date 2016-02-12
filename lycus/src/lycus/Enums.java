@@ -16,13 +16,12 @@ public class Enums {
 	public static enum DiscoveryElementType
 	{
 		nics,disks	
-	}
+		}
 	
 	public static enum SnmpStoreAs
 	{
 		asIs,delta
 	}
-	
 	public static enum UpdateType
 	{
 		pod,   // Update Probe
@@ -43,7 +42,6 @@ public class Enums {
 		ude,       // Update element
 		rdisc      // Delete discovery
 	}
-	
 	public static enum Action {
 		New,
 		Update,

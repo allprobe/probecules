@@ -31,7 +31,7 @@ public class Updates implements Runnable {
 		}
 		else
 		{
-			JSONObject jsonObject = dal.get(ApiAction.DevGetThreadsUpdates);
+			JSONObject jsonObject = dal.get(ApiAction.GetThreadsUpdates);
 			runUpdates(jsonObject);
 		}
 		
