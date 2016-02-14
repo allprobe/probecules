@@ -10,6 +10,7 @@ import com.google.gson.JsonObject;
 
 import Model.UpdateModel;
 import lycus.ApiInterface;
+import lycus.Constants;
 import lycus.DAL;
 import lycus.Enums.ApiAction;
 import lycus.Host;
@@ -41,7 +42,7 @@ public class ProbeUpdate extends BaseUpdate {
 			JSONObject hosts = new JSONObject();
 			JSONArray hostsArray = new JSONArray();
 			hostsArray.add(getUpdate().host_id);
-			hosts.put("hosts", hostsArray);
+			hosts.put(Constants.hosts, hostsArray);
 
 			JSONObject jsonObject = dal.put(ApiAction.GetHosts, hosts);
 
@@ -55,7 +56,7 @@ public class ProbeUpdate extends BaseUpdate {
 		}
 
 		if (!user.isProbeExist(getUpdate().probe_id)) {
-			// Get probe from Ran for probe_id
+			// Roi: Create probe from json
 			// host = new Host(update.host_id, String name, String host_ip,
 			// boolean hostStatus, boolean snmpStatus,String bucket,UUID
 			// notifGroups)
