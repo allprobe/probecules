@@ -23,5 +23,7 @@ public class Constants {
 	public final static String  updateDiscovery = "udisc";
 	public final static String  updateElement = "ude";
 	public final static String  deleteDiscovery = "rdisc";
+	public final static String  hosts = "hosts";
+	
 	
 }
