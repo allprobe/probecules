@@ -12,6 +12,9 @@ import java.util.concurrent.ScheduledFuture;
 
 import org.snmp4j.smi.OID;
 
+import lycus.Probes.Probe;
+import lycus.Probes.SnmpProbe;
+
 public class User {
 	private UUID userId;
 	private String email;
@@ -86,6 +89,20 @@ public class User {
 		this.hosts = host;
 	}
 
+	public Boolean isHostExist(UUID host_id)
+	{
+		return getHost(host_id) != null;
+	}
+	
+	public Boolean addHost(Host host)
+	{
+		Host newHost = getHost(host.getHostId());
+		if (newHost == null)
+			hosts.put(host.getHostId(), host);
+	
+		return true;
+	}
+	
 	public Map<String, Probe> getTemplateProbes() {
 		return templateProbes;
 	}
@@ -105,6 +122,16 @@ public class User {
 	}
 
 
+	public  List<RunnableProbe> getRunnableProbesFor(String probe_id) {
+		List<RunnableProbe> runnableProbes = new ArrayList<RunnableProbe>();
+		Set<Host> hosts=new HashSet<Host>(this.getHosts().values());
+		for(Host host:hosts)
+		{
+			runnableProbes.addAll(host.getRunnableProbes(probe_id));
+		}
+		return runnableProbes;
+	}
+	
 //	public Probe getProbe(UUID templateId, String probeId) {
 //		for (Map.Entry<String, RunnableProbe> entry : this.getAllRunnableProbes().entrySet()) {
 //			if (entry.getKey().contains(templateId.toString() + "@" + probeId))
@@ -161,15 +188,15 @@ public class User {
 	// this.getSnmpManager().runAllBatches();
 	// }
 
-	public Probe getProbeByID(String probeId) {
-		for (Map.Entry<String, Probe> p : this.getTemplateProbes().entrySet()) {
-			if(p.getKey().split("@")[1].equals(probeId))
-			{
-				return p.getValue();
-			}
-			}
-		return null;
-		}
+//	public Probe getProbeByID(String probeId) {
+//		for (Map.Entry<String, Probe> p : this.getTemplateProbes().entrySet()) {
+//			if(p.getKey().split("@")[1].equals(probeId))
+//			{
+//				return p.getValue();
+//			}
+//			}
+//		return null;
+//		}
 
 //	public Set<Host> getHostsByTemplate(Template t) {
 //		if (t == null)
@@ -251,125 +278,12 @@ public class User {
 		}
 	}
 
-//	public boolean updatePingerProbe(UUID templateId, String probeId, String probeNewName, long probeNewInterval,
-//			float probeNewMultiplier, boolean probeNewStatus, List<String> probeKey) {
-//		Probe probe = this.getProbe(templateId, probeId);
-//		if (probe == null)
-//			return false;
-//		boolean intervalChanged = probeNewInterval != probe.getInterval() ? true : false;
-//		PingerProbe pingerProbe = (PingerProbe) probe;
-//		pingerProbe.updateProbeAttributes(probeNewName, probeNewInterval, probeNewMultiplier, probeNewStatus,
-//				Integer.parseInt(probeKey.get(1)), Integer.parseInt(probeKey.get(2)),
-//				Integer.parseInt(probeKey.get(3)));
-//		if (intervalChanged)
-//			return this.reInsertProbeRunningPool(probeId);
-//		return false;
-//	}
-//
-//	public boolean updatePorterProbe(UUID templateId, String probeId, String probeNewName, long probeNewInterval,
-//			float probeNewMultiplier, boolean probeNewStatus, List<String> probeKey) {
-//		Probe probe = this.getProbe(templateId, probeId);
-//		if (probe == null)
-//			return false;
-//		boolean intervalChanged = probeNewInterval != probe.getInterval() ? true : false;
-//		PorterProbe porterProbe = (PorterProbe) probe;
-//		int sendingType;
-//		String send;
-//		String receive;
-//		if (probeKey.size() == 5) {
-//			List<String> sendNreceive = GeneralFunctions.valuesOrdered(GeneralFunctions.Base64Decode(probeKey.get(4)));
-//			sendingType = Integer.parseInt(sendNreceive.get(0));
-//			send = sendNreceive.get(1);
-//			receive = sendNreceive.get(2);
-//		} else {
-//			sendingType = -1;
-//			send = "Hi there!";
-//			receive = "";
-//		}
-//		porterProbe.updateProbeAttributes(probeNewName, probeNewInterval, probeNewMultiplier, probeNewStatus,
-//				probeKey.get(1), Integer.parseInt(probeKey.get(2)), Integer.parseInt(probeKey.get(3)), send, receive);
-//		if (intervalChanged)
-//			return this.reInsertProbeRunningPool(probeId);
-//		return false;
-//	}
-//
-//	public boolean updateWeberProbe(UUID templateId, String probeId, String probeNewName, long probeNewInterval,
-//			float probeNewMultiplier, boolean probeNewStatus, List<String> probeKey) {
-//		Probe probe = this.getProbe(templateId, probeId);
-//		if (probe == null)
-//			return false;
-//		boolean intervalChanged = probeNewInterval != probe.getInterval() ? true : false;
-//		WeberProbe weberProbe = (WeberProbe) probe;
-//		String authUsername;
-//		String authPassword;
-//		if (probeKey.get(3).equals("no")) {
-//			authUsername = null;
-//			authPassword = null;
-//		} else {
-//			authUsername = probeKey.get(4);
-//			authPassword = probeKey.get(5);
-//		}
-//
-//		weberProbe.updateProbeAttributes(probeNewName, probeNewInterval, probeNewMultiplier, probeNewStatus,
-//				GeneralFunctions.Base64Decode(probeKey.get(0)), probeKey.get(2), probeKey.get(3), authUsername,
-//				authPassword, Integer.parseInt(probeKey.get(6)));
-//		if (intervalChanged)
-//			return this.reInsertProbeRunningPool(probeId);
-//		return false;
-//	}
-//
-//	public boolean updateSnmpProbe(UUID templateId, String probeId, String probeNewName, long probeNewInterval,
-//			float probeNewMultiplier, boolean probeNewStatus, List<String> probeKey) {
-//		Probe probe = this.getProbe(templateId, probeId);
-//		if (probe == null)
-//			return false;
-//		boolean intervalChanged = probeNewInterval != probe.getInterval() ? true : false;
-//		SnmpProbe snmpProbe = (SnmpProbe) probe;
-//		SnmpDataType dataType = null;
-//		switch (probeKey.get(3)) {
-//		case "integer":
-//			dataType = SnmpDataType.Numeric;
-//			break;
-//		case "string":
-//			dataType = SnmpDataType.Text;
-//			break;
-//		case "float":
-//			dataType = SnmpDataType.Numeric;
-//			break;
-//		case "boolean":
-//			dataType = SnmpDataType.Text;
-//			break;
-//		default: {
-//			SysLogger.Record(new Log("Probe: " + probeId + " Wrong Data Type, Doesn't Updated!", LogType.Error));
-//			return false;
-//		}
-//		}
-//		snmpProbe.updateProbeAttributes(probeNewName, probeNewInterval, probeNewMultiplier, probeNewStatus,
-//				new OID(probeKey.get(0)), Integer.parseInt(probeKey.get(2)), dataType);
-//		if (intervalChanged)
-//			return this.reInsertProbeRunningPool(probeId);
-//		return false;
-//	}
-//
-//	public boolean updateRBLProbe(UUID templateId, String probeId, String probeNewName, long probeNewInterval,
-//			float probeNewMultiplier, boolean probeNewStatus, List<String> probeKey) {
-//		Probe probe = this.getProbe(templateId, probeId);
-//		if (probe == null)
-//			return false;
-//		boolean intervalChanged = probeNewInterval != probe.getInterval() ? true : false;
-//		RBLProbe rblProbe = (RBLProbe) probe;
-//		rblProbe.updateProbeAttributes(probeNewName, probeNewInterval, probeNewMultiplier, probeNewStatus,
-//				probeKey.get(0));
-//		if (intervalChanged)
-//			return this.reInsertProbeRunningPool(probeId);
-//		return false;
-//	}
-
 	public boolean addRunnableProbe(RunnableProbe rp)
 	{
-		this.getAllRunnableProbes().put(rp.getRPString(), rp);
+		this.getHost(rp.getHost().getHostId()).getRunnableProbes().put(rp.getRPString(), rp);
 		return this.startRunnableProbe(rp);
 	}
+	
 	public boolean removeRunnableProbe(RunnableProbe rp)
 	{
 		UUID hostId=rp.getHost().getHostId();
@@ -384,6 +298,26 @@ public class User {
 
 	public String toString() {
 		return this.getUserId().toString();
+	}
+	
+	public Probe getProbeFor(String probe_id)
+	{
+		Map<String, Probe> probes = getTemplateProbes();
+		return probes.get(probe_id);
+	}
+	
+	public boolean isProbeExist(String probe_id)
+	{
+		return getProbeFor(probe_id) != null;
+	}
 
+	public boolean removeRunnableProbes(String probe_id)
+	{
+		List<RunnableProbe> runnableProbes = getRunnableProbesFor(probe_id);
+		for (RunnableProbe runnableProbe : runnableProbes)
+		{
+			removeRunnableProbe(runnableProbe);
+		}	
+		return true;
 	}
 }

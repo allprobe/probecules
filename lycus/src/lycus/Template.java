@@ -5,6 +5,8 @@ import java.util.List;
 import java.util.Map;
 import java.util.UUID;
 
+import lycus.Probes.Probe;
+
 public class Template {
 	private UUID templateId;
 	private Map<String,Probe> probes;

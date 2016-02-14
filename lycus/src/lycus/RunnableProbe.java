@@ -7,6 +7,13 @@ import java.util.concurrent.ScheduledFuture;
 
 import org.apache.commons.collections4.queue.CircularFifoQueue;
 
+import lycus.Probes.PingerProbe;
+import lycus.Probes.PorterProbe;
+import lycus.Probes.Probe;
+import lycus.Probes.RBLProbe;
+import lycus.Probes.SnmpProbe;
+import lycus.Probes.WeberProbe;
+
 public class RunnableProbe implements Runnable {
 	private Host host;
 	private Probe probe;
@@ -14,31 +21,35 @@ public class RunnableProbe implements Runnable {
 	private boolean isRunning;
 	private RunnableProbeResults results;
 
-	public RunnableProbe(Host host, Probe probe) throws Exception {
+	public RunnableProbe(Host host, Probe probe) {
 		this.setHost(host);
 		this.setProbe(probe);
 		this.setActive(true);
+		if (this.getProbeType() == null)
+		{
+			// Must be handled by Roi
+			return;
+		}
 		
 		switch(this.getProbeType())
 		{
-		case PING: results=new RunnablePingerProbeResults(this);
-		break;
-		case PORT: results=new RunnablePorterProbeResults(this);
-		break;
-		case WEB: results=new RunnableWeberProbeResults(this);
-		break;
-		case SNMP: results=new RunnableSnmpProbeResults(this);
-		break;
-		case SNMPv1: results=new RunnableSnmpProbeResults(this);
-		break;
-		case RBL: results=new RunnableRblProbeResults(this);
-		break;
-		case TRACEROUTE:results=new RunnableTracerouteProbeResults(this);
-		break;
-		case DISCOVERY:results=new RunnableDiscoveryProbeResults(this);
-		break;
+			case PING: results=new RunnablePingerProbeResults(this);
+			break;
+			case PORT: results=new RunnablePorterProbeResults(this);
+			break;
+			case WEB: results=new RunnableWeberProbeResults(this);
+			break;
+			case SNMP: results=new RunnableSnmpProbeResults(this);
+			break;
+			case SNMPv1: results=new RunnableSnmpProbeResults(this);
+			break;
+			case RBL: results=new RunnableRblProbeResults(this);
+			break;
+			case TRACEROUTE:results=new RunnableTracerouteProbeResults(this);
+			break;
+			case DISCOVERY:results=new RunnableDiscoveryProbeResults(this);
+			break;
 		}
-		
 	}
 
 	public Host getHost() {
@@ -87,7 +98,7 @@ public class RunnableProbe implements Runnable {
 	}
  
 
-	public ProbeTypes getProbeType() throws Exception {
+	public ProbeTypes getProbeType() {
 		if (getProbe() instanceof PingerProbe)
 			return ProbeTypes.PING;
 		if (getProbe() instanceof PorterProbe)
@@ -100,7 +111,7 @@ public class RunnableProbe implements Runnable {
 			return ProbeTypes.RBL;
 		if (getProbe() instanceof DiscoveryProbe)
 			return ProbeTypes.DISCOVERY;
-		throw new Exception("Bad RunnableProbe Type > " + this.getRPString());
+		return null;
 	}
 
 	
@@ -233,5 +244,18 @@ public class RunnableProbe implements Runnable {
 		s.append(this.getProbe().getProbe_id());
 		return s.toString();
 	}
-
+	
+	// Roi handle roleups
+	public boolean changeRunnableProbeInterval(Long interval){
+		try {
+			this.stop();
+			this.getProbe().setInterval(interval);
+		} catch (Exception e) {
+			return false;
+		}
+		this.start();
+		return true;
+	}
+	
+	
 }

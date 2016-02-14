@@ -10,7 +10,8 @@ public class Enums {
 		PutEvents,
 		GetServerLiveEvents,
 		GetThreadsUpdates, 
-		DevGetThreadsUpdates
+		DevGetThreadsUpdates,
+		GetHosts
 	}
 	
 	public static enum DiscoveryElementType
@@ -22,6 +23,7 @@ public class Enums {
 	{
 		asIs,delta
 	}
+	
 	public static enum UpdateType
 	{
 		pod,   // Update Probe

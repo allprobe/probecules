@@ -13,6 +13,8 @@ import org.snmp4j.transport.DefaultUdpTransportMapping;
 
 import com.google.common.collect.Lists;
 
+import lycus.Probes.SnmpProbe;
+
 public class SnmpProbesBatch implements Runnable {
 	private String batchId;// hostId@templateId@interval@batchUUID
 	private SnmpManager snmpManager;

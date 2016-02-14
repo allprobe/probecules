@@ -3,6 +3,8 @@ package lycus;
 import java.util.ArrayList;
 import java.util.UUID;
 
+import lycus.Probes.Probe;
+
 public class TracerouteProbe extends Probe {
 
 	private int timeout;

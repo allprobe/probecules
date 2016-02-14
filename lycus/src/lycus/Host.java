@@ -115,6 +115,18 @@ public class Host {
 		return getRunnableProbes().get(uid);
 	}
 	
+	public List<RunnableProbe> getRunnableProbes(String probe_id)
+	{
+		List<RunnableProbe> runnableProbes = new ArrayList<RunnableProbe>();
+		for (RunnableProbe runnableProbe : getRunnableProbes().values())
+		{
+			if (runnableProbe.getProbe().getProbe_id().equals(probe_id))
+				runnableProbes.add(runnableProbe);
+		}
+		return runnableProbes;
+	}
+	
+	
 	private void setRunnableProbes(HashMap<String,RunnableProbe> runnableProbes) {
 		this.runnableProbes = runnableProbes;
 	}

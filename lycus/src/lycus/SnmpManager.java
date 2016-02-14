@@ -25,6 +25,8 @@ import org.snmp4j.smi.OctetString;
 import org.snmp4j.smi.VariableBinding;
 import org.snmp4j.transport.DefaultUdpTransportMapping;
 
+import lycus.Probes.Probe;
+
 public class SnmpManager {
 	private User user;
 	private HashMap<String, SnmpProbesBatch> batches;// batchId:hostId@templateId@interval@batchUUID

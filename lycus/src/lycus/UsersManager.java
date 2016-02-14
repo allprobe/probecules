@@ -5,6 +5,7 @@
 package lycus;
 
 import java.io.IOException;
+import java.time.chrono.MinguoEra;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.HashSet;
@@ -19,6 +20,13 @@ import org.json.simple.JSONArray;
 import org.snmp4j.smi.OID;
 
 import com.google.gson.Gson;
+
+import lycus.Probes.PingerProbe;
+import lycus.Probes.PorterProbe;
+import lycus.Probes.Probe;
+import lycus.Probes.RBLProbe;
+import lycus.Probes.SnmpProbe;
+import lycus.Probes.WeberProbe;
 
 /**
  * 
@@ -46,7 +54,7 @@ public class UsersManager {
 	public static User getUser(UUID uid) {
 		return getUsers().get(uid);
 	}
-	
+
 	public static void setUsers(HashMap<UUID, User> users) {
 		UsersManager.users = users;
 	}
@@ -264,52 +272,36 @@ public class UsersManager {
 				}
 				case "http": {
 					String rpStr = probeId;
-					if (rpStr.contains(
-							"http_8eacbc31-ec97-45a7-96bc-13d4af8b3887"))
+					if (rpStr.contains("http_8eacbc31-ec97-45a7-96bc-13d4af8b3887"))
 						System.out.println("BREAKPOINT - RunnableWeberProbeResults");
-					
 
-					
 					String url = GeneralFunctions.Base64Decode((String) key.get("urls"));
 					String method = (String) key.get("http_method");
 					String auth = (String) key.get("http_auth");
 					String authUser = GeneralFunctions.Base64Decode((String) key.get("http_auth_user"));
 					String authPass = GeneralFunctions.Base64Decode((String) key.get("http_auth_password"));
 					int timeout = Integer.parseInt((String) key.get("timeout"));
-					
-					if(auth.equals("no"))
+
+					if (auth.equals("no"))
 						probe = new WeberProbe(user, probeId, templateId, name, interval, multiplier, status, timeout,
 								method, url);
 					else
-					probe = new WeberProbe(user, probeId, templateId, name, interval, multiplier, status, timeout,
-							method, url, auth, authUser, authPass);
+						probe = new WeberProbe(user, probeId, templateId, name, interval, multiplier, status, timeout,
+								method, url, auth, authUser, authPass);
 					break;
 				}
 				case "snmp": {
 
 					OID oid = new OID((String) key.get("snmp_oid"));
-					Enums.SnmpStoreAs storeValue = Integer.parseInt((String) key.get("store_value_as"))==1?Enums.SnmpStoreAs.asIs:Enums.SnmpStoreAs.delta;	
+					Enums.SnmpStoreAs storeValue = Integer.parseInt((String) key.get("store_value_as")) == 1
+							? Enums.SnmpStoreAs.asIs : Enums.SnmpStoreAs.delta;
 					String valueType = (String) key.get("value_type");
 					String valueUnit = (String) key.get("value_unit");
-					SnmpDataType dataType;
-					switch (valueType) {
-					case "integer":
-						dataType = SnmpDataType.Numeric;
-						break;
-					case "string":
-						dataType = SnmpDataType.Text;
-						break;
-					case "float":
-						dataType = SnmpDataType.Numeric;
-						break;
-					case "boolean":
-						dataType = SnmpDataType.Text;
-						break;
-					default: {
+					SnmpDataType dataType = getSnmpDataType(valueType);
+					if (dataType == null) {
 						SysLogger.Record(
 								new Log("Probe: " + probeId + " Wrong Data Type, Doesn't Added!", LogType.Error));
 						continue;
-					}
 					}
 
 					SnmpUnit unit = getSnmpUnit(valueUnit);
@@ -319,23 +311,26 @@ public class UsersManager {
 					break;
 				}
 				case "discovery": {
-					long elementsInterval=Long.parseLong((String) key.get("element_interval"));
+					long elementsInterval = Long.parseLong((String) key.get("element_interval"));
 					int triggerCode = Integer.parseInt((String) key.get("discovery_trigger"));
 					String triggerXValue = (String) key.get("discovery_trigger_x_value");
-					SnmpDataType dataType=SnmpDataType.Numeric;
+					SnmpDataType dataType = SnmpDataType.Numeric;
 					String unitType = (String) key.get("discovery_trigger_unit");
-					String triggerUuid=(String) key.get("trigger_id");
+					String triggerUuid = (String) key.get("trigger_id");
 					TriggerSeverity severity = getTriggerSev((String) key.get("trigger_severity"));
 					SnmpUnit trigValueUnit = getSnmpUnit(unitType);
-					Enums.DiscoveryElementType discoveryType = ((String) key.get("discovery_type")).equals("bw")?Enums.DiscoveryElementType.nics:null;
-					
-					probe=new DiscoveryProbe(user, probeId, templateId, name, interval, multiplier,status,discoveryType,elementsInterval);
-					
-					String triggerId=templateId.toString()+"@"+probeId+"@"+triggerUuid;
-					ArrayList<TriggerCondition> conditions=new ArrayList<TriggerCondition>();
-					TriggerCondition condition=new TriggerCondition(triggerCode, "and",triggerXValue,"");
+					Enums.DiscoveryElementType discoveryType = ((String) key.get("discovery_type")).equals("bw")
+							? Enums.DiscoveryElementType.nics : null;
+
+					probe = new DiscoveryProbe(user, probeId, templateId, name, interval, multiplier, status,
+							discoveryType, elementsInterval);
+
+					String triggerId = templateId.toString() + "@" + probeId + "@" + triggerUuid;
+					ArrayList<TriggerCondition> conditions = new ArrayList<TriggerCondition>();
+					TriggerCondition condition = new TriggerCondition(triggerCode, "and", triggerXValue, "");
 					conditions.add(condition);
-					Trigger discoveryTrigger=new Trigger(triggerId, name, probe, severity, status, "", trigValueUnit,conditions);
+					Trigger discoveryTrigger = new Trigger(triggerId, name, probe, severity, status, "", trigValueUnit,
+							conditions);
 					probe.addTrigger(discoveryTrigger);
 					break;
 				}
@@ -356,6 +351,30 @@ public class UsersManager {
 				continue;
 			}
 		}
+
+	}
+
+	public  static SnmpDataType getSnmpDataType(String valueType) {
+		SnmpDataType dataType;
+		switch (valueType) {
+			case "integer":
+				dataType = SnmpDataType.Numeric;
+				break;
+			case "string":
+				dataType = SnmpDataType.Text;
+				break;
+			case "float":
+				dataType = SnmpDataType.Numeric;
+				break;
+			case "boolean":
+				dataType = SnmpDataType.Text;
+				break;
+			default: {
+				dataType = null;
+	
+			}
+		}
+		return dataType;
 	}
 
 	private static void addTriggers(JSONArray allTemplateTriggersJson, HashMap<String, UUID> probeByUser) {
@@ -403,7 +422,7 @@ public class UsersManager {
 		}
 	}
 
-	private static SnmpUnit getSnmpUnit(String unitType) throws Exception {
+	public static SnmpUnit getSnmpUnit(String unitType) {
 		SnmpUnit unit;
 		switch (unitType) {
 		case "b":
@@ -441,7 +460,8 @@ public class UsersManager {
 			break;
 
 		default: {
-			throw new IOException("Unable to create SnmpUnit unreadble value: " + unitType);
+			unit = null;
+//			throw new IOException("Unable to create SnmpUnit unreadble value: " + unitType);
 		}
 		}
 		return unit;

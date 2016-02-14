@@ -218,13 +218,16 @@ public class RunnableProbesHistory implements Runnable {
 		tableResults = new HashMap<String, String>();
 		RunnableProbe rp = rpr.getRp();
 		tableResults.put("USER_ID", rp.getProbe().getUser().getUserId().toString());
-		try {
+//		try {
+		if (rp.getProbeType() != null) 
 			tableResults.put("PROBE_TYPE", rp.getProbeType().name());
-		} catch (Exception e) {
-			SysLogger
-					.Record(new Log("Wrong RP type: " + rp.getRPString() + ", unable to save results!", LogType.Error));
-			return null;
-		}
+		else return null;
+		
+//		} catch (Exception e) {
+//			SysLogger
+//					.Record(new Log("Wrong RP type: " + rp.getRPString() + ", unable to save results!", LogType.Error));
+//			return null;
+//		}
 		tableResults.put("RESULTS_TIME", resultkey.split("@")[2]);
 		tableResults.put("RESULTS_NAME", resultkey.split("@")[1]);
 		tableResults.put("RESULTS", resultvalue);
@@ -237,13 +240,15 @@ public class RunnableProbesHistory implements Runnable {
 		tableResults = new HashMap<String, String>();
 		RunnableProbe rp = rpr.getRp();
 		tableResults.put("USER_ID", rp.getProbe().getUser().getUserId().toString());
-		try {
-			tableResults.put("PROBE_TYPE", rp.getProbeType().name());
-		} catch (Exception e) {
-			SysLogger
-					.Record(new Log("Wrong RP type: " + rp.getRPString() + ", unable to save results!", LogType.Error));
-			return null;
-		}
+//		try {
+			if (rp.getProbeType() != null) 
+				tableResults.put("PROBE_TYPE", rp.getProbeType().name());
+			else return null;
+//		} catch (Exception e) {
+//			SysLogger
+//					.Record(new Log("Wrong RP type: " + rp.getRPString() + ", unable to save results!", LogType.Error));
+//			return null;
+//		}
 		tableResults.put("RESULTS_TIME", resultkey.split("@")[2]);
 		tableResults.put("RESULTS_NAME", resultkey.split("@")[1]);
 		tableResults.put("RESULTS", resultvalue);

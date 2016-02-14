@@ -3,6 +3,7 @@ package lycus;
 import org.snmp4j.smi.OID;
 
 import lycus.Enums.SnmpStoreAs;
+import lycus.Probes.SnmpProbe;
 
 public class DiscoveryNicElement extends DiscoveryElement {
 

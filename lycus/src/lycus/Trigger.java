@@ -2,6 +2,8 @@ package lycus;
 
 import java.util.ArrayList;
 
+import lycus.Probes.Probe;
+
 public class Trigger implements Cloneable{
 private String triggerId;
 private String name;

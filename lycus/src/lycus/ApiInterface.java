@@ -98,9 +98,9 @@ public class ApiInterface {
 				}
 			case "PUT":
 				PUT = reqBody;
-				boolean isOK=executePutRequest(conn, PUT);
+				String response=executePutRequest(conn, PUT);
 				if (conn.getResponseCode() == 200)
-					return isOK?true:null;
+					return response.equals("")?null:response;
 			}
 		} catch (ParseException pe) {
 			SysLogger.Record(new Log("Unable to parse json string from URL: " + fullUrl + ", failed to init server!",
@@ -118,15 +118,24 @@ public class ApiInterface {
 
 	}
 
-	private static boolean executePutRequest(HttpURLConnection conn, String pUT) throws Exception {
+	private static String executePutRequest(HttpURLConnection conn, String pUT) throws Exception {
 		OutputStreamWriter out = new OutputStreamWriter(conn.getOutputStream());
 		out.write(pUT);
 		out.close();
 		
 		InputStream inputStream=conn.getInputStream();
-		if (GeneralFunctions.convertStreamToString(inputStream).equals("1"))
-			return true;
-		return false;
+
+		BufferedReader rd;
+		StringBuilder sb = new StringBuilder();
+		rd = new BufferedReader(new InputStreamReader(inputStream));
+		String line;
+		while ((line = rd.readLine()) != null) {
+			sb.append(line);
+			sb.append("\n");
+		}
+		rd.close();
+
+		return sb.toString();
 	}
 
 	private static String executeGetRequest(HttpURLConnection conn) throws Exception {

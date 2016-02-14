@@ -31,6 +31,7 @@ public class Updates implements Runnable {
 		}
 		else
 		{
+//			JSONObject jsonObject = dal.get(ApiAction.DevGetThreadsUpdates);
 			JSONObject jsonObject = dal.get(ApiAction.GetThreadsUpdates);
 			runUpdates(jsonObject);
 		}
@@ -48,7 +49,14 @@ public class Updates implements Runnable {
 			for (UpdateModel update : threadsUpdates.threads_updates)
 			{
 				BaseUpdate baseUpdate = UpdateFactory.getUpdate(update);
-				baseUpdate.Run();
+				try
+				{
+					baseUpdate.Run();
+				}
+				catch (Exception ex)
+				{
+					System.out.println(ex.getMessage());
+				}
 			}
 		}
 		catch (Exception ex)

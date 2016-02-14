@@ -5,6 +5,8 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.UUID;
 
+import lycus.Probes.Probe;
+
 public class DiscoveryProbe extends Probe {
 	private Enums.DiscoveryElementType type;
 	private long elementsInterval;

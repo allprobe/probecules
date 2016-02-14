@@ -106,7 +106,7 @@ public class DAL implements IDAL {
 	}
 
 	@Override
-	public Boolean put(ApiAction action, JSONObject reqBody) {
+	public JSONObject put(ApiAction action, JSONObject reqBody) {
 		String fullUrl = getApiUrl();
 		fullUrl += "/" + action.name() + "/";
 		fullUrl += Global.getDataCenterID() + "-" + Global.getThisHostToken() + "/" + Global.getApiAuthToken();
@@ -144,9 +144,9 @@ public class DAL implements IDAL {
 		conn.setAllowUserInteraction(false);
 
 		try {
-			boolean isOK = executePutRequest(conn, reqBody.toJSONString());
+			String response = executePutRequest(conn, reqBody.toJSONString());
 			if (conn.getResponseCode() == HttpURLConnection.HTTP_OK)
-				return isOK ? true : false;
+				return response.equals("") ? null :  (JSONObject) ((new JSONParser()).parse(response.toString()));;
 		} catch (ParseException pe) {
 			SysLogger.Record(new Log("Unable to parse json string from URL: " + fullUrl + ", failed to init server!",
 					LogType.Error));
@@ -212,15 +212,23 @@ public class DAL implements IDAL {
 		return sb.toString();
 	}
 
-	private boolean executePutRequest(HttpURLConnection conn, String body) throws Exception {
+	private String executePutRequest(HttpURLConnection conn, String body) throws Exception {
 		OutputStreamWriter out = new OutputStreamWriter(conn.getOutputStream());
 		out.write(body);
 		out.close();
 
 		InputStream inputStream = conn.getInputStream();
-		if (GeneralFunctions.convertStreamToString(inputStream).equals("1"))
-			return true;
-		return false;
+		BufferedReader rd;
+		StringBuilder sb = new StringBuilder();
+		rd = new BufferedReader(new InputStreamReader(inputStream));
+		String line;
+		while ((line = rd.readLine()) != null) {
+			sb.append(line);
+			sb.append("\n");
+		}
+		rd.close();
+		
+		return sb.toString();
 	}
 
 	public void createFailedRequestFile(String apiStage, String data) {

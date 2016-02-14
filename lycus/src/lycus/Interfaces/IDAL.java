@@ -6,5 +6,5 @@ import lycus.Enums;
 
 public interface IDAL {
 	JSONObject get(Enums.ApiAction action);
-	Boolean put(Enums.ApiAction action, JSONObject reqBody);
+	JSONObject put(Enums.ApiAction action, JSONObject reqBody);
 }

@@ -16,6 +16,12 @@ import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.ScheduledFuture;
 import java.util.concurrent.TimeUnit;
 
+import lycus.Probes.PingerProbe;
+import lycus.Probes.PorterProbe;
+import lycus.Probes.RBLProbe;
+import lycus.Probes.SnmpProbe;
+import lycus.Probes.WeberProbe;
+
 /**
  * 
  * @author Roi
@@ -213,6 +219,8 @@ public class RunInnerProbesChecks extends Thread {
 				RunInnerProbesChecks.RunRblProbeThreads(rp);
 				RblProbeFutureCounter++;
 				return true;
+			default:
+				return false;
 			}
 		} catch (Exception e) {
 			SysLogger.Record(new Log("Unable to start Runnable Probe Thread of: "+rp.getRPString()+", check probe type!", LogType.Warn, e));
@@ -254,12 +262,15 @@ public class RunInnerProbesChecks extends Thread {
 	public static ScheduledFuture<?> getRunnableProbeThread(RunnableProbe rp)
 	{
 		ProbeTypes probeType;
-		try {
-			probeType = rp.getProbeType();
-		} catch (Exception e) {
-			SysLogger.Record(new Log("Unable to get Runnable Probe Thread of: "+rp.getRPString()+", check probe type!",LogType.Warn ));
-			return null;
-		}
+//		try {
+			if ( rp.getProbeType() != null)
+				probeType = rp.getProbeType();
+			else
+				return null;
+//		} catch (Exception e) {
+//			SysLogger.Record(new Log("Unable to get Runnable Probe Thread of: "+rp.getRPString()+", check probe type!",LogType.Warn ));
+//			return null;
+//		}
 		switch(probeType)
 		{
 		case PING:return getPingerFutureMap().get(rp.getRPString());
@@ -275,4 +286,6 @@ public class RunInnerProbesChecks extends Thread {
 	public static void decreaseRpInBatches() {
 		SnmpProbeBatchFutureCounter--;
 		}
+	
+	
 }
