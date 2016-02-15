@@ -101,7 +101,7 @@ public class LycusMain  {
 			
 			Updates updates = new Updates();
 			Executors.newSingleThreadScheduledExecutor().scheduleAtFixedRate(updates, 0, 30, TimeUnit.SECONDS);
- 
+ ;;
 		
 		//
 		// RunnableProbesUpdates updates=new RunnableProbesUpdates(5);
