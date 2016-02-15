@@ -22,7 +22,6 @@ import org.json.simple.parser.ParseException;
 
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
-import com.sun.org.glassfish.gmbal.ManagedAttribute;
 
 public class RunnableProbesHistory implements Runnable {
 	private HashMap<String, RunnableProbeResults> results;
