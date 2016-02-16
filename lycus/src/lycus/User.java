@@ -7,11 +7,6 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import java.util.UUID;
-import java.util.concurrent.ConcurrentHashMap;
-import java.util.concurrent.ScheduledFuture;
-
-import org.snmp4j.smi.OID;
-
 import lycus.Probes.Probe;
 import lycus.Probes.SnmpProbe;
 

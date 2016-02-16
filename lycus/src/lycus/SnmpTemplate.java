@@ -4,8 +4,6 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.UUID;
 
-import org.snmp4j.mp.SnmpConstants;
-
 public class SnmpTemplate {
 	private UUID SnmpTemplateId;
 	private String snmpTemplateName;

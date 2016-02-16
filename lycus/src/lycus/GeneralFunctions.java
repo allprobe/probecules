@@ -6,7 +6,6 @@ package lycus;
 
 import java.io.IOException;
 import java.io.UnsupportedEncodingException;
-import java.nio.charset.Charset;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Paths;
@@ -16,9 +15,6 @@ import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.Vector;
-import java.util.regex.Pattern;
-
 import org.apache.commons.codec.binary.Base64;
 import org.snmp4j.PDU;
 import org.snmp4j.smi.OID;

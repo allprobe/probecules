@@ -1,7 +1,5 @@
 package lycus;
 
-import java.util.HashMap;
-
 public class DiscoveryElement implements Runnable {
 
 	RunnableDiscoveryProbeResults container;

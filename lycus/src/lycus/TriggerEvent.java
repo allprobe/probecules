@@ -1,7 +1,5 @@
 package lycus;
 
-import java.util.UUID;
-
 public class TriggerEvent {
 private RunnableProbe rp;
 private Trigger trigger;

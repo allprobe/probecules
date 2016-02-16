@@ -3,8 +3,6 @@ package Utils;
 import org.json.simple.JSONObject;
 import com.google.gson.Gson;
 
-import Model.ThreadsUpdates;
-
 public class JsonUtil {
 	public static <T> T ToObject(JSONObject jsonObject, Class<T> generic){
 		//ThreadsUpdates threadsUpdates = new Gson().fromJson(jsonObject.toString(), ThreadsUpdates.class);

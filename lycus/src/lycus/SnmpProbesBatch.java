@@ -11,8 +11,6 @@ import org.snmp4j.Snmp;
 import org.snmp4j.TransportMapping;
 import org.snmp4j.transport.DefaultUdpTransportMapping;
 
-import com.google.common.collect.Lists;
-
 import lycus.Probes.SnmpProbe;
 
 public class SnmpProbesBatch implements Runnable {

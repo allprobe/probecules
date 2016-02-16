@@ -4,8 +4,6 @@
  */
 package lycus;
 
-import java.io.IOException;
-import java.time.chrono.MinguoEra;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.HashSet;
@@ -14,7 +12,6 @@ import java.util.Map;
 import java.util.Set;
 import java.util.UUID;
 
-import org.apache.commons.collections4.queue.CircularFifoQueue;
 import org.json.simple.JSONObject;
 import org.json.simple.JSONArray;
 import org.snmp4j.smi.OID;

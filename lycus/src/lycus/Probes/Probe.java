@@ -6,17 +6,11 @@ package lycus.Probes;
 
 import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.List;
 import java.util.UUID;
-import org.apache.commons.collections4.queue.*;
-import org.snmp4j.smi.OID;
-
 import Model.KeyUpdateModel;
 import lycus.Host;
 import lycus.Trigger;
 import lycus.User;
-import lycus.UsersManager;
-import lycus.Enums.SnmpStoreAs;
 
 /**
  *

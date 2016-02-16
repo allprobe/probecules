@@ -4,10 +4,6 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
 
-import org.snmp4j.smi.OID;
-
-import lycus.Enums.SnmpStoreAs;
-
 public class RunnableDiscoveryProbeResults extends RunnableProbeResults {
 
 	private HashMap<Integer,DiscoveryElement> elements;

@@ -4,8 +4,6 @@
  */
 package lycus;
 
-import java.io.IOException;
-
 /**
  *
  * @author Roi

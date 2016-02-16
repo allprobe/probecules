@@ -1,4 +1,4 @@
-//package lycus;
+package lycus;
 //
 //import java.io.FileOutputStream;
 //import java.io.FileWriter;

@@ -6,21 +6,16 @@ import java.util.UUID;
 import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
 
-import com.google.gson.JsonObject;
-
 import Model.UpdateModel;
-import lycus.ApiInterface;
 import lycus.Constants;
 import lycus.DAL;
 import lycus.Enums.ApiAction;
 import lycus.Host;
-import lycus.RunInnerProbesChecks;
 import lycus.RunnableProbe;
 import lycus.User;
 import lycus.UsersManager;
 import lycus.Interfaces.IDAL;
 import lycus.Probes.Probe;
-import lycus.Probes.SnmpProbe;
 
 public class ProbeUpdate extends BaseUpdate {
 

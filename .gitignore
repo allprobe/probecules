@@ -1,3 +1,4 @@
 /.recommenders
 /.metadata
 /config.properties
+*.class

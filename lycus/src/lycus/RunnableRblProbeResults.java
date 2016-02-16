@@ -5,9 +5,6 @@ import java.util.HashMap;
 
 import org.json.simple.JSONArray;
 
-import com.google.gson.JsonElement;
-import com.google.gson.JsonObject;
-
 public class RunnableRblProbeResults extends RunnableProbeResults {
 	
 	private Boolean IsListed=null;

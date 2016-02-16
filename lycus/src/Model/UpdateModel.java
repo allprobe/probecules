@@ -1,7 +1,5 @@
 package Model;
 
-import java.util.UUID;
-
 public class UpdateModel {
 	public String update_id;                          
 	public String update_type;

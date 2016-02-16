@@ -7,8 +7,6 @@ package lycus.Probes;
 import java.util.ArrayList;
 import java.util.UUID;
 
-import org.snmp4j.smi.OID;
-
 import Model.KeyUpdateModel;
 import lycus.Host;
 import lycus.Log;
@@ -16,8 +14,6 @@ import lycus.LogType;
 import lycus.Net;
 import lycus.SysLogger;
 import lycus.User;
-import lycus.UsersManager;
-import lycus.Enums.SnmpStoreAs;
 
 /**
  *

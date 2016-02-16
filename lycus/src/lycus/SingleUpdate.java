@@ -3,8 +3,6 @@ package lycus;
 import java.util.List;
 import java.util.UUID;
 
-import org.json.simple.JSONObject;
-
 public class SingleUpdate {
 	private UUID updateId;
 	private String updateType;

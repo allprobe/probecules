@@ -1,25 +1,9 @@
 package lycus.Probes;
 
-import java.io.IOException;
 import java.util.ArrayList;
 import java.util.UUID;
-import java.util.Vector;
-
-import org.snmp4j.CommunityTarget;
-import org.snmp4j.PDU;
-import org.snmp4j.Snmp;
-import org.snmp4j.event.ResponseEvent;
-import org.snmp4j.mp.SnmpConstants;
-import org.snmp4j.smi.Address;
 import org.snmp4j.smi.OID;
-import org.snmp4j.smi.OctetString;
-import org.snmp4j.smi.UdpAddress;
-import org.snmp4j.smi.Variable;
-import org.snmp4j.smi.VariableBinding;
-import org.snmp4j.transport.DefaultUdpTransportMapping;
-
 import Model.KeyUpdateModel;
-import lycus.Enums;
 import lycus.Host;
 import lycus.Net;
 import lycus.SnmpDataType;

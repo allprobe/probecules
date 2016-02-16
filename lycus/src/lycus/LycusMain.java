@@ -4,40 +4,9 @@
  */
 package lycus;
 
-import java.io.IOException;
 import java.util.ArrayList;
-import java.util.Collection;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.Properties;
-import java.util.UUID;
 import java.util.concurrent.Executors;
-import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.TimeUnit;
-
-import org.apache.cassandra.thrift.Cassandra.system_add_column_family_args;
-import org.apache.log4j.BasicConfigurator;
-import org.apache.log4j.Logger;
-import org.apache.log4j.PropertyConfigurator;
-import org.json.simple.JSONArray;
-import org.json.simple.JSONObject;
-import org.json.simple.parser.JSONParser;
-import org.json.simple.parser.ParseException;
-import org.snmp4j.CommunityTarget;
-import org.snmp4j.PDU;
-import org.snmp4j.Snmp;
-import org.snmp4j.TransportMapping;
-import org.snmp4j.mp.SnmpConstants;
-import org.snmp4j.smi.GenericAddress;
-import org.snmp4j.smi.OID;
-import org.snmp4j.smi.OctetString;
-import org.snmp4j.smi.VariableBinding;
-import org.snmp4j.tools.console.SnmpRequest;
-import org.snmp4j.transport.DefaultUdpTransportMapping;
-
-import com.google.common.collect.Lists;
-import com.google.gson.Gson;
 
 import lycus.Config.Updates;
 
@@ -101,7 +70,7 @@ public class LycusMain  {
 			
 			Updates updates = new Updates();
 			Executors.newSingleThreadScheduledExecutor().scheduleAtFixedRate(updates, 0, 30, TimeUnit.SECONDS);
- ;;
+ 
 		
 		//
 		// RunnableProbesUpdates updates=new RunnableProbesUpdates(5);
