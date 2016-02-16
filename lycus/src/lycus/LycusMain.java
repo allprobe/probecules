@@ -72,9 +72,7 @@ public class LycusMain  {
 			Executors.newSingleThreadScheduledExecutor().scheduleAtFixedRate(updates, 0, 30, TimeUnit.SECONDS);
  
 		
-		//
-		// RunnableProbesUpdates updates=new RunnableProbesUpdates(5);
-		// updates.start();
+		
 
 		// for (String key :
 		// MainContainer.getProbesUpdates().getProbesUpdates().keySet()) {
