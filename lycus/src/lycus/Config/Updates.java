@@ -3,9 +3,6 @@
  */
 package lycus.Config;
 
-import javax.print.attribute.standard.PrinterLocation;
-
-import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
 
 import Model.ThreadsUpdates;
