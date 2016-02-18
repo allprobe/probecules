@@ -172,7 +172,7 @@ public class UsersManager {
 		}
 	}
 
-	private static void addHosts(JSONArray allHostsJson) {
+	public static void addHosts(JSONArray allHostsJson) {
 		for (int i = 0; i < allHostsJson.size(); i++) {
 			JSONObject hostJson = (JSONObject) allHostsJson.get(i);
 			try {

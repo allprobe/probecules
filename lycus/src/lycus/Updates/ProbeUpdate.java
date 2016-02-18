@@ -11,7 +11,10 @@ import lycus.Constants;
 import lycus.DAL;
 import lycus.Enums.ApiAction;
 import lycus.Host;
+import lycus.Log;
+import lycus.LogType;
 import lycus.RunnableProbe;
+import lycus.SysLogger;
 import lycus.User;
 import lycus.UsersManager;
 import lycus.Interfaces.IDAL;
@@ -41,13 +44,19 @@ public class ProbeUpdate extends BaseUpdate {
 
 			JSONObject jsonObject = dal.put(ApiAction.GetHosts, hosts);
 
+			JSONArray jsonArray = (JSONArray) jsonObject.get("hosts");
+
+			UsersManager.addHosts(jsonArray);
+
 			// host = new Host(update.host_id, String name, String host_ip,
 			// boolean hostStatus, boolean snmpStatus,String bucket,UUID
 			// notifGroups)
 			// user.addHost(host);
-		} else {
-
-			host = user.getHost(UUID.fromString(getUpdate().host_id));
+		}
+		host = user.getHost(UUID.fromString(getUpdate().host_id));
+		if (host == null) {
+			SysLogger.Record(new Log("Failed update from type NEW PROBE - unknown host", LogType.Warn));
+			return false;
 		}
 
 		if (!user.isProbeExist(getUpdate().probe_id)) {

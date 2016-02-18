@@ -4,13 +4,18 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
 
+import org.json.simple.JSONArray;
+
+import lycus.Probes.SnmpProbe;
+
 public class RunnableDiscoveryProbeResults extends RunnableProbeResults {
 
-	private HashMap<Integer,DiscoveryElement> elements;
+	private HashMap<Integer,DiscoveryElement> elements=null;
+	private boolean newElements;
 	
 	public RunnableDiscoveryProbeResults(RunnableProbe rp) {
 		super(rp);
-		setElements(new HashMap<Integer,DiscoveryElement>());
+		this.elements=new HashMap<Integer,DiscoveryElement>();
 		}
 	
 	public HashMap<Integer,DiscoveryElement> getElements() {
@@ -20,6 +25,15 @@ public class RunnableDiscoveryProbeResults extends RunnableProbeResults {
 	public void setElements(HashMap<Integer,DiscoveryElement> elements) {
 		this.elements = elements;
 	}
+
+	private boolean isNewElements() {
+		return newElements;
+	}
+
+	private void setNewElements(boolean newElements) {
+		this.newElements = newElements;
+	}
+
 
 	@Override
 	public synchronized void acceptResults(ArrayList<Object> results) throws Exception{
@@ -36,28 +50,39 @@ public class RunnableDiscoveryProbeResults extends RunnableProbeResults {
 			break;
 		}
 	
+		if(lastScanElements==null)
+			return;
+		if(this.getElements()==null)
+		{	
+			this.setElements(lastScanElements);
+			this.setLastTimestamp((long)results.get(0));
+			this.startElementsThreads();
+			this.setNewElements(true);
+			return;
+		}
 		boolean theSame=this.isElementsIdentical(lastScanElements);
 		if(theSame)
 			return;
-		this.stopElementsThreads();
-		this.mergeNewElements();
-		this.startElementsThreads();
 			
+		this.stopElementsThreads();
+		this.setElements(lastScanElements);
+		this.setLastTimestamp((long)results.get(0));
+		this.startElementsThreads();
+		this.setNewElements(true);
 	}
 
 	private void startElementsThreads() {
-		// TODO Auto-generated method stub
-		
-	}
-
-	private void mergeNewElements() {
-		// TODO Auto-generated method stub
-		
+		for(Map.Entry<Integer, DiscoveryElement> element:this.getElements().entrySet())
+		{
+			element.getValue().start();
+		}
 	}
 
 	private void stopElementsThreads() {
-		// TODO Auto-generated method stub
-		
+		for(Map.Entry<Integer, DiscoveryElement> element:this.getElements().entrySet())
+		{
+			element.getValue().stop();
+		}
 	}
 
 	@Override
@@ -77,7 +102,7 @@ public class RunnableDiscoveryProbeResults extends RunnableProbeResults {
 		
 		Long ifInOctets=null;
 		Long ifOutOctets=null;
-		Map<String,String> walkResults=(Map<String,String>)results.get(0);
+		Map<String,String> walkResults=(Map<String,String>)results.get(1);
 		for(Map.Entry<String, String> entry:walkResults.entrySet())
 		{
 			if(!entry.getKey().toString().contains("1.3.6.1.2.1.2.2.1.1"))
@@ -126,5 +151,16 @@ public class RunnableDiscoveryProbeResults extends RunnableProbeResults {
 	{
 //		for()
 		return null;
+	}
+	@Override
+	public HashMap<String, String> getResults() throws Throwable {
+		if(!this.isNewElements())
+			return null;
+		HashMap<String, String> results = super.getResults();
+		JSONArray rawResults = new JSONArray();
+		rawResults.add(6);
+		rawResults.add(this.getGson().toJson(this.getElements()).toString());
+		results.put("RAW@new_elements@" + this.getLastTimestamp(), rawResults.toJSONString());
+		return results;
 	}
 }

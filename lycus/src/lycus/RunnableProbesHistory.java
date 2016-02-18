@@ -28,7 +28,7 @@ public class RunnableProbesHistory implements Runnable {
 	private ScheduledExecutorService eventsInsertorExecuter;
 	private ScheduledFuture<?> eventsInsertorExecuterThread;
 
-	public RunnableProbesHistory(ArrayList<User> allUsers, String existingRollups) {
+	public RunnableProbesHistory(ArrayList<User> allUsers, String existingRollups,String existingElements) {
 		this.results = this.getAllResultsUsers(allUsers);
 //		this.setGson(new GsonBuilder().setPrettyPrinting().create());
 		this.setGson(new GsonBuilder().create());

@@ -28,5 +28,24 @@ public class DiscoveryNicElement extends DiscoveryElement {
 		}
 		
 	}
-
+	
+	@Override
+	public boolean start()
+	{
+		super.start();
+		this.getContainer().getRp().getProbe().getUser().startRunnableProbe(this.ifInOctets);
+		this.getContainer().getRp().getProbe().getUser().startRunnableProbe(this.ifOutOctets);
+		this.setState(true);
+		return true;
+	}
+	
+	@Override
+	public boolean stop()
+	{
+		super.stop();
+		this.getContainer().getRp().getProbe().getUser().stopRunnableProbe(this.ifInOctets);
+		this.getContainer().getRp().getProbe().getUser().stopRunnableProbe(this.ifOutOctets);
+		this.setState(false);
+		return true;
+	}
 }

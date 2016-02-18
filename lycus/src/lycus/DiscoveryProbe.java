@@ -66,11 +66,12 @@ public class DiscoveryProbe extends Probe {
 
 
 	private ArrayList<Object> checkForBandwidthElements(Host h) {
-				
+		long checkTime;		
 		String ifAll="1.3.6.1.2.1.2.2.1";
 		Map<String,String> ifDescrResults=null;
 		
 		int snmpVersion=h.getSnmpTemp().getVersion();
+		checkTime=System.currentTimeMillis();
 		if(snmpVersion==2)
 		ifDescrResults=Net.Snmp2Walk(h.getHostIp(),h.getSnmpTemp().getPort(),h.getSnmpTemp().getTimeout(),h.getSnmpTemp().getCommunityName(), ifAll);
 		else if(snmpVersion==3)
@@ -80,6 +81,7 @@ public class DiscoveryProbe extends Probe {
 			return null;
 		
 		ArrayList<Object> results=new ArrayList<Object>();
+		results.add(checkTime);
 		results.add(ifDescrResults);
 		return results;
 	}

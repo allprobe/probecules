@@ -249,7 +249,7 @@ public class User {
 		return false;
 	}
 
-	private boolean startRunnableProbe(RunnableProbe rp) {
+	public boolean startRunnableProbe(RunnableProbe rp) {
 		if (rp.getProbe() instanceof SnmpProbe) {
 			this.getSnmpManager().startProbe(rp);
 			return true;
@@ -257,7 +257,7 @@ public class User {
 			return rp.start();
 	}
 
-	private boolean stopRunnableProbe(RunnableProbe rp) {
+	public boolean stopRunnableProbe(RunnableProbe rp) {
 		if(rp==null)
 			return false;
 		if (rp.getProbe() instanceof SnmpProbe && rp.getHost().getSnmpTemp().getVersion() > 1) {

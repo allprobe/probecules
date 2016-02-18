@@ -143,64 +143,31 @@ public class RunnableProbe implements Runnable {
 		return state;
 	}
 
-	// returns this.isRunning();
+	// returns false if any issue during stop process;
 	public boolean stop() throws Exception {
 		if (!this.isRunning)
-			return false;
-		ScheduledFuture<?> rpThread;
-		if (this.getProbe() instanceof PingerProbe) {
+			return true;
+		ScheduledFuture<?> rpThread=null;
+		switch(this.getProbeType())
+		{
+		case PING:
 			rpThread = RunInnerProbesChecks.getPingerFutureMap().remove(this.getRPString());
-			if (rpThread == null) {
-				SysLogger.Record(
-						new Log("RunnableProbe: " + this.getRPString() + " running, but doesn't exists in thread pool!",
-								LogType.Error));
-				throw new Exception("RunnableProbe.stop() at " + this.getRPString() + " failed!");
-			} else
-				rpThread.cancel(false);
-
-			return true;
-		} else if (this.getProbe() instanceof PorterProbe) {
+		case PORT:
 			rpThread = RunInnerProbesChecks.getPorterFutureMap().remove(this.getRPString());
-			if (rpThread == null) {
-				SysLogger.Record(
-						new Log("RunnableProbe: " + this.getRPString() + " running, but doesn't exists in thread pool!",
-								LogType.Error));
-				throw new Exception("RunnableProbe.stop() at " + this.getRPString() + " failed!");
-			} else
-				rpThread.cancel(false);
-			return true;
-		} else if (this.getProbe() instanceof WeberProbe) {
+		case WEB:
 			rpThread = RunInnerProbesChecks.getWeberFutureMap().remove(this.getRPString());
-			if (rpThread == null) {
-				SysLogger.Record(
-						new Log("RunnableProbe: " + this.getRPString() + " running, but doesn't exists in thread pool!",
-								LogType.Error));
-				throw new Exception("RunnableProbe.stop() at " + this.getRPString() + " failed!");
-			} else
-				rpThread.cancel(false);
-			return true;
-		} else if (this.getProbe() instanceof SnmpProbe && this.getHost().getSnmpTemp().getVersion() == 1) {
+		case SNMP:
 			rpThread = RunInnerProbesChecks.getSnmpProbeFutureMap().remove(this.getRPString());
-			if (rpThread == null) {
-				SysLogger.Record(
-						new Log("RunnableProbe: " + this.getRPString() + " running, but doesn't exists in thread pool!",
-								LogType.Error));
-				throw new Exception("RunnableProbe.stop() at " + this.getRPString() + " failed!");
-			} else
-				rpThread.cancel(false);
-
-			return true;
-		} else if (this.getProbe() instanceof RBLProbe) {
+		case RBL:
 			rpThread = RunInnerProbesChecks.getRblProbeFutureMap().remove(this.getRPString());
-			if (rpThread == null) {
-				SysLogger.Record(
-						new Log("RunnableProbe: " + this.getRPString() + " running, but doesn't exists in thread pool!",
-								LogType.Error));
-				throw new Exception("RunnableProbe.stop() at " + this.getRPString() + " failed!");
-			} else
-				rpThread.cancel(false);
-			return true;
 		}
+		if (rpThread == null) {
+			SysLogger.Record(
+					new Log("RunnableProbe: " + this.getRPString() + " running, but doesn't exists in thread pool!",
+							LogType.Error));
+			return false;
+		} else
+			rpThread.cancel(false);
 		return true;
 	}
 

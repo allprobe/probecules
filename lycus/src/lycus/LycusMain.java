@@ -28,7 +28,7 @@ public class LycusMain  {
 		boolean apiInit=ApiInterface.Initialize();
 		if(!apiInit)
 			return;
-		UsersManager.Initialize();
+		UsersManager.Initialize();//setup initial config (InitServer)
 
 //		Net.Snmp2Walk("62.90.132.131", 161, 5000, "ADCD-LAN2", "1.3.6.1.2.1.2.2.1");
 //		Net.Snmp3Walk("62.90.132.131",161,5000,"snmpv3user","snmpv3allp","md5",null,null,"1.3.6.1.2.1.2.2.1");
@@ -62,7 +62,9 @@ public class LycusMain  {
 		if(!UsersManager.isInitialized())
 			return;
 		
-		RunnableProbesHistory history=new RunnableProbesHistory(new ArrayList<User>(UsersManager.getUsers().values()),null);
+		// TODO set discovery existing elements
+
+		RunnableProbesHistory history=new RunnableProbesHistory(new ArrayList<User>(UsersManager.getUsers().values()),null,null);
 //			SysInfo sysInfo=new SysInfo(history);
 //			sysInfo.start();
 			UsersManager.runAtStart();
