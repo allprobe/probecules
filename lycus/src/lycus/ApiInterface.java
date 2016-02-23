@@ -23,6 +23,10 @@ import org.json.simple.JSONObject;
 import org.json.simple.parser.JSONParser;
 import org.json.simple.parser.ParseException;
 
+import GlobalConstants.Enums;
+import GlobalConstants.Global;
+import GlobalConstants.LogType;
+
 public class ApiInterface {
 
 //	private static ApiInterface apiInterface = new ApiInterface();

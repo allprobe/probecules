@@ -3,6 +3,8 @@ package lycus;
 import java.util.ArrayList;
 import java.util.concurrent.ScheduledFuture;
 
+import GlobalConstants.LogType;
+import GlobalConstants.ProbeTypes;
 import lycus.Probes.DiscoveryProbe;
 import lycus.Probes.PingerProbe;
 import lycus.Probes.PorterProbe;

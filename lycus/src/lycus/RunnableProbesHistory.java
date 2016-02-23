@@ -16,6 +16,9 @@ import org.json.simple.JSONObject;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 
+import GlobalConstants.Enums;
+import GlobalConstants.LogType;
+
 public class RunnableProbesHistory implements Runnable {
 	private HashMap<String, RunnableProbeResults> results;
 	private Gson gson;

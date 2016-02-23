@@ -6,14 +6,14 @@ import java.util.UUID;
 import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
 
+import GlobalConstants.Constants;
+import GlobalConstants.LogType;
+import GlobalConstants.Enums.ApiAction;
 import Model.ProbeParams;
 import Model.UpdateModel;
-import lycus.Constants;
 import lycus.DAL;
-import lycus.Enums.ApiAction;
 import lycus.Host;
 import lycus.Log;
-import lycus.LogType;
 import lycus.RunnableProbe;
 import lycus.SysLogger;
 import lycus.User;

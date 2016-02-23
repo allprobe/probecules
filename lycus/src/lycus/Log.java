@@ -6,6 +6,8 @@ package lycus;
 
 import java.util.Map;
 
+import GlobalConstants.LogType;
+
 /**
  *
  * @author Roi

@@ -7,6 +7,9 @@ import java.util.Map;
 import java.util.Set;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ScheduledFuture;
+
+import GlobalConstants.Global;
+import GlobalConstants.LogType;
 import lycus.Probes.Probe;
 
 public class SnmpManager {

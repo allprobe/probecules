@@ -32,6 +32,9 @@ public class RBLProbe extends Probe {
 	@Override
     public ArrayList<Object> Check(Host h)
     {
+		if (!h.isHostStatus())
+    		return null;
+		
 		ArrayList<Object> results=Net.RBLCheck(h.getHostIp(), this.getRBL());
     	return results;
     }

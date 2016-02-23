@@ -5,6 +5,8 @@ import java.util.HashMap;
 
 import org.json.simple.JSONArray;
 
+import GlobalConstants.LogType;
+
 public class RunnableRblProbeResults extends RunnableProbeResults {
 	
 	private Boolean IsListed=null;

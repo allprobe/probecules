@@ -5,11 +5,11 @@ package lycus.Config;
 
 import org.json.simple.JSONObject;
 
+import GlobalConstants.Enums.ApiAction;
 import Model.ThreadsUpdates;
 import Model.UpdateModel;
 import Utils.JsonUtil;
 import lycus.DAL;
-import lycus.Enums.ApiAction;
 import lycus.Interfaces.IDAL;
 import lycus.Updates.BaseUpdate;
 import lycus.Updates.UpdateFactory;
@@ -28,8 +28,8 @@ public class Updates implements Runnable {
 		}
 		else
 		{
-//			JSONObject jsonObject = dal.get(ApiAction.DevGetThreadsUpdates);
-			JSONObject jsonObject = dal.get(ApiAction.GetThreadsUpdates);
+			JSONObject jsonObject = dal.get(ApiAction.DevGetThreadsUpdates);
+//			JSONObject jsonObject = dal.get(ApiAction.GetThreadsUpdates);
 			runUpdates(jsonObject);
 		}
 		

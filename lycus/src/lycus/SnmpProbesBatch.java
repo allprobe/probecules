@@ -11,6 +11,7 @@ import org.snmp4j.Snmp;
 import org.snmp4j.TransportMapping;
 import org.snmp4j.transport.DefaultUdpTransportMapping;
 
+import GlobalConstants.LogType;
 import lycus.Probes.SnmpProbe;
 
 public class SnmpProbesBatch implements Runnable {

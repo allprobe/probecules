@@ -18,6 +18,11 @@ import org.snmp4j.smi.OID;
 
 import com.google.gson.Gson;
 
+import GlobalConstants.Constants;
+import GlobalConstants.Enums;
+import GlobalConstants.LogType;
+import GlobalConstants.SnmpDataType;
+import GlobalConstants.TriggerSeverity;
 import Model.HostParams;
 import Model.ProbeParams;
 import lycus.Probes.DiscoveryProbe;

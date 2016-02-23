@@ -122,7 +122,9 @@ public class PorterProbe extends Probe {
 	@Override
     public ArrayList<Object> Check(Host h)
     {
-
+		if (!h.isHostStatus())
+    		return null;
+		
 		String rpStr = h.getHostId().toString();
 		if (rpStr.contains(
 				"b631bd96-e2e6-4163-940b-ff376d7d2138"))

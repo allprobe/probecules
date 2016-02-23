@@ -6,6 +6,7 @@ import java.util.Map;
 
 import org.json.simple.JSONArray;
 
+import GlobalConstants.LogType;
 import lycus.Probes.DiscoveryProbe;
 import lycus.Probes.SnmpProbe;
 

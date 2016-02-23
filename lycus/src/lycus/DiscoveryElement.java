@@ -1,5 +1,7 @@
 package lycus;
 
+import GlobalConstants.LogType;
+
 public class DiscoveryElement implements Runnable {
 
 	RunnableDiscoveryProbeResults container;

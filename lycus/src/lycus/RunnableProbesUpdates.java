@@ -16,6 +16,8 @@ import java.util.concurrent.TimeUnit;
 
 import org.json.simple.JSONObject;
 
+import GlobalConstants.LogType;
+
 /**
  * 
  * @author Roi

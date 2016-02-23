@@ -14,6 +14,8 @@ import org.apache.commons.io.FileUtils;
 import org.productivity.java.syslog4j.Syslog;
 import org.productivity.java.syslog4j.SyslogIF;
 
+import GlobalConstants.Global;
+
 public class SysLogger {
 
 	private static boolean debug;

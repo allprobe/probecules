@@ -1,7 +1,7 @@
 package lycus.Updates;
 
+import GlobalConstants.Constants;
 import Model.UpdateModel;
-import lycus.Constants;
 
 public class UpdateFactory {
 	 public static BaseUpdate getUpdate(UpdateModel update){

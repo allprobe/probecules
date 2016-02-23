@@ -5,6 +5,8 @@ import java.util.HashMap;
 
 import org.json.simple.JSONArray;
 
+import GlobalConstants.LogType;
+import GlobalConstants.SnmpDataType;
 import lycus.Probes.SnmpProbe;
 
 public class RunnableSnmpProbeResults extends RunnableProbeResults {

@@ -1,4 +1,4 @@
-package lycus;
+package GlobalConstants;
 
 public class Constants {
 	public final static String  https_prefix = "https://";

@@ -144,6 +144,9 @@ public class WeberProbe extends Probe {
 	@Override
     public ArrayList<Object> Check(Host h)
     {
+		if (!h.isHostStatus())
+			return null;
+		
 		String rpStr = h.getHostId().toString()+"@"+this.getProbe_id();
 		if (rpStr.contains(
 				"d934aa3b-f703-4d4b-99c6-66b470c782f2"))

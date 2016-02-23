@@ -1,4 +1,4 @@
-package lycus;
+package GlobalConstants;
 
 public class Enums {
 	public static enum ApiAction

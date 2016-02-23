@@ -6,6 +6,8 @@ import java.util.HashMap;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 
+import GlobalConstants.LogType;
+
 public class RunnableProbeResults {
 	private RunnableProbe rp;
 	private Long lastTimestamp;

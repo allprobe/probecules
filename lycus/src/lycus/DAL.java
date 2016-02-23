@@ -16,7 +16,10 @@ import org.json.simple.JSONObject;
 import org.json.simple.parser.JSONParser;
 import org.json.simple.parser.ParseException;
 
-import lycus.Enums.ApiAction;
+import GlobalConstants.Constants;
+import GlobalConstants.Global;
+import GlobalConstants.LogType;
+import GlobalConstants.Enums.ApiAction;
 import lycus.Interfaces.IDAL;
 
 public class DAL implements IDAL {

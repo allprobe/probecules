@@ -1,9 +1,11 @@
 package lycus.Updates;
 
+import java.util.ArrayList;
 import java.util.UUID;
 
 import Model.UpdateModel;
 import lycus.Trigger;
+import lycus.TriggerCondition;
 import lycus.User;
 import lycus.UsersManager;
 import lycus.Probes.Probe;
@@ -21,7 +23,13 @@ public class TriggerUpdate extends BaseUpdate {
 		super.New();
 		User user = UsersManager.getUser(UUID.fromString(update.user_id));
 		Probe probe = user.getProbeFor(update.probe_id);
-//		Trigger trigger = new Trigger(update., update.update_value.key.name, probe, svrty, update.update_value.status, update.update_value.type, unit, condtions)
+		
+//		ArrayList<TriggerCondition>  conditions = new ArrayList<TriggerCondition>();
+//		UsersManager.getTriggerConds();
+		
+//		Trigger trigger = new Trigger(update.update_value.key.trigger_id, name, 
+//				probe, update.update_value.key.trigger_severity, update.update_value.status,
+//				update.update_value.type, update.update_value.key.value_unit, conditions);
 		
 //		probe.addTrigger(trigger);
 		return true;

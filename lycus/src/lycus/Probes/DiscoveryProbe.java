@@ -4,14 +4,14 @@ import java.util.ArrayList;
 import java.util.Map;
 import java.util.UUID;
 
-import lycus.Enums;
+import GlobalConstants.Enums;
+import GlobalConstants.LogType;
+import GlobalConstants.Enums.DiscoveryElementType;
 import lycus.Host;
 import lycus.Log;
-import lycus.LogType;
 import lycus.Net;
 import lycus.SysLogger;
 import lycus.User;
-import lycus.Enums.DiscoveryElementType;
 
 public class DiscoveryProbe extends Probe {
 	private Enums.DiscoveryElementType type;
@@ -46,7 +46,9 @@ public class DiscoveryProbe extends Probe {
 
 	@Override
 	public ArrayList<Object> Check(Host h) {
-
+		if (!h.isHostStatus())
+    		return null;
+		
 		ArrayList<Object> results = null;
 		try {
 			switch (this.getType()) {

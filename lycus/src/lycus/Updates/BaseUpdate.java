@@ -1,9 +1,9 @@
 package lycus.Updates;
 
+import GlobalConstants.Constants;
+import GlobalConstants.Enums;
+import GlobalConstants.Enums.Action;
 import Model.UpdateModel;
-import lycus.Constants;
-import lycus.Enums;
-import lycus.Enums.Action;
 import lycus.Interfaces.IUpdate;
 
 public abstract class BaseUpdate implements IUpdate{

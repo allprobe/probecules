@@ -20,6 +20,8 @@ import org.snmp4j.PDU;
 import org.snmp4j.smi.OID;
 import org.snmp4j.smi.VariableBinding;
 
+import GlobalConstants.LogType;
+
 /**
  *
  * @author Roi
@@ -165,5 +167,8 @@ public class GeneralFunctions {
         return s.hasNext() ? s.next() : "";
     }
     
-    
+    public static boolean isNullOrEmpty(String str)
+    {
+    	return str == null || str.length() == 0;
+    }
 }

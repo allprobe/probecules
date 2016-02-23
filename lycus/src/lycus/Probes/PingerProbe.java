@@ -7,10 +7,10 @@ package lycus.Probes;
 import java.util.ArrayList;
 import java.util.UUID;
 
+import GlobalConstants.LogType;
 import Model.KeyUpdateModel;
 import lycus.Host;
 import lycus.Log;
-import lycus.LogType;
 import lycus.Net;
 import lycus.SysLogger;
 import lycus.User;
@@ -83,7 +83,9 @@ public class PingerProbe extends Probe {
     @Override
     public ArrayList<Object> Check(Host h)
     {
-	
+    	if (!h.isHostStatus())
+    		return null;
+    	
 		ArrayList<Object> results=null;
 		try{
     	results=Net.Pinger(h.getHostIp(), this.getCount(), this.getBytes(), this.getTimeout());

@@ -5,6 +5,8 @@ import java.util.HashMap;
 
 import org.json.simple.JSONArray;
 
+import GlobalConstants.LogType;
+
 public class RunnablePorterProbeResults extends RunnableProbeResults {
 	private Boolean portStatus;
 	private Long responseTime;

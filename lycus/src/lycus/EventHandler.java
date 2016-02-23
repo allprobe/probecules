@@ -5,6 +5,9 @@ import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Map;
 
+import GlobalConstants.Enums;
+import GlobalConstants.LogType;
+
 public class EventHandler implements Runnable {
 	private RunnableProbesHistory history;
 
