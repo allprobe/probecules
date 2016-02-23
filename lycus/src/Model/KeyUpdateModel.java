@@ -30,4 +30,7 @@ public class KeyUpdateModel {
 	public Integer bytes;
 	public Integer npings;
 	public Integer timeout;
+	
+	public String trigger_id;
+	public String trigger_severity;
 }

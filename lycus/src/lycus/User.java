@@ -450,7 +450,7 @@ public class User {
 		}
 		case Constants.discovery: {
 			long elementsInterval = probeParams.discovery_elements_interval;
-			int triggerCode = Integer.parseInt(probeParams.discovery_trigger_code);
+			int triggerCode = probeParams.discovery_trigger_code;
 			String triggerXValue = probeParams.discovery_trigger_x;
 			String unitType = probeParams.snmp_unit;
 			String triggerUuid = probeParams.discovery_trigger_id;

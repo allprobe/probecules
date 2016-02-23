@@ -263,7 +263,7 @@ public class UsersManager {
 				}
 				case Constants.discovery: {
 					probeParams.discovery_elements_interval = Integer.parseInt(probeKeyJson.get("element_interval").toString());
-					probeParams.discovery_trigger_code = (String) probeKeyJson.get("discovery_trigger");
+					probeParams.discovery_trigger_code = Integer.parseInt(probeKeyJson.get("discovery_trigger").toString());
 					probeParams.discovery_trigger_x = probeKeyJson.get("discovery_trigger_x_value").toString();
 					probeParams.snmp_unit= (String) probeKeyJson.get("discovery_trigger_unit");
 					probeParams.discovery_trigger_id = (String) probeKeyJson.get("trigger_id");

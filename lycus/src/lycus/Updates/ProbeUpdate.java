@@ -64,12 +64,6 @@ public class ProbeUpdate extends BaseUpdate {
 		if (!user.isProbeExist(getUpdate().probe_id)) {
 			ProbeParams probeParams = new ProbeParams();
 			
-			// TODO: add triggers params 
-//			probeParams.discovery_trigger_id =  update.update_value.key.tri;
-//			probeParams.discovery_trigger_severity =  update.update_value.key.npings;
-//			probeParams.send_type =  update.update_value.key.se;
-//			probeParams.discovery_trigger_code =  update.update_value.key.discovery_trigger;
-			
 			probeParams.bytes = update.update_value.key.bytes;
 			probeParams.npings =  update.update_value.key.npings;
 			probeParams.discovery_elements_interval = update.update_value.key.element_interval;
@@ -97,7 +91,10 @@ public class ProbeUpdate extends BaseUpdate {
 			probeParams.snmp_datatype =  update.update_value.key.value_type;
 			probeParams.snmp_unit =  update.update_value.key.value_unit;
 			probeParams.snmp_store_as =  update.update_value.key.store_value_as; 
-			
+			probeParams.discovery_trigger_id =  update.update_value.key.trigger_id;
+			probeParams.discovery_trigger_severity =  update.update_value.key.trigger_severity;
+			probeParams.discovery_trigger_code =  update.update_value.key.discovery_trigger;
+//			
 			 user.addTemplateProbe(probeParams);
 		} else {
 			probe = user.getProbeFor(getUpdate().probe_id);
