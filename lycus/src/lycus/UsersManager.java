@@ -220,9 +220,9 @@ public class UsersManager {
 			probeParams.template_id=(String) probeJson.get("template_id");
 			probeParams.probe_id = (String) probeJson.get("probe_id");
 				probeParams.name = (String) probeJson.get("probe_name");
-				probeParams.interval = (String) probeJson.get("probe_interval");
-				probeParams.multiplier = (String) probeJson.get("probe_multiplier");
-				probeParams.is_active = (String) probeJson.get("probe_status");
+				probeParams.interval = Long.parseLong(probeJson.get("probe_interval").toString());
+				probeParams.multiplier = Float.parseFloat(probeJson.get("probe_multiplier").toString());
+				probeParams.is_active = probeJson.get("probe_status").toString().equals("1") ? true : false;
 				probeParams.type = (String) probeJson.get("probe_type");
 				probeKeyJson= (JSONObject) probeJson.get("probe_key");
 
@@ -230,15 +230,15 @@ public class UsersManager {
 
 				switch (probeParams.type) {
 				case Constants.icmp: {
-					probeParams.count = (String) probeKeyJson.get("npings");
-					probeParams.bytes = (String) probeKeyJson.get("bytes");
-					probeParams.timeout = (String) probeKeyJson.get("timeout");
+					probeParams.npings = Integer.parseInt(probeKeyJson.get("npings").toString());
+					probeParams.bytes = Integer.parseInt(probeKeyJson.get("bytes").toString());
+					probeParams.timeout =Integer.parseInt(probeKeyJson.get("timeout").toString());
 					break;
 				}
 				case Constants.port: {
 					String proto = (String) probeKeyJson.get("proto");
-					probeParams.port = (String) probeKeyJson.get("port");
-					probeParams.timeout = (String) probeKeyJson.get("timeout");
+					probeParams.port = Integer.parseInt(probeKeyJson.get("port").toString());
+					probeParams.timeout = Integer.parseInt(probeKeyJson.get("timeout").toString());
 					probeParams.port_extra = (String) probeKeyJson.get("port_extra");
 					break;
 				}
@@ -249,22 +249,22 @@ public class UsersManager {
 					probeParams.http_auth = (String) probeKeyJson.get("http_auth");
 					probeParams.http_auth_username = (String) probeKeyJson.get("http_auth_user");
 					probeParams.http_auth_password = (String) probeKeyJson.get("http_auth_password");
-					probeParams.timeout = (String) probeKeyJson.get("timeout");
+					probeParams.timeout = Integer.parseInt(probeKeyJson.get("timeout").toString());
 
 					break;
 				}
 				case Constants.snmp: {
 
 					probeParams.oid = (String) probeKeyJson.get("snmp_oid");
-					probeParams.snmp_store_as =(String) probeKeyJson.get("store_value_as");
+					probeParams.snmp_store_as = Integer.parseInt(probeKeyJson.get("store_value_as").toString());
 					probeParams.snmp_datatype = (String) probeKeyJson.get("value_type");
 					probeParams.snmp_unit = (String) probeKeyJson.get("value_unit");
 					break;
 				}
 				case Constants.discovery: {
-					probeParams.discovery_elements_interval = (String) probeKeyJson.get("element_interval");
+					probeParams.discovery_elements_interval = Integer.parseInt(probeKeyJson.get("element_interval").toString());
 					probeParams.discovery_trigger_code = (String) probeKeyJson.get("discovery_trigger");
-					probeParams.discovery_trigger_x = (String) probeKeyJson.get("discovery_trigger_x_value");
+					probeParams.discovery_trigger_x = probeKeyJson.get("discovery_trigger_x_value").toString();
 					probeParams.snmp_unit= (String) probeKeyJson.get("discovery_trigger_unit");
 					probeParams.discovery_trigger_id = (String) probeKeyJson.get("trigger_id");
 					probeParams.discovery_trigger_severity = (String) probeKeyJson.get("trigger_severity");

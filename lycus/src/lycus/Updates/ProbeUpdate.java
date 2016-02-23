@@ -6,6 +6,7 @@ import java.util.UUID;
 import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
 
+import Model.ProbeParams;
 import Model.UpdateModel;
 import lycus.Constants;
 import lycus.DAL;
@@ -30,14 +31,14 @@ public class ProbeUpdate extends BaseUpdate {
 	public Boolean New() {
 		super.New();
 
-		UUID userId=UUID.fromString(getUpdate().user_id);
-		
-		User user = UsersManager.getUser(userId);
+		User user = UsersManager.getUser(UUID.fromString(getUpdate().user_id));
 		Host host = null;
 		Probe probe = null;
 
-		if(user==null)
-		UsersManager.getUsers().put(userId, new User(userId));
+		if (user == null)
+		{
+			user = new User(UUID.fromString(getUpdate().user_id));
+		}
 		
 		if (!user.isHostExist(UUID.fromString(getUpdate().host_id))) {
 			// Get host from Ran for host_id
@@ -49,27 +50,55 @@ public class ProbeUpdate extends BaseUpdate {
 
 			JSONObject jsonObject = dal.put(ApiAction.GetHosts, hosts);
 
-			JSONArray jsonArray = (JSONArray) jsonObject.get(Constants.hosts);
-
+			JSONArray jsonArray = (JSONArray) jsonObject.get("hosts");
 			UsersManager.addHosts(jsonArray);
-
-			// host = new Host(update.host_id, String name, String host_ip,
-			// boolean hostStatus, boolean snmpStatus,String bucket,UUID
-			// notifGroups)
-			// user.addHost(host);
 		}
 		host = user.getHost(UUID.fromString(getUpdate().host_id));
 		if (host == null) {
 			SysLogger.Record(new Log("Failed update from type NEW PROBE - unknown host", LogType.Warn));
 			return false;
 		}
+		
+		host = user.getHost(UUID.fromString(getUpdate().host_id));
 
 		if (!user.isProbeExist(getUpdate().probe_id)) {
-			// Roi: Create probe from json
-			// host = new Host(update.host_id, String name, String host_ip,
-			// boolean hostStatus, boolean snmpStatus,String bucket,UUID
-			// notifGroups)
-			// user.addProbe(probe);
+			ProbeParams probeParams = new ProbeParams();
+			
+			// TODO: add triggers params 
+//			probeParams.discovery_trigger_id =  update.update_value.key.tri;
+//			probeParams.discovery_trigger_severity =  update.update_value.key.npings;
+//			probeParams.send_type =  update.update_value.key.se;
+//			probeParams.discovery_trigger_code =  update.update_value.key.discovery_trigger;
+			
+			probeParams.bytes = update.update_value.key.bytes;
+			probeParams.npings =  update.update_value.key.npings;
+			probeParams.discovery_elements_interval = update.update_value.key.element_interval;
+			probeParams.discovery_trigger_x =  update.update_value.key.discovery_trigger_x_value;
+			probeParams.discovery_type =  update.update_value.key.discovery_type;
+			probeParams.http_auth =  update.update_value.key.http_auth;
+			probeParams.http_auth_password =  update.update_value.key.http_auth_password;
+			probeParams.http_auth_username =  update.update_value.key.http_auth_user;
+			probeParams.http_request =  update.update_value.key.http_method;
+			probeParams.interval =  update.update_value.interval;
+			probeParams.is_active =  update.update_value.status;
+			probeParams.multiplier =  update.update_value.multiplier;
+			probeParams.name =  update.update_value.name;
+			probeParams.port =  update.update_value.key.port;
+			probeParams.port_extra =  update.update_value.key.port_extra;
+			probeParams.probe_id =  update.probe_id;
+			probeParams.protocol =  update.update_value.key.proto;
+			probeParams.rbl =  update.update_value.key.rbl;
+			probeParams.oid =  update.update_value.key.snmp_oid;
+			probeParams.template_id =  update.template_id;
+			probeParams.timeout =  update.update_value.key.timeout;
+			probeParams.type =  update.update_value.type;
+			probeParams.url =  update.update_value.key.urls;
+			probeParams.user_id  =  update.user_id;
+			probeParams.snmp_datatype =  update.update_value.key.value_type;
+			probeParams.snmp_unit =  update.update_value.key.value_unit;
+			probeParams.snmp_store_as =  update.update_value.key.store_value_as; 
+			
+			 user.addTemplateProbe(probeParams);
 		} else {
 			probe = user.getProbeFor(getUpdate().probe_id);
 		}
@@ -77,6 +106,7 @@ public class ProbeUpdate extends BaseUpdate {
 		probe.updateKeyValues(update.update_value.key);
 
 		RunnableProbe runnableProbe = new RunnableProbe(host, probe);
+		runnableProbe.start();
 		user.addRunnableProbe(runnableProbe);
 
 		return true;

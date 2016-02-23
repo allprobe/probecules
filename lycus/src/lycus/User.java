@@ -384,26 +384,26 @@ public class User {
 		String probeId = probeParams.probe_id;
 				
 		String name = probeParams.name;
-		long interval = Long.parseLong(probeParams.interval);
-		float multiplier = Float.parseFloat(probeParams.multiplier);
-		boolean status = (probeParams.is_active).equals("1") ? true : false;
+		long interval = probeParams.interval;
+		float multiplier = probeParams.multiplier;
+		boolean status = probeParams.is_active;
 		String type = probeParams.type;
 
 		Probe probe = null;
 
 		switch (type) {
 		case Constants.icmp: {
-			int npings = Integer.parseInt(probeParams.count);
-			int bytes = Integer.parseInt(probeParams.bytes);
-			int timeout = Integer.parseInt(probeParams.timeout);
+			int npings = probeParams.npings;
+			int bytes = probeParams.bytes;
+			int timeout = probeParams.timeout;
 			probe = new PingerProbe(this, probeId, templateId, name, interval, multiplier, status, timeout,
 					npings, bytes);
 			break;
 		}
 		case Constants.port: {
 			String proto = probeParams.protocol;
-			int port = Integer.parseInt(probeParams.port);
-			int timeout = Integer.parseInt(probeParams.timeout);
+			int port =  probeParams.port;
+			int timeout = probeParams.timeout;
 			probe = new PorterProbe(this, probeId, templateId, name, interval, multiplier, status, timeout,
 					proto, port);
 			break;
@@ -414,7 +414,7 @@ public class User {
 			String auth = probeParams.http_auth;
 			String authUser = GeneralFunctions.Base64Decode(probeParams.http_auth_username);
 			String authPass = GeneralFunctions.Base64Decode(probeParams.http_auth_password);
-			int timeout = Integer.parseInt(probeParams.timeout);
+			int timeout = probeParams.timeout;
 
 			if (auth.equals(Constants.no))
 				probe = new WeberProbe(this, probeId, templateId, name, interval, multiplier, status, timeout,
@@ -427,7 +427,7 @@ public class User {
 		case Constants.snmp: {
 
 			OID oid = new OID(probeParams.oid);
-			Enums.SnmpStoreAs storeValue = Integer.parseInt(probeParams.snmp_store_as) == 1
+			Enums.SnmpStoreAs storeValue = probeParams.snmp_store_as == 1
 					? Enums.SnmpStoreAs.asIs : Enums.SnmpStoreAs.delta;
 			String valueType = probeParams.snmp_datatype;
 			String valueUnit = probeParams.snmp_unit;
@@ -449,7 +449,7 @@ public class User {
 			break;
 		}
 		case Constants.discovery: {
-			long elementsInterval = Long.parseLong(probeParams.discovery_elements_interval);
+			long elementsInterval = probeParams.discovery_elements_interval;
 			int triggerCode = Integer.parseInt(probeParams.discovery_trigger_code);
 			String triggerXValue = probeParams.discovery_trigger_x;
 			String unitType = probeParams.snmp_unit;

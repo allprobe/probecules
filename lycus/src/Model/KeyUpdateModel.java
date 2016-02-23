@@ -24,7 +24,7 @@ public class KeyUpdateModel {
 	public String discovery_type;
 	public Integer element_interval;
 	public Integer discovery_trigger;
-	public Integer discovery_trigger_x_value;
+	public String discovery_trigger_x_value;
 	
 	public Integer store_value_as;
 	public Integer bytes;
