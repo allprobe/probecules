@@ -37,6 +37,15 @@ public class PorterProbe extends Probe {
 		this.receiveString=acceptString;
 	}
 	
+	public PorterProbe(User user,String probe_id,UUID template_id,String name,long interval,float multiplier,boolean status,int timeout, String type, int port) {
+		super(user, probe_id,template_id,name,interval,multiplier,status);
+		this.proto = type;
+		this.port = port;
+		this.timeout=timeout;
+		this.sendString = "";
+		this.receiveString = "";
+	}
+	
 
 	// Getters/Setters
 

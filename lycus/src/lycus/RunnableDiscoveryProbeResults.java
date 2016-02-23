@@ -6,9 +6,10 @@ import java.util.Map;
 
 import org.json.simple.JSONArray;
 
+import lycus.Probes.DiscoveryProbe;
 import lycus.Probes.SnmpProbe;
 
-public class RunnableDiscoveryProbeResults extends RunnableProbeResults {
+public class RunnableDiscoveryProbeResults extends RunnableProbeResults implements Runnable {
 
 	private HashMap<Integer,DiscoveryElement> elements=null;
 	private boolean newElements;
@@ -147,11 +148,7 @@ public class RunnableDiscoveryProbeResults extends RunnableProbeResults {
 		return true;
 	}
 
-	private boolean[] ifaceGetIndexes(Map<String,String> walkResults)
-	{
-//		for()
-		return null;
-	}
+
 	@Override
 	public HashMap<String, String> getResults() throws Throwable {
 		if(!this.isNewElements())
@@ -160,7 +157,15 @@ public class RunnableDiscoveryProbeResults extends RunnableProbeResults {
 		JSONArray rawResults = new JSONArray();
 		rawResults.add(6);
 		rawResults.add(this.getGson().toJson(this.getElements()).toString());
-		results.put("RAW@new_elements@" + this.getLastTimestamp(), rawResults.toJSONString());
+		results.put("RAW@new_elements_map@" + this.getLastTimestamp(), rawResults.toJSONString());
 		return results;
+	}
+
+	
+	// run elements checks
+	@Override
+	public void run() {
+		// TODO Auto-generated method stub
+		
 	}
 }

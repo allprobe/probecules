@@ -1,10 +1,17 @@
-package lycus;
+package lycus.Probes;
 
 import java.util.ArrayList;
 import java.util.Map;
 import java.util.UUID;
 
-import lycus.Probes.Probe;
+import lycus.Enums;
+import lycus.Host;
+import lycus.Log;
+import lycus.LogType;
+import lycus.Net;
+import lycus.SysLogger;
+import lycus.User;
+import lycus.Enums.DiscoveryElementType;
 
 public class DiscoveryProbe extends Probe {
 	private Enums.DiscoveryElementType type;

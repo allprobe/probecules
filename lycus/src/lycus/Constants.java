@@ -1,8 +1,8 @@
 package lycus;
 
 public class Constants {
-	public final static String  https = "https://";
-	public final static String  http = "http://";
+	public final static String  https_prefix = "https://";
+	public final static String  http_prefix = "http://";
 	public final static String  get = "GET";
 	public final static String  put = "PUT";
 	
@@ -24,6 +24,46 @@ public class Constants {
 	public final static String  updateElement = "ude";
 	public final static String  deleteDiscovery = "rdisc";
 	public final static String  hosts = "hosts";
+	
+	public final static String icmp="icmp";
+	public final static String port="port";
+	public final static String http="http";
+	public final static String snmp="snmp";
+	public final static String discovery="discovery";
+	public final static String rbl="rbl";
+	public final static String no="no";
+	
+	public final static String integer="integer";
+	public final static String string="string";
+	public final static String _float="float";
+	public final static String _boolean="boolean";
+	
+	public final static String b="b";
+	public final static String B="B";
+	public final static String Kb="Kb";
+	public final static String KB="KB";
+	public final static String Mb="Mb";
+	public final static String MB="MB";
+	public final static String Gb="Gb";
+	public final static String GB="GB";
+	public final static String _int="int";
+	public final static String str="str";
+	
+	public final static String notice="notice";
+	public final static String warning="warning";
+	public final static String high="high";
+	public final static String disaster="disaster";
+	
+
+
+
+
+
+
+
+	
+	
+	
 	
 	
 }

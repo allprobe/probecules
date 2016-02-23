@@ -7,8 +7,19 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import java.util.UUID;
+
+import org.json.simple.JSONObject;
+import org.snmp4j.smi.OID;
+
+import Model.HostParams;
+import Model.ProbeParams;
+import lycus.Probes.DiscoveryProbe;
+import lycus.Probes.PingerProbe;
+import lycus.Probes.PorterProbe;
 import lycus.Probes.Probe;
+import lycus.Probes.RBLProbe;
 import lycus.Probes.SnmpProbe;
+import lycus.Probes.WeberProbe;
 
 public class User {
 	private UUID userId;
@@ -170,6 +181,9 @@ public class User {
 
 	private void runProbes(List<RunnableProbe> rps) {
 		for (RunnableProbe rp : rps) {
+			if (rp.getRPString().contains(
+					"0b05919c-6cc0-42cc-a74b-de3b0dcd4a2a@6aadf750-e887-43ee-b872-326c94fbab7c@discovery_6b54463e-fe1c-4e2c-a090-452dbbf2d510"))
+				System.out.println("BREAKPOINT");
 			this.startRunnableProbe(rp);
 		}
 	}
@@ -275,6 +289,11 @@ public class User {
 
 	public boolean addRunnableProbe(RunnableProbe rp)
 	{
+		String rpStr = rp.getRPString();
+		if (rpStr.contains(
+				"0b05919c-6cc0-42cc-a74b-de3b0dcd4a2a@6aadf750-e887-43ee-b872-326c94fbab7c@discovery_6b54463e-fe1c-4e2c-a090-452dbbf2d510"))
+			System.out.println("BREAKPOINT");
+		
 		this.getHost(rp.getHost().getHostId()).getRunnableProbes().put(rp.getRPString(), rp);
 		return this.startRunnableProbe(rp);
 	}
@@ -315,4 +334,246 @@ public class User {
 		}	
 		return true;
 	}
-}
+
+	public void addHost(HostParams hostParams)
+	{
+		try {
+			UUID host_id = UUID.fromString(hostParams.host_id);
+			String name = hostParams.name;
+			String ip = hostParams.hostIp;
+			boolean status = (hostParams.hostStatus).equals("1") ? true : false;
+			String bucket = hostParams.bucket;
+
+			UUID notif_groups;
+			try {
+				notif_groups = UUID.fromString(hostParams.notificationGroups);
+			} catch (Exception e) {
+				SysLogger.Record(new Log("Unable to parse notifications group: " + hostParams.notificationGroups,
+						LogType.Warn, e));
+				notif_groups = null;
+			}
+
+			UUID snmp_template;
+			try {
+				snmp_template = UUID.fromString(hostParams.snmpTemp);
+			} catch (Exception e) {
+				SysLogger.Record(
+						new Log("Unable to parse snmp template: " + hostParams.snmpTemp, LogType.Warn, e));
+				snmp_template = null;
+			}
+
+			Host host;
+
+			if (snmp_template == null) {
+				host = new Host(host_id, name, ip, status, true, bucket, notif_groups);
+			} else {
+				SnmpTemplate snmpTemp = this.getSnmpTemplates().get(snmp_template);
+				host = new Host(host_id, name, ip, snmpTemp, status, true, bucket, notif_groups);
+			}
+			this.getHosts().put(host_id, host);
+		} catch (Exception e) {
+			SysLogger.Record(new Log("Creation of Host Failed: " + hostParams + " , not added!",
+					LogType.Warn, e));
+		}
+	}
+
+	public void addTemplateProbe(ProbeParams probeParams)
+	{
+		try{
+		UUID templateId = UUID.fromString(probeParams.template_id);
+		String probeId = probeParams.probe_id;
+				
+		String name = probeParams.name;
+		long interval = Long.parseLong(probeParams.interval);
+		float multiplier = Float.parseFloat(probeParams.multiplier);
+		boolean status = (probeParams.is_active).equals("1") ? true : false;
+		String type = probeParams.type;
+
+		Probe probe = null;
+
+		switch (type) {
+		case Constants.icmp: {
+			int npings = Integer.parseInt(probeParams.count);
+			int bytes = Integer.parseInt(probeParams.bytes);
+			int timeout = Integer.parseInt(probeParams.timeout);
+			probe = new PingerProbe(this, probeId, templateId, name, interval, multiplier, status, timeout,
+					npings, bytes);
+			break;
+		}
+		case Constants.port: {
+			String proto = probeParams.protocol;
+			int port = Integer.parseInt(probeParams.port);
+			int timeout = Integer.parseInt(probeParams.timeout);
+			probe = new PorterProbe(this, probeId, templateId, name, interval, multiplier, status, timeout,
+					proto, port);
+			break;
+		}
+		case Constants.http: {
+			String url = GeneralFunctions.Base64Decode(probeParams.url);
+			String method = probeParams.http_request;
+			String auth = probeParams.http_auth;
+			String authUser = GeneralFunctions.Base64Decode(probeParams.http_auth_username);
+			String authPass = GeneralFunctions.Base64Decode(probeParams.http_auth_password);
+			int timeout = Integer.parseInt(probeParams.timeout);
+
+			if (auth.equals(Constants.no))
+				probe = new WeberProbe(this, probeId, templateId, name, interval, multiplier, status, timeout,
+						method, url);
+			else
+				probe = new WeberProbe(this, probeId, templateId, name, interval, multiplier, status, timeout,
+						method, url, auth, authUser, authPass);
+			break;
+		}
+		case Constants.snmp: {
+
+			OID oid = new OID(probeParams.oid);
+			Enums.SnmpStoreAs storeValue = Integer.parseInt(probeParams.snmp_store_as) == 1
+					? Enums.SnmpStoreAs.asIs : Enums.SnmpStoreAs.delta;
+			String valueType = probeParams.snmp_datatype;
+			String valueUnit = probeParams.snmp_unit;
+			SnmpDataType dataType = getSnmpDataType(valueType);
+			if (dataType == null) {
+				SysLogger.Record(
+						new Log("Probe: " + probeId + " Wrong Data Type, Doesn't Added!", LogType.Error));
+				return;
+			}
+
+			SnmpUnit unit = getSnmpUnit(valueUnit);
+			if (unit == null) {
+				SysLogger.Record(
+						new Log("Probe: " + probeId + " Wrong Unit Type, Doesn't Added!", LogType.Error));
+				return;
+			}
+			probe = new SnmpProbe(this, probeId, templateId, name, interval, multiplier, status, oid, dataType,
+					unit, storeValue);
+			break;
+		}
+		case Constants.discovery: {
+			long elementsInterval = Long.parseLong(probeParams.discovery_elements_interval);
+			int triggerCode = Integer.parseInt(probeParams.discovery_trigger_code);
+			String triggerXValue = probeParams.discovery_trigger_x;
+			String unitType = probeParams.snmp_unit;
+			String triggerUuid = probeParams.discovery_trigger_id;
+			TriggerSeverity severity = getTriggerSev(probeParams.discovery_trigger_severity);
+			SnmpUnit trigValueUnit = getSnmpUnit(unitType);
+			if (trigValueUnit == null) {
+				SysLogger.Record(
+						new Log("Probe: " + probeId + " Wrong Unit Type, Doesn't Added!", LogType.Error));
+				return;
+			}
+			Enums.DiscoveryElementType discoveryType = (probeParams.discovery_type).equals("bw")
+					? Enums.DiscoveryElementType.nics : null;
+
+			probe = new DiscoveryProbe(this, probeId, templateId, name, interval, multiplier, status,
+					discoveryType, elementsInterval);
+
+			String triggerId = templateId.toString() + "@" + probeId + "@" + triggerUuid;
+			ArrayList<TriggerCondition> conditions = new ArrayList<TriggerCondition>();
+			TriggerCondition condition = new TriggerCondition(triggerCode, "and", triggerXValue, "");
+			conditions.add(condition);
+			Trigger discoveryTrigger = new Trigger(triggerId, name, probe, severity, status, "", trigValueUnit,
+					conditions);
+			probe.addTrigger(discoveryTrigger);
+			break;
+		}
+		case Constants.rbl: {
+			String rblName = probeParams.rbl;
+			probe = new RBLProbe(this, probeId, templateId, name, interval, multiplier, status, rblName);
+			break;
+		}
+		}
+		if (probe == null) {
+			SysLogger.Record(new Log("Creation of Probe: " + probeParams.probe_id + " failed, skipping!", LogType.Warn));
+			throw new Exception("Error parsing one of probe elements!");
+		}
+		this.getTemplateProbes().put(probeId, probe);
+		}
+		catch(Exception e)
+		{
+			SysLogger.Record(new Log("Creation of Probe Failed: " + probeParams + " , not added!",
+					LogType.Warn, e));
+			return;
+
+		}
+		}
+
+	private SnmpDataType getSnmpDataType(String valueType) {
+		SnmpDataType dataType;
+		switch (valueType) {
+			case Constants.integer:
+				dataType = SnmpDataType.Numeric;
+				break;
+			case Constants.string:
+				dataType = SnmpDataType.Text;
+				break;
+			case Constants._float:
+				dataType = SnmpDataType.Numeric;
+				break;
+			case Constants._boolean:
+				dataType = SnmpDataType.Text;
+				break;
+			default: {
+				dataType = null;
+	
+			}
+		}
+		return dataType;
+	}
+	private SnmpUnit getSnmpUnit(String unitType) {
+		SnmpUnit unit;
+		switch (unitType) {
+		case Constants.b:
+			unit = SnmpUnit.bits;
+			break;
+		case Constants.B:
+			unit = SnmpUnit.bytes;
+			break;
+		case Constants.Kb:
+			unit = SnmpUnit.kbits;
+			break;
+		case Constants.KB:
+			unit = SnmpUnit.kbytes;
+			break;
+		case Constants.Mb:
+			unit = SnmpUnit.mbits;
+			break;
+		case Constants.MB:
+			unit = SnmpUnit.mbytes;
+			break;
+		case Constants.Gb:
+			unit = SnmpUnit.gbits;
+			break;
+		case Constants.GB:
+			unit = SnmpUnit.gbytes;
+			break;
+		case Constants._int:
+			unit = SnmpUnit.integer;
+			break;
+		case Constants.str:
+			unit = SnmpUnit.string;
+			break;
+		case "":
+			unit = null;
+			break;
+
+		default: {
+			unit = null;
+		}
+		}
+		return unit;
+	}
+	private TriggerSeverity getTriggerSev(String sev) {
+		switch (sev) {
+		case Constants.notice:
+			return TriggerSeverity.Notice;
+		case Constants.warning:
+			return TriggerSeverity.Warning;
+		case Constants.high:
+			return TriggerSeverity.High;
+		case Constants.disaster:
+			return TriggerSeverity.Disaster;
+		}
+		return null;
+	}
+
+	}

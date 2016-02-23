@@ -80,6 +80,12 @@ public class RunnableSnmpProbeResults extends RunnableProbeResults {
 	public synchronized void acceptResults(ArrayList<Object> results) throws Exception {
 		super.acceptResults(results);
 
+		String rpStr = this.getRp().getRPString();
+		if (rpStr.contains(
+				"788b1b9e-d753-4dfa-ac46-61c4374eeb84@inner_7be55137-c5d8-438e-bca7-325f56656071"))
+			System.out.println("BREAKPOINT");
+		
+		
 		long lastTimestamp = (long) results.get(0);
 		this.setLastTimestamp(lastTimestamp);
 

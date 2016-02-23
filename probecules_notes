@@ -40,3 +40,7 @@ apt-get install visualvm
 -upgrade logger to log4j
 -snmp check improvements (retries,maxRepetiots)
 
+
+
+curl -i  -X PUT -d '{"hosts": ["e337d5e0-74c7-433d-b2c1-4a9b357676ce"]}' http://api.allprobe.com/v2/GetHosts/IL_D1-S1/9f34da71-0725-4380-9ab5-a90f691fbd9f
+

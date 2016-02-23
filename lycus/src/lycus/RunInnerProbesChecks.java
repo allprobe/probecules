@@ -177,6 +177,15 @@ public class RunInnerProbesChecks extends Thread {
 		RblProbeFutureCounter++;
 	}
 
+	public static void RunDiscoveryProbeThreads(RunnableProbe probe) {
+		ScheduledFuture<?> future;
+		future = DiscoveryExec.scheduleAtFixedRate(probe, 0, probe.getProbe()
+				.getInterval(), TimeUnit.SECONDS);
+		getDiscoveryFutureMap().put(probe.getRPString(), future);
+
+		DiscoveryFutureCounter++;
+	}
+	
 	public static void RunSnmpBatchThreads(final SnmpProbesBatch batch) {
 		ScheduledFuture<?> future;
 		future = SnmpBatchExec.scheduleAtFixedRate(batch, 0,
@@ -197,21 +206,20 @@ public class RunInnerProbesChecks extends Thread {
 			{
 			case PING:
 				RunInnerProbesChecks.RunPingerThreads(rp);
-				PingerFutureCounter++;
 				return true;
 			case PORT:
 				RunInnerProbesChecks.RunPorterThreads(rp);
-				PorterFutureCounter++;
 				return true;
 			case WEB:
 				RunInnerProbesChecks.RunWeberThreads(rp);
-				WeberFutureCounter++;
 				return true;
 			case TRACEROUTE:
 				break;
 			case RBL:
 				RunInnerProbesChecks.RunRblProbeThreads(rp);
-				RblProbeFutureCounter++;
+				return true;
+			case DISCOVERY:
+				RunInnerProbesChecks.RunDiscoveryProbeThreads(rp);
 				return true;
 			default:
 				return false;

@@ -28,9 +28,9 @@ public class DAL implements IDAL {
 	protected DAL() {
 		apiUrl = "";
 		if (Global.getApiSSL())
-			apiUrl += Constants.https;
+			apiUrl += Constants.https_prefix;
 		else
-			apiUrl += Constants.http;
+			apiUrl += Constants.http_prefix;
 		apiUrl += Global.getApiUrl();
 
 		createFailsFolder();

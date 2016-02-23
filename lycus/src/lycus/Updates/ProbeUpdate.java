@@ -30,10 +30,15 @@ public class ProbeUpdate extends BaseUpdate {
 	public Boolean New() {
 		super.New();
 
-		User user = UsersManager.getUser(UUID.fromString(getUpdate().user_id));
+		UUID userId=UUID.fromString(getUpdate().user_id);
+		
+		User user = UsersManager.getUser(userId);
 		Host host = null;
 		Probe probe = null;
 
+		if(user==null)
+		UsersManager.getUsers().put(userId, new User(userId));
+		
 		if (!user.isHostExist(UUID.fromString(getUpdate().host_id))) {
 			// Get host from Ran for host_id
 			IDAL dal = DAL.getInstanece();
@@ -44,7 +49,7 @@ public class ProbeUpdate extends BaseUpdate {
 
 			JSONObject jsonObject = dal.put(ApiAction.GetHosts, hosts);
 
-			JSONArray jsonArray = (JSONArray) jsonObject.get("hosts");
+			JSONArray jsonArray = (JSONArray) jsonObject.get(Constants.hosts);
 
 			UsersManager.addHosts(jsonArray);
 
