@@ -11,7 +11,7 @@ public class BucketUpdate  extends BaseUpdate{
 	@Override
 	public Boolean New()
 	{
-		super.New();
+//		super.New();
 	
 		return true;
 	}
@@ -19,8 +19,7 @@ public class BucketUpdate  extends BaseUpdate{
 	@Override
 	public Boolean Update()
 	{
-		super.Update();
-		
+//		super.Update();
 		
 		return true;
 	}
@@ -29,7 +28,7 @@ public class BucketUpdate  extends BaseUpdate{
 	public Boolean Delete()
 	{
 		super.Delete();
-		
+		user.deleteBucket(getUpdate().object_id);
 		
 		return true;
 	}

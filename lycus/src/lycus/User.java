@@ -105,6 +105,16 @@ public class User {
 		return getHost(host_id) != null;
 	}
 	
+	public Boolean deleteBucket(String bucket)
+	{
+		for (Host host : getHosts().values())
+		{
+			if (host.getBucket().equals(bucket))
+				host.setBucket(Constants.default1);
+		}
+		return true;
+	}
+	
 	public Boolean addHost(Host host)
 	{
 		Host newHost = getHost(host.getHostId());

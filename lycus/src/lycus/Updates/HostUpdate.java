@@ -75,9 +75,7 @@ public class HostUpdate extends BaseUpdate {
 		}
 
 		host.getRunnableProbes().clear();
-		user.getHosts().remove(UUID.fromString(
-
-				getUpdate().host_id));
+		user.getHosts().remove(UUID.fromString(getUpdate().host_id));
 		return true;
 	}
 }
