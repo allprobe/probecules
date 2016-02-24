@@ -12,6 +12,7 @@ import GlobalConstants.Enums.ApiAction;
 import Model.ProbeParams;
 import Model.UpdateModel;
 import lycus.DAL;
+import lycus.GeneralFunctions;
 import lycus.Host;
 import lycus.Log;
 import lycus.RunnableProbe;
@@ -116,16 +117,18 @@ public class ProbeUpdate extends BaseUpdate {
 		User user = UsersManager.getUser(UUID.fromString(getUpdate().user_id));
 		List<RunnableProbe> runnableProbes = user.getRunnableProbesFor(update.probe_id);
 		for (RunnableProbe runnableProbe : runnableProbes) {
-			runnableProbe.getProbe().setName(update.update_value.name);
-			runnableProbe.getProbe().setMultiplier(update.update_value.multiplier);
-			runnableProbe.getProbe().setActive(update.update_value.status);
-			runnableProbe.getProbe().updateKeyValues(update.update_value.key);
-
-			if (runnableProbe.getProbe().getInterval() != update.update_value.interval) {
+			if (!GeneralFunctions.isNullOrEmpty(update.update_value.name))
+				runnableProbe.getProbe().setName(update.update_value.name);
+			if (update.update_value.multiplier != null)
+				runnableProbe.getProbe().setMultiplier(update.update_value.multiplier);
+			if (update.update_value.status != null)
+				runnableProbe.getProbe().setActive(update.update_value.status);
+			if (runnableProbe.getProbe().getInterval() != update.update_value.interval && update.update_value.interval != null) {
 				runnableProbe.changeRunnableProbeInterval(update.update_value.interval);
 			}
 
-			runnableProbe.getProbe().updateKeyValues(update.update_value.key);
+			if (update.update_value.key != null)
+				runnableProbe.getProbe().updateKeyValues(update.update_value.key);
 			// SnmpProbe Probe (SnmpProbe)runnableProbe.getProbe();
 		}
 
