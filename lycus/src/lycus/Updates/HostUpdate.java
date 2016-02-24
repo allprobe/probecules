@@ -27,9 +27,6 @@ public class HostUpdate extends BaseUpdate {
 	@Override
 	public Boolean Update() {
 		super.Update();
-		User user = UsersManager.getUser(UUID.fromString(getUpdate().user_id));
-		if (user == null)
-			return false;
 
 		Host host = user.getHost(UUID.fromString(getUpdate().host_id));
 		if (host == null)
@@ -65,10 +62,6 @@ public class HostUpdate extends BaseUpdate {
 	@Override
 	public Boolean Delete() {
 		super.Delete();
-
-		User user = UsersManager.getUser(UUID.fromString(getUpdate().user_id));
-		if (user == null)
-			return false;
 
 		Host host = user.getHost(UUID.fromString(getUpdate().host_id));
 		if (host == null)

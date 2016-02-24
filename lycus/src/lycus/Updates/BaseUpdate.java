@@ -1,15 +1,22 @@
 package lycus.Updates;
 
+import java.util.UUID;
+
 import GlobalConstants.Constants;
 import GlobalConstants.Enums;
 import GlobalConstants.Enums.Action;
 import Model.UpdateModel;
+import lycus.Host;
+import lycus.User;
+import lycus.UsersManager;
 import lycus.Interfaces.IUpdate;
+import lycus.Probes.Probe;
 
 public abstract class BaseUpdate implements IUpdate{
 
 	protected Enums.Action action;
 	protected UpdateModel update;
+	protected User user;
 	
 	public BaseUpdate(UpdateModel update) {
 		this.update = update;
@@ -39,6 +46,12 @@ public abstract class BaseUpdate implements IUpdate{
 			case Constants.deleteTrigger:	
 				action = Action.Delete;
 				break;
+		}
+		
+		user = UsersManager.getUser(UUID.fromString(getUpdate().user_id));
+		if (user == null)
+		{
+			user = new User(UUID.fromString(getUpdate().user_id));
 		}
 	}
 

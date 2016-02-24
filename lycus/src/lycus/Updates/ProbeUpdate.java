@@ -32,15 +32,9 @@ public class ProbeUpdate extends BaseUpdate {
 	public Boolean New() {
 		super.New();
 
-		User user = UsersManager.getUser(UUID.fromString(getUpdate().user_id));
 		Host host = null;
 		Probe probe = null;
 
-		if (user == null)
-		{
-			user = new User(UUID.fromString(getUpdate().user_id));
-		}
-		
 		if (!user.isHostExist(UUID.fromString(getUpdate().host_id))) {
 			// Get host from Ran for host_id
 			IDAL dal = DAL.getInstanece();
@@ -114,7 +108,6 @@ public class ProbeUpdate extends BaseUpdate {
 	public Boolean Update() {
 		super.Update();
 
-		User user = UsersManager.getUser(UUID.fromString(getUpdate().user_id));
 		List<RunnableProbe> runnableProbes = user.getRunnableProbesFor(update.probe_id);
 		for (RunnableProbe runnableProbe : runnableProbes) {
 			if (!GeneralFunctions.isNullOrEmpty(update.update_value.name))
@@ -143,7 +136,6 @@ public class ProbeUpdate extends BaseUpdate {
 	@Override
 	public Boolean Delete() {
 		super.Delete();
-		User user = UsersManager.getUser(UUID.fromString(getUpdate().user_id));
 		user.removeRunnableProbes(getUpdate().probe_id);
 
 		return true;
