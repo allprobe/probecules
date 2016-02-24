@@ -8,6 +8,7 @@ import java.util.ArrayList;
 import java.util.UUID;
 
 import Model.KeyUpdateModel;
+import lycus.GeneralFunctions;
 import lycus.Host;
 import lycus.Net;
 import lycus.User;
@@ -156,9 +157,12 @@ public class PorterProbe extends Probe {
 	 public boolean updateKeyValues(KeyUpdateModel key)
 		{
 			super.updateKeyValues(key);
-			this.setPort(key.port);
-			this.setProto(key.proto);
-			this.setTimeout(key.timeout);
+			if (key.port != null)
+				this.setPort(key.port);
+			if (!GeneralFunctions.isNullOrEmpty(key.proto))
+				this.setProto(key.proto);
+			if (key.timeout != null)
+				this.setTimeout(key.timeout);
 			return true;
 		}
 }

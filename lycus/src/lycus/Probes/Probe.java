@@ -150,8 +150,6 @@ public class Probe  {
 
         return s.toString();
     }
-	
-	//TODO: update keys values
 	public boolean updateKeyValues(KeyUpdateModel key)
 	{
 		return true;

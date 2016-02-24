@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.UUID;
 
 import Model.KeyUpdateModel;
+import lycus.GeneralFunctions;
 import lycus.Host;
 import lycus.Net;
 import lycus.User;
@@ -48,7 +49,8 @@ public class RBLProbe extends Probe {
 	 public boolean updateKeyValues(KeyUpdateModel key)
 		{
 			super.updateKeyValues(key);
-			this.setRBL(key.rbl);
+			if (!GeneralFunctions.isNullOrEmpty(key.rbl))
+				this.setRBL(key.rbl);
 			return true;
 		}
 }

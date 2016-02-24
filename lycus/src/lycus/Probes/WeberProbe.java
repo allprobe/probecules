@@ -170,12 +170,19 @@ public class WeberProbe extends Probe {
 	{
 		super.updateKeyValues(key);
 //		super.updateProbe(probeNewName, probeNewInterval, probeNewMultiplier, probeNewStatus);
-    	this.setUrl(GeneralFunctions.Base64Decode(key.urls));
-    	this.setHttpRequestType(key.http_method);
-    	this.setAuthStatus(key.http_auth);
-    	this.setAuthUsername(GeneralFunctions.Base64Decode(key.http_auth_user));
-    	this.setAuthPassword(GeneralFunctions.Base64Decode(key.http_auth_password));
-    	this.setTimeout(key.timeout);
+		if (key.urls != null)
+			this.setUrl(GeneralFunctions.Base64Decode(key.urls));
+		if (!GeneralFunctions.isNullOrEmpty(key.http_method))
+			this.setHttpRequestType(key.http_method);
+		if (!GeneralFunctions.isNullOrEmpty(key.http_auth))
+			this.setAuthStatus(key.http_auth);
+		if (!GeneralFunctions.isNullOrEmpty(key.http_auth_user))
+			this.setAuthUsername(GeneralFunctions.Base64Decode(key.http_auth_user));
+		if (!GeneralFunctions.isNullOrEmpty(key.http_auth_password))
+			this.setAuthPassword(GeneralFunctions.Base64Decode(key.http_auth_password));
+		if (key.timeout != null)
+			this.setTimeout(key.timeout);
+    	
 		return true;
 	}
 }

@@ -7,6 +7,7 @@ import org.snmp4j.smi.OID;
 import GlobalConstants.SnmpDataType;
 import GlobalConstants.Enums.SnmpStoreAs;
 import Model.KeyUpdateModel;
+import lycus.GeneralFunctions;
 import lycus.Host;
 import lycus.Net;
 import lycus.SnmpUnit;
@@ -83,10 +84,14 @@ public class SnmpProbe extends Probe {
 	public boolean updateKeyValues(KeyUpdateModel key)
 	{
 		super.updateKeyValues(key);
-		oid = new OID(key.snmp_oid);
-		unit = UsersManager.getSnmpUnit(key.value_unit);
-		dataType =  UsersManager.getSnmpDataType(key.value_type);
-		storeAs = SnmpStoreAs.values()[key.store_value_as];
+		if (!GeneralFunctions.isNullOrEmpty(key.snmp_oid))
+			oid = new OID(key.snmp_oid);
+		if (!GeneralFunctions.isNullOrEmpty(key.value_unit))
+			unit = UsersManager.getSnmpUnit(key.value_unit);
+		if (!GeneralFunctions.isNullOrEmpty(key.value_type))
+			dataType =  UsersManager.getSnmpDataType(key.value_type);
+		if (key.store_value_as != null)
+			storeAs = SnmpStoreAs.values()[key.store_value_as];
 		return true;
 	}
 }

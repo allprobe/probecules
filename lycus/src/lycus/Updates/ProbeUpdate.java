@@ -126,7 +126,12 @@ public class ProbeUpdate extends BaseUpdate {
 			if (runnableProbe.getProbe().getInterval() != update.update_value.interval && update.update_value.interval != null) {
 				runnableProbe.changeRunnableProbeInterval(update.update_value.interval);
 			}
-
+			
+			// TODO: What to do with them
+//			probeParams.template_id =  update.template_id;
+//			probeParams.type =  update.update_value.type;
+			
+			
 			if (update.update_value.key != null)
 				runnableProbe.getProbe().updateKeyValues(update.update_value.key);
 			// SnmpProbe Probe (SnmpProbe)runnableProbe.getProbe();

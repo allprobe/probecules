@@ -112,9 +112,12 @@ public class PingerProbe extends Probe {
     public boolean updateKeyValues(KeyUpdateModel key)
 	{
 		super.updateKeyValues(key);
-		this.setCount(key.npings);
-		this.setBytes(key.bytes);
-		this.setTimeout(key.timeout);
+		if (key.npings != null)
+			this.setCount(key.npings);
+		if (key.bytes != null)
+			this.setBytes(key.bytes);
+		if (key.timeout != null)
+			this.setTimeout(key.timeout);
 		return true;
 	}
 }
