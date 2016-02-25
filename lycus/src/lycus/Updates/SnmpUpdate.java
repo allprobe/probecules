@@ -1,6 +1,9 @@
 package lycus.Updates;
 
+import java.util.UUID;
+
 import Model.UpdateModel;
+import lycus.SnmpTemplate;
 
 public class SnmpUpdate  extends BaseUpdate{
 	public SnmpUpdate(UpdateModel update) {
@@ -11,7 +14,7 @@ public class SnmpUpdate  extends BaseUpdate{
 	@Override
 	public Boolean New()
 	{
-		super.New();
+//		super.New();
 	
 		return true;
 	}
@@ -21,6 +24,18 @@ public class SnmpUpdate  extends BaseUpdate{
 	{
 		super.Update();
 		
+		SnmpTemplate snmpTemplate = user.getSnmpTemplates().get(update.template_id);
+		snmpTemplate.setSnmpTemplateName(getUpdate().update_value.name);
+		snmpTemplate.setVersion(getUpdate().update_value.snmp_version);
+		snmpTemplate.setCommunityName(getUpdate().update_value.snmp_community);
+		snmpTemplate.setUserName(getUpdate().update_value.snmp_user); 		
+		snmpTemplate.setSec(getUpdate().update_value.snmp_sec);
+		snmpTemplate.setAlgo(getUpdate().update_value.snmp_auth_method);           
+		snmpTemplate.setAuthPass(getUpdate().update_value.snmp_auth_password); 
+		snmpTemplate.setCryptType(getUpdate().update_value.snmp_crypt_method); 
+		snmpTemplate.setCryptPass(getUpdate().update_value.snmp_crypt_password);
+		snmpTemplate.setTimeout(getUpdate().update_value.timeout);
+		snmpTemplate.setPort(getUpdate().update_value.snmp_port);
 		
 		return true;
 	}
@@ -29,7 +44,7 @@ public class SnmpUpdate  extends BaseUpdate{
 	public Boolean Delete()
 	{
 		super.Delete();
-		
+		user.getSnmpTemplates().remove(UUID.fromString(getUpdate().object_id));
 		
 		return true;
 	}

@@ -24,6 +24,15 @@ public class UpdateValueModel
 	public String xvalue_unit;
 	public String probe_id;
 	public ConditionUpdateModel[] conditions;
-	
+	public Integer snmp_version;
+	public String snmp_community;
+	public String snmp_user;
+	public String snmp_sec;
+	public String snmp_auth_method;
+	public String snmp_auth_password;
+	public String snmp_crypt_method;
+	public String snmp_crypt_password;
+	public Integer timeout;
+	public Integer snmp_port;
 }
 
