@@ -48,7 +48,8 @@ public class Constants {
 	public final static String GB = "GB";
 	public final static String _int = "int";
 	public final static String str = "str";
-
+	public final static String none = "none";
+	
 	public final static String notice = "notice";
 	public final static String warning = "warning";
 	public final static String high = "high";

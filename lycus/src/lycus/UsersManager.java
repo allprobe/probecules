@@ -23,6 +23,7 @@ import GlobalConstants.Enums;
 import GlobalConstants.LogType;
 import GlobalConstants.SnmpDataType;
 import GlobalConstants.TriggerSeverity;
+import Model.ConditionUpdateModel;
 import Model.HostParams;
 import Model.ProbeParams;
 import lycus.Probes.DiscoveryProbe;
@@ -420,7 +421,23 @@ public class UsersManager {
 		return conditions;
 	}
 
-	private static TriggerSeverity getTriggerSev(String sev) {
+	public static ArrayList<TriggerCondition> getTriggerConds(ConditionUpdateModel[] conditionUpdateModels) {
+		ArrayList<TriggerCondition> conditions = new ArrayList<TriggerCondition>();
+
+		for (ConditionUpdateModel conditionUpdateModel : conditionUpdateModels) {
+//			JSONObject conditionJson = (JSONObject) jsonArray.get(i);
+			int code = Integer.parseInt((String)conditionUpdateModel.condition_id);
+			String andOr = (String) conditionUpdateModel.andor;
+			String xValue = (String) conditionUpdateModel.xvalue;
+			String tValue = (String)conditionUpdateModel.tvalue;
+			TriggerCondition condition = new TriggerCondition(code, andOr, xValue, tValue);
+			conditions.add(condition);
+
+		}
+		return conditions;
+	}
+	
+	public static TriggerSeverity getTriggerSev(String sev) {
 		switch (sev) {
 		case "notice":
 			return TriggerSeverity.Notice;

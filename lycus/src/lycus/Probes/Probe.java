@@ -109,6 +109,7 @@ public class Probe  {
 	public void setMultiplier(float multiplier) {
 		this.multiplier = multiplier;
 	}
+	
 	public HashMap<String,Trigger> getTriggers() {
 		return triggers;
 	}
@@ -121,6 +122,12 @@ public class Probe  {
 	{
 		this.getTriggers().put(trigger.getTriggerId(),trigger);
 	}
+	
+	public void removeTrigger(UUID trigger_id)
+	{
+		this.getTriggers().remove(trigger_id);
+	}
+	
 	public String getProbeKey()
 	{
 		return this.getTemplate_id().toString()+"@"+this.getProbe_id();
@@ -150,6 +157,7 @@ public class Probe  {
 
         return s.toString();
     }
+	
 	public boolean updateKeyValues(KeyUpdateModel key)
 	{
 		return true;
