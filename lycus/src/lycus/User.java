@@ -442,7 +442,7 @@ public class User {
 		case Constants.snmp: {
 
 			OID oid = new OID(probeParams.oid);
-			Enums.SnmpStoreAs storeValue = probeParams.snmp_store_as == 1
+			Enums.SnmpStoreAs storeValue = probeParams.snmp_store_as == 0
 					? Enums.SnmpStoreAs.asIs : Enums.SnmpStoreAs.delta;
 			String valueType = probeParams.snmp_datatype;
 			String valueUnit = probeParams.snmp_unit;
