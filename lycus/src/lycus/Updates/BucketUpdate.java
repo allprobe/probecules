@@ -28,7 +28,7 @@ public class BucketUpdate  extends BaseUpdate{
 	public Boolean Delete()
 	{
 		super.Delete();
-		user.deleteBucket(getUpdate().object_id);
+		getUser().deleteBucket(getUpdate().object_id);
 		
 		return true;
 	}

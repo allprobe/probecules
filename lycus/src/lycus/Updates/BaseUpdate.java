@@ -15,8 +15,8 @@ import lycus.Probes.Probe;
 public abstract class BaseUpdate implements IUpdate{
 
 	protected Enums.Action action;
-	protected UpdateModel update;
-	protected User user;
+	private UpdateModel update;
+	private User user;
 	
 	public BaseUpdate(UpdateModel update) {
 		this.update = update;
@@ -88,4 +88,9 @@ public abstract class BaseUpdate implements IUpdate{
 	public UpdateModel getUpdate(){
 		return this.update;
 	}
+
+	public User getUser() {
+		return user;
+	}
+
 }

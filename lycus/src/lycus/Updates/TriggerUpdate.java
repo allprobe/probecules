@@ -21,8 +21,8 @@ public class TriggerUpdate extends BaseUpdate {
 	public Boolean New()
 	{
 		super.New();
-		User user = UsersManager.getUser(UUID.fromString(update.user_id));
-		Probe probe = user.getProbeFor(update.probe_id);
+		Probe probe = getUser().getProbeFor(getUpdate().probe_id);
+		
 		
 //		ArrayList<TriggerCondition>  conditions = new ArrayList<TriggerCondition>();
 //		UsersManager.getTriggerConds();

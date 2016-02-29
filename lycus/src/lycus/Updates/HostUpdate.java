@@ -28,7 +28,7 @@ public class HostUpdate extends BaseUpdate {
 	public Boolean Update() {
 		super.Update();
 
-		Host host = user.getHost(UUID.fromString(getUpdate().host_id));
+		Host host = getUser().getHost(UUID.fromString(getUpdate().host_id));
 		if (host == null)
 			return false;
 
@@ -39,7 +39,7 @@ public class HostUpdate extends BaseUpdate {
 			host.setHostIp(getUpdate().update_value.ip);
 		}
 		if (!GeneralFunctions.isNullOrEmpty(getUpdate().update_value.snmp_template)) {
-			SnmpTemplate snmpTemplate = user.getSnmpTemplates()
+			SnmpTemplate snmpTemplate = getUser().getSnmpTemplates()
 					.get(UUID.fromString(getUpdate().update_value.snmp_template));
 			if (snmpTemplate == null) {
 				// TODO: Fetch from Ran and create new
@@ -63,7 +63,7 @@ public class HostUpdate extends BaseUpdate {
 	public Boolean Delete() {
 		super.Delete();
 
-		Host host = user.getHost(UUID.fromString(getUpdate().host_id));
+		Host host = getUser().getHost(UUID.fromString(getUpdate().host_id));
 		if (host == null)
 			return false;
 
@@ -75,7 +75,7 @@ public class HostUpdate extends BaseUpdate {
 		}
 
 		host.getRunnableProbes().clear();
-		user.getHosts().remove(UUID.fromString(getUpdate().host_id));
+		getUser().getHosts().remove(UUID.fromString(getUpdate().host_id));
 		return true;
 	}
 }

@@ -24,7 +24,7 @@ public class SnmpUpdate  extends BaseUpdate{
 	{
 		super.Update();
 		
-		SnmpTemplate snmpTemplate = user.getSnmpTemplates().get(update.template_id);
+		SnmpTemplate snmpTemplate = getUser().getSnmpTemplates().get(getUpdate().template_id);
 		snmpTemplate.setSnmpTemplateName(getUpdate().update_value.name);
 		snmpTemplate.setVersion(getUpdate().update_value.snmp_version);
 		snmpTemplate.setCommunityName(getUpdate().update_value.snmp_community);
@@ -44,7 +44,7 @@ public class SnmpUpdate  extends BaseUpdate{
 	public Boolean Delete()
 	{
 		super.Delete();
-		user.getSnmpTemplates().remove(UUID.fromString(getUpdate().object_id));
+		getUser().getSnmpTemplates().remove(UUID.fromString(getUpdate().object_id));
 		
 		return true;
 	}

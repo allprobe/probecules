@@ -34,7 +34,7 @@ public class TemplateUpdate  extends BaseUpdate{
 		super.Delete();
 		
 		// TODO: Check if remove for host or remove for user
-		for (Host host : user.getHosts().values())
+		for (Host host : getUser().getHosts().values())
 		{
 			host.removeRunnableProbes(UUID.fromString(getUpdate().object_id));
 		}
