@@ -137,4 +137,41 @@ public class Host {
 		return s.toString();
 	}
 
+	public boolean removeRunnableProbes(UUID teplate_id)
+	{
+		List<String> keys = new ArrayList();
+		for (String key : this.runnableProbes.keySet())
+		{
+			if (runnableProbes.get(key).getProbe().getTemplate_id().equals(teplate_id))
+				keys.add(key);
+		}
+		
+		for (String key : keys)
+		{
+			try
+			{
+				RunnableProbe runnableProbe = this.runnableProbes.get(key);
+				runnableProbe.stop();
+				runnableProbe.getProbe().getTriggers().clear();
+				this.runnableProbes.remove(key);
+				
+			}
+			catch (Exception ex)
+			{
+				
+			}
+		}
+		return true;
+	}
+	
+	public List<RunnableProbe>  getRunnableProbes(UUID teplate_id)
+	{
+		List<RunnableProbe> runnableProbes =  new  ArrayList();
+		for (RunnableProbe runnableProbe : this.runnableProbes.values())
+		{
+			if (runnableProbe.getProbe().getTemplate_id().equals(teplate_id))
+				runnableProbes.add(runnableProbe);
+		}
+		return runnableProbes;
+	}
 }
