@@ -1,6 +1,9 @@
 package lycus.Updates;
 
+import java.util.UUID;
+
 import Model.UpdateModel;
+import lycus.Host;
 
 public class TemplateUpdate  extends BaseUpdate{
 
@@ -12,7 +15,7 @@ public class TemplateUpdate  extends BaseUpdate{
 	@Override
 	public Boolean New()
 	{
-		super.New();
+//		super.New();
 	
 		return true;
 	}
@@ -20,8 +23,7 @@ public class TemplateUpdate  extends BaseUpdate{
 	@Override
 	public Boolean Update()
 	{
-		super.Update();
-		
+//		super.Update();
 		
 		return true;
 	}
@@ -31,6 +33,11 @@ public class TemplateUpdate  extends BaseUpdate{
 	{
 		super.Delete();
 		
+		// TODO: Check if remove for host or remove for user
+		for (Host host : user.getHosts().values())
+		{
+			host.removeRunnableProbes(UUID.fromString(getUpdate().object_id));
+		}
 		
 		return true;
 	}
