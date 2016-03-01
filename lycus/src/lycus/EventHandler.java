@@ -50,7 +50,7 @@ public class EventHandler implements Runnable {
 
 	private ArrayList<HashMap<String,HashMap<String,String>>> getAllEvents() throws Exception {
 		ArrayList<HashMap<String,HashMap<String,String>>> events=new ArrayList<HashMap<String,HashMap<String,String>>>();
-		for (RunnableProbeResults rpr : this.getHistory().getResults().values()) {
+		for (BaseResults rpr : this.getHistory().getResults().values()) {
 			HashMap<Trigger, TriggerEvent> rprEvents = rpr.getEvents();
 			if (rprEvents.size() == 0)
 				continue;

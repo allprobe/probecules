@@ -48,9 +48,9 @@ public class RollupsMemoryDump implements Runnable {
 
 	private ArrayList<DataPointsRollup[][]> getAllRollups() {
 		ArrayList<DataPointsRollup[][]> dataRollups = new ArrayList<DataPointsRollup[][]>();
-		ArrayList<RunnableProbeResults> historyResults = new ArrayList<RunnableProbeResults>(
+		ArrayList<BaseResults> historyResults = new ArrayList<BaseResults>(
 				this.getHistory().getResults().values());
-		for (RunnableProbeResults results : historyResults) {
+		for (BaseResults results : historyResults) {
 			dataRollups.add(results.retrieveExistingRollups());
 		}
 		return dataRollups;
@@ -106,7 +106,7 @@ public class RollupsMemoryDump implements Runnable {
 		for (DataPointsRollup[][] rollupsResult : rollupses) {
 			DataPointsRollup sampleRollup = rollupsResult[0][0];
 			String rpID = sampleRollup.getRunnableProbeId();
-			RunnableProbeResults rpr = this.getHistory().getResults().get(rpID);
+			BaseResults rpr = this.getHistory().getResults().get(rpID);
 			if (rpr != null)
 				rpr.insertExistingRollups(rollupsResult);
 			else {

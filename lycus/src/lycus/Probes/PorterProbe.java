@@ -112,7 +112,6 @@ public class PorterProbe extends Probe {
 	public void updateProbeAttributes(String probeNewName, long probeNewInterval, float probeNewMultiplier,
 			boolean probeNewStatus,String newType,int newPort,int newTimeout,String newSendString,String newReceiveString)
     {
-    	super.updateProbe(probeNewName, probeNewInterval, probeNewMultiplier, probeNewStatus);
     	this.setProto(newType);
     	this.setPort(newPort);
     	this.setSendString(newSendString);

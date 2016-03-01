@@ -71,14 +71,6 @@ public class PingerProbe extends Probe {
         this.bytes = bytes;
     }
     
-    public void updateProbeAttributes(String probeNewName, long probeNewInterval, float probeNewMultiplier,
-			boolean probeNewStatus,int newCount,int newBytes,int newTimeout)
-    {
-    	super.updateProbe(probeNewName, probeNewInterval, probeNewMultiplier, probeNewStatus);
-    	this.setCount(newCount);
-    	this.setBytes(newBytes);
-    	this.setTimeout(newTimeout);
-    }
     
     @Override
     public ArrayList<Object> Check(Host h)

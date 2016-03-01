@@ -132,15 +132,6 @@ public class Probe  {
 	{
 		return this.getTemplate_id().toString()+"@"+this.getProbe_id();
 	}
-    
-	protected void updateProbe(String probeNewName, long probeNewInterval, float probeNewMultiplier,
-			boolean probeNewStatus)
-	{
-		this.setName(probeNewName);
-		this.setInterval(probeNewInterval);
-		this.setMultiplier(probeNewMultiplier);
-		this.setActive(probeNewStatus);
-	}
 	
 	public ArrayList<Object> Check(Host h)
     {

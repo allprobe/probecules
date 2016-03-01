@@ -26,7 +26,6 @@ public class RBLProbe extends Probe {
 	public void updateProbeAttributes(String probeNewName, long probeNewInterval, float probeNewMultiplier,
 			boolean probeNewStatus,String newRBL)
     {
-    	super.updateProbe(probeNewName, probeNewInterval, probeNewMultiplier, probeNewStatus);
     	this.setRBL(newRBL);
     }
 	

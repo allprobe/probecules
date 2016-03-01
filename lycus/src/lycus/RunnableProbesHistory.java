@@ -20,7 +20,7 @@ import GlobalConstants.Enums;
 import GlobalConstants.LogType;
 
 public class RunnableProbesHistory implements Runnable {
-	private HashMap<String, RunnableProbeResults> results;
+	private HashMap<String, BaseResults> results;
 	private Gson gson;
 	private RollupsMemoryDump memDump;
 	private EventHandler eventsHandler;
@@ -94,7 +94,7 @@ public class RunnableProbesHistory implements Runnable {
 
 	private String getResultsDBFormat() {
 
-		HashMap<String, RunnableProbeResults> rprs = this.getResults();
+		HashMap<String, BaseResults> rprs = this.getResults();
 
 		HashMap<String, HashMap<String, HashMap<String, String>>> results = new HashMap<String, HashMap<String, HashMap<String, String>>>();
 		results.put("RAW", new HashMap<String, HashMap<String, String>>());
@@ -105,7 +105,7 @@ public class RunnableProbesHistory implements Runnable {
 		results.put("36hRollups", new HashMap<String, HashMap<String, String>>());
 		results.put("11dRollups", new HashMap<String, HashMap<String, String>>());
 
-		for (RunnableProbeResults rpr : rprs.values()) {
+		for (BaseResults rpr : rprs.values()) {
 
 			RunnableProbe rp = rpr.getRp();
 
@@ -206,7 +206,7 @@ public class RunnableProbesHistory implements Runnable {
 
 	}
 
-	private HashMap<String, String> rollupResultsDBFormat(RunnableProbeResults rpr, String resultkey,
+	private HashMap<String, String> rollupResultsDBFormat(BaseResults rpr, String resultkey,
 			String resultvalue) {
 
 		HashMap<String, String> tableResults;
@@ -230,7 +230,7 @@ public class RunnableProbesHistory implements Runnable {
 
 	}
 
-	private HashMap<String, String> rawResultsDBFormat(RunnableProbeResults rpr, String resultkey, String resultvalue) {
+	private HashMap<String, String> rawResultsDBFormat(BaseResults rpr, String resultkey, String resultvalue) {
 		HashMap<String, String> tableResults;
 		tableResults = new HashMap<String, String>();
 		RunnableProbe rp = rpr.getRp();
@@ -250,11 +250,11 @@ public class RunnableProbesHistory implements Runnable {
 		return tableResults;
 	}
 
-	public HashMap<String, RunnableProbeResults> getResults() {
+	public HashMap<String, BaseResults> getResults() {
 		return results;
 	}
 
-	public void setResults(HashMap<String, RunnableProbeResults> results) {
+	public void setResults(HashMap<String, BaseResults> results) {
 		this.results = results;
 	}
 
@@ -314,8 +314,8 @@ public class RunnableProbesHistory implements Runnable {
 		this.memDump = memDump;
 	}
 
-	private HashMap<String, RunnableProbeResults> getAllResultsUsers(ArrayList<User> users) {
-		HashMap<String, RunnableProbeResults> rprs = new HashMap<String, RunnableProbeResults>();
+	private HashMap<String, BaseResults> getAllResultsUsers(ArrayList<User> users) {
+		HashMap<String, BaseResults> rprs = new HashMap<String, BaseResults>();
 		for (User u : users) {
 			Collection<RunnableProbe> usersRPs = u.getAllRunnableProbes().values();
 			for (RunnableProbe rp : usersRPs) {
@@ -358,7 +358,7 @@ public class RunnableProbesHistory implements Runnable {
 					UUID triggerId = UUID.fromString(it.split("@")[3]);
 					long timestamp = Long.parseLong((String) events.get(it));
 
-					RunnableProbeResults rpr = this.getResults()
+					BaseResults rpr = this.getResults()
 							.get(templateId.toString() + "@" + hostId.toString() + "@" + probeId);
 					Trigger trigger = rpr.getRp().getProbe().getTriggers()
 							.get(templateId.toString() + "@" + probeId + "@" + triggerId.toString());

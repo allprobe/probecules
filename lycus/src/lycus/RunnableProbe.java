@@ -18,7 +18,7 @@ public class RunnableProbe implements Runnable {
 	private Probe probe;
 	private boolean isActive;
 	private boolean isRunning;
-	private RunnableProbeResults results;
+	private BaseResults results;
 
 	public RunnableProbe(Host host, Probe probe) {
 		this.setHost(host);
@@ -32,17 +32,17 @@ public class RunnableProbe implements Runnable {
 		
 		switch(this.getProbeType())
 		{
-			case PING: results=new RunnablePingerProbeResults(this);
+			case PING: results=new PingerResults(this);
 			break;
-			case PORT: results=new RunnablePorterProbeResults(this);
+			case PORT: results=new PorterResults(this);
 			break;
 			case WEB: results=new RunnableWeberProbeResults(this);
 			break;
-			case SNMP: results=new RunnableSnmpProbeResults(this);
+			case SNMP: results=new SnmpResults(this);
 			break;
-			case SNMPv1: results=new RunnableSnmpProbeResults(this);
+			case SNMPv1: results=new SnmpResults(this);
 			break;
-			case RBL: results=new RunnableRblProbeResults(this);
+			case RBL: results=new RblResults(this);
 			break;
 			case TRACEROUTE:results=new RunnableTracerouteProbeResults(this);
 			break;
@@ -75,11 +75,11 @@ public class RunnableProbe implements Runnable {
 		this.isActive = isActive;
 	}
 
-	public RunnableProbeResults getResult() {
+	public BaseResults getResult() {
 		return results;
 	}
 
-	public void setResult(RunnableProbeResults results) {
+	public void setResult(BaseResults results) {
 		this.results = results;
 	}
 

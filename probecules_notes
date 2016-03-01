@@ -32,7 +32,7 @@ top -p `pgrep java | tr "\\n" "," | sed 's/,$//'`
 
 apt-get install visualvm
 
-
+/etc/init.d/probecules 2 stop
 
 
 -snmp checks impelementation

@@ -7,7 +7,7 @@ import org.json.simple.JSONArray;
 
 import GlobalConstants.LogType;
 
-public class RunnableWeberProbeResults extends RunnableProbeResults {
+public class RunnableWeberProbeResults extends BaseResults {
 
 	private Integer statusCode;
 	private Long responseTime;

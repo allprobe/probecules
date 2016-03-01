@@ -10,21 +10,21 @@ import GlobalConstants.LogType;
 import lycus.Probes.DiscoveryProbe;
 import lycus.Probes.SnmpProbe;
 
-public class RunnableDiscoveryProbeResults extends RunnableProbeResults implements Runnable {
+public class RunnableDiscoveryProbeResults extends BaseResults implements Runnable {
 
-	private HashMap<Integer,DiscoveryElement> elements=null;
+	private HashMap<Integer,BaseElementProbe> elements=null;
 	private boolean newElements;
 	
 	public RunnableDiscoveryProbeResults(RunnableProbe rp) {
 		super(rp);
-		this.elements=new HashMap<Integer,DiscoveryElement>();
+		this.elements=new HashMap<Integer,BaseElementProbe>();
 		}
 	
-	public HashMap<Integer,DiscoveryElement> getElements() {
+	public HashMap<Integer,BaseElementProbe> getElements() {
 		return elements;
 	}
 
-	public void setElements(HashMap<Integer,DiscoveryElement> elements) {
+	public void setElements(HashMap<Integer,BaseElementProbe> elements) {
 		this.elements = elements;
 	}
 
@@ -41,7 +41,7 @@ public class RunnableDiscoveryProbeResults extends RunnableProbeResults implemen
 	public synchronized void acceptResults(ArrayList<Object> results) throws Exception{
 		super.acceptResults(results);
 		
-		HashMap<Integer,DiscoveryElement> lastScanElements=null;
+		HashMap<Integer,BaseElementProbe> lastScanElements=null;
 		
 		switch (((DiscoveryProbe)this.getRp().getProbe()).getType()) {
 		case nics:
@@ -74,14 +74,14 @@ public class RunnableDiscoveryProbeResults extends RunnableProbeResults implemen
 	}
 
 	private void startElementsThreads() {
-		for(Map.Entry<Integer, DiscoveryElement> element:this.getElements().entrySet())
+		for(Map.Entry<Integer, BaseElementProbe> element:this.getElements().entrySet())
 		{
 			element.getValue().start();
 		}
 	}
 
 	private void stopElementsThreads() {
-		for(Map.Entry<Integer, DiscoveryElement> element:this.getElements().entrySet())
+		for(Map.Entry<Integer, BaseElementProbe> element:this.getElements().entrySet())
 		{
 			element.getValue().stop();
 		}
@@ -93,14 +93,14 @@ public class RunnableDiscoveryProbeResults extends RunnableProbeResults implemen
 	}
 	
 	
-	private HashMap<Integer,DiscoveryElement> acceptResultsForDisks(ArrayList<Object> results) {
+	private HashMap<Integer,BaseElementProbe> acceptResultsForDisks(ArrayList<Object> results) {
 		// TODO Auto-generated method stub
 		return null;
 	}
 
-	private HashMap<Integer,DiscoveryElement> convertSnmpWalkToNicsElements(ArrayList<Object> results) {
+	private HashMap<Integer,BaseElementProbe> convertSnmpWalkToNicsElements(ArrayList<Object> results) {
 		
-		HashMap<Integer,DiscoveryElement> lastElements=new HashMap<Integer,DiscoveryElement>();
+		HashMap<Integer,BaseElementProbe> lastElements=new HashMap<Integer,BaseElementProbe>();
 		
 		Long ifInOctets=null;
 		Long ifOutOctets=null;
@@ -118,7 +118,7 @@ public class RunnableDiscoveryProbeResults extends RunnableProbeResults implemen
 //			ifInOctets=Long.parseLong(walkResults.get("1.3.6.1.2.1.2.2.1.10."+index));
 //			ifOutOctets=Long.parseLong(walkResults.get("1.3.6.1.2.1.2.2.1.16."+index));
 
-			DiscoveryNicElement element=new DiscoveryNicElement(this,index,name);
+			NicElementProbe element=new NicElementProbe(this,index,name);
 			lastElements.put(index, element);
 		}
 
@@ -129,7 +129,7 @@ public class RunnableDiscoveryProbeResults extends RunnableProbeResults implemen
 		
 			
 	}
-	private boolean isElementsIdentical(HashMap<Integer,DiscoveryElement> lastElements) {
+	private boolean isElementsIdentical(HashMap<Integer,BaseElementProbe> lastElements) {
 		
 		if(this.getElements()==null&&lastElements==null)
 			return true;
@@ -141,7 +141,7 @@ public class RunnableDiscoveryProbeResults extends RunnableProbeResults implemen
 				return false;
 		if(this.getElements().size()!=lastElements.size())
 			return false;
-		for(Map.Entry<Integer, DiscoveryElement> newElement:lastElements.entrySet())
+		for(Map.Entry<Integer, BaseElementProbe> newElement:lastElements.entrySet())
 		{
 			if(!this.getElements().get(newElement.getKey()).getName().equals(newElement.getValue().getName()))
 				return false;

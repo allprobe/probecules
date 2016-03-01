@@ -2,7 +2,7 @@ package lycus;
 
 import java.util.ArrayList;
 
-public class RunnableTracerouteProbeResults extends RunnableProbeResults {
+public class RunnableTracerouteProbeResults extends BaseResults {
 	
 	private ArrayList<String> routes;
 	
