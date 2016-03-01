@@ -11,7 +11,8 @@ public class Enums {
 		GetServerLiveEvents,
 		GetThreadsUpdates, 
 		DevGetThreadsUpdates,
-		GetHosts
+		GetHosts,
+		GetSnmpTemplates
 	}
 	
 	public static enum DiscoveryElementType

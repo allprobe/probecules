@@ -26,6 +26,7 @@ import GlobalConstants.TriggerSeverity;
 import Model.ConditionUpdateModel;
 import Model.HostParams;
 import Model.ProbeParams;
+import Model.SnmpTemplateParams;
 import lycus.Probes.DiscoveryProbe;
 import lycus.Probes.PingerProbe;
 import lycus.Probes.PorterProbe;
@@ -33,7 +34,6 @@ import lycus.Probes.Probe;
 import lycus.Probes.RBLProbe;
 import lycus.Probes.SnmpProbe;
 import lycus.Probes.WeberProbe;
-
 
 /**
  * 
@@ -143,36 +143,30 @@ public class UsersManager {
 		}
 	}
 
-	private static void addSnmpTemplates(JSONArray allSnmpTemplatesJson) {
+	public static void addSnmpTemplates(JSONArray allSnmpTemplatesJson) {
 		for (int i = 0; i < allSnmpTemplatesJson.size(); i++) {
 			JSONObject snmpTempJson = (JSONObject) allSnmpTemplatesJson.get(i);
 			try {
-				UUID userId = UUID.fromString((String) snmpTempJson.get("snmp_user_id"));
-				UUID templateId = UUID.fromString((String) snmpTempJson.get("snmp_template_id"));
-				String name = (String) snmpTempJson.get("snmp_template_name");
-				int version = Integer.parseInt((String) snmpTempJson.get("snmp_version"));
-				String commName = (String) snmpTempJson.get("snmp_community");
-				String sec = (String) snmpTempJson.get("snmp_sec");
-				String authMethod = (String) snmpTempJson.get("snmp_auth_method");
-				String authUser = GeneralFunctions.Base64Decode((String) snmpTempJson.get("snmp_user"));
-				String authPass = GeneralFunctions.Base64Decode((String) snmpTempJson.get("snmp_auth_password"));
-				String cryptMethod = (String) snmpTempJson.get("snmp_crypt_method");
-				String cryptPass = GeneralFunctions.Base64Decode((String) snmpTempJson.get("snmp_crypt_password"));
-				int timeout = Integer.parseInt((String) snmpTempJson.get("snmp_timeout"));
-				int port = Integer.parseInt((String) snmpTempJson.get("snmp_port"));
-				SnmpTemplate snmpTemp = null;
-				if (version <= 2)
-					snmpTemp = new SnmpTemplate(templateId, name, commName, version, port, timeout, true);
-				else
-					snmpTemp = new SnmpTemplate(templateId, name, version, port, sec, authUser, authPass, authMethod,
-							cryptPass, cryptMethod, timeout, true);
+				SnmpTemplateParams snmpTemplateParams = new SnmpTemplateParams();
+				snmpTemplateParams.user_id = (String) snmpTempJson.get("snmp_user_id");
+				snmpTemplateParams.snmp_template_id = (String) snmpTempJson.get("snmp_template_id");
+				snmpTemplateParams.template_name = (String) snmpTempJson.get("snmp_template_name");
+				snmpTemplateParams.version = Integer.parseInt((String) snmpTempJson.get("snmp_version"));
+				snmpTemplateParams.community = (String) snmpTempJson.get("snmp_community");
+				snmpTemplateParams.sec = (String) snmpTempJson.get("snmp_sec");
+				snmpTemplateParams.auth_method = (String) snmpTempJson.get("snmp_auth_method");
+				snmpTemplateParams.username = (String) snmpTempJson.get("snmp_user");
+				snmpTemplateParams.password = (String) snmpTempJson.get("snmp_auth_password");
+				snmpTemplateParams.crypt_method = (String) snmpTempJson.get("snmp_crypt_method");
+				snmpTemplateParams.crypt_password = GeneralFunctions
+						.Base64Decode((String) snmpTempJson.get("snmp_crypt_password"));
+				snmpTemplateParams.timeout = Integer.parseInt((String) snmpTempJson.get("snmp_timeout"));
+				snmpTemplateParams.port = Integer.parseInt((String) snmpTempJson.get("snmp_port"));
 
-				User u = getUsers().get(userId);
-				if (snmpTemp != null && u != null)
-					u.getSnmpTemplates().put(templateId, snmpTemp);
-				else
-					SysLogger.Record(
-							new Log("Unable to add snmp template: " + snmpTempJson.toJSONString(), LogType.Warn));
+				User user = getUsers().get(UUID.fromString(snmpTemplateParams.user_id));
+				if (user == null)
+					continue;
+				user.addSnmpTemplate(snmpTemplateParams);
 			} catch (Exception e) {
 				SysLogger.Record(
 						new Log("Creation of Snmp Template Failed: " + snmpTempJson.toJSONString() + " , not added!",
@@ -185,19 +179,19 @@ public class UsersManager {
 	public static void addHosts(JSONArray allHostsJson) {
 		for (int i = 0; i < allHostsJson.size(); i++) {
 			JSONObject hostJson = (JSONObject) allHostsJson.get(i);
-				UUID user_id = UUID.fromString((String) hostJson.get("user_id"));
-				User user = getUsers().get(user_id);
+			UUID user_id = UUID.fromString((String) hostJson.get("user_id"));
+			User user = getUsers().get(user_id);
 
-				HostParams hostParams = new HostParams();
-				hostParams.host_id=(String) hostJson.get("host_id");
-				hostParams.name=(String) hostJson.get("host_name");
-				hostParams.hostIp=(String) hostJson.get("ip");
-				hostParams.hostStatus=(String) hostJson.get("status");
-				hostParams.bucket=(String) hostJson.get("bucket");
-				hostParams.notificationGroups=(String) hostJson.get("notifications_group");
-				hostParams.snmpTemp=(String) hostJson.get("snmp_template");
+			HostParams hostParams = new HostParams();
+			hostParams.host_id = (String) hostJson.get("host_id");
+			hostParams.name = (String) hostJson.get("host_name");
+			hostParams.hostIp = (String) hostJson.get("ip");
+			hostParams.hostStatus = (String) hostJson.get("status");
+			hostParams.bucket = (String) hostJson.get("bucket");
+			hostParams.notificationGroups = (String) hostJson.get("notifications_group");
+			hostParams.snmpTemp = (String) hostJson.get("snmp_template");
 
-				user.addHost(hostParams);
+			user.addHost(hostParams);
 		}
 	}
 
@@ -217,20 +211,20 @@ public class UsersManager {
 		for (int i = 0; i < allTemplateProbesJson.size(); i++) {
 			JSONObject probeJson = (JSONObject) allTemplateProbesJson.get(i);
 			JSONObject probeKeyJson;
-			try{
-			UUID user_id = UUID.fromString((String) probeJson.get("user_id"));
-			User user = getUsers().get(user_id);
+			try {
+				UUID user_id = UUID.fromString((String) probeJson.get("user_id"));
+				User user = getUsers().get(user_id);
 
-			ProbeParams probeParams=new ProbeParams();
-			
-			probeParams.template_id=(String) probeJson.get("template_id");
-			probeParams.probe_id = (String) probeJson.get("probe_id");
+				ProbeParams probeParams = new ProbeParams();
+
+				probeParams.template_id = (String) probeJson.get("template_id");
+				probeParams.probe_id = (String) probeJson.get("probe_id");
 				probeParams.name = (String) probeJson.get("probe_name");
 				probeParams.interval = Long.parseLong(probeJson.get("probe_interval").toString());
 				probeParams.multiplier = Float.parseFloat(probeJson.get("probe_multiplier").toString());
 				probeParams.is_active = probeJson.get("probe_status").toString().equals("1") ? true : false;
 				probeParams.type = (String) probeJson.get("probe_type");
-				probeKeyJson= (JSONObject) probeJson.get("probe_key");
+				probeKeyJson = (JSONObject) probeJson.get("probe_key");
 
 				Probe probe = null;
 
@@ -238,7 +232,7 @@ public class UsersManager {
 				case Constants.icmp: {
 					probeParams.npings = Integer.parseInt(probeKeyJson.get("npings").toString());
 					probeParams.bytes = Integer.parseInt(probeKeyJson.get("bytes").toString());
-					probeParams.timeout =Integer.parseInt(probeKeyJson.get("timeout").toString());
+					probeParams.timeout = Integer.parseInt(probeKeyJson.get("timeout").toString());
 					break;
 				}
 				case Constants.port: {
@@ -249,7 +243,7 @@ public class UsersManager {
 					break;
 				}
 				case Constants.http: {
-					
+
 					probeParams.url = (String) probeKeyJson.get("urls");
 					probeParams.http_request = (String) probeKeyJson.get("http_method");
 					probeParams.http_auth = (String) probeKeyJson.get("http_auth");
@@ -268,10 +262,12 @@ public class UsersManager {
 					break;
 				}
 				case Constants.discovery: {
-					probeParams.discovery_elements_interval = Integer.parseInt(probeKeyJson.get("element_interval").toString());
-					probeParams.discovery_trigger_code = Integer.parseInt(probeKeyJson.get("discovery_trigger").toString());
+					probeParams.discovery_elements_interval = Integer
+							.parseInt(probeKeyJson.get("element_interval").toString());
+					probeParams.discovery_trigger_code = Integer
+							.parseInt(probeKeyJson.get("discovery_trigger").toString());
 					probeParams.discovery_trigger_x = probeKeyJson.get("discovery_trigger_x_value").toString();
-					probeParams.snmp_unit= (String) probeKeyJson.get("discovery_trigger_unit");
+					probeParams.snmp_unit = (String) probeKeyJson.get("discovery_trigger_unit");
 					probeParams.discovery_trigger_id = (String) probeKeyJson.get("trigger_id");
 					probeParams.discovery_trigger_severity = (String) probeKeyJson.get("trigger_severity");
 					break;
@@ -282,35 +278,33 @@ public class UsersManager {
 				}
 				}
 				user.addTemplateProbe(probeParams);
-			}
-			catch(Exception e)
-			{
-				SysLogger.Record(new Log("Unable to parse probe params for:"+ probeJson,LogType.Warn));
+			} catch (Exception e) {
+				SysLogger.Record(new Log("Unable to parse probe params for:" + probeJson, LogType.Warn));
 				continue;
 			}
 		}
 
 	}
 
-	public  static SnmpDataType getSnmpDataType(String valueType) {
+	public static SnmpDataType getSnmpDataType(String valueType) {
 		SnmpDataType dataType;
 		switch (valueType) {
-			case "integer":
-				dataType = SnmpDataType.Numeric;
-				break;
-			case "string":
-				dataType = SnmpDataType.Text;
-				break;
-			case "float":
-				dataType = SnmpDataType.Numeric;
-				break;
-			case "boolean":
-				dataType = SnmpDataType.Text;
-				break;
-			default: {
-				dataType = null;
-	
-			}
+		case "integer":
+			dataType = SnmpDataType.Numeric;
+			break;
+		case "string":
+			dataType = SnmpDataType.Text;
+			break;
+		case "float":
+			dataType = SnmpDataType.Numeric;
+			break;
+		case "boolean":
+			dataType = SnmpDataType.Text;
+			break;
+		default: {
+			dataType = null;
+
+		}
 		}
 		return dataType;
 	}
@@ -399,7 +393,8 @@ public class UsersManager {
 
 		default: {
 			unit = null;
-//			throw new IOException("Unable to create SnmpUnit unreadble value: " + unitType);
+			// throw new IOException("Unable to create SnmpUnit unreadble value:
+			// " + unitType);
 		}
 		}
 		return unit;
@@ -425,18 +420,18 @@ public class UsersManager {
 		ArrayList<TriggerCondition> conditions = new ArrayList<TriggerCondition>();
 
 		for (ConditionUpdateModel conditionUpdateModel : conditionUpdateModels) {
-//			JSONObject conditionJson = (JSONObject) jsonArray.get(i);
-			int code = Integer.parseInt((String)conditionUpdateModel.condition_id);
+			// JSONObject conditionJson = (JSONObject) jsonArray.get(i);
+			int code = Integer.parseInt((String) conditionUpdateModel.condition_id);
 			String andOr = (String) conditionUpdateModel.andor;
 			String xValue = (String) conditionUpdateModel.xvalue;
-			String tValue = (String)conditionUpdateModel.tvalue;
+			String tValue = (String) conditionUpdateModel.tvalue;
 			TriggerCondition condition = new TriggerCondition(code, andOr, xValue, tValue);
 			conditions.add(condition);
 
 		}
 		return conditions;
 	}
-	
+
 	public static TriggerSeverity getTriggerSev(String sev) {
 		switch (sev) {
 		case "notice":
@@ -459,7 +454,7 @@ public class UsersManager {
 			if (rpID.contains(
 					"0b05919c-6cc0-42cc-a74b-de3b0dcd4a2a@6aadf750-e887-43ee-b872-326c94fbab7c@discovery_6b54463e-fe1c-4e2c-a090-452dbbf2d510"))
 				System.out.println("BREAKPOINT");
-			
+
 			User u = getUsers().get(userID);
 			u.addRunnableProbe(rpID);
 		}

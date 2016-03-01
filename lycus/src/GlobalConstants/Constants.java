@@ -24,6 +24,7 @@ public class Constants {
 	public final static String updateElement = "ude";
 	public final static String deleteDiscovery = "rdisc";
 	public final static String hosts = "hosts";
+	public final static String snmpTemplates="snmpTemplates";
 
 	public final static String icmp = "icmp";
 	public final static String port = "port";

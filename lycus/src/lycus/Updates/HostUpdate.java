@@ -2,13 +2,20 @@ package lycus.Updates;
 
 import java.util.UUID;
 
+import org.json.simple.JSONArray;
+import org.json.simple.JSONObject;
+
+import GlobalConstants.Constants;
+import GlobalConstants.Enums.ApiAction;
 import Model.UpdateModel;
+import lycus.DAL;
 import lycus.GeneralFunctions;
 import lycus.Host;
 import lycus.RunnableProbe;
 import lycus.SnmpTemplate;
 import lycus.User;
 import lycus.UsersManager;
+import lycus.Interfaces.IDAL;
 
 public class HostUpdate extends BaseUpdate {
 
@@ -42,8 +49,22 @@ public class HostUpdate extends BaseUpdate {
 			SnmpTemplate snmpTemplate = getUser().getSnmpTemplates()
 					.get(UUID.fromString(getUpdate().update_value.snmp_template));
 			if (snmpTemplate == null) {
-				// TODO: Fetch from Ran and create new
+				// Get snmp template from Ran for snmp_template_id
+				IDAL dal = DAL.getInstanece();
+				JSONObject snmpTemplates = new JSONObject();
+				JSONArray snmpTemplatesArray = new JSONArray();
+				JSONObject userSnmpTemplate = new JSONObject();
+				userSnmpTemplate.put(getUser().getUserId(), getUpdate().update_value.snmp_template);
+				snmpTemplatesArray.add(userSnmpTemplate);
+				
+				snmpTemplates.put(Constants.snmpTemplates, snmpTemplatesArray);
+				
+				JSONObject jsonObject = dal.put(ApiAction.GetSnmpTemplates, snmpTemplates);
 
+				JSONArray jsonArray = (JSONArray) jsonObject.get("snmp_templates");
+				UsersManager.addSnmpTemplates(jsonArray);
+				snmpTemplate = getUser().getSnmpTemplates()
+						.get(UUID.fromString(getUpdate().update_value.snmp_template));
 			}
 			host.setSnmpTemp(snmpTemplate);
 		}

@@ -18,6 +18,7 @@ import GlobalConstants.SnmpDataType;
 import GlobalConstants.TriggerSeverity;
 import Model.HostParams;
 import Model.ProbeParams;
+import Model.SnmpTemplateParams;
 import lycus.Probes.DiscoveryProbe;
 import lycus.Probes.PingerProbe;
 import lycus.Probes.PorterProbe;
@@ -392,6 +393,41 @@ public class User {
 		}
 	}
 
+	public void addSnmpTemplate(SnmpTemplateParams snmpTemplateParams)
+	{
+		try {
+		UUID userId = UUID.fromString(snmpTemplateParams.user_id);
+		UUID templateId = UUID.fromString(snmpTemplateParams.snmp_template_id);
+		String name = snmpTemplateParams.template_name;
+		int version = snmpTemplateParams.version;
+		String commName = snmpTemplateParams.community;
+		String sec = snmpTemplateParams.sec;
+		String authMethod = snmpTemplateParams.auth_method;
+		String authUser = GeneralFunctions.Base64Decode(snmpTemplateParams.username);
+		String authPass = GeneralFunctions.Base64Decode(snmpTemplateParams.password);
+		String cryptMethod = snmpTemplateParams.crypt_method;
+		String cryptPass = GeneralFunctions.Base64Decode(snmpTemplateParams.crypt_password);
+		int timeout = snmpTemplateParams.timeout;
+		int port = snmpTemplateParams.port;
+		
+		SnmpTemplate snmpTemp = null;
+		if (version <= 2)
+			snmpTemp = new SnmpTemplate(templateId, name, commName, version, port, timeout, true);
+		else
+			snmpTemp = new SnmpTemplate(templateId, name, version, port, sec, authUser, authPass, authMethod,
+					cryptPass, cryptMethod, timeout, true);
+
+		this.getSnmpTemplates().put(snmpTemp.getSnmpTemplateId(), snmpTemp);
+		
+		} catch (Exception e) {
+		SysLogger.Record(
+				new Log("Unable to add SNMP Template: " + snmpTemplateParams.snmp_template_id.toString() + " , not added!",
+						LogType.Warn, e));
+	}
+
+		
+	}
+	
 	public void addTemplateProbe(ProbeParams probeParams)
 	{
 		try{
