@@ -54,22 +54,7 @@ public class HostUpdate extends BaseUpdate {
 			SnmpTemplate snmpTemplate = getUser().getSnmpTemplates()
 					.get(UUID.fromString(getUpdate().update_value.snmp_template));
 			if (snmpTemplate == null) {
-				// Get snmp template from Ran for snmp_template_id
-				IDAL dal = DAL.getInstanece();
-				JSONObject snmpTemplates = new JSONObject();
-				JSONArray snmpTemplatesArray = new JSONArray();
-				JSONObject userSnmpTemplate = new JSONObject();
-				userSnmpTemplate.put(getUser().getUserId(), getUpdate().update_value.snmp_template);
-				snmpTemplatesArray.add(userSnmpTemplate);
-				
-				snmpTemplates.put(Constants.snmpTemplates, snmpTemplatesArray);
-				
-				JSONObject jsonObject = dal.put(ApiAction.GetSnmpTemplates, snmpTemplates);
-
-				JSONArray jsonArray = (JSONArray) jsonObject.get("snmp_templates");
-				UsersManager.addSnmpTemplates(jsonArray);
-				snmpTemplate = getUser().getSnmpTemplates()
-						.get(UUID.fromString(getUpdate().update_value.snmp_template));
+				snmpTemplate = fetchSnmpTemplate();
 			}
 			host.setSnmpTemp(snmpTemplate);
 		}
@@ -83,6 +68,27 @@ public class HostUpdate extends BaseUpdate {
 			host.setHostStatus(getUpdate().update_value.status);
 		}
 		return true;
+	}
+
+	private SnmpTemplate fetchSnmpTemplate() {
+		SnmpTemplate snmpTemplate;
+		// Get snmp template from Ran for snmp_template_id
+		IDAL dal = DAL.getInstanece();
+		JSONObject snmpTemplates = new JSONObject();
+		JSONArray snmpTemplatesArray = new JSONArray();
+		JSONObject userSnmpTemplate = new JSONObject();
+		userSnmpTemplate.put(getUser().getUserId(), getUpdate().update_value.snmp_template);
+		snmpTemplatesArray.add(userSnmpTemplate);
+		
+		snmpTemplates.put(Constants.snmpTemplates, snmpTemplatesArray);
+		
+		JSONObject jsonObject = dal.put(ApiAction.GetSnmpTemplates, snmpTemplates);
+
+		JSONArray jsonArray = (JSONArray) jsonObject.get("snmp_templates");
+		UsersManager.addSnmpTemplates(jsonArray);
+		snmpTemplate = getUser().getSnmpTemplates()
+				.get(UUID.fromString(getUpdate().update_value.snmp_template));
+		return snmpTemplate;
 	}
 
 	@Override
