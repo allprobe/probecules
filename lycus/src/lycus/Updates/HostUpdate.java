@@ -7,12 +7,15 @@ import org.json.simple.JSONObject;
 
 import GlobalConstants.Constants;
 import GlobalConstants.Enums.ApiAction;
+import GlobalConstants.LogType;
 import Model.UpdateModel;
 import lycus.DAL;
 import lycus.GeneralFunctions;
 import lycus.Host;
+import lycus.Log;
 import lycus.RunnableProbe;
 import lycus.SnmpTemplate;
+import lycus.SysLogger;
 import lycus.User;
 import lycus.UsersManager;
 import lycus.Interfaces.IDAL;
@@ -35,6 +38,8 @@ public class HostUpdate extends BaseUpdate {
 	public Boolean Update() {
 		super.Update();
 
+		SysLogger.Record(new Log("Updating Host:"+getUpdate().host_id,LogType.Info));
+		
 		Host host = getUser().getHost(UUID.fromString(getUpdate().host_id));
 		if (host == null)
 			return false;
