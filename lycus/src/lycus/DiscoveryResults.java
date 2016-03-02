@@ -10,12 +10,12 @@ import GlobalConstants.LogType;
 import lycus.Probes.DiscoveryProbe;
 import lycus.Probes.SnmpProbe;
 
-public class RunnableDiscoveryProbeResults extends BaseResults implements Runnable {
+public class DiscoveryResults extends BaseResults implements Runnable {
 
 	private HashMap<Integer,BaseElementProbe> elements=null;
 	private boolean newElements;
 	
-	public RunnableDiscoveryProbeResults(RunnableProbe rp) {
+	public DiscoveryResults(RunnableProbe rp) {
 		super(rp);
 		this.elements=new HashMap<Integer,BaseElementProbe>();
 		}

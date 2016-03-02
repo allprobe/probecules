@@ -5,18 +5,18 @@ import lycus.Probes.Probe;
 
 public class BaseElementProbe extends Probe {
 
-	RunnableDiscoveryProbeResults container;
+	DiscoveryResults container;
 	private int index;
-	public BaseElementProbe(RunnableDiscoveryProbeResults dp,int index,String name) {
+	public BaseElementProbe(DiscoveryResults dp,int index,String name) {
 		this.container=dp;
 		this.index=index;
 	}
 
-	public RunnableDiscoveryProbeResults getContainer() {
+	public DiscoveryResults getContainer() {
 		return container;
 	}
 
-	public void setContainer(RunnableDiscoveryProbeResults container) {
+	public void setContainer(DiscoveryResults container) {
 		this.container = container;
 	}
 
