@@ -597,11 +597,8 @@ public class User {
 		case Constants.GB:
 			unit = SnmpUnit.gbytes;
 			break;
-		case Constants._int:
-			unit = SnmpUnit.integer;
-			break;
-		case Constants.str:
-			unit = SnmpUnit.string;
+		case Constants.none:
+			unit = SnmpUnit.none;
 			break;
 		case "":
 			unit = null;

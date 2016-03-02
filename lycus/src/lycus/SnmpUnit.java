@@ -10,8 +10,7 @@ public enum SnmpUnit
   mbytes(8388608L),
   gbits(1073741824L),
   gbytes(8589934592L),
-  integer(1),
-  string(0);
+  none(1);
 
   private final long multiplieBy; 
   private SnmpUnit(final long multiplier) { this.multiplieBy = multiplier; }
