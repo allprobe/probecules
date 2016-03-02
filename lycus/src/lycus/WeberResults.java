@@ -7,14 +7,14 @@ import org.json.simple.JSONArray;
 
 import GlobalConstants.LogType;
 
-public class RunnableWeberProbeResults extends BaseResults {
+public class WeberResults extends BaseResults {
 
 	private Integer statusCode;
 	private Long responseTime;
 	private DataPointsRollup[] responseTimeRollups;
 	private Long pageSize;
 	
-	public RunnableWeberProbeResults(RunnableProbe rp) {
+	public WeberResults(RunnableProbe rp) {
 		super(rp);
 		this.responseTimeRollups=this.initRollupSeries(new DataPointsRollup[6]);
 	}

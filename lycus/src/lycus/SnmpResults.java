@@ -18,6 +18,9 @@ public class SnmpResults extends BaseResults {
 	private Double tmpDeltaVar;// last results when probe "save results as"
 								// delta
 
+	private Long tmpDeltaTimestamp;
+	private boolean deltaBytesSecs;
+	
 	public SnmpResults(RunnableProbe rp) {
 		super(rp);
 		this.setSnmpResultError(null);
@@ -60,6 +63,14 @@ public class SnmpResults extends BaseResults {
 
 	public void setTmpDeltaVar(Double tmpDeltaVar) {
 		this.tmpDeltaVar = tmpDeltaVar;
+	}
+
+	public Long getTmpDeltaTimestamp() {
+		return tmpDeltaTimestamp;
+	}
+
+	public void setTmpDeltaTimestamp(Long tmpDeltaTimestamp) {
+		this.tmpDeltaTimestamp = tmpDeltaTimestamp;
 	}
 
 	public synchronized DataPointsRollup[] getDataRollups() {
@@ -147,11 +158,26 @@ public class SnmpResults extends BaseResults {
 		case delta:
 			if (this.getTmpDeltaVar() == null) {
 				this.setTmpDeltaVar(data);
+				this.setTmpDeltaTimestamp(lastTimestamp);
 				return;
 			}
 			this.setNumData(data - this.getTmpDeltaVar());
 			this.setTmpDeltaVar(data);
+			this.setTmpDeltaTimestamp(lastTimestamp);
 			break;
+		case deltaBytesPerSecond:
+			if (this.getTmpDeltaVar() == null) {
+				this.setTmpDeltaVar(data);
+				this.setTmpDeltaTimestamp(lastTimestamp);
+				return;
+			}
+			long ifSpeed=(long)results.get(2);
+			this.setNumData(this.getBytesPerSecond(lastTimestamp,data,ifSpeed));
+			this.setTmpDeltaVar(data);
+			this.setTmpDeltaTimestamp(lastTimestamp);
+
+			break;
+
 		}
 
 		this.setStringData(null);
@@ -161,6 +187,21 @@ public class SnmpResults extends BaseResults {
 			DataPointsRollup numDataRollup = this.getDataRollups()[i];
 			numDataRollup.add(lastTimestamp, this.getNumData());
 		}
+	}
+
+	private Double getBytesPerSecond(long lastTimestamp, Double data, long ifSpeed) {
+		Double oldOctets=this.getTmpDeltaVar();
+		Double newOctets=this.getNumData();
+		long oldTimestamp=this.getTmpDeltaTimestamp();
+		long newTimestamp=this.getLastTimestamp();
+		
+		Double bandwidth=((newOctets-oldOctets)*8*100)/(((newTimestamp-oldTimestamp)/1000)*ifSpeed);
+		
+		return bandwidth;
+	}
+
+	private void setTmpDeltaTimestamp(long lastTimestamp) {
+		this.tmpDeltaTimestamp=lastTimestamp;
 	}
 
 	@Override
@@ -291,6 +332,8 @@ public class SnmpResults extends BaseResults {
 			if (this.getSnmpResultError() == null) {
 				rawResults.add(this.getNumData());
 				this.setNumData(null);
+				this.setLastTimestamp(null);
+				
 			} else {
 				rawResults.add(this.getSnmpResultError());
 				this.setNumData(null);

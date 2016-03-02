@@ -226,8 +226,12 @@ public class UsersManager {
 				probeParams.type = (String) probeJson.get("probe_type");
 				probeKeyJson = (JSONObject) probeJson.get("probe_key");
 
-				Probe probe = null;
-
+				String rpStr = probeParams.probe_id;
+				if (rpStr.contains(
+						"inner_5db597d9-f3e9-4ae9-a800-4e4ff91d1ce5"))
+					System.out.println("BREAKPOINT");
+				
+				
 				switch (probeParams.type) {
 				case Constants.icmp: {
 					probeParams.npings = Integer.parseInt(probeKeyJson.get("npings").toString());

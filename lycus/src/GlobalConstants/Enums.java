@@ -22,7 +22,7 @@ public class Enums {
 	
 	public static enum SnmpStoreAs
 	{
-		asIs,delta
+		asIs,delta, deltaBytesPerSecond
 	}
 	
 	public static enum UpdateType

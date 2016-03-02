@@ -36,7 +36,7 @@ public class RunnableProbe implements Runnable {
 			break;
 			case PORT: results=new PorterResults(this);
 			break;
-			case WEB: results=new RunnableWeberProbeResults(this);
+			case WEB: results=new WeberResults(this);
 			break;
 			case SNMP: results=new SnmpResults(this);
 			break;

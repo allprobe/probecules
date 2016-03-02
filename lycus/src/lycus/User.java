@@ -601,11 +601,11 @@ public class User {
 			unit = SnmpUnit.none;
 			break;
 		case "":
-			unit = null;
+			unit = SnmpUnit.none;
 			break;
 
 		default: {
-			unit = null;
+			unit = SnmpUnit.none;
 		}
 		}
 		return unit;
