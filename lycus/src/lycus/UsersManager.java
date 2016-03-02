@@ -381,11 +381,8 @@ public class UsersManager {
 		case "GB":
 			unit = SnmpUnit.gbytes;
 			break;
-		case "int":
-			unit = SnmpUnit.integer;
-			break;
-		case "str":
-			unit = SnmpUnit.string;
+		case "none":
+			unit = SnmpUnit.none;
 			break;
 		case "":
 			unit = null;
