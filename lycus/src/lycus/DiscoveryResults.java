@@ -13,13 +13,32 @@ import lycus.Probes.SnmpProbe;
 public class DiscoveryResults extends BaseResults {
 
 	private HashMap<Integer,String> currentElements=null;
-	private HashMap<Integer,String> previousElements=null;
-	private boolean newElements;
+	private HashMap<Integer,String> newElements=null;
 	
 	public DiscoveryResults(RunnableProbe rp) {
 		super(rp);
 		}
 	
+
+	public HashMap<Integer,String> getCurrentElements() {
+		return currentElements;
+	}
+
+
+	public void setCurrentElements(HashMap<Integer,String> currentElements) {
+		this.currentElements = currentElements;
+	}
+
+
+	public HashMap<Integer,String> getNewElements() {
+		return newElements;
+	}
+
+
+	public void setNewElements(HashMap<Integer,String> newElements) {
+		this.newElements = newElements;
+	}
+
 
 	@Override
 	public synchronized void acceptResults(ArrayList<Object> results) throws Exception{
@@ -36,8 +55,14 @@ public class DiscoveryResults extends BaseResults {
 			break;
 		}
 		
+		if(this.getCurrentElements()==null)
+		{
+			this.setCurrentElements(lastScanElements);
+			return;
+		}
+		
 		// TODO finish checking if elements change and send results to Ran
-
+		boolean changed=isElementsIdentical(lastScanElements);
 		
 	}
 
@@ -62,7 +87,9 @@ public class DiscoveryResults extends BaseResults {
 			}
 				
 			String name=nicsWalk.get("1.3.6.1.2.1.2.2.1.2."+index);
-			lastElements.put(index, name);
+			String ifSpeed=nicsWalk.get("1.3.6.1.2.1.2.2.1.5."+index);
+			
+			lastElements.put(index, name+"@"+ifSpeed);
 		}
 		
 		if(lastElements.size()==0)
@@ -82,7 +109,13 @@ public class DiscoveryResults extends BaseResults {
 		return null;
 	}
 
-	private boolean isElementsIdentical(HashMap<Integer,BaseElementProbe> lastElements) {
+	private boolean isElementsIdentical(HashMap<Integer, String> lastScanElements) {
+		HashMap<Integer, String> currentScanElements=this.getCurrentElements();
+		for(Map.Entry<Integer, String> element:lastScanElements.entrySet())
+		{
+			
+			
+		}
 		return true;
 	}
 

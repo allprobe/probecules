@@ -7,6 +7,7 @@ import org.json.simple.JSONArray;
 
 import GlobalConstants.LogType;
 import GlobalConstants.SnmpDataType;
+import lycus.Probes.SnmpNicProbe;
 import lycus.Probes.SnmpProbe;
 
 public class SnmpResults extends BaseResults {
@@ -20,7 +21,7 @@ public class SnmpResults extends BaseResults {
 
 	private Long tmpDeltaTimestamp;
 	private boolean deltaBytesSecs;
-	
+
 	public SnmpResults(RunnableProbe rp) {
 		super(rp);
 		this.setSnmpResultError(null);
@@ -93,8 +94,6 @@ public class SnmpResults extends BaseResults {
 	public synchronized void acceptResults(ArrayList<Object> results) throws Exception {
 		super.acceptResults(results);
 
-		
-		
 		long lastTimestamp = (long) results.get(0);
 		this.setLastTimestamp(lastTimestamp);
 
@@ -104,9 +103,9 @@ public class SnmpResults extends BaseResults {
 
 			String rpStr = this.getRp().getRPString();
 			if (rpStr.contains(
-					"ca49f95f-3676-4129-86d9-34f87433314c@788b1b9e-d753-4dfa-ac46-61c4374eeb84@inner_036f81e0-4ec0-468a-8396-77c21dd9ae5a"))
+					"7352a46f-5189-428c-b4c0-fb98dedd10b1@inner_036f81e0-4ec0-468a-8396-77c21dd9ae5a"))
 				System.out.println("BREAKPOINT");
-			
+
 			break;
 		case Text:
 			acceptTextResults(results);
@@ -154,16 +153,16 @@ public class SnmpResults extends BaseResults {
 		switch (((SnmpProbe) this.getRp().getProbe()).getStoreAs()) {
 		case asIs:
 			this.setNumData(data);
+			this.setLastTimestamp(lastTimestamp);
 			break;
 		case delta:
 			if (this.getTmpDeltaVar() == null) {
 				this.setTmpDeltaVar(data);
-				this.setTmpDeltaTimestamp(lastTimestamp);
 				return;
 			}
 			this.setNumData(data - this.getTmpDeltaVar());
 			this.setTmpDeltaVar(data);
-			this.setTmpDeltaTimestamp(lastTimestamp);
+			this.setLastTimestamp(lastTimestamp);
 			break;
 		case deltaBytesPerSecond:
 			if (this.getTmpDeltaVar() == null) {
@@ -171,10 +170,12 @@ public class SnmpResults extends BaseResults {
 				this.setTmpDeltaTimestamp(lastTimestamp);
 				return;
 			}
-			long ifSpeed=(long)results.get(2);
-			this.setNumData(this.getBytesPerSecond(lastTimestamp,data,ifSpeed));
+			long ifSpeed =  ((SnmpNicProbe) this.getRp().getProbe()).getIfSpeed();
+			this.setNumData(
+					this.getBytesPerSecond(lastTimestamp, data,ifSpeed));
 			this.setTmpDeltaVar(data);
 			this.setTmpDeltaTimestamp(lastTimestamp);
+			this.setLastTimestamp(lastTimestamp);
 
 			break;
 
@@ -190,18 +191,18 @@ public class SnmpResults extends BaseResults {
 	}
 
 	private Double getBytesPerSecond(long lastTimestamp, Double data, long ifSpeed) {
-		Double oldOctets=this.getTmpDeltaVar();
-		Double newOctets=this.getNumData();
-		long oldTimestamp=this.getTmpDeltaTimestamp();
-		long newTimestamp=this.getLastTimestamp();
-		
-		Double bandwidth=((newOctets-oldOctets)*8*100)/(((newTimestamp-oldTimestamp)/1000)*ifSpeed);
-		
+		Double oldOctets = this.getTmpDeltaVar();
+		Double newOctets = data;
+		long oldTimestamp = this.getTmpDeltaTimestamp();
+		long newTimestamp = lastTimestamp;
+
+		Double bandwidth = ((newOctets - oldOctets) * 8 * 100) / (((newTimestamp - oldTimestamp) / 1000) * ifSpeed);
+
 		return bandwidth;
 	}
 
 	private void setTmpDeltaTimestamp(long lastTimestamp) {
-		this.tmpDeltaTimestamp=lastTimestamp;
+		this.tmpDeltaTimestamp = lastTimestamp;
 	}
 
 	@Override
@@ -293,6 +294,9 @@ public class SnmpResults extends BaseResults {
 	@Override
 	public HashMap<String, String> getResults() throws Throwable {
 		HashMap<String, String> results = super.getResults();
+		String rpStr = this.getRp().getRPString();
+		if (rpStr.contains("7352a46f-5189-428c-b4c0-fb98dedd10b1@inner_036f81e0-4ec0-468a-8396-77c21dd9ae5a"))
+			System.out.println("BREAKPOINT");
 
 		HashMap<String, String> rawResults = this.getRaw();
 		if (rawResults != null)
@@ -304,6 +308,8 @@ public class SnmpResults extends BaseResults {
 		}
 
 		this.setLastTimestamp((long) 0);
+
+
 		return results;
 
 	}
@@ -333,7 +339,7 @@ public class SnmpResults extends BaseResults {
 				rawResults.add(this.getNumData());
 				this.setNumData(null);
 				this.setLastTimestamp(null);
-				
+
 			} else {
 				rawResults.add(this.getSnmpResultError());
 				this.setNumData(null);

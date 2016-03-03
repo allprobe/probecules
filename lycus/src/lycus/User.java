@@ -181,6 +181,11 @@ public class User {
 		Probe probe=this.getTemplateProbes().get(probeId);
 		RunnableProbe newRunnableProbe;
 
+		String rpStr = hostId.toString()+"@"+probeId;
+		if (rpStr.contains(
+				"788b1b9e-d753-4dfa-ac46-61c4374eeb84@inner_d5be36d2-87ff-414a-88ba-be2da43adabf"))
+			System.out.println("BREAKPOINT");
+		
 		if(probe==null||host==null)
 		{
 			SysLogger.Record(new Log("Unable to create Runnable Probe: "+rpID+", one of its elements is missing!",LogType.Error));

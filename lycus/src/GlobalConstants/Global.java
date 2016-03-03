@@ -10,6 +10,9 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.util.Properties;
 
+import lycus.Log;
+import lycus.SysLogger;
+
 /**
  *
  * @author ran
@@ -201,6 +204,8 @@ public class Global {
 
 
 	public static boolean Initialize() {
+		
+		
   		Properties prop = new Properties();
   		InputStream input = null;
   		try {

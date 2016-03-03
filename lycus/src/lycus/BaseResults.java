@@ -153,6 +153,11 @@ public class BaseResults {
 	public HashMap<String,String> getResults() throws Throwable
 	{
 		SysLogger.Record(new Log("Collecting DATA for Runnable Probe: "+this.getRp().getRPString(),LogType.Debug));
+		
+		String rpStr = this.getRp().getRPString();
+		if (rpStr.contains("7352a46f-5189-428c-b4c0-fb98dedd10b1@inner_036f81e0-4ec0-468a-8396-77c21dd9ae5a"))
+			System.out.println("BREAKPOINT");
+		
 		HashMap<String,String> results=new HashMap<String,String>();
 		results.put("rpID", this.getRp().getRPString());
 		return results;

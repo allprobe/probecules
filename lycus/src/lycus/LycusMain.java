@@ -27,7 +27,7 @@ public class LycusMain  {
 		if(!Global.Initialize())
 			return;
 		SysLogger.Init();
-		SysLogger.Record(new Log("Probecules Version: 0.3.1",LogType.Info));
+		System.out.println("Probecules Version: 0.7.1");
 		boolean apiInit=ApiInterface.Initialize();
 		if(!apiInit)
 			return;
