@@ -9,6 +9,7 @@ import java.util.concurrent.Executors;
 import java.util.concurrent.TimeUnit;
 
 import GlobalConstants.Global;
+import GlobalConstants.LogType;
 import lycus.Config.Updates;
 
 
@@ -26,6 +27,7 @@ public class LycusMain  {
 		if(!Global.Initialize())
 			return;
 		SysLogger.Init();
+		SysLogger.Record(new Log("Probecules Version: 0.3.1",LogType.Info));
 		boolean apiInit=ApiInterface.Initialize();
 		if(!apiInit)
 			return;
