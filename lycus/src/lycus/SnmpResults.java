@@ -153,7 +153,6 @@ public class SnmpResults extends BaseResults {
 		switch (((SnmpProbe) this.getRp().getProbe()).getStoreAs()) {
 		case asIs:
 			this.setNumData(data);
-			this.setLastTimestamp(lastTimestamp);
 			break;
 		case delta:
 			if (this.getTmpDeltaVar() == null) {
@@ -162,7 +161,6 @@ public class SnmpResults extends BaseResults {
 			}
 			this.setNumData(data - this.getTmpDeltaVar());
 			this.setTmpDeltaVar(data);
-			this.setLastTimestamp(lastTimestamp);
 			break;
 		case deltaBytesPerSecond:
 			if (this.getTmpDeltaVar() == null) {
@@ -175,7 +173,6 @@ public class SnmpResults extends BaseResults {
 					this.getBytesPerSecond(lastTimestamp, data,ifSpeed));
 			this.setTmpDeltaVar(data);
 			this.setTmpDeltaTimestamp(lastTimestamp);
-			this.setLastTimestamp(lastTimestamp);
 
 			break;
 
@@ -338,13 +335,12 @@ public class SnmpResults extends BaseResults {
 			if (this.getSnmpResultError() == null) {
 				rawResults.add(this.getNumData());
 				this.setNumData(null);
-				this.setLastTimestamp(null);
-
 			} else {
 				rawResults.add(this.getSnmpResultError());
 				this.setNumData(null);
 			}
 			results.put("RAW@data@" + this.getLastTimestamp(), rawResults.toJSONString());
+			this.setLastTimestamp(null);
 			break;
 		default:
 			return null;
