@@ -116,7 +116,7 @@ public class ProbeUpdate extends BaseUpdate {
 				runnableProbe.getProbe().setMultiplier(getUpdate().update_value.multiplier);
 			if (!GeneralFunctions.isNullOrEmpty(getUpdate().update_value.status))
 				runnableProbe.getProbe().setActive(getUpdate().update_value.status.equals(Constants._true));
-			if (runnableProbe.getProbe().getInterval() != getUpdate().update_value.interval && getUpdate().update_value.interval != null) {
+			if (getUpdate().update_value.interval != null && runnableProbe.getProbe().getInterval() != getUpdate().update_value.interval) {
 				runnableProbe.changeRunnableProbeInterval(getUpdate().update_value.interval);
 			}
 			
