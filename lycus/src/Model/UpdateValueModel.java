@@ -10,7 +10,7 @@ public class UpdateValueModel
 	public Long interval;
 	public String type;
 	public KeyUpdateModel key;
-	public Boolean status;
+	public String status;
 	public String ip;
 	public String snmp_template;
 	public String bucket;

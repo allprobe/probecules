@@ -3,6 +3,7 @@ package lycus.Updates;
 import java.util.ArrayList;
 import java.util.UUID;
 
+import GlobalConstants.Constants;
 import GlobalConstants.TriggerSeverity;
 import Model.UpdateModel;
 import lycus.GeneralFunctions;
@@ -30,7 +31,7 @@ public class TriggerUpdate extends BaseUpdate {
 		
 		// From SsmpUnit swap integer and string to none - Roi
 		Trigger trigger = new Trigger(getUpdate().update_value.key.trigger_id, getUpdate().update_value.name, 
-				probe, UsersManager.getTriggerSev(getUpdate().update_value.severity), getUpdate().update_value.status,
+				probe, UsersManager.getTriggerSev(getUpdate().update_value.severity), getUpdate().update_value.status.equals(Constants._true),
 				getUpdate().update_value.type, SnmpUnit.valueOf(getUpdate().update_value.xvalue_unit), conditions); 
 		
 		probe.addTrigger(trigger);
@@ -54,8 +55,8 @@ public class TriggerUpdate extends BaseUpdate {
 		
 		trigger.setProbe(probe);      // Ran - Is it possible to change probe?
 		
-		if (getUpdate().update_value.status != null)
-			trigger.setStatus(getUpdate().update_value.status);
+		if (!GeneralFunctions.isNullOrEmpty(getUpdate().update_value.status))
+			trigger.setStatus(getUpdate().update_value.status.equals(Constants._true));
 		if (!GeneralFunctions.isNullOrEmpty(getUpdate().update_value.severity))
 			trigger.setSvrty(UsersManager.getTriggerSev(getUpdate().update_value.severity));
 		if (!GeneralFunctions.isNullOrEmpty(getUpdate().update_value.xvalue_unit))

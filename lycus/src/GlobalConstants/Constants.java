@@ -56,5 +56,8 @@ public class Constants {
 	public final static String high = "high";
 	public final static String disaster = "disaster";
 	public final static String default1 = "default";
+	
+	public final static String _true = "1";
+	public final static String _false = "0";
 
 }

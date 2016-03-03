@@ -69,7 +69,7 @@ public class ProbeUpdate extends BaseUpdate {
 			probeParams.http_auth_username =  getUpdate().update_value.key.http_auth_user;
 			probeParams.http_request =  getUpdate().update_value.key.http_method;
 			probeParams.interval =  getUpdate().update_value.interval;
-			probeParams.is_active =  getUpdate().update_value.status;
+			probeParams.is_active =  getUpdate().update_value.status.equals(Constants._true);
 			probeParams.multiplier =  getUpdate().update_value.multiplier;
 			probeParams.name =  getUpdate().update_value.name;
 			probeParams.port =  getUpdate().update_value.key.port;
@@ -114,8 +114,8 @@ public class ProbeUpdate extends BaseUpdate {
 				runnableProbe.getProbe().setName(getUpdate().update_value.name);
 			if (getUpdate().update_value.multiplier != null)
 				runnableProbe.getProbe().setMultiplier(getUpdate().update_value.multiplier);
-			if (getUpdate().update_value.status != null)
-				runnableProbe.getProbe().setActive(getUpdate().update_value.status);
+			if (!GeneralFunctions.isNullOrEmpty(getUpdate().update_value.status))
+				runnableProbe.getProbe().setActive(getUpdate().update_value.status.equals(Constants._true));
 			if (runnableProbe.getProbe().getInterval() != getUpdate().update_value.interval && getUpdate().update_value.interval != null) {
 				runnableProbe.changeRunnableProbeInterval(getUpdate().update_value.interval);
 			}

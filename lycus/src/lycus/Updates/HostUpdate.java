@@ -62,10 +62,10 @@ public class HostUpdate extends BaseUpdate {
 			host.setNotificationGroups(UUID.fromString(getUpdate().update_value.notifications_group));
 		}
 		if (!GeneralFunctions.isNullOrEmpty(getUpdate().update_value.bucket)) {
-
+			host.setBucket(getUpdate().update_value.bucket);
 		}
-		if (getUpdate().update_value.status != null) {
-			host.setHostStatus(getUpdate().update_value.status);
+		if (!GeneralFunctions.isNullOrEmpty(getUpdate().update_value.status)) {
+			host.setHostStatus(getUpdate().update_value.status.equals(Constants._true));
 		}
 		return true;
 	}

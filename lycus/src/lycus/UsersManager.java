@@ -532,7 +532,7 @@ public class UsersManager {
 
 	private static JSONObject getServerInfoFromApi() {
 		Object initServer;
-		SysLogger.Record(new Log("ORENOREN",LogType.Warn));
+		SysLogger.Record(new Log("ORENOREN", LogType.Warn));
 		while (true) {
 			initServer = ApiInterface.executeRequest(Enums.ApiAction.InitServer, "GET", null);
 			if (initServer == null) {
