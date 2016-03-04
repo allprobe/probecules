@@ -5,6 +5,9 @@ import java.util.HashMap;
 import java.util.Map;
 
 import org.json.simple.JSONArray;
+import org.json.simple.JSONObject;
+
+import com.google.gson.GsonBuilder;
 
 import GlobalConstants.LogType;
 import lycus.Probes.DiscoveryProbe;
@@ -30,12 +33,20 @@ public class DiscoveryResults extends BaseResults {
 	}
 
 
-	public HashMap<Integer,String> getNewElements() {
+	public synchronized HashMap<Integer,String> getNewElements() {
 		return newElements;
+	}
+	public HashMap<Integer,String> getNewElementsJSON() {
+		JSONObject elements=new JSONObject();
+		for(Map.Entry<Integer, String> element:this.getNewElements().entrySet())
+		{
+			elements.put(element.getKey(), element.getValue());
+		}
+		return elements;
 	}
 
 
-	public void setNewElements(HashMap<Integer,String> newElements) {
+	public synchronized void setNewElements(HashMap<Integer,String> newElements) {
 		this.newElements = newElements;
 	}
 
@@ -44,6 +55,12 @@ public class DiscoveryResults extends BaseResults {
 	public synchronized void acceptResults(ArrayList<Object> results) throws Exception{
 		super.acceptResults(results);
 			
+		String rpStr = this.getRp().getRPString();
+		if (rpStr.contains(
+				"discovery_6b54463e-fe1c-4e2c-a090-452dbbf2d510"))
+			System.out.println("BREAKPOINT");
+		
+		
 		HashMap<Integer,String> lastScanElements=null;
 		
 		switch (((DiscoveryProbe)this.getRp().getProbe()).getType()) {
@@ -55,15 +72,21 @@ public class DiscoveryResults extends BaseResults {
 			break;
 		}
 		
+		long timestamp=(long)results.get(0);
 		if(this.getCurrentElements()==null)
 		{
 			this.setCurrentElements(lastScanElements);
+			this.setNewElements(lastScanElements);
+			this.setLastTimestamp(timestamp);
 			return;
 		}
 		
-		// TODO finish checking if elements change and send results to Ran
-		boolean changed=isElementsIdentical(lastScanElements);
-		
+		boolean sameElements=isElementsIdentical(lastScanElements);
+		if(!sameElements)
+		{
+			this.setNewElements(lastScanElements);
+			this.setLastTimestamp(timestamp);
+		}
 	}
 
 	private HashMap<Integer, String> convertDisksWalkToIndexes(HashMap<String, String> hashMap) {
@@ -77,7 +100,7 @@ public class DiscoveryResults extends BaseResults {
 		
 		for(Map.Entry<String, String> entry:nicsWalk.entrySet())
 		{
-			if(!entry.getKey().toString().contains("1.3.6.1.2.1.2.2.1.1"))
+			if(!entry.getKey().toString().contains("1.3.6.1.2.1.2.2.1.1."))
 				continue;
 			int index=Integer.parseInt(entry.getValue());
 			if(index==0)
@@ -111,10 +134,14 @@ public class DiscoveryResults extends BaseResults {
 
 	private boolean isElementsIdentical(HashMap<Integer, String> lastScanElements) {
 		HashMap<Integer, String> currentScanElements=this.getCurrentElements();
+		if(currentScanElements==null&& lastScanElements!=null)
+			return false;
+		if(lastScanElements==null&&currentScanElements!=null)
+			return false;
 		for(Map.Entry<Integer, String> element:lastScanElements.entrySet())
 		{
-			
-			
+			if(!currentScanElements.get(element.getKey()).equals(element.getValue()))
+				return false;
 		}
 		return true;
 	}
@@ -122,14 +149,16 @@ public class DiscoveryResults extends BaseResults {
 
 	@Override
 	public HashMap<String, String> getResults() throws Throwable {
-		// TODO send elements in case of change
-
-		if(false)
+		if(this.getNewElements()==null)
 			return null;
 		HashMap<String, String> results = super.getResults();
 		JSONArray rawResults = new JSONArray();
 		rawResults.add(6);
+		rawResults.add(this.getNewElementsJSON());
 		results.put("RAW@new_elements_map@" + this.getLastTimestamp(), rawResults.toJSONString());
+		
+		this.setNewElements(null);
+		this.setLastTimestamp(null);
 		return results;
 	}
 

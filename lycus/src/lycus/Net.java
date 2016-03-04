@@ -1024,19 +1024,19 @@ public class Net {
 	}
 
 	public static Map<String, String> Snmp2Walk(String ip, int port, int timeout, String comName, String _oid) {
-		Map<String, String> results = new HashMap<String, String>();
 		Address targetAddress = GenericAddress.parse("udp:" + ip + "/" + port);
 		CommunityTarget target = new CommunityTarget();
 		target.setAddress(targetAddress);
 		target.setRetries(3);
 		target.setTimeout(timeout);
-		target.setVersion(1);
+		target.setVersion(SnmpConstants.version2c);
 		target.setCommunity(new OctetString(comName));
 //		target.setMaxSizeRequestPDU(65535);
 		
 		TransportMapping transport = null;
 		Snmp snmp = null;
 		final SnmpWalkCounts counts = new SnmpWalkCounts();
+		final HashMap<String, String> walkResults= new HashMap<String, String>();
 		
 		try {
 
@@ -1053,12 +1053,13 @@ public class Net {
 			PDU response=null;
 			
 			TreeUtils treeUtils = new TreeUtils(snmp, new DefaultPDUFactory());
+			OID[] oids=new OID[1];
+			oids[0]=new OID(_oid);
 //			List<TreeEvent> events = treeUtils.getSubtree(target, oid);
 //			List<TreeEvent> events = treeUtils.walk(target, ifaces);
 
 			final long startTime=System.nanoTime();
 			TreeListener treeListener = new TreeListener() {
-
 			      private boolean finished;
 
 			      public boolean next(TreeEvent e) {
@@ -1067,7 +1068,7 @@ public class Net {
 			          VariableBinding[] vbs = e.getVariableBindings();
 			          counts.objects += vbs.length;
 			          for (VariableBinding vb : vbs) {
-			            System.out.println(vb.toString());
+			        	  walkResults.put(vb.getOid().toString(), vb.getVariable().toString());
 			          }
 			        }
 			        return true;
@@ -1078,11 +1079,11 @@ public class Net {
 			            (e.getVariableBindings().length > 0)) {
 			          next(e);
 			        }
-			        System.out.println();
-			        System.out.println("Total requests sent:    "+counts.requests);
-			        System.out.println("Total objects received: "+counts.objects);
-					System.out.println("Total walk time:        "+
-			                           (System.nanoTime()-startTime)/SnmpConstants.MILLISECOND_TO_NANOSECOND+" milliseconds");
+//			        System.out.println();
+//			        System.out.println("Total requests sent:    "+counts.requests);
+//			        System.out.println("Total objects received: "+counts.objects);
+//					System.out.println("Total walk time:        "+
+//			                           (System.nanoTime()-startTime)/SnmpConstants.MILLISECOND_TO_NANOSECOND+" milliseconds");
 			        if (e.isError()) {
 			          System.err.println("The following error occurred during walk:");
 			          System.err.println(e.getErrorMessage());
@@ -1097,6 +1098,7 @@ public class Net {
 			        return finished;
 			      }
 
+
 			    };
 			    synchronized (treeListener) {
 			      treeUtils.getSubtree(target, new OID(_oid), null, treeListener);
@@ -1108,6 +1110,7 @@ public class Net {
 			        Thread.currentThread().interrupt();
 			      }
 			    }
+			    return walkResults;
 		} catch (Exception e) {
 			SysLogger.Record(new Log("Unable to run Snmp2 WALK check!", LogType.Error, e));
 			return null;
@@ -1129,7 +1132,6 @@ public class Net {
 				}
 			}
 		}
-		return results;
 	}
 
 	public static Map<String, String> Snmp3Walk(String ip, int port, int timeout, String userName, String userPass,
@@ -1169,7 +1171,8 @@ public class Net {
 		TransportMapping transport = null;
 		Snmp snmp = null;
 		final SnmpWalkCounts counts = new SnmpWalkCounts();
-		
+		final HashMap<String, String> walkResults= new HashMap<String, String>();
+
 		try {
 
 			transport = new DefaultUdpTransportMapping();
@@ -1212,7 +1215,7 @@ public class Net {
 			          VariableBinding[] vbs = e.getVariableBindings();
 			          counts.objects += vbs.length;
 			          for (VariableBinding vb : vbs) {
-			            System.out.println(vb.toString());
+			            walkResults.put(vb.getOid().toString(), vb.getVariable().toString());
 			          }
 			        }
 			        return true;
@@ -1223,11 +1226,11 @@ public class Net {
 			            (e.getVariableBindings().length > 0)) {
 			          next(e);
 			        }
-			        System.out.println();
-			        System.out.println("Total requests sent:    "+counts.requests);
-			        System.out.println("Total objects received: "+counts.objects);
-					System.out.println("Total walk time:        "+
-			                           (System.nanoTime()-startTime)/SnmpConstants.MILLISECOND_TO_NANOSECOND+" milliseconds");
+//			        System.out.println();
+//			        System.out.println("Total requests sent:    "+counts.requests);
+//			        System.out.println("Total objects received: "+counts.objects);
+//					System.out.println("Total walk time:        "+
+//			                           (System.nanoTime()-startTime)/SnmpConstants.MILLISECOND_TO_NANOSECOND+" milliseconds");
 			        if (e.isError()) {
 			          System.err.println("The following error occurred during walk:");
 			          System.err.println(e.getErrorMessage());
@@ -1252,6 +1255,7 @@ public class Net {
 			        System.err.println("Tree retrieval interrupted: " + ex.getMessage());
 			        Thread.currentThread().interrupt();
 			      }
+			      return walkResults;
 			    }
 		} catch (Exception e) {
 			SysLogger.Record(new Log("Unable to run Snmp2 WALK check!", LogType.Error, e));
@@ -1274,7 +1278,6 @@ public class Net {
 				}
 			}
 		}
-		return results;
 	}
 	
 	// public static String Snmp3Walk(String ip, int port, int timeout, String

@@ -33,8 +33,8 @@ public class RunnableProbesHistory implements Runnable {
 
 	public RunnableProbesHistory(ArrayList<User> allUsers, String existingRollups,String existingElements) {
 		this.results = this.getAllResultsUsers(allUsers);
-//		this.setGson(new GsonBuilder().setPrettyPrinting().create());
-		this.setGson(new GsonBuilder().create());
+		this.setGson(new GsonBuilder().setPrettyPrinting().create());
+//		this.setGson(new GsonBuilder().create());
 		this.memDump = new RollupsMemoryDump(this);
 		this.eventsHandler = new EventHandler(this);
 		this.setRollupsDumpExecuter(Executors.newSingleThreadScheduledExecutor());
@@ -67,7 +67,7 @@ public class RunnableProbesHistory implements Runnable {
 			
 			String rpStr = results;
 			if (rpStr.contains(
-					"7352a46f-5189-428c-b4c0-fb98dedd10b1@inner_036f81e0-4ec0-468a-8396-77c21dd9ae5a"))
+					"discovery_6b54463e-fe1c-4e2c-a090-452dbbf2d510"))
 				System.out.println("TEST");
 			
 			String encodedResults = GeneralFunctions.Base64Encode(results);
@@ -110,7 +110,7 @@ public class RunnableProbesHistory implements Runnable {
 			RunnableProbe rp = rpr.getRp();
 
 			String rpStr = rp.getRPString();
-			if (rpStr.contains("788b1b9e-d753-4dfa-ac46-61c4374eeb84@inner_10e61538-b4e1-44c6-aa12-b81ef6a5528d"))
+			if (rpStr.contains("discovery_6b54463e-fe1c-4e2c-a090-452dbbf2d510"))
 				System.out.println("BREAKPOINT - RunnableProbesHistory");
 			
 			// SysLogger.Record(new Log("Delay of
@@ -179,7 +179,10 @@ public class RunnableProbesHistory implements Runnable {
 			}
 		}
 
+//		return (this.getGson().toJson(results)).replace("\\", "");
+//		return (this.getGson().toJson(results)).replaceAll("\\\\\\\\", "\\");
 		return (this.getGson().toJson(results));
+
 	}
 
 	private void startMemoryDump() {

@@ -219,17 +219,18 @@ public class UsersManager {
 
 				probeParams.template_id = (String) probeJson.get("template_id");
 				probeParams.probe_id = (String) probeJson.get("probe_id");
+				String rpStr = probeParams.probe_id;
+				if (rpStr.contains(
+						"discovery_6b54463e-fe1c-4e2c-a090-452dbbf2d510"))
+					System.out.println("BREAKPOINT");
 				probeParams.name = (String) probeJson.get("probe_name");
 				probeParams.interval = Long.parseLong(probeJson.get("probe_interval").toString());
-				probeParams.multiplier = Float.parseFloat(probeJson.get("probe_multiplier").toString());
+				probeParams.multiplier =GeneralFunctions.isNullOrEmpty(probeJson.get("probe_multiplier").toString())?1:Float.parseFloat(probeJson.get("probe_multiplier").toString());
+				 
 				probeParams.is_active = probeJson.get("probe_status").toString().equals("1") ? true : false;
 				probeParams.type = (String) probeJson.get("probe_type");
 				probeKeyJson = (JSONObject) probeJson.get("probe_key");
 
-				String rpStr = probeParams.probe_id;
-				if (rpStr.contains(
-						"inner_5db597d9-f3e9-4ae9-a800-4e4ff91d1ce5"))
-					System.out.println("BREAKPOINT");
 				
 				
 				switch (probeParams.type) {
@@ -272,8 +273,9 @@ public class UsersManager {
 							.parseInt(probeKeyJson.get("discovery_trigger").toString());
 					probeParams.discovery_trigger_x = probeKeyJson.get("discovery_trigger_x_value").toString();
 					probeParams.snmp_unit = (String) probeKeyJson.get("discovery_trigger_unit");
-					probeParams.discovery_trigger_id = (String) probeKeyJson.get("trigger_id");
-					probeParams.discovery_trigger_severity = (String) probeKeyJson.get("trigger_severity");
+					probeParams.discovery_trigger_id = (String) probeKeyJson.get("discovery_trigger_id");
+					probeParams.discovery_trigger_severity = (String) probeKeyJson.get("discovery_trigger_severity");
+					probeParams.discovery_type=(String) probeKeyJson.get("discovery_type");
 					break;
 				}
 				case Constants.rbl: {

@@ -183,7 +183,7 @@ public class User {
 
 		String rpStr = hostId.toString()+"@"+probeId;
 		if (rpStr.contains(
-				"788b1b9e-d753-4dfa-ac46-61c4374eeb84@inner_d5be36d2-87ff-414a-88ba-be2da43adabf"))
+				"discovery_6b54463e-fe1c-4e2c-a090-452dbbf2d510"))
 			System.out.println("BREAKPOINT");
 		
 		if(probe==null||host==null)
@@ -289,6 +289,7 @@ public class User {
 			this.getSnmpManager().startProbe(rp);
 			return true;
 		} 
+	
 			return rp.start();
 	}
 
@@ -517,8 +518,15 @@ public class User {
 						new Log("Probe: " + probeId + " Wrong Unit Type, Doesn't Added!", LogType.Error));
 				return;
 			}
-			Enums.DiscoveryElementType discoveryType = (probeParams.discovery_type).equals("bw")
-					? Enums.DiscoveryElementType.nics : null;
+			Enums.DiscoveryElementType discoveryType;
+			switch(probeParams.discovery_type)
+			{
+			case Constants.bw:discoveryType=Enums.DiscoveryElementType.nics;
+			break;
+			case Constants.ds:discoveryType=Enums.DiscoveryElementType.disks;
+			break;
+			default:throw new Exception("Unable to determine discovery type --- "+probeParams.probe_id);
+			}
 
 			probe = new DiscoveryProbe(this, probeId, templateId, name, interval, multiplier, status,
 					discoveryType, elementsInterval);

@@ -27,12 +27,14 @@ public class LycusMain  {
 		if(!Global.Initialize())
 			return;
 		SysLogger.Init();
-		System.out.println("Probecules Version: 0.7.1");
+		System.out.println("Probecules Version: 0.7.1.2");
 		boolean apiInit=ApiInterface.Initialize();
 		if(!apiInit)
 			return;
 		UsersManager.Initialize();//setup initial config (InitServer)
 
+//		Net.Snmp2Walk("62.90.132.150", port, timeout, comName, _oid)
+		
 //		Net.Snmp2Walk("62.90.132.131", 161, 5000, "ADCD-LAN2", "1.3.6.1.2.1.2.2.1");
 //		Net.Snmp3Walk("62.90.132.131",161,5000,"snmpv3user","snmpv3allp","md5",null,null,"1.3.6.1.2.1.2.2.1");
 //		System.out.println("TEST");
