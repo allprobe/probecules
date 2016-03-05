@@ -16,6 +16,7 @@ import GlobalConstants.Enums;
 import GlobalConstants.LogType;
 import GlobalConstants.SnmpDataType;
 import GlobalConstants.TriggerSeverity;
+import Model.DiscoveryElementParams;
 import Model.HostParams;
 import Model.ProbeParams;
 import Model.SnmpTemplateParams;
@@ -635,6 +636,11 @@ public class User {
 			return TriggerSeverity.Disaster;
 		}
 		return null;
+	}
+
+	public void addDiscoveryElement(DiscoveryElementParams elementParams) {
+		// TODO add new elements as Runnable Probes.
+		
 	}
 
 	}

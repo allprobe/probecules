@@ -24,6 +24,7 @@ import GlobalConstants.LogType;
 import GlobalConstants.SnmpDataType;
 import GlobalConstants.TriggerSeverity;
 import Model.ConditionUpdateModel;
+import Model.DiscoveryElementParams;
 import Model.HostParams;
 import Model.ProbeParams;
 import Model.SnmpTemplateParams;
@@ -97,6 +98,10 @@ public class UsersManager {
 
 		JSONArray allTemplateProbesJson = (JSONArray) initServer.get("probes");
 		addTemplates(allTemplateProbesJson, probeByUser);
+		
+		JSONArray allDiscoveryElementsJson = (JSONArray) initServer.get("discovery_elements");
+		addDiscoveryElements(allDiscoveryElementsJson);
+
 
 		JSONArray allTemplateTriggersJson = (JSONArray) initServer.get("triggers");
 		addTriggers(allTemplateTriggersJson, probeByUser);
@@ -175,7 +180,38 @@ public class UsersManager {
 			}
 		}
 	}
+	public static void addDiscoveryElements(JSONArray allElementsJson) {
+		for (int i = 0; i < allElementsJson.size(); i++) {
+			JSONObject hostElementsJson = (JSONObject) allElementsJson.get(i);
+			try {
+				JSONArray elements=(JSONArray)hostElementsJson.get("elements");
+				for(int j=0;j<elements.size();j++)
+				{
+				DiscoveryElementParams elementParams = new DiscoveryElementParams();
+				elementParams.host_id=(String)hostElementsJson.get("host_id");
+				elementParams.discovery_id=(String)hostElementsJson.get("discovery_id");
+				
+				JSONObject elementN=(JSONObject)elements.get(j);
+				elementParams.index=Integer.parseInt((String)elementN.get("index"));
+				elementParams.name=(String)elementN.get("name");
+				elementParams.status=((String)elementN.get("status")).equals("1")?true:false;
+				elementParams.user_id=(String)hostElementsJson.get("user_id");
+				
+				User user = getUsers().get(UUID.fromString(elementParams.user_id));
+				if (user == null)
+					continue;
+				user.addDiscoveryElement(elementParams);
 
+				}
+				
+			} catch (Exception e) {
+				SysLogger.Record(
+						new Log("Creation of Discovery Element Failed: " + allElementsJson.toJSONString() + " , not added!",
+								LogType.Warn, e));
+				continue;
+			}
+		}
+	}
 	public static void addHosts(JSONArray allHostsJson) {
 		for (int i = 0; i < allHostsJson.size(); i++) {
 			JSONObject hostJson = (JSONObject) allHostsJson.get(i);
