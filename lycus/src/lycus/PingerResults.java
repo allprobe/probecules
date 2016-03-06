@@ -67,7 +67,7 @@ public class PingerResults extends BaseResults {
 		super.acceptResults(results);
 		String rpStr = this.getRp().getRPString();
 		if (rpStr.contains(
-				"acbfcdf8-2c2e-4257-ad1c-40f193508a45@inner_33695a83-654d-4177-b90d-0a89c5f0120d"))
+				"ae1981c3-c157-4ce2-9086-11e869d4a344@icmp_41468c4c-c7d4-4dae-bd03-a5b2ca0b44d6"))
 			System.out.println("BREAKPOINT - RunnablePingerProbeResults");
 		if(results==null)
 			return;

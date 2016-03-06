@@ -359,7 +359,13 @@ public class UsersManager {
 				String probeId = (String) triggerJson.get("probe_id");
 				String triggerId = (String) triggerJson.get("trigger_id");
 
-				String name = (String) triggerJson.get("trigger_name");
+				String rpStr = triggerId;
+				if (rpStr.contains(
+						"e8b03d1e-48c8-4bd1-abeb-7e9a96a4cae4@icmp_41468c4c-c7d4-4dae-bd03-a5b2ca0b44d6@2b082834-7c37-4988-a12a-14947b064430"))
+					System.out.println("BREAKPOINT");
+				
+				
+				String name = (String) triggerJson.get("name");
 				TriggerSeverity severity = getTriggerSev((String) triggerJson.get("severity"));
 				if (severity == null)
 					SysLogger.Record(new Log("Unable to get trigger severity for: " + triggerId, LogType.Warn));
@@ -444,8 +450,8 @@ public class UsersManager {
 
 		for (int i = 0; i < jsonArray.size(); i++) {
 			JSONObject conditionJson = (JSONObject) jsonArray.get(i);
-			int code = Integer.parseInt((String) conditionJson.get("code"));
-			String andOr = (String) conditionJson.get("and_or");
+			int code = Integer.parseInt((String) conditionJson.get("condition_id"));
+			String andOr = (String) conditionJson.get("andor");
 			String xValue = (String) conditionJson.get("xvalue");
 			String tValue = (String) conditionJson.get("tvalue");
 			TriggerCondition condition = new TriggerCondition(code, andOr, xValue, tValue);
