@@ -1,7 +1,5 @@
 package Model;
 
-import java.util.ArrayList;
-
 public class UpdateValueModel
 {
 	public String user_id;

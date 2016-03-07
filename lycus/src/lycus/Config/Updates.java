@@ -3,6 +3,7 @@
  */
 package lycus.Config;
 
+import org.apache.log4j.Logger;
 import org.json.simple.JSONObject;
 
 import GlobalConstants.Enums.ApiAction;

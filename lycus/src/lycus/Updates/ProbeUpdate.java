@@ -21,6 +21,7 @@ import lycus.User;
 import lycus.UsersManager;
 import lycus.Interfaces.IDAL;
 import lycus.Probes.Probe;
+import Utils.Logit;
 
 public class ProbeUpdate extends BaseUpdate {
 
@@ -57,8 +58,8 @@ public class ProbeUpdate extends BaseUpdate {
 		host = getUser().getHost(UUID.fromString(getUpdate().host_id));
 
 		if (!getUser().isProbeExist(getUpdate().probe_id)) {
-			ProbeParams probeParams = new ProbeParams();
 			
+			ProbeParams probeParams = new ProbeParams();
 			probeParams.bytes = getUpdate().update_value.key.bytes;
 			probeParams.npings =  getUpdate().update_value.key.npings;
 			probeParams.discovery_elements_interval = getUpdate().update_value.key.element_interval;
@@ -93,14 +94,15 @@ public class ProbeUpdate extends BaseUpdate {
 			getUser().addTemplateProbe(probeParams);
 		} else {
 			probe = getUser().getProbeFor(getUpdate().probe_id);
+			probe.updateKeyValues(getUpdate().update_value.key);
 		}
 
-		probe.updateKeyValues(getUpdate().update_value.key);
-
+		// Check with Roi if for update as well
 		RunnableProbe runnableProbe = new RunnableProbe(host, probe);
 		runnableProbe.start();
 		getUser().addRunnableProbe(runnableProbe);
-
+		Logit.LogInfo("New probe was update");
+		
 		return true;
 	}
 
