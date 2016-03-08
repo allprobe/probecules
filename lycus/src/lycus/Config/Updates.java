@@ -3,7 +3,9 @@
  */
 package lycus.Config;
 
+import org.apache.log4j.BasicConfigurator;
 import org.apache.log4j.Logger;
+import org.apache.log4j.PropertyConfigurator;
 import org.json.simple.JSONObject;
 
 import GlobalConstants.Enums.ApiAction;
@@ -11,6 +13,7 @@ import Model.ThreadsUpdates;
 import Model.UpdateModel;
 import Utils.JsonUtil;
 import lycus.DAL;
+import lycus.UsersManager;
 import lycus.Interfaces.IDAL;
 import lycus.Updates.BaseUpdate;
 import lycus.Updates.UpdateFactory;
@@ -36,7 +39,9 @@ public class Updates implements Runnable {
 		
 		return true;
 	}
-
+	static Logger log = Logger.getLogger(Updates.class.getName());
+	
+		
 	private Boolean runUpdates(JSONObject jsonObject) {
 		try
 		{

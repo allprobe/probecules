@@ -10,6 +10,9 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.util.Properties;
 
+import org.apache.log4j.Logger;
+
+import Utils.Logit;
 import lycus.Log;
 import lycus.SysLogger;
 
@@ -49,7 +52,6 @@ public class Global {
   	public static String getDateFormat() {
   		return dateFormat;
   	}
-
 
   	public static int getPingerThreadCount() {
   		return PingerThreadCount;

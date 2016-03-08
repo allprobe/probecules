@@ -13,8 +13,9 @@ import java.util.Set;
 import java.util.UUID;
 
 import org.json.simple.JSONObject;
+import org.apache.log4j.BasicConfigurator;
+import org.apache.log4j.Logger;
 import org.json.simple.JSONArray;
-import org.snmp4j.smi.OID;
 
 import com.google.gson.Gson;
 
@@ -28,13 +29,8 @@ import Model.DiscoveryElementParams;
 import Model.HostParams;
 import Model.ProbeParams;
 import Model.SnmpTemplateParams;
-import lycus.Probes.DiscoveryProbe;
-import lycus.Probes.PingerProbe;
-import lycus.Probes.PorterProbe;
+import Utils.Logit;
 import lycus.Probes.Probe;
-import lycus.Probes.RBLProbe;
-import lycus.Probes.SnmpProbe;
-import lycus.Probes.WeberProbe;
 
 /**
  * 
@@ -44,8 +40,12 @@ public class UsersManager {
 
 	private static HashMap<UUID, User> users;
 	private static boolean initialized;
-
+//	static Logger log = Logger.getLogger(UsersManager.class);
+	
 	public static void Initialize() {
+		BasicConfigurator.configure();
+		Logit.LogInfo("Service start Ver 1.0.0.0");
+		
 		setUsers(new HashMap<UUID, User>());
 		if (!UsersManager.Build()) {
 			setInitialized(false);
@@ -576,7 +576,7 @@ public class UsersManager {
 
 	private static JSONObject getServerInfoFromApi() {
 		Object initServer;
-		SysLogger.Record(new Log("ORENOREN", LogType.Warn));
+	
 		while (true) {
 			initServer = ApiInterface.executeRequest(Enums.ApiAction.InitServer, "GET", null);
 			if (initServer == null) {

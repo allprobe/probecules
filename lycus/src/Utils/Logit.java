@@ -2,18 +2,40 @@ package Utils;
 
 import org.apache.log4j.Logger;
 
+
 public class Logit {
-	static Logger log = Logger.getLogger(Logit.class.getName());
+	static Logger log = Logger.getLogger("");
+
+//	public Logit(String className)
+//	{
+//		log = Logger.getLogger(className);
+//	}
 
 	public static void LogDebug(String message) {
-		log.debug("Hello this is a debug message");
+		if (log.isDebugEnabled())
+			log.debug(message);
 	}
 
 	public static void LogInfo(String message) {
-		log.info("Hello this is an info message");
+		if (log.isInfoEnabled())
+			log.info(message);
 	}
 	
-	public static void LogError(String message) {
-		log.error("Hello this is an info message");
+	// extraInfo - Class name + Function name
+	public static void LogError(String extraInfo, String message) {
+		log.error(message);
+	}
+	
+	// extraInfo - Class name + Function name
+	public static void LogFatal(String extraInfo, String message) {
+		log.fatal(message);
+	}
+	
+	public static void LogWarn(String message) {
+		log.warn(message);
+	}
+	
+	public static void LogTrace(String message) {
+		log.trace(message);
 	}
 }
