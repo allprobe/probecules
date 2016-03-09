@@ -50,6 +50,11 @@ public class Enums {
 		Update,
 		Delete
 	}
+	
+	public static enum HostType {
+		Windows,
+		Linux
+	}
 
 	public static final String Action = null;
 }

@@ -9,6 +9,8 @@ import org.json.simple.JSONObject;
 
 import com.google.gson.GsonBuilder;
 
+import GlobalConstants.Enums;
+import GlobalConstants.Enums.HostType;
 import GlobalConstants.LogType;
 import lycus.Probes.DiscoveryProbe;
 import lycus.Probes.SnmpProbe;
@@ -65,10 +67,10 @@ public class DiscoveryResults extends BaseResults {
 		
 		switch (((DiscoveryProbe)this.getRp().getProbe()).getType()) {
 		case nics:
-			lastScanElements = this.convertNicsWalkToIndexes((HashMap<String,String>)results.get(1));
+			lastScanElements = this.convertNicsWalkToIndexes((HashMap<String,String>)results.get(1),(Enums.HostType)results.get(2));
 			break;
 		case disks:
-			lastScanElements = this.convertDisksWalkToIndexes((HashMap<String,String>)results.get(1));
+			lastScanElements = this.convertDisksWalkToIndexes((HashMap<String,String>)results.get(1),(Enums.HostType)results.get(2));
 			break;
 		}
 		
@@ -89,15 +91,16 @@ public class DiscoveryResults extends BaseResults {
 		}
 	}
 
-	private HashMap<Integer, String> convertDisksWalkToIndexes(HashMap<String, String> hashMap) {
+	private HashMap<Integer, String> convertDisksWalkToIndexes(HashMap<String, String> hashMap, HostType hostType) {
 		// TODO Auto-generated method stub
 		return null;
 	}
 
 
-	private HashMap<Integer, String> convertNicsWalkToIndexes(HashMap<String, String> nicsWalk) {
+	private HashMap<Integer, String> convertNicsWalkToIndexes(HashMap<String, String> nicsWalk, HostType hostType) {
 		HashMap<Integer,String> lastElements=new HashMap<Integer,String>();
-		
+		if(hostType==null)
+			return null;
 		for(Map.Entry<String, String> entry:nicsWalk.entrySet())
 		{
 			if(!entry.getKey().toString().contains("1.3.6.1.2.1.2.2.1.1."))
@@ -109,8 +112,19 @@ public class DiscoveryResults extends BaseResults {
 				continue;
 			}
 				
-			String name=nicsWalk.get("1.3.6.1.2.1.2.2.1.2."+index);
-			String ifSpeed=nicsWalk.get("1.3.6.1.2.1.2.2.1.5."+index);
+			String name;
+			String ifSpeed;
+			switch(hostType)
+			{
+			case Windows:
+				name=GeneralFunctions.convertHexToString(nicsWalk.get("1.3.6.1.2.1.2.2.1.2."+index));
+				break;
+			case Linux:
+				name=nicsWalk.get("1.3.6.1.2.1.2.2.1.2."+index);
+				break;
+			default:return null;
+			}
+			ifSpeed=nicsWalk.get("1.3.6.1.2.1.2.2.1.5."+index);
 			
 			lastElements.put(index, name+"@"+ifSpeed);
 		}
