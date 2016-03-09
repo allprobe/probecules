@@ -13,9 +13,9 @@ public class SnmpNicProbe extends SnmpProbe {
 
 	private long ifSpeed;
 	
-	public SnmpNicProbe(User user, String probe_id, UUID template_id, String name, long interval, float multiplier,
+	public SnmpNicProbe(String probe_id, UUID template_id, String name, long interval, float multiplier,
 			boolean status, OID oid, SnmpDataType dataType, SnmpUnit unit,long ifSpeed) {
-		super(user, probe_id, template_id, name, interval, multiplier, status, oid, dataType, unit, SnmpStoreAs.deltaBytesPerSecond);
+		super(probe_id, template_id, name, interval, multiplier, status, oid, dataType, unit, SnmpStoreAs.deltaBytesPerSecond);
 		this.setIfSpeed(ifSpeed);
 	}
 

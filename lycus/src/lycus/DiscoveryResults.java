@@ -2,7 +2,9 @@ package lycus;
 
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.Map;
+import java.util.Set;
 
 import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
@@ -10,6 +12,7 @@ import org.json.simple.JSONObject;
 import com.google.gson.GsonBuilder;
 
 import GlobalConstants.Enums;
+import GlobalConstants.Enums.ElementChange;
 import GlobalConstants.Enums.HostType;
 import GlobalConstants.LogType;
 import lycus.Probes.DiscoveryProbe;
@@ -17,39 +20,31 @@ import lycus.Probes.SnmpProbe;
 
 public class DiscoveryResults extends BaseResults {
 
-	private HashMap<Integer,String> currentElements=null;
-	private HashMap<Integer,String> newElements=null;
+	private HashMap<String,BaseElement> currentElements=null;
+	private HashMap<BaseElement,Enums.ElementChange> elementsChanges=null;
 	
 	public DiscoveryResults(RunnableProbe rp) {
 		super(rp);
 		}
 	
 
-	public HashMap<Integer,String> getCurrentElements() {
+	public HashMap<String,BaseElement> getCurrentElements() {
 		return currentElements;
 	}
 
 
-	public void setCurrentElements(HashMap<Integer,String> currentElements) {
+	public void setCurrentElements(HashMap<String,BaseElement> currentElements) {
 		this.currentElements = currentElements;
 	}
 
 
-	public synchronized HashMap<Integer,String> getNewElements() {
-		return newElements;
-	}
-	public HashMap<Integer,String> getNewElementsJSON() {
-		JSONObject elements=new JSONObject();
-		for(Map.Entry<Integer, String> element:this.getNewElements().entrySet())
-		{
-			elements.put(element.getKey(), element.getValue());
-		}
-		return elements;
+	public synchronized HashMap<BaseElement,Enums.ElementChange> getElementsChanges() {
+		return elementsChanges;
 	}
 
 
-	public synchronized void setNewElements(HashMap<Integer,String> newElements) {
-		this.newElements = newElements;
+	public synchronized void setElementsChanges(HashMap<BaseElement,Enums.ElementChange> newElements) {
+		this.elementsChanges = newElements;
 	}
 
 
@@ -63,7 +58,7 @@ public class DiscoveryResults extends BaseResults {
 			System.out.println("BREAKPOINT");
 		
 		
-		HashMap<Integer,String> lastScanElements=null;
+		HashMap<String,BaseElement> lastScanElements=null;
 		
 		switch (((DiscoveryProbe)this.getRp().getProbe()).getType()) {
 		case nics:
@@ -75,30 +70,18 @@ public class DiscoveryResults extends BaseResults {
 		}
 		
 		long timestamp=(long)results.get(0);
-		if(this.getCurrentElements()==null)
-		{
-			this.setCurrentElements(lastScanElements);
-			this.setNewElements(lastScanElements);
-			this.setLastTimestamp(timestamp);
-			return;
-		}
-		
-		boolean sameElements=isElementsIdentical(lastScanElements);
-		if(!sameElements)
-		{
-			this.setNewElements(lastScanElements);
-			this.setLastTimestamp(timestamp);
-		}
+
+		boolean sameElements=checkForElementsChanges(lastScanElements,timestamp);
 	}
 
-	private HashMap<Integer, String> convertDisksWalkToIndexes(HashMap<String, String> hashMap, HostType hostType) {
+	private HashMap<String,BaseElement> convertDisksWalkToIndexes(HashMap<String, String> hashMap, HostType hostType) {
 		// TODO Auto-generated method stub
 		return null;
 	}
 
 
-	private HashMap<Integer, String> convertNicsWalkToIndexes(HashMap<String, String> nicsWalk, HostType hostType) {
-		HashMap<Integer,String> lastElements=new HashMap<Integer,String>();
+	private HashMap<String,BaseElement> convertNicsWalkToIndexes(HashMap<String, String> nicsWalk, HostType hostType) {
+		HashMap<String,BaseElement> lastElements=new HashMap<String,BaseElement>();
 		if(hostType==null)
 			return null;
 		for(Map.Entry<String, String> entry:nicsWalk.entrySet())
@@ -113,7 +96,9 @@ public class DiscoveryResults extends BaseResults {
 			}
 				
 			String name;
-			String ifSpeed;
+			long ifSpeed;
+
+			ifSpeed=Long.parseLong(nicsWalk.get("1.3.6.1.2.1.2.2.1.5."+index));
 			switch(hostType)
 			{
 			case Windows:
@@ -124,9 +109,10 @@ public class DiscoveryResults extends BaseResults {
 				break;
 			default:return null;
 			}
-			ifSpeed=nicsWalk.get("1.3.6.1.2.1.2.2.1.5."+index);
+			NicElement nicElement=new NicElement(this.getRp().getProbe().getProbe_id(),this.getRp().getProbe().getTemplate_id(),name,this.getRp().getProbe().getInterval(),this.getRp().getProbe().getMultiplier(),this.getRp().getProbe().isActive(), index,ifSpeed,hostType);
 			
-			lastElements.put(index, name+"@"+ifSpeed);
+			
+			lastElements.put(name, nicElement);
 		}
 		
 		if(lastElements.size()==0)
@@ -141,39 +127,59 @@ public class DiscoveryResults extends BaseResults {
 	}
 	
 	
-	private HashMap<Integer,BaseElementProbe> acceptResultsForDisks(ArrayList<Object> results) {
+	private HashMap<Integer,BaseElement> acceptResultsForDisks(ArrayList<Object> results) {
 		// TODO Auto-generated method stub
 		return null;
 	}
 
-	private boolean isElementsIdentical(HashMap<Integer, String> lastScanElements) {
-		HashMap<Integer, String> currentScanElements=this.getCurrentElements();
-		if(currentScanElements==null&& lastScanElements!=null)
-			return false;
-		if(lastScanElements==null&&currentScanElements!=null)
-			return false;
-		for(Map.Entry<Integer, String> element:lastScanElements.entrySet())
-		{
-			if(!currentScanElements.get(element.getKey()).equals(element.getValue()))
-				return false;
+	// returns true if there is any change made on the host elements
+	private boolean checkForElementsChanges(HashMap<String, BaseElement> lastScanElements, long timestamp) {
+		HashMap<BaseElement,Enums.ElementChange> elementsChanges=new HashMap<BaseElement,Enums.ElementChange>();
+		
+		if(this.getCurrentElements()==null)
+		{   
+			for(Map.Entry<String, BaseElement> lastElement:lastScanElements.entrySet())
+			{
+				elementsChanges.put(lastElement.getValue(), ElementChange.addedElement);
+			}
+			this.setElementsChanges(elementsChanges);
+			this.setCurrentElements(lastScanElements);
+			this.setLastTimestamp(timestamp);
+			return true;
 		}
+		
+		for(Map.Entry<String, BaseElement> lastElement:lastScanElements.entrySet())
+		{
+			if(this.getCurrentElements().get(lastElement.getKey())==null)
+			{
+				elementsChanges.put(lastElement.getValue(), ElementChange.addedElement);
+				// TODO Add new element to system
+				continue;
+			}
+			if(this.getCurrentElements().get(lastElement.getKey()).isIdentical(lastElement.getValue()))
+			continue;
+			elementsChanges.put(lastElement.getValue(), ElementChange.indexElementChanged);
+			// TODO Change element index
+		}
+
+		Set<String> newElements=lastScanElements.keySet();
+		
+		//check for removed elements
+		for(Map.Entry<String, BaseElement> currentElement:this.getCurrentElements().entrySet())
+		{
+			if(!newElements.contains(currentElement.getKey()))
+				elementsChanges.put(currentElement.getValue(), ElementChange.removedElement);
+			// TODO Remove nic element from the system
+		}
+		
 		return true;
 	}
 
 
 	@Override
 	public HashMap<String, String> getResults() throws Throwable {
-		if(this.getNewElements()==null)
-			return null;
-		HashMap<String, String> results = super.getResults();
-		JSONArray rawResults = new JSONArray();
-		rawResults.add(6);
-		rawResults.add(this.getNewElementsJSON());
-		results.put("RAW@new_elements_map@" + this.getLastTimestamp(), rawResults.toJSONString());
-		
-		this.setNewElements(null);
-		this.setLastTimestamp(null);
-		return results;
+		// TODO send discovery results to RAN
+		return null;
 	}
 
 	

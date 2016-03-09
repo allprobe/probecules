@@ -168,7 +168,7 @@ public class SnmpResults extends BaseResults {
 				this.setTmpDeltaTimestamp(lastTimestamp);
 				return;
 			}
-			long ifSpeed =  ((SnmpNicProbe) this.getRp().getProbe()).getIfSpeed();
+			long ifSpeed =  (long)results.get(2);
 			this.setNumData(
 					this.getBytesPerSecond(lastTimestamp, data,ifSpeed));
 			this.setTmpDeltaVar(data);

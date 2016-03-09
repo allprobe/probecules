@@ -502,7 +502,7 @@ public class User {
 						new Log("Probe: " + probeId + " Wrong Unit Type, Doesn't Added!", LogType.Error));
 				return;
 			}
-			probe = new SnmpProbe(this, probeId, templateId, name, interval, multiplier, status, oid, dataType,
+			probe = new SnmpProbe(probeId, templateId, name, interval, multiplier, status, oid, dataType,
 					unit, storeValue);
 			break;
 		}
@@ -638,9 +638,26 @@ public class User {
 		return null;
 	}
 
-	public void addDiscoveryElement(DiscoveryElementParams elementParams) {
+	public void addNewDiscoveryElement(BaseElement newElement) {
 		// TODO add new elements as Runnable Probes.
+		if(newElement instanceof NicElement)
+		{
+			this.addNicRunnableProbes((NicElement)newElement);
+		}
+		else if(newElement instanceof DiskElement )
+		{
+			this.addDiskRunnableProbes((NicElement)newElement);
+		}
+	}
+
+	private void addDiskRunnableProbes(NicElement newElement) {
+		// TODO Auto-generated method stub
 		
+	}
+
+	private void addNicRunnableProbes(NicElement newElement) {
+		RunnableProbe ifInOctets;
+		RunnableProbe ifOutOctets;
 	}
 
 	}

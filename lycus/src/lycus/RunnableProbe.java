@@ -48,6 +48,8 @@ public class RunnableProbe implements Runnable {
 			break;
 			case DISCOVERY:results=new DiscoveryResults(this);
 			break;
+			case DISCOVERYELEMENT:results=new DiscoveryResults(this);
+			break;
 		}
 	}
 

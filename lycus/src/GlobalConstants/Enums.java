@@ -55,6 +55,12 @@ public class Enums {
 		Windows,
 		Linux
 	}
+	
+	public static enum ElementChange
+	{
+		addedElement,removedElement,indexElementChanged
+		
+	}
 
 	public static final String Action = null;
 }

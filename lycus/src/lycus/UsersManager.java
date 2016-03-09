@@ -200,7 +200,8 @@ public class UsersManager {
 				User user = getUsers().get(UUID.fromString(elementParams.user_id));
 				if (user == null)
 					continue;
-				user.addDiscoveryElement(elementParams);
+				// TODO add new elements
+//				user.addNewDiscoveryElement(elementParams);
 
 				}
 				
