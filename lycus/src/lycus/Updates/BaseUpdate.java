@@ -69,19 +69,16 @@ public abstract class BaseUpdate implements IUpdate{
 	
 	@Override
 	public Boolean New() {
-		// TODO Auto-generated method stub
 		return true;
 	}
 
 	@Override
 	public Boolean Update() {
-		// TODO Auto-generated method stub
 		return true;
 	}
 
 	@Override
 	public Boolean Delete() {
-		// TODO Auto-generated method stub
 		return true;
 	}
 	

@@ -20,9 +20,9 @@ public class SnmpProbe extends Probe {
 	private SnmpUnit unit;
 	private SnmpStoreAs storeAs; 
 
-	public SnmpProbe(String probe_id, UUID template_id, String name, long interval, float multiplier,
+	public SnmpProbe(User user,String probe_id, UUID template_id, String name, long interval, float multiplier,
 			boolean status, OID oid, SnmpDataType dataType, SnmpUnit unit, SnmpStoreAs storeAs) {
-		super(null,probe_id, template_id, name, interval, multiplier, status);
+		super(user,probe_id, template_id, name, interval, multiplier, status);
 		this.setOid(oid);
 		this.setDataType(dataType);
 		this.setStoreAs(storeAs);

@@ -75,7 +75,7 @@ public class DiscoveryResults extends BaseResults {
 	}
 
 	private HashMap<String,BaseElement> convertDisksWalkToIndexes(HashMap<String, String> hashMap, HostType hostType) {
-		// TODO Auto-generated method stub
+		// TODO DiscoveryResults.convertDisksWalkToIndexes
 		return null;
 	}
 

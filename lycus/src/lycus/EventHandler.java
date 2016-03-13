@@ -7,6 +7,7 @@ import java.util.Map;
 
 import GlobalConstants.Enums;
 import GlobalConstants.LogType;
+import Utils.Logit;
 
 public class EventHandler implements Runnable {
 	private RunnableProbesHistory history;
@@ -24,19 +25,18 @@ public class EventHandler implements Runnable {
 		this.history = history;
 	}
 
-	//@Override
+	// @Override
 	public void run() {
 		try {
-			ArrayList<HashMap<String,HashMap<String,String>>> events = null;
+			ArrayList<HashMap<String, HashMap<String, String>>> events = null;
 			events = this.getAllEvents();
 
 			if (events != null) {
 				SysLogger.Record(new Log("Sending events to API...", LogType.Info));
-				String stringEvents=this.getHistory().getGson().toJson(events);
-				if(!stringEvents.equals("[]"))
-				{
-					String eventsEncoded=GeneralFunctions.Base64Encode(stringEvents);
-					String sendString = "{\"events\" : \"" + eventsEncoded + "\"}";				
+				String stringEvents = this.getHistory().getGson().toJson(events);
+				if (!stringEvents.equals("[]")) {
+					String eventsEncoded = GeneralFunctions.Base64Encode(stringEvents);
+					String sendString = "{\"events\" : \"" + eventsEncoded + "\"}";
 					ApiInterface.executeRequest(Enums.ApiAction.PutEvents, "PUT", sendString);
 				}
 			} else {
@@ -48,66 +48,70 @@ public class EventHandler implements Runnable {
 		}
 	}
 
-	private ArrayList<HashMap<String,HashMap<String,String>>> getAllEvents() throws Exception {
-		ArrayList<HashMap<String,HashMap<String,String>>> events=new ArrayList<HashMap<String,HashMap<String,String>>>();
+	private ArrayList<HashMap<String, HashMap<String, String>>> getAllEvents() throws Exception {
+		ArrayList<HashMap<String, HashMap<String, String>>> events = new ArrayList<HashMap<String, HashMap<String, String>>>();
 		for (BaseResults rpr : this.getHistory().getResults().values()) {
-			HashMap<Trigger, TriggerEvent> rprEvents = rpr.getEvents();
-			if (rprEvents.size() == 0)
+			try {
+				HashMap<Trigger, TriggerEvent> rprEvents = rpr.getEvents();
+				if (rprEvents.size() == 0)
+					continue;
+				Iterator mapIterator = rprEvents.entrySet().iterator();
+				while (mapIterator.hasNext()) {
+					Map.Entry<Trigger, TriggerEvent> pair = (Map.Entry<Trigger, TriggerEvent>) mapIterator.next();
+					Trigger trigger = pair.getKey();
+					TriggerEvent event = pair.getValue();
+					if (!event.isSent() && event.isStatus()) {
+						HashMap<String, HashMap<String, String>> sendingEvents = new HashMap<String, HashMap<String, String>>();
+						HashMap<String, String> eventValues = new HashMap<String, String>();
+						eventValues.put("trigger_id", trigger.getTriggerId().toString());
+						eventValues.put("host_id", rpr.getRp().getHost().getHostId().toString());
+						eventValues.put("host_name", rpr.getRp().getHost().getName());
+						eventValues.put("user_id", rpr.getRp().getProbe().getUser().getUserId().toString());
+						eventValues.put("trigger_name", trigger.getName());
+						eventValues.put("trigger_severity", trigger.getSvrty().toString());
+						eventValues.put("event_timestamp", String.valueOf(event.getTime()));
+						eventValues.put("event_status", String.valueOf(event.isStatus()));
+						eventValues.put("host_bucket", rpr.getRp().getHost().getBucket());
+						if (rpr.getRp().getHost().getNotificationGroups() != null)
+							eventValues.put("host_notifs_groups",
+									rpr.getRp().getHost().getNotificationGroups().toString());
+						else
+							eventValues.put("host_notifs_groups", null);
+						sendingEvents.put(rpr.getRp().getRPString(), eventValues);
+
+						events.add(sendingEvents);
+
+						mapIterator.remove();
+					} else if (!event.isSent() && !event.isStatus()) {
+						HashMap<String, HashMap<String, String>> sendingEvents = new HashMap<String, HashMap<String, String>>();
+						HashMap<String, String> eventValues = new HashMap<String, String>();
+						eventValues.put("trigger_id", trigger.getTriggerId().toString());
+						eventValues.put("host_id", rpr.getRp().getHost().getHostId().toString());
+						eventValues.put("host_name", rpr.getRp().getHost().getName());
+						eventValues.put("user_id", rpr.getRp().getProbe().getUser().getUserId().toString());
+						eventValues.put("trigger_name", trigger.getName());
+						eventValues.put("trigger_severity", trigger.getSvrty().toString());
+						eventValues.put("event_timestamp", String.valueOf(event.getTime()));
+						eventValues.put("event_status", String.valueOf(event.isStatus()));
+						eventValues.put("host_bucket", rpr.getRp().getHost().getBucket());
+						if (rpr.getRp().getHost().getNotificationGroups() != null)
+							eventValues.put("host_notifs_groups",
+									rpr.getRp().getHost().getNotificationGroups().toString());
+						else
+							eventValues.put("host_notifs_groups", null);
+						sendingEvents.put(rpr.getRp().getRPString(), eventValues);
+
+						events.add(sendingEvents);
+
+						event.setSent(true);
+					}
+				}
+			} catch (Exception e) {
+				Logit.LogError(null, "Unable to process event for RP:"+rpr.getRp().getRPString());
 				continue;
-			Iterator mapIterator = rprEvents.entrySet().iterator();
-			while (mapIterator.hasNext()) {
-				Map.Entry<Trigger, TriggerEvent> pair = (Map.Entry<Trigger, TriggerEvent>) mapIterator.next();
-				Trigger trigger=pair.getKey();
-				TriggerEvent event=pair.getValue();
-				if (!event.isSent()&& event.isStatus()) {
-					HashMap<String, HashMap<String,String>> sendingEvents = new HashMap<String,HashMap<String,String>>();
-					HashMap<String,String> eventValues=new HashMap<String,String>();
-					eventValues.put("trigger_id",trigger.getTriggerId().toString());
-					eventValues.put("host_id",rpr.getRp().getHost().getHostId().toString());
-					eventValues.put("host_name",rpr.getRp().getHost().getName());
-					eventValues.put("user_id",rpr.getRp().getProbe().getUser().getUserId().toString());
-					eventValues.put("trigger_name",trigger.getName());
-					eventValues.put("trigger_severity",trigger.getSvrty().toString());
-					eventValues.put("event_timestamp",String.valueOf(event.getTime()));
-					eventValues.put("event_status",String.valueOf(event.isStatus()));
-					eventValues.put("host_bucket",rpr.getRp().getHost().getBucket());
-					if(rpr.getRp().getHost().getNotificationGroups()!=null)
-					eventValues.put("host_notifs_groups",rpr.getRp().getHost().getNotificationGroups().toString());
-					else
-						eventValues.put("host_notifs_groups",null);
-					sendingEvents.put(rpr.getRp().getRPString(), eventValues);
-					
-					events.add(sendingEvents);
-
-					mapIterator.remove();
-				}
-				else if (!event.isSent()&& !event.isStatus()) {
-					HashMap<String, HashMap<String,String>> sendingEvents = new HashMap<String,HashMap<String,String>>();
-					HashMap<String,String> eventValues=new HashMap<String,String>();
-					eventValues.put("trigger_id",trigger.getTriggerId().toString());
-					eventValues.put("host_id",rpr.getRp().getHost().getHostId().toString());
-					eventValues.put("host_name",rpr.getRp().getHost().getName());
-					eventValues.put("user_id",rpr.getRp().getProbe().getUser().getUserId().toString());
-					eventValues.put("trigger_name",trigger.getName());
-					eventValues.put("trigger_severity",trigger.getSvrty().toString());
-					eventValues.put("event_timestamp",String.valueOf(event.getTime()));
-					eventValues.put("event_status",String.valueOf(event.isStatus()));
-					eventValues.put("host_bucket",rpr.getRp().getHost().getBucket());
-					if(rpr.getRp().getHost().getNotificationGroups()!=null)
-					eventValues.put("host_notifs_groups",rpr.getRp().getHost().getNotificationGroups().toString());
-					else
-						eventValues.put("host_notifs_groups",null);
-					sendingEvents.put(rpr.getRp().getRPString(), eventValues);
-					
-					events.add(sendingEvents);
-
-					event.setSent(true);
-				}
 			}
 		}
 		return events;
 	}
-	
-	
-	
+
 }

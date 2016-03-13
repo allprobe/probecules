@@ -97,14 +97,15 @@ public class SnmpResults extends BaseResults {
 		long lastTimestamp = (long) results.get(0);
 		this.setLastTimestamp(lastTimestamp);
 
+		String rpStr = this.getRp().getRPString();
+		if (rpStr.contains(
+				"0b05919c-6cc0-42cc-a74b-de3b0dcd4a2a@788b1b9e-d753-4dfa-ac46-61c4374eeb84@inner_b0fb65d1-c50d-4639-a728-0f173588f56b"))
+			System.out.println("BREAKPOINT");
+
 		switch (((SnmpProbe) (this.getRp().getProbe())).getDataType()) {
 		case Numeric:
 			acceptNumericResults(lastTimestamp, results);
 
-			String rpStr = this.getRp().getRPString();
-			if (rpStr.contains(
-					"7352a46f-5189-428c-b4c0-fb98dedd10b1@inner_036f81e0-4ec0-468a-8396-77c21dd9ae5a"))
-				System.out.println("BREAKPOINT");
 
 			break;
 		case Text:
@@ -292,7 +293,7 @@ public class SnmpResults extends BaseResults {
 	public HashMap<String, String> getResults() throws Throwable {
 		HashMap<String, String> results = super.getResults();
 		String rpStr = this.getRp().getRPString();
-		if (rpStr.contains("7352a46f-5189-428c-b4c0-fb98dedd10b1@inner_036f81e0-4ec0-468a-8396-77c21dd9ae5a"))
+		if (rpStr.contains("0b05919c-6cc0-42cc-a74b-de3b0dcd4a2a@788b1b9e-d753-4dfa-ac46-61c4374eeb84@inner_b0fb65d1-c50d-4639-a728-0f173588f56b"))
 			System.out.println("BREAKPOINT");
 
 		HashMap<String, String> rawResults = this.getRaw();

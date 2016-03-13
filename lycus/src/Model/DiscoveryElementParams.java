@@ -13,7 +13,6 @@ public class DiscoveryElementParams {
 	public int element_interval;
 	
 	public DiscoveryElementParams() {
-		// TODO Auto-generated constructor stub
 	}
 
 }

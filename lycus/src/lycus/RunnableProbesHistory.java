@@ -75,7 +75,7 @@ public class RunnableProbesHistory implements Runnable {
 			String sendString = "{\"results\" : \"" + encodedResults + "\"}";
 			
 			
-			if(results.contains("788b1b9e-d753-4dfa-ac46-61c4374eeb84@inner_10e61538-b4e1-44c6-aa12-b81ef6a5528d"))
+			if(results.contains("0b05919c-6cc0-42cc-a74b-de3b0dcd4a2a@788b1b9e-d753-4dfa-ac46-61c4374eeb84@inner_b0fb65d1-c50d-4639-a728-0f173588f56b"))
 				System.out.println("BREAKPOINT - RunnableProbesHistory");
 			ApiInterface.executeRequest(Enums.ApiAction.InsertDatapointsBatches, "PUT",sendString);
 		

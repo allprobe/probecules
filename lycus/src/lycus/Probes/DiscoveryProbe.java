@@ -21,9 +21,6 @@ public class DiscoveryProbe extends Probe {
 	private Enums.DiscoveryElementType type;
 	private long elementsInterval;
 
-	public DiscoveryProbe() {
-		// TODO Auto-generated constructor stub
-	}
 
 	public DiscoveryProbe(User user, String probe_id, UUID template_id, String name, long interval, float multiplier,
 			boolean status,Enums.DiscoveryElementType discoveryType,long elementsInterval) {

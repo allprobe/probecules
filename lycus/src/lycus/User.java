@@ -178,7 +178,7 @@ public class User {
 		RunnableProbe newRunnableProbe;
 
 		String rpStr = hostId.toString() + "@" + probeId;
-		if (rpStr.contains("discovery_6b54463e-fe1c-4e2c-a090-452dbbf2d510"))
+		if (rpStr.contains("0b05919c-6cc0-42cc-a74b-de3b0dcd4a2a@788b1b9e-d753-4dfa-ac46-61c4374eeb84@inner_b0fb65d1-c50d-4639-a728-0f173588f56b"))
 			System.out.println("BREAKPOINT");
 
 		if (probe == null || host == null) {
@@ -309,7 +309,7 @@ public class User {
 	public boolean addRunnableProbe(RunnableProbe rp) {
 		String rpStr = rp.getRPString();
 		if (rpStr.contains(
-				"0b05919c-6cc0-42cc-a74b-de3b0dcd4a2a@6aadf750-e887-43ee-b872-326c94fbab7c@discovery_6b54463e-fe1c-4e2c-a090-452dbbf2d510"))
+				"0b05919c-6cc0-42cc-a74b-de3b0dcd4a2a@788b1b9e-d753-4dfa-ac46-61c4374eeb84@inner_b0fb65d1-c50d-4639-a728-0f173588f56b"))
 			System.out.println("BREAKPOINT");
 
 		this.getHost(rp.getHost().getHostId()).getRunnableProbes().put(rp.getRPString(), rp);
@@ -483,7 +483,7 @@ public class User {
 					SysLogger.Record(new Log("Probe: " + probeId + " Wrong Unit Type, Doesn't Added!", LogType.Error));
 					return;
 				}
-				probe = new SnmpProbe(probeId, templateId, name, interval, multiplier, status, oid, dataType, unit,
+				probe = new SnmpProbe(this,probeId, templateId, name, interval, multiplier, status, oid, dataType, unit,
 						storeValue);
 				break;
 			}
@@ -629,7 +629,7 @@ public class User {
 	}
 
 	private void addDiskRunnableProbes(NicElement newElement) {
-		// TODO Auto-generated method stub
+		// TODO User.addDiskRunnableProbes
 
 	}
 
