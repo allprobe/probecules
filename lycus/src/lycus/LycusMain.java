@@ -70,7 +70,6 @@ public class LycusMain  {
 		if(!UsersManager.isInitialized())
 			return;
 		
-		// TODO set discovery existing elements
 
 		RunnableProbesHistory history=new RunnableProbesHistory(new ArrayList<User>(UsersManager.getUsers().values()),null,null);
 //			SysInfo sysInfo=new SysInfo(history);

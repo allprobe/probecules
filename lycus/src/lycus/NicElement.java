@@ -7,6 +7,7 @@ import java.util.UUID;
 
 import org.snmp4j.smi.OID;
 
+import GlobalConstants.Constants;
 import GlobalConstants.Enums;
 import GlobalConstants.LogType;
 import GlobalConstants.SnmpDataType;
@@ -31,10 +32,10 @@ public class NicElement extends BaseElement {
 		this.setIfSpeed(ifSpeed);
 		this.hostType = hostType;
 
-		this.ifInOctets = new SnmpProbe(probe_id, template_id, name, interval, multiplier, status,
+		this.ifInOctets = new SnmpProbe(probe_id+"@"+Constants.inBW, template_id, name, interval, multiplier, status,
 				new OID(this.getIfinoctetsOID()), SnmpDataType.Numeric, SnmpUnit.bytes,
 				SnmpStoreAs.deltaBytesPerSecond);
-		this.ifOutOctets = new SnmpProbe(probe_id, template_id, name, interval, multiplier, status,
+		this.ifOutOctets = new SnmpProbe(probe_id+"@"+Constants.outBW, template_id, name, interval, multiplier, status,
 				new OID(this.getIfoutoctetsOID()), SnmpDataType.Numeric, SnmpUnit.bytes,
 				SnmpStoreAs.deltaBytesPerSecond);
 

@@ -16,11 +16,12 @@ import org.json.simple.JSONObject;
 import org.apache.log4j.BasicConfigurator;
 import org.apache.log4j.Logger;
 import org.json.simple.JSONArray;
-
+import org.json.simple.parser.JSONParser;
 import com.google.gson.Gson;
 
 import GlobalConstants.Constants;
 import GlobalConstants.Enums;
+import GlobalConstants.Enums.HostType;
 import GlobalConstants.LogType;
 import GlobalConstants.SnmpDataType;
 import GlobalConstants.TriggerSeverity;
@@ -184,10 +185,14 @@ public class UsersManager {
 		for (int i = 0; i < allElementsJson.size(); i++) {
 			JSONObject hostElementsJson = (JSONObject) allElementsJson.get(i);
 			try {
-				JSONArray elements=(JSONArray)hostElementsJson.get("elements");
+				JSONArray elements=(JSONArray)(new JSONParser()).parse((String)hostElementsJson.get("elements"));
 				for(int j=0;j<elements.size();j++)
 				{
 				DiscoveryElementParams elementParams = new DiscoveryElementParams();
+				elementParams.user_id=(String)hostElementsJson.get("user_id");
+				elementParams.template_id=(String)hostElementsJson.get("template_id");
+				elementParams.element_interval=Integer.parseInt((String)hostElementsJson.get("element_interval"));
+
 				elementParams.host_id=(String)hostElementsJson.get("host_id");
 				elementParams.discovery_id=(String)hostElementsJson.get("discovery_id");
 				
@@ -195,14 +200,14 @@ public class UsersManager {
 				elementParams.index=Integer.parseInt((String)elementN.get("index"));
 				elementParams.name=(String)elementN.get("name");
 				elementParams.status=((String)elementN.get("status")).equals("1")?true:false;
-				elementParams.user_id=(String)hostElementsJson.get("user_id");
 				
 				User user = getUsers().get(UUID.fromString(elementParams.user_id));
 				if (user == null)
 					continue;
-				// TODO add new elements
-//				user.addNewDiscoveryElement(elementParams);
-
+				Host host=user.getHost(UUID.fromString(elementParams.host_id));
+				// TODO check for element type and add new elements
+				NicElement element=new NicElement(elementParams.discovery_id+"@"+elementParams.name, UUID.fromString(elementParams.template_id),elementParams.name, elementParams.element_interval,1, elementParams.status, elementParams.index,100000, HostType.Linux);
+				user.addNewDiscoveryElement(element,host);
 				}
 				
 			} catch (Exception e) {

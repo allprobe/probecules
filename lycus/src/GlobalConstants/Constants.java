@@ -61,5 +61,7 @@ public class Constants {
 	public final static String _false = "0";
 	public static final String bw = "bw";
 	public static final String ds = "ds";
+	public static final String inBW = "inBW";
+	public static final String outBW = "outBW";
 
 }

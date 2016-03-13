@@ -9,6 +9,8 @@ public class DiscoveryElementParams {
 	public long ifSpeed;
 	public int index;
 	public String user_id;
+	public String template_id;
+	public int element_interval;
 	
 	public DiscoveryElementParams() {
 		// TODO Auto-generated constructor stub

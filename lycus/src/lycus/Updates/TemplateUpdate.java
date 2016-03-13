@@ -4,6 +4,7 @@ import java.util.UUID;
 
 import Model.UpdateModel;
 import lycus.Host;
+import lycus.UsersManager;
 
 public class TemplateUpdate  extends BaseUpdate{
 
@@ -33,12 +34,14 @@ public class TemplateUpdate  extends BaseUpdate{
 	{
 		super.Delete();
 		
-		// TODO: Check if remove for host or remove for user
 		for (Host host : getUser().getHosts().values())
 		{
 			host.removeRunnableProbes(UUID.fromString(getUpdate().object_id));
+			if(host.getRunnableProbes().size()==0)
+				getUser().getHosts().remove(host.getHostId());
 		}
-		
+		if(getUser().getHosts().size()==0)
+			UsersManager.getUsers().remove(getUser().getUserId());
 		return true;
 	}
 }

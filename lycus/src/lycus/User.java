@@ -5,6 +5,7 @@ import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
+import java.util.Map.Entry;
 import java.util.Set;
 import java.util.UUID;
 
@@ -72,11 +73,10 @@ public class User {
 		this.email = email;
 	}
 
-	public Host getHost(UUID uid)
-	{
+	public Host getHost(UUID uid) {
 		return getHosts().get(uid);
 	}
-	
+
 	public Map<UUID, SnmpTemplate> getSnmpTemplates() {
 		return snmpTemplates;
 	}
@@ -84,7 +84,6 @@ public class User {
 	public void setSnmpTemplates(Map<UUID, SnmpTemplate> snmpTemplates) {
 		this.snmpTemplates = snmpTemplates;
 	}
-
 
 	public SnmpManager getSnmpManager() {
 		return snmpManager;
@@ -102,30 +101,26 @@ public class User {
 		this.hosts = host;
 	}
 
-	public Boolean isHostExist(UUID host_id)
-	{
+	public Boolean isHostExist(UUID host_id) {
 		return getHost(host_id) != null;
 	}
-	
-	public Boolean deleteBucket(String bucket)
-	{
-		for (Host host : getHosts().values())
-		{
+
+	public Boolean deleteBucket(String bucket) {
+		for (Host host : getHosts().values()) {
 			if (host.getBucket().equals(bucket))
 				host.setBucket(Constants.default1);
 		}
 		return true;
 	}
-	
-	public Boolean addHost(Host host)
-	{
+
+	public Boolean addHost(Host host) {
 		Host newHost = getHost(host.getHostId());
 		if (newHost == null)
 			hosts.put(host.getHostId(), host);
-	
+
 		return true;
 	}
-	
+
 	public Map<String, Probe> getTemplateProbes() {
 		return templateProbes;
 	}
@@ -135,67 +130,67 @@ public class User {
 	}
 
 	public HashMap<String, RunnableProbe> getAllRunnableProbes() {
-		HashMap<String,RunnableProbe> allHostsRunnableProbes=new HashMap<String,RunnableProbe>();
-		Set<Host> hosts=new HashSet<Host>(this.getHosts().values());
-		for(Host host:hosts)
-		{
+		HashMap<String, RunnableProbe> allHostsRunnableProbes = new HashMap<String, RunnableProbe>();
+		Set<Host> hosts = new HashSet<Host>(this.getHosts().values());
+		for (Host host : hosts) {
 			allHostsRunnableProbes.putAll(host.getRunnableProbes());
 		}
 		return allHostsRunnableProbes;
 	}
 
-
-	public  List<RunnableProbe> getRunnableProbesFor(String probe_id) {
+	public List<RunnableProbe> getRunnableProbesFor(String probe_id) {
 		List<RunnableProbe> runnableProbes = new ArrayList<RunnableProbe>();
-		Set<Host> hosts=new HashSet<Host>(this.getHosts().values());
-		for(Host host:hosts)
-		{
+		Set<Host> hosts = new HashSet<Host>(this.getHosts().values());
+		for (Host host : hosts) {
 			runnableProbes.addAll(host.getRunnableProbes(probe_id));
 		}
 		return runnableProbes;
 	}
-	
-//	public Probe getProbe(UUID templateId, String probeId) {
-//		for (Map.Entry<String, RunnableProbe> entry : this.getAllRunnableProbes().entrySet()) {
-//			if (entry.getKey().contains(templateId.toString() + "@" + probeId))
-//				return entry.getValue().getProbe();
-//		}
-//		HashMap<Host, HashMap<String, RunnableProbe>> snmpRunnableProbes = this.getSnmpManager().getProbesByHosts();
-//		if (snmpRunnableProbes == null)
-//			return null;
-//		for (Map.Entry<Host, HashMap<String, RunnableProbe>> entry : snmpRunnableProbes.entrySet()) {
-//			if (entry.getValue() != null) {
-//				for (Map.Entry<String, RunnableProbe> entry2 : entry.getValue().entrySet()) {
-//					if (entry2.getKey().contains(templateId.toString() + "@" + probeId))
-//						return entry2.getValue().getProbe();
-//				}
-//			}
-//		}
-//		return null;
-//	}
-	
-	public void addRunnableProbe(String rpID)
-	{
-		String probeId=rpID.split("@")[2];
-		UUID hostId=UUID.fromString(rpID.split("@")[1]);
-		Host host=this.getHosts().get(hostId);
-		Probe probe=this.getTemplateProbes().get(probeId);
+
+	// public Probe getProbe(UUID templateId, String probeId) {
+	// for (Map.Entry<String, RunnableProbe> entry :
+	// this.getAllRunnableProbes().entrySet()) {
+	// if (entry.getKey().contains(templateId.toString() + "@" + probeId))
+	// return entry.getValue().getProbe();
+	// }
+	// HashMap<Host, HashMap<String, RunnableProbe>> snmpRunnableProbes =
+	// this.getSnmpManager().getProbesByHosts();
+	// if (snmpRunnableProbes == null)
+	// return null;
+	// for (Map.Entry<Host, HashMap<String, RunnableProbe>> entry :
+	// snmpRunnableProbes.entrySet()) {
+	// if (entry.getValue() != null) {
+	// for (Map.Entry<String, RunnableProbe> entry2 :
+	// entry.getValue().entrySet()) {
+	// if (entry2.getKey().contains(templateId.toString() + "@" + probeId))
+	// return entry2.getValue().getProbe();
+	// }
+	// }
+	// }
+	// return null;
+	// }
+
+	public void addRunnableProbe(String rpID) {
+		String probeId = rpID.split("@")[2];
+		UUID hostId = UUID.fromString(rpID.split("@")[1]);
+		Host host = this.getHosts().get(hostId);
+		Probe probe = this.getTemplateProbes().get(probeId);
 		RunnableProbe newRunnableProbe;
 
-		String rpStr = hostId.toString()+"@"+probeId;
-		if (rpStr.contains(
-				"discovery_6b54463e-fe1c-4e2c-a090-452dbbf2d510"))
+		String rpStr = hostId.toString() + "@" + probeId;
+		if (rpStr.contains("discovery_6b54463e-fe1c-4e2c-a090-452dbbf2d510"))
 			System.out.println("BREAKPOINT");
-		
-		if(probe==null||host==null)
-		{
-			SysLogger.Record(new Log("Unable to create Runnable Probe: "+rpID+", one of its elements is missing!",LogType.Error));
+
+		if (probe == null || host == null) {
+			SysLogger.Record(new Log("Unable to create Runnable Probe: " + rpID + ", one of its elements is missing!",
+					LogType.Error));
 			return;
 		}
 		try {
-			newRunnableProbe=new RunnableProbe(host,probe);
+			newRunnableProbe = new RunnableProbe(host, probe);
 		} catch (Exception e) {
-			SysLogger.Record(new Log("Unable to create Runnable Probe: "+rpID+", check probe type!",LogType.Error,e));
+			SysLogger.Record(
+					new Log("Unable to create Runnable Probe: " + rpID + ", check probe type!", LogType.Error, e));
 			return;
 		}
 		host.getRunnableProbes().put(rpID, newRunnableProbe);
@@ -219,37 +214,38 @@ public class User {
 	// this.getSnmpManager().runAllBatches();
 	// }
 
-//	public Probe getProbeByID(String probeId) {
-//		for (Map.Entry<String, Probe> p : this.getTemplateProbes().entrySet()) {
-//			if(p.getKey().split("@")[1].equals(probeId))
-//			{
-//				return p.getValue();
-//			}
-//			}
-//		return null;
-//		}
+	// public Probe getProbeByID(String probeId) {
+	// for (Map.Entry<String, Probe> p : this.getTemplateProbes().entrySet()) {
+	// if(p.getKey().split("@")[1].equals(probeId))
+	// {
+	// return p.getValue();
+	// }
+	// }
+	// return null;
+	// }
 
-//	public Set<Host> getHostsByTemplate(Template t) {
-//		if (t == null)
-//			return null;
-//		Set<Host> hosts = new HashSet<Host>();
-//		for (String rpString : this.getAllRunnableProbes().keySet()) {
-//			if (rpString.contains(t.getTemplateId().toString())) {
-//				hosts.add(this.getHosts().get(UUID.fromString(rpString.split("@")[1])));
-//			}
-//		}
-//		for (Map<String, RunnableProbe> rps : this.getSnmpManager().getProbesByHosts().values()) {
-//			for (String rpString : rps.keySet()) {
-//				if (rpString.contains(t.getTemplateId().toString())) {
-//					hosts.add(this.getHosts().get(UUID.fromString(rpString.split("@")[1])));
-//					break;
-//				}
-//			}
-//		}
-//		return hosts;
-//
-//	}
-	
+	// public Set<Host> getHostsByTemplate(Template t) {
+	// if (t == null)
+	// return null;
+	// Set<Host> hosts = new HashSet<Host>();
+	// for (String rpString : this.getAllRunnableProbes().keySet()) {
+	// if (rpString.contains(t.getTemplateId().toString())) {
+	// hosts.add(this.getHosts().get(UUID.fromString(rpString.split("@")[1])));
+	// }
+	// }
+	// for (Map<String, RunnableProbe> rps :
+	// this.getSnmpManager().getProbesByHosts().values()) {
+	// for (String rpString : rps.keySet()) {
+	// if (rpString.contains(t.getTemplateId().toString())) {
+	// hosts.add(this.getHosts().get(UUID.fromString(rpString.split("@")[1])));
+	// break;
+	// }
+	// }
+	// }
+	// return hosts;
+	//
+	// }
+
 	public List<RunnableProbe> getRPSbyProbeID(String probeId) {
 		List<RunnableProbe> matchedRps = new ArrayList<RunnableProbe>();
 		HashMap<String, RunnableProbe> allRps = this.getAllRunnableProbes();
@@ -260,12 +256,12 @@ public class User {
 		}
 		return matchedRps;
 	}
-	
-	public List<RunnableProbe> getRPSbyTemplateIdHostId(UUID templateId,UUID hostId) {
+
+	public List<RunnableProbe> getRPSbyTemplateIdHostId(UUID templateId, UUID hostId) {
 		List<RunnableProbe> matchedRps = new ArrayList<RunnableProbe>();
 		HashMap<String, RunnableProbe> allRps = this.getAllRunnableProbes();
 		for (Map.Entry<String, RunnableProbe> entry : allRps.entrySet()) {
-			if (entry.getKey().contains(templateId.toString()+"@"+hostId.toString())) {
+			if (entry.getKey().contains(templateId.toString() + "@" + hostId.toString())) {
 				matchedRps.add(entry.getValue());
 			}
 		}
@@ -289,44 +285,41 @@ public class User {
 		if (rp.getProbe() instanceof SnmpProbe) {
 			this.getSnmpManager().startProbe(rp);
 			return true;
-		} 
-	
-			return rp.start();
+		}
+
+		return rp.start();
 	}
 
 	public boolean stopRunnableProbe(RunnableProbe rp) {
-		if(rp==null)
+		if (rp == null)
 			return false;
 		if (rp.getProbe() instanceof SnmpProbe && rp.getHost().getSnmpTemp().getVersion() > 1) {
 			this.getSnmpManager().stopProbe(rp);
 			return true;
-		} 
+		}
 		try {
 			rp.stop();
 			return true;
 		} catch (Exception e) {
-			SysLogger.Record(new Log("Unable To stop RunnableProbe: "+rp.getRPString(),LogType.Error));
+			SysLogger.Record(new Log("Unable To stop RunnableProbe: " + rp.getRPString(), LogType.Error));
 			return false;
 		}
 	}
 
-	public boolean addRunnableProbe(RunnableProbe rp)
-	{
+	public boolean addRunnableProbe(RunnableProbe rp) {
 		String rpStr = rp.getRPString();
 		if (rpStr.contains(
 				"0b05919c-6cc0-42cc-a74b-de3b0dcd4a2a@6aadf750-e887-43ee-b872-326c94fbab7c@discovery_6b54463e-fe1c-4e2c-a090-452dbbf2d510"))
 			System.out.println("BREAKPOINT");
-		
+
 		this.getHost(rp.getHost().getHostId()).getRunnableProbes().put(rp.getRPString(), rp);
 		return this.startRunnableProbe(rp);
 	}
-	
-	public boolean removeRunnableProbe(RunnableProbe rp)
-	{
-		UUID hostId=rp.getHost().getHostId();
+
+	public boolean removeRunnableProbe(RunnableProbe rp) {
+		UUID hostId = rp.getHost().getHostId();
 		this.getHosts().get(hostId).getRunnableProbes().remove(hostId);
-		if(this.getHosts().get(hostId).getRunnableProbes().size()==0)
-		{
+		if (this.getHosts().get(hostId).getRunnableProbes().size() == 0) {
 			this.getSnmpTemplates().remove(this.getHosts().get(hostId).getSnmpTemp().getSnmpTemplateId());
 			this.getHosts().remove(hostId);
 		}
@@ -336,30 +329,25 @@ public class User {
 	public String toString() {
 		return this.getUserId().toString();
 	}
-	
-	public Probe getProbeFor(String probe_id)
-	{
+
+	public Probe getProbeFor(String probe_id) {
 		Map<String, Probe> probes = getTemplateProbes();
 		return probes.get(probe_id);
 	}
-	
-	public boolean isProbeExist(String probe_id)
-	{
+
+	public boolean isProbeExist(String probe_id) {
 		return getProbeFor(probe_id) != null;
 	}
 
-	public boolean removeRunnableProbes(String probe_id)
-	{
+	public boolean removeRunnableProbes(String probe_id) {
 		List<RunnableProbe> runnableProbes = getRunnableProbesFor(probe_id);
-		for (RunnableProbe runnableProbe : runnableProbes)
-		{
+		for (RunnableProbe runnableProbe : runnableProbes) {
 			removeRunnableProbe(runnableProbe);
-		}	
+		}
 		return true;
 	}
 
-	public void addHost(HostParams hostParams)
-	{
+	public void addHost(HostParams hostParams) {
 		try {
 			UUID host_id = UUID.fromString(hostParams.host_id);
 			String name = hostParams.name;
@@ -380,8 +368,7 @@ public class User {
 			try {
 				snmp_template = UUID.fromString(hostParams.snmpTemp);
 			} catch (Exception e) {
-				SysLogger.Record(
-						new Log("Unable to parse snmp template: " + hostParams.snmpTemp, LogType.Warn, e));
+				SysLogger.Record(new Log("Unable to parse snmp template: " + hostParams.snmpTemp, LogType.Warn, e));
 				snmp_template = null;
 			}
 
@@ -395,195 +382,189 @@ public class User {
 			}
 			this.getHosts().put(host_id, host);
 		} catch (Exception e) {
-			SysLogger.Record(new Log("Creation of Host Failed: " + hostParams + " , not added!",
-					LogType.Warn, e));
+			SysLogger.Record(new Log("Creation of Host Failed: " + hostParams + " , not added!", LogType.Warn, e));
 		}
 	}
 
-	public void addSnmpTemplate(SnmpTemplateParams snmpTemplateParams)
-	{
+	public void addSnmpTemplate(SnmpTemplateParams snmpTemplateParams) {
 		try {
-		UUID userId = UUID.fromString(snmpTemplateParams.user_id);
-		UUID templateId = UUID.fromString(snmpTemplateParams.snmp_template_id);
-		String name = snmpTemplateParams.template_name;
-		int version = snmpTemplateParams.version;
-		String commName = snmpTemplateParams.community;
-		String sec = snmpTemplateParams.sec;
-		String authMethod = snmpTemplateParams.auth_method;
-		String authUser = GeneralFunctions.Base64Decode(snmpTemplateParams.username);
-		String authPass = GeneralFunctions.Base64Decode(snmpTemplateParams.password);
-		String cryptMethod = snmpTemplateParams.crypt_method;
-		String cryptPass = GeneralFunctions.Base64Decode(snmpTemplateParams.crypt_password);
-		int timeout = snmpTemplateParams.timeout;
-		int port = snmpTemplateParams.port;
-		
-		SnmpTemplate snmpTemp = null;
-		if (version <= 2)
-			snmpTemp = new SnmpTemplate(templateId, name, commName, version, port, timeout, true);
-		else
-			snmpTemp = new SnmpTemplate(templateId, name, version, port, sec, authUser, authPass, authMethod,
-					cryptPass, cryptMethod, timeout, true);
+			UUID userId = UUID.fromString(snmpTemplateParams.user_id);
+			UUID templateId = UUID.fromString(snmpTemplateParams.snmp_template_id);
+			String name = snmpTemplateParams.template_name;
+			int version = snmpTemplateParams.version;
+			String commName = snmpTemplateParams.community;
+			String sec = snmpTemplateParams.sec;
+			String authMethod = snmpTemplateParams.auth_method;
+			String authUser = GeneralFunctions.Base64Decode(snmpTemplateParams.username);
+			String authPass = GeneralFunctions.Base64Decode(snmpTemplateParams.password);
+			String cryptMethod = snmpTemplateParams.crypt_method;
+			String cryptPass = GeneralFunctions.Base64Decode(snmpTemplateParams.crypt_password);
+			int timeout = snmpTemplateParams.timeout;
+			int port = snmpTemplateParams.port;
 
-		this.getSnmpTemplates().put(snmpTemp.getSnmpTemplateId(), snmpTemp);
-		
-		} catch (Exception e) {
-		SysLogger.Record(
-				new Log("Unable to add SNMP Template: " + snmpTemplateParams.snmp_template_id.toString() + " , not added!",
-						LogType.Warn, e));
-	}
-
-		
-	}
-	
-	public void addTemplateProbe(ProbeParams probeParams)
-	{
-		try{
-		UUID templateId = UUID.fromString(probeParams.template_id);
-		String probeId = probeParams.probe_id;
-				
-		String name = probeParams.name;
-		long interval = probeParams.interval;
-		float multiplier = probeParams.multiplier;
-		boolean status = probeParams.is_active;
-		String type = probeParams.type;
-
-		Probe probe = null;
-
-		switch (type) {
-		case Constants.icmp: {
-			int npings = probeParams.npings;
-			int bytes = probeParams.bytes;
-			int timeout = probeParams.timeout;
-			probe = new PingerProbe(this, probeId, templateId, name, interval, multiplier, status, timeout,
-					npings, bytes);
-			break;
-		}
-		case Constants.port: {
-			String proto = probeParams.protocol;
-			int port =  probeParams.port;
-			int timeout = probeParams.timeout;
-			probe = new PorterProbe(this, probeId, templateId, name, interval, multiplier, status, timeout,
-					proto, port);
-			break;
-		}
-		case Constants.http: {
-			String url = GeneralFunctions.Base64Decode(probeParams.url);
-			String method = probeParams.http_request;
-			String auth = probeParams.http_auth;
-			String authUser = GeneralFunctions.Base64Decode(probeParams.http_auth_username);
-			String authPass = GeneralFunctions.Base64Decode(probeParams.http_auth_password);
-			int timeout = probeParams.timeout;
-
-			if (auth.equals(Constants.no))
-				probe = new WeberProbe(this, probeId, templateId, name, interval, multiplier, status, timeout,
-						method, url);
+			SnmpTemplate snmpTemp = null;
+			if (version <= 2)
+				snmpTemp = new SnmpTemplate(templateId, name, commName, version, port, timeout, true);
 			else
-				probe = new WeberProbe(this, probeId, templateId, name, interval, multiplier, status, timeout,
-						method, url, auth, authUser, authPass);
-			break;
-		}
-		case Constants.snmp: {
+				snmpTemp = new SnmpTemplate(templateId, name, version, port, sec, authUser, authPass, authMethod,
+						cryptPass, cryptMethod, timeout, true);
 
-			OID oid = new OID(probeParams.oid);
-			Enums.SnmpStoreAs storeValue = probeParams.snmp_store_as == 0
-					? Enums.SnmpStoreAs.asIs : Enums.SnmpStoreAs.delta;
-			String valueType = probeParams.snmp_datatype;
-			String valueUnit = probeParams.snmp_unit;
-			SnmpDataType dataType = getSnmpDataType(valueType);
-			if (dataType == null) {
-				SysLogger.Record(
-						new Log("Probe: " + probeId + " Wrong Data Type, Doesn't Added!", LogType.Error));
-				return;
-			}
+			this.getSnmpTemplates().put(snmpTemp.getSnmpTemplateId(), snmpTemp);
 
-			SnmpUnit unit = getSnmpUnit(valueUnit);
-			if (unit == null) {
-				SysLogger.Record(
-						new Log("Probe: " + probeId + " Wrong Unit Type, Doesn't Added!", LogType.Error));
-				return;
-			}
-			probe = new SnmpProbe(probeId, templateId, name, interval, multiplier, status, oid, dataType,
-					unit, storeValue);
-			break;
-		}
-		case Constants.discovery: {
-			long elementsInterval = probeParams.discovery_elements_interval;
-			int triggerCode = probeParams.discovery_trigger_code;
-			String triggerXValue = probeParams.discovery_trigger_x;
-			String unitType = probeParams.snmp_unit;
-			String triggerUuid = probeParams.discovery_trigger_id;
-			TriggerSeverity severity = getTriggerSev(probeParams.discovery_trigger_severity);
-			SnmpUnit trigValueUnit = getSnmpUnit(unitType);
-			if (trigValueUnit == null) {
-				SysLogger.Record(
-						new Log("Probe: " + probeId + " Wrong Unit Type, Doesn't Added!", LogType.Error));
-				return;
-			}
-			Enums.DiscoveryElementType discoveryType;
-			switch(probeParams.discovery_type)
-			{
-			case Constants.bw:discoveryType=Enums.DiscoveryElementType.nics;
-			break;
-			case Constants.ds:discoveryType=Enums.DiscoveryElementType.disks;
-			break;
-			default:throw new Exception("Unable to determine discovery type --- "+probeParams.probe_id);
-			}
-
-			probe = new DiscoveryProbe(this, probeId, templateId, name, interval, multiplier, status,
-					discoveryType, elementsInterval);
-
-			String triggerId = templateId.toString() + "@" + probeId + "@" + triggerUuid;
-			ArrayList<TriggerCondition> conditions = new ArrayList<TriggerCondition>();
-			TriggerCondition condition = new TriggerCondition(triggerCode, "and", triggerXValue, "");
-			conditions.add(condition);
-			Trigger discoveryTrigger = new Trigger(triggerId, name, probe, severity, status, "", trigValueUnit,
-					conditions);
-			probe.addTrigger(discoveryTrigger);
-			break;
-		}
-		case Constants.rbl: {
-			String rblName = probeParams.rbl;
-			probe = new RBLProbe(this, probeId, templateId, name, interval, multiplier, status, rblName);
-			break;
-		}
-		}
-		if (probe == null) {
-			SysLogger.Record(new Log("Creation of Probe: " + probeParams.probe_id + " failed, skipping!", LogType.Warn));
-			throw new Exception("Error parsing one of probe elements!");
-		}
-		this.getTemplateProbes().put(probeId, probe);
-		}
-		catch(Exception e)
-		{
-			SysLogger.Record(new Log("Creation of Probe Failed: " + probeParams + " , not added!",
+		} catch (Exception e) {
+			SysLogger.Record(new Log(
+					"Unable to add SNMP Template: " + snmpTemplateParams.snmp_template_id.toString() + " , not added!",
 					LogType.Warn, e));
+		}
+
+	}
+
+	public void addTemplateProbe(ProbeParams probeParams) {
+		try {
+			UUID templateId = UUID.fromString(probeParams.template_id);
+			String probeId = probeParams.probe_id;
+
+			String name = probeParams.name;
+			long interval = probeParams.interval;
+			float multiplier = probeParams.multiplier;
+			boolean status = probeParams.is_active;
+			String type = probeParams.type;
+
+			Probe probe = null;
+
+			switch (type) {
+			case Constants.icmp: {
+				int npings = probeParams.npings;
+				int bytes = probeParams.bytes;
+				int timeout = probeParams.timeout;
+				probe = new PingerProbe(this, probeId, templateId, name, interval, multiplier, status, timeout, npings,
+						bytes);
+				break;
+			}
+			case Constants.port: {
+				String proto = probeParams.protocol;
+				int port = probeParams.port;
+				int timeout = probeParams.timeout;
+				probe = new PorterProbe(this, probeId, templateId, name, interval, multiplier, status, timeout, proto,
+						port);
+				break;
+			}
+			case Constants.http: {
+				String url = GeneralFunctions.Base64Decode(probeParams.url);
+				String method = probeParams.http_request;
+				String auth = probeParams.http_auth;
+				String authUser = GeneralFunctions.Base64Decode(probeParams.http_auth_username);
+				String authPass = GeneralFunctions.Base64Decode(probeParams.http_auth_password);
+				int timeout = probeParams.timeout;
+
+				if (auth.equals(Constants.no))
+					probe = new WeberProbe(this, probeId, templateId, name, interval, multiplier, status, timeout,
+							method, url);
+				else
+					probe = new WeberProbe(this, probeId, templateId, name, interval, multiplier, status, timeout,
+							method, url, auth, authUser, authPass);
+				break;
+			}
+			case Constants.snmp: {
+
+				OID oid = new OID(probeParams.oid);
+				Enums.SnmpStoreAs storeValue = probeParams.snmp_store_as == 0 ? Enums.SnmpStoreAs.asIs
+						: Enums.SnmpStoreAs.delta;
+				String valueType = probeParams.snmp_datatype;
+				String valueUnit = probeParams.snmp_unit;
+				SnmpDataType dataType = getSnmpDataType(valueType);
+				if (dataType == null) {
+					SysLogger.Record(new Log("Probe: " + probeId + " Wrong Data Type, Doesn't Added!", LogType.Error));
+					return;
+				}
+
+				SnmpUnit unit = getSnmpUnit(valueUnit);
+				if (unit == null) {
+					SysLogger.Record(new Log("Probe: " + probeId + " Wrong Unit Type, Doesn't Added!", LogType.Error));
+					return;
+				}
+				probe = new SnmpProbe(probeId, templateId, name, interval, multiplier, status, oid, dataType, unit,
+						storeValue);
+				break;
+			}
+			case Constants.discovery: {
+				long elementsInterval = probeParams.discovery_elements_interval;
+				int triggerCode = probeParams.discovery_trigger_code;
+				String triggerXValue = probeParams.discovery_trigger_x;
+				String unitType = probeParams.snmp_unit;
+				String triggerUuid = probeParams.discovery_trigger_id;
+				TriggerSeverity severity = getTriggerSev(probeParams.discovery_trigger_severity);
+				SnmpUnit trigValueUnit = getSnmpUnit(unitType);
+				if (trigValueUnit == null) {
+					SysLogger.Record(new Log("Probe: " + probeId + " Wrong Unit Type, Doesn't Added!", LogType.Error));
+					return;
+				}
+				Enums.DiscoveryElementType discoveryType;
+				switch (probeParams.discovery_type) {
+				case Constants.bw:
+					discoveryType = Enums.DiscoveryElementType.nics;
+					break;
+				case Constants.ds:
+					discoveryType = Enums.DiscoveryElementType.disks;
+					break;
+				default:
+					throw new Exception("Unable to determine discovery type --- " + probeParams.probe_id);
+				}
+
+				probe = new DiscoveryProbe(this, probeId, templateId, name, interval, multiplier, status, discoveryType,
+						elementsInterval);
+
+				String triggerId = templateId.toString() + "@" + probeId + "@" + triggerUuid;
+				ArrayList<TriggerCondition> conditions = new ArrayList<TriggerCondition>();
+				TriggerCondition condition = new TriggerCondition(triggerCode, "and", triggerXValue, "");
+				conditions.add(condition);
+				Trigger discoveryTrigger = new Trigger(triggerId, name, probe, severity, status, "", trigValueUnit,
+						conditions);
+				probe.addTrigger(discoveryTrigger);
+				break;
+			}
+			case Constants.rbl: {
+				String rblName = probeParams.rbl;
+				probe = new RBLProbe(this, probeId, templateId, name, interval, multiplier, status, rblName);
+				break;
+			}
+			}
+			if (probe == null) {
+				SysLogger.Record(
+						new Log("Creation of Probe: " + probeParams.probe_id + " failed, skipping!", LogType.Warn));
+				throw new Exception("Error parsing one of probe elements!");
+			}
+			this.getTemplateProbes().put(probeId, probe);
+		} catch (Exception e) {
+			SysLogger.Record(new Log("Creation of Probe Failed: " + probeParams + " , not added!", LogType.Warn, e));
 			return;
 
 		}
-		}
+	}
 
 	private SnmpDataType getSnmpDataType(String valueType) {
 		SnmpDataType dataType;
 		switch (valueType) {
-			case Constants.integer:
-				dataType = SnmpDataType.Numeric;
-				break;
-			case Constants.string:
-				dataType = SnmpDataType.Text;
-				break;
-			case Constants._float:
-				dataType = SnmpDataType.Numeric;
-				break;
-			case Constants._boolean:
-				dataType = SnmpDataType.Text;
-				break;
-			default: {
-				dataType = null;
-	
-			}
+		case Constants.integer:
+			dataType = SnmpDataType.Numeric;
+			break;
+		case Constants.string:
+			dataType = SnmpDataType.Text;
+			break;
+		case Constants._float:
+			dataType = SnmpDataType.Numeric;
+			break;
+		case Constants._boolean:
+			dataType = SnmpDataType.Text;
+			break;
+		default: {
+			dataType = null;
+
+		}
 		}
 		return dataType;
 	}
+
 	private SnmpUnit getSnmpUnit(String unitType) {
 		SnmpUnit unit;
 		switch (unitType) {
@@ -624,6 +605,7 @@ public class User {
 		}
 		return unit;
 	}
+
 	private TriggerSeverity getTriggerSev(String sev) {
 		switch (sev) {
 		case Constants.notice:
@@ -638,26 +620,60 @@ public class User {
 		return null;
 	}
 
-	public void addNewDiscoveryElement(BaseElement newElement) {
-		// TODO add new elements as Runnable Probes.
-		if(newElement instanceof NicElement)
-		{
-			this.addNicRunnableProbes((NicElement)newElement);
-		}
-		else if(newElement instanceof DiskElement )
-		{
-			this.addDiskRunnableProbes((NicElement)newElement);
+	public void addNewDiscoveryElement(BaseElement newElement, Host host) {
+		if (newElement instanceof NicElement) {
+			this.addNicRunnableProbes((NicElement) newElement, host);
+		} else if (newElement instanceof DiskElement) {
+			this.addDiskRunnableProbes((NicElement) newElement);
 		}
 	}
 
 	private void addDiskRunnableProbes(NicElement newElement) {
 		// TODO Auto-generated method stub
-		
-	}
-
-	private void addNicRunnableProbes(NicElement newElement) {
-		RunnableProbe ifInOctets;
-		RunnableProbe ifOutOctets;
-	}
 
 	}
+
+	private void addNicRunnableProbes(NicElement newElement, Host host) {
+		this.templateProbes.put(newElement.getProbe_id(), newElement);
+		if (newElement == null || host == null) {
+			SysLogger.Record(new Log("Unable to create Runnable Probe: " + newElement.getTemplate_id().toString() + "@"
+					+ host.getHostId().toString() + "@" + newElement.getProbe_id()
+					+ ", one of its elements is missing!", LogType.Error));
+			return;
+		}
+		if (!newElement.isActive())
+			return;
+
+		RunnableProbe inOctets;
+		RunnableProbe outOctets;
+
+		try {
+			inOctets = new RunnableProbe(host, newElement.getIfInOctets());
+			outOctets = new RunnableProbe(host, newElement.getIfOutOctets());
+		} catch (Exception e) {
+			SysLogger.Record(new Log(
+					"Unable to create Runnable Probe: " + newElement.getTemplate_id().toString() + "@"
+							+ host.getHostId().toString() + "@" + newElement.getProbe_id() + ", check probe type!",
+					LogType.Error, e));
+			return;
+		}
+		this.getHost(host.getHostId()).getRunnableProbes().put(inOctets.getRPString(), inOctets);
+		this.getHost(host.getHostId()).getRunnableProbes().put(outOctets.getRPString(),outOctets);
+
+	}
+
+	public void removeDiscoveryElement(BaseElement baseElement, Host host) {
+		if (baseElement instanceof NicElement) {
+			this.removeNicRunnableProbes((NicElement) baseElement, host);
+		} else if (baseElement instanceof DiskElement) {
+			this.addDiskRunnableProbes((NicElement) baseElement);
+		}
+	}
+
+	private void removeNicRunnableProbes(NicElement baseElement, Host host) {
+		for (RunnableProbe rp : this.getRunnableProbesFor(baseElement.getProbe_id())) {
+			this.removeRunnableProbe(rp);
+		}
+	}
+
+}

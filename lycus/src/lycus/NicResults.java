@@ -3,6 +3,8 @@ package lycus;
 import java.util.ArrayList;
 import java.util.HashMap;
 
+import GlobalConstants.Constants;
+
 public class NicResults extends BaseResults {
 
 
@@ -12,9 +14,10 @@ public class NicResults extends BaseResults {
 
 	public NicResults(RunnableProbe rp) {
 		super(rp);
-		ifInResults=new SnmpResults(rp);
-		ifOutResults=new SnmpResults(rp);
-		ifTotal=new SnmpResults(rp);
+		User user=rp.getProbe().getUser();
+		ifInResults=new SnmpResults(user.getAllRunnableProbes().get(rp.getRPString()+"@"+Constants.inBW));
+		ifOutResults=new SnmpResults(user.getAllRunnableProbes().get(rp.getRPString()+"@"+Constants.outBW));
+//		ifTotal=new SnmpResults(rp);
 	}
 
 	@Override

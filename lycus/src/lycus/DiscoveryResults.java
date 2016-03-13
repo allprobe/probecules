@@ -127,10 +127,6 @@ public class DiscoveryResults extends BaseResults {
 	}
 	
 	
-	private HashMap<Integer,BaseElement> acceptResultsForDisks(ArrayList<Object> results) {
-		// TODO Auto-generated method stub
-		return null;
-	}
 
 	// returns true if there is any change made on the host elements
 	private boolean checkForElementsChanges(HashMap<String, BaseElement> lastScanElements, long timestamp) {
@@ -153,13 +149,12 @@ public class DiscoveryResults extends BaseResults {
 			if(this.getCurrentElements().get(lastElement.getKey())==null)
 			{
 				elementsChanges.put(lastElement.getValue(), ElementChange.addedElement);
-				// TODO Add new element to system
 				continue;
 			}
 			if(this.getCurrentElements().get(lastElement.getKey()).isIdentical(lastElement.getValue()))
 			continue;
 			elementsChanges.put(lastElement.getValue(), ElementChange.indexElementChanged);
-			// TODO Change element index
+			this.getCurrentElements().get(lastElement.getKey()).setIndex(lastElement.getValue().getIndex());
 		}
 
 		Set<String> newElements=lastScanElements.keySet();
@@ -168,8 +163,10 @@ public class DiscoveryResults extends BaseResults {
 		for(Map.Entry<String, BaseElement> currentElement:this.getCurrentElements().entrySet())
 		{
 			if(!newElements.contains(currentElement.getKey()))
+			{
 				elementsChanges.put(currentElement.getValue(), ElementChange.removedElement);
-			// TODO Remove nic element from the system
+				currentElement.getValue().getUser().removeDiscoveryElement(currentElement.getValue(),this.getRp().getHost());
+			}
 		}
 		
 		return true;

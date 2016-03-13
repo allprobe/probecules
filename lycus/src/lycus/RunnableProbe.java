@@ -48,7 +48,9 @@ public class RunnableProbe implements Runnable {
 			break;
 			case DISCOVERY:results=new DiscoveryResults(this);
 			break;
-			case DISCOVERYELEMENT:results=new DiscoveryResults(this);
+			case DISCOVERYELEMENT:
+				if(probe instanceof NicElement)
+				results=new NicResults(this);
 			break;
 		}
 	}
@@ -112,6 +114,8 @@ public class RunnableProbe implements Runnable {
 			return ProbeTypes.RBL;
 		if (getProbe() instanceof DiscoveryProbe)
 			return ProbeTypes.DISCOVERY;
+		if (getProbe() instanceof BaseElement)
+			return ProbeTypes.DISCOVERYELEMENT;
 		return null;
 	}
 
@@ -142,6 +146,16 @@ public class RunnableProbe implements Runnable {
 
 	// returns this.isRunning();
 	public boolean start() {
+		if(this.getProbeType()==ProbeTypes.SNMP)
+		{
+			this.setRunning(true);
+			return this.getProbe().getUser().getSnmpManager().startProbe(this);
+		}
+		if(this.getProbeType()==ProbeTypes.DISCOVERYELEMENT)
+		{
+			this.setRunning(true);
+			return this.getProbe().getUser().getSnmpManager().startProbe(this);
+		}
 		boolean state= RunInnerProbesChecks.addRegularRP(this);
 		if(state)
 			this.setRunning(true);
@@ -152,6 +166,8 @@ public class RunnableProbe implements Runnable {
 	public boolean stop() throws Exception {
 		if (!this.isRunning)
 			return true;
+		
+		
 		ScheduledFuture<?> rpThread=null;
 		switch(this.getProbeType())
 		{
@@ -162,7 +178,8 @@ public class RunnableProbe implements Runnable {
 		case WEB:
 			rpThread = RunInnerProbesChecks.getWeberFutureMap().remove(this.getRPString());
 		case SNMP:
-			rpThread = RunInnerProbesChecks.getSnmpProbeFutureMap().remove(this.getRPString());
+			this.setRunning(false);
+			return this.getProbe().getUser().getSnmpManager().stopProbe(this);
 		case RBL:
 			rpThread = RunInnerProbesChecks.getRblProbeFutureMap().remove(this.getRPString());
 		}
@@ -176,34 +193,6 @@ public class RunnableProbe implements Runnable {
 		return true;
 	}
 
-//	public void insertResult(ArrayList<Object> results) {
-//		if (result == null) {
-//			SysLogger.Record(new Log("Problem With Probe: " + this.getRPString() + " Results=null", LogType.Info));
-//			return;
-//		}
-//		switch(this.getProbeType())
-//		{
-//		case PING:((PingerProbe)this.getProbe()).insertProbeResults(results);;
-//		break;
-//		case PORT:this.insertPorterPorbeResults();
-//		break;
-//		case WEB:this.insertPingerPorbeResults();
-//		break;
-//		case RBL:this.insertPingerPorbeResults();
-//		break;
-//		case SNMP:this.insertPingerPorbeResults();
-//		break;
-//		
-//		}
-//		this.getResult().add(result);
-//		String stringResults;
-//		stringResults = GeneralFunctions.valuesFormat(result);
-//		SysLogger.Record(new Log("Probe: " + this.getRPString() + " Results: " + stringResults, LogType.Debug));
-//		ApiInterface.InsertProbeHistory(this, stringResults);
-//
-//		// TODO Here Check Triggers of Probe
-//
-//	}
 
 	public String toString() {
 		StringBuilder s = new StringBuilder();
