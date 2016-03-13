@@ -493,6 +493,8 @@ public class UsersManager {
 			return TriggerSeverity.High;
 		case "disaster":
 			return TriggerSeverity.Disaster;
+		case "critical":
+			return TriggerSeverity.Critical;
 		}
 		return null;
 	}
