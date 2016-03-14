@@ -13,8 +13,9 @@ import lycus.RunnableProbe;
 import lycus.SysLogger;
 import lycus.Trigger;
 import lycus.Probes.SnmpProbe;
+import lycus.Utils.Logit;
 import lycus.TriggerCondition;
-import lycus.GlobalConstants.Global;
+import lycus.GlobalConstants.Constants;
 
 public class SnmpResults extends BaseResults {
 
@@ -26,7 +27,6 @@ public class SnmpResults extends BaseResults {
 								// delta
 
 	private Long tmpDeltaTimestamp;
-	private boolean deltaBytesSecs;
 
 	public SnmpResults(RunnableProbe rp) {
 		super(rp);
@@ -131,8 +131,8 @@ public class SnmpResults extends BaseResults {
 			SysLogger.Record(new Log("Error parsing snmp probe results: " + this.getRp().getRPString(), LogType.Warn));
 			this.setStringData(null);
 			return;
-		} else if (stringData.equals("WRONG_OID")) {
-			this.setSnmpResultError("WRONG_OID");
+		} else if (stringData.equals(Constants.WRONG_OID)) {
+			this.setSnmpResultError(Constants.WRONG_OID);
 			return;
 		} else {
 			this.setSnmpResultError(null);
@@ -145,12 +145,12 @@ public class SnmpResults extends BaseResults {
 		Double data = null;
 		try {
 			data = Double.parseDouble((String) results.get(1));
-		} catch (/* NumberFormat */Exception nfe) {
-			SysLogger.Record(new Log("Error parsing snmp probe results: " + this.getRp().getRPString(), LogType.Warn));
-			if (((String) results.get(1)).equals("WRONG_OID")) {
-				this.setSnmpResultError("WRONG_OID");
+		} catch (Exception nfe) {
+			Logit.LogError("SnmpResults - acceptNumericResults", "Failed parsing snmp probe results: " + this.getRp().getRPString());
+			if (((String) results.get(1)).equals(Constants.WRONG_OID)) {
+				this.setSnmpResultError(Constants.WRONG_OID);
 			} else {
-				this.setSnmpResultError("WRONG_VALUE_FORMAT");
+				this.setSnmpResultError(Constants.WRONG_VALUE_FORMAT);
 			}
 			this.setNumData(null);
 			return;
@@ -275,9 +275,9 @@ public class SnmpResults extends BaseResults {
 					flag = true;
 				break;
 			}
-			if (flag && condition.getAndOr().equals("or"))
+			if (flag && condition.getAndOr().equals(Constants.or))
 				return true;
-			else if (!flag && condition.getAndOr().equals("and"))
+			else if (!flag && condition.getAndOr().equals(Constants.and))
 				return false;
 		}
 		return flag;

@@ -18,7 +18,6 @@ import lycus.GlobalConstants.Enums.SnmpStoreAs;
 import lycus.Host;
 import lycus.Log;
 import lycus.Net;
-import lycus.SysLogger;
 import lycus.GlobalConstants.SnmpUnit;
 import lycus.User;
 import lycus.Probes.SnmpProbe;
@@ -96,8 +95,8 @@ public class NicElement extends BaseElement {
 				return results;
 			}
 		} catch (Throwable th) {
-			SysLogger.Record(new Log("Error running discovery element probe:" + this.getTemplate_id() + "@"
-					+ h.getHostId().toString() + "@" + this.getProbe_id(), LogType.Error));
+			Logit.LogError("NicElement - Check","Error running discovery element probe:" + this.getTemplate_id() + "@"
+					+ h.getHostId().toString() + "@" + this.getProbe_id());
 		}
 		return null;
 	}

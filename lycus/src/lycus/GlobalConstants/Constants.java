@@ -63,5 +63,12 @@ public class Constants {
 	public static final String ds = "ds";
 	public static final String inBW = "inBW";
 	public static final String outBW = "outBW";
+	
+	public static final String WRONG_OID = "WRONG_OID";
+	public static final String WRONG_VALUE_FORMAT = "WRONG_VALUE_FORMAT";
+	
+	public static final String and = "and";
+	public static final String or = "or";
+
 
 }
