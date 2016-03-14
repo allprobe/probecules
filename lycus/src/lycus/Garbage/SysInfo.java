@@ -9,15 +9,15 @@ import java.util.concurrent.TimeUnit;
 import lycus.Utils.GeneralFunctions;
 import lycus.Log;
 import lycus.RunInnerProbesChecks;
-import lycus.RunnableProbesHistory;
+import lycus.ResultsContainer;
 import lycus.SysLogger;
 import lycus.GlobalConstants.LogType;
 
 public class SysInfo implements Runnable {
 	private Runtime runtime;
 	ScheduledExecutorService scheduledExecutorService;
-	private RunnableProbesHistory history;
-	public SysInfo(RunnableProbesHistory history) {
+	private ResultsContainer history;
+	public SysInfo(ResultsContainer history) {
 		this.runtime = Runtime.getRuntime();
 		this.scheduledExecutorService =
 		        Executors.newSingleThreadScheduledExecutor();
@@ -113,11 +113,11 @@ public class SysInfo implements Runnable {
         }
         return sb.toString();
     }
-    public RunnableProbesHistory getHistory() {
+    public ResultsContainer getHistory() {
 		return history;
 	}
 
-	public void setHistory(RunnableProbesHistory history) {
+	public void setHistory(ResultsContainer history) {
 		this.history = history;
 	}
 
@@ -158,12 +158,6 @@ public class SysInfo implements Runnable {
     	info.append("\n");
     	info.append("Total RPS Threads:"+(pingers + porters + webers + rbls 
 				+ bsnmps));
-    	info.append("\n");
-    	info.append("history thread:" +this.getHistory().getResultsInsertorExecuterThread().isCancelled() );
-    	info.append("\n");
-    	info.append("events thread:" + this.getHistory().getEventsInsertorExecuterThread().isCancelled());
-    	info.append("\n");
-    	info.append("mem dump thread:" + this.getHistory().getRollupsDumpExecuterThread().isCancelled());
     	info.append("\n");
     	info.append("--------------------------------------------------");
     	info.append("\n");	

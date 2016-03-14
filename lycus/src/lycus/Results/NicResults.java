@@ -7,7 +7,7 @@ import lycus.GlobalConstants.Constants;
 import lycus.RunnableProbe;
 import lycus.User;
 
-public class NicResults extends BaseResults {
+public class NicResults extends BaseResult {
 
 
 	private SnmpResults ifInResults;

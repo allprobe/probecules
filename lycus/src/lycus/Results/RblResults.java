@@ -12,7 +12,7 @@ import lycus.SysLogger;
 import lycus.Trigger;
 import lycus.TriggerCondition;
 
-public class RblResults extends BaseResults {
+public class RblResults extends BaseResult {
 	
 	private Boolean IsListed=null;
 

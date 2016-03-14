@@ -13,7 +13,7 @@ import lycus.SysLogger;
 import lycus.Trigger;
 import lycus.TriggerCondition;
 
-public class PingerResults extends BaseResults {
+public class PingerResults extends BaseResult {
 
 	private Integer packetLost;
 	private DataPointsRollup[] packetLostRollups;

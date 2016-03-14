@@ -17,7 +17,7 @@ import lycus.Utils.Logit;
 import lycus.TriggerCondition;
 import lycus.GlobalConstants.Constants;
 
-public class SnmpResults extends BaseResults {
+public class SnmpResults extends BaseResult {
 
 	private String stringData;
 	private Double numData;

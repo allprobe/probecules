@@ -13,7 +13,7 @@ import lycus.SysLogger;
 import lycus.Trigger;
 import lycus.TriggerCondition;
 
-public class WeberResults extends BaseResults {
+public class WeberResults extends BaseResult {
 
 	private Integer statusCode;
 	private Long responseTime;

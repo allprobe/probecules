@@ -13,7 +13,7 @@ import lycus.SysLogger;
 import lycus.Trigger;
 import lycus.TriggerCondition;
 
-public class PorterResults extends BaseResults {
+public class PorterResults extends BaseResult {
 	private Boolean portStatus;
 	private Long responseTime;
 	private DataPointsRollup[] responseTimeRollups;

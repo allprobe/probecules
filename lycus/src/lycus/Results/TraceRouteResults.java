@@ -3,9 +3,9 @@ package lycus.Results;
 import java.util.ArrayList;
 
 import lycus.RunnableProbe;
-import lycus.Results.BaseResults;
+import lycus.Results.BaseResult;
 
-public class TraceRouteResults extends BaseResults {
+public class TraceRouteResults extends BaseResult {
 	
 	private ArrayList<String> routes;
 	

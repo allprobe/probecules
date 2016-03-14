@@ -15,18 +15,20 @@ import lycus.SysLogger;
 import lycus.Trigger;
 import lycus.TriggerEvent;
 
-public class BaseResults {
+public class BaseResult {
 	private RunnableProbe rp;
 	private Long lastTimestamp;
 	private HashMap<Trigger, TriggerEvent> events;
-
+	private boolean isSent;
+	
 	private Gson gson;
 
-	public BaseResults(RunnableProbe rp) {
+	public BaseResult(RunnableProbe rp) {
 		this.rp = rp;
 		this.gson = new GsonBuilder().setPrettyPrinting().create();
 		this.lastTimestamp = null;
 		this.setEvents(new HashMap<Trigger, TriggerEvent>());
+		setSent(false);
 	}
 
 	public RunnableProbe getRp() {
@@ -204,6 +206,14 @@ public class BaseResults {
 			event.setSent(false);
 			this.getEvents().put(trigger, event);
 		}
+	}
+
+	public boolean isSent() {
+		return isSent;
+	}
+
+	public void setSent(boolean isSentOK) {
+		this.isSent = isSentOK;
 	}
 
 }

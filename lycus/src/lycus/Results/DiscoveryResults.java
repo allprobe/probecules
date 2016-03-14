@@ -24,7 +24,7 @@ import lycus.Elements.NicElement;
 import lycus.Probes.DiscoveryProbe;
 import lycus.Probes.SnmpProbe;
 
-public class DiscoveryResults extends BaseResults {
+public class DiscoveryResults extends BaseResult {
 
 	private HashMap<String, BaseElement> currentElements = null;
 	private HashMap<BaseElement, Enums.ElementChange> elementsChanges = null;

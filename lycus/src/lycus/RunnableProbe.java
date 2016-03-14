@@ -14,7 +14,7 @@ import lycus.Probes.BaseProbe;
 import lycus.Probes.RBLProbe;
 import lycus.Probes.SnmpProbe;
 import lycus.Probes.WeberProbe;
-import lycus.Results.BaseResults;
+import lycus.Results.BaseResult;
 import lycus.Results.DiscoveryResults;
 import lycus.Results.NicResults;
 import lycus.Results.PingerResults;
@@ -29,7 +29,7 @@ public class RunnableProbe implements Runnable {
 	private BaseProbe probe;
 	private boolean isActive;
 	private boolean isRunning;
-	private BaseResults results;
+	private BaseResult result;
 
 	public RunnableProbe(Host host, BaseProbe probe) {
 		this.setHost(host);
@@ -42,34 +42,36 @@ public class RunnableProbe implements Runnable {
 
 		switch (this.getProbeType()) {
 		case PING:
-			results = new PingerResults(this);
+			result = new PingerResults(this);
 			break;
 		case PORT:
-			results = new PorterResults(this);
+			result = new PorterResults(this);
 			break;
 		case WEB:
-			results = new WeberResults(this);
+			result = new WeberResults(this);
 			break;
 		case SNMP:
-			results = new SnmpResults(this);
+			result = new SnmpResults(this);
 			break;
 		case SNMPv1:
-			results = new SnmpResults(this);
+			result = new SnmpResults(this);
 			break;
 		case RBL:
-			results = new RblResults(this);
+			result = new RblResults(this);
 			break;
 		case TRACEROUTE:
-			results = new TraceRouteResults(this);
+			result = new TraceRouteResults(this);
 			break;
 		case DISCOVERY:
-			results = new DiscoveryResults(this);
+			result = new DiscoveryResults(this);
 			break;
 		case DISCOVERYELEMENT:
 			if (probe instanceof NicElement)
-				results = new NicResults(this);
+				result = new NicResults(this);
 			break;
 		}
+		
+		ResultsContainer.getInstance().addResult(result);
 	}
 
 	public Host getHost() {
@@ -96,12 +98,12 @@ public class RunnableProbe implements Runnable {
 		this.isActive = isActive;
 	}
 
-	public BaseResults getResult() {
-		return results;
+	public BaseResult getResult() {
+		return result;
 	}
 
-	public void setResult(BaseResults results) {
-		this.results = results;
+	public void setResult(BaseResult results) {
+		this.result = results;
 	}
 
 	private boolean isRunning() {
