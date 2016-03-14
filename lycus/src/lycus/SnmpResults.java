@@ -7,7 +7,6 @@ import org.json.simple.JSONArray;
 
 import GlobalConstants.LogType;
 import GlobalConstants.SnmpDataType;
-import lycus.Probes.SnmpNicProbe;
 import lycus.Probes.SnmpProbe;
 
 public class SnmpResults extends BaseResults {

@@ -5,6 +5,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.UUID;
 
+import org.json.simple.JSONObject;
 import org.snmp4j.smi.OID;
 
 import GlobalConstants.Constants;
@@ -26,20 +27,21 @@ public class NicElement extends BaseElement {
 	private long ifSpeed;
 	HostType hostType;
 
-	public NicElement(String probe_id, UUID template_id, String name, long interval, float multiplier,
+	public NicElement(User user,String probe_id, UUID template_id, String name, long interval, float multiplier,
 			boolean status, int index, long ifSpeed, Enums.HostType hostType) {
-		super(null, probe_id, template_id, name, interval, multiplier, status, index);
+		super(user, probe_id, template_id, name, interval, multiplier, status, index);
 		this.setIfSpeed(ifSpeed);
 		this.hostType = hostType;
 
-		this.ifInOctets = new SnmpProbe(probe_id+"@"+Constants.inBW, template_id, name, interval, multiplier, status,
+		this.ifInOctets = new SnmpProbe(user,probe_id+"@"+Constants.inBW, template_id, name, interval, multiplier, status,
 				new OID(this.getIfinoctetsOID()), SnmpDataType.Numeric, SnmpUnit.bytes,
 				SnmpStoreAs.deltaBytesPerSecond);
-		this.ifOutOctets = new SnmpProbe(probe_id+"@"+Constants.outBW, template_id, name, interval, multiplier, status,
+		this.ifOutOctets = new SnmpProbe(user,probe_id+"@"+Constants.outBW, template_id, name, interval, multiplier, status,
 				new OID(this.getIfoutoctetsOID()), SnmpDataType.Numeric, SnmpUnit.bytes,
 				SnmpStoreAs.deltaBytesPerSecond);
 
 	}
+
 
 	@Override
 	public ArrayList<Object> Check(Host h) {
@@ -123,6 +125,15 @@ public class NicElement extends BaseElement {
 
 	public SnmpProbe getIfInOctets() {
 		return ifInOctets;
+	}
+	@Override
+	public String toString() {
+		JSONObject jsonObject=new JSONObject();
+		jsonObject.put("probe_id", this.getProbe_id());
+		jsonObject.put("if_name", this.getName());
+		jsonObject.put("if_speed", this.getIfSpeed());
+		jsonObject.put("if_index", this.getIndex());
+		return jsonObject.toJSONString();
 	}
 
 }

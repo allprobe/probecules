@@ -621,6 +621,9 @@ public class User {
 	}
 
 	public void addNewDiscoveryElement(BaseElement newElement, Host host) {
+		if(newElement==null || host==null)
+			return;
+			
 		if (newElement instanceof NicElement) {
 			this.addNicRunnableProbes((NicElement) newElement, host);
 		} else if (newElement instanceof DiskElement) {

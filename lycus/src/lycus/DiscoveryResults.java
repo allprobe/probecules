@@ -109,7 +109,7 @@ public class DiscoveryResults extends BaseResults {
 				break;
 			default:return null;
 			}
-			NicElement nicElement=new NicElement(this.getRp().getProbe().getProbe_id(),this.getRp().getProbe().getTemplate_id(),name,this.getRp().getProbe().getInterval(),this.getRp().getProbe().getMultiplier(),this.getRp().getProbe().isActive(), index,ifSpeed,hostType);
+			NicElement nicElement=new NicElement(this.getRp().getProbe().getUser(),this.getRp().getProbe().getProbe_id(),this.getRp().getProbe().getTemplate_id(),name,this.getRp().getProbe().getInterval(),this.getRp().getProbe().getMultiplier(),this.getRp().getProbe().isActive(), index,ifSpeed,hostType);
 			
 			
 			lastElements.put(name, nicElement);
@@ -175,8 +175,21 @@ public class DiscoveryResults extends BaseResults {
 
 	@Override
 	public HashMap<String, String> getResults() throws Throwable {
-		// TODO send discovery results to RAN
-		return null;
+		HashMap<String, String> results = super.getResults();
+		JSONArray rawResults = new JSONArray();
+		rawResults.add(6);
+		
+		for(Map.Entry<BaseElement, ElementChange> elementChange:this.getElementsChanges().entrySet())
+		{
+			JSONObject changeJson=new JSONObject();
+			changeJson.put(elementChange.getValue(), elementChange.getKey());
+			rawResults.add(changeJson);
+		}
+		
+		results.put("RAW@elements_map@" + this.getLastTimestamp(), rawResults.toJSONString());
+		this.setElementsChanges(null);
+		this.setLastTimestamp(null);
+		return results;
 	}
 
 	

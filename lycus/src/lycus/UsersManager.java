@@ -200,14 +200,23 @@ public class UsersManager {
 				elementParams.index=Integer.parseInt((String)elementN.get("index"));
 				elementParams.name=(String)elementN.get("name");
 				elementParams.status=((String)elementN.get("status")).equals("1")?true:false;
+				elementParams.elements_type=(String)elementN.get("elements_type");
 				
 				User user = getUsers().get(UUID.fromString(elementParams.user_id));
 				if (user == null)
 					continue;
 				Host host=user.getHost(UUID.fromString(elementParams.host_id));
 				// TODO check for element type and add new elements
-				NicElement element=new NicElement(elementParams.discovery_id+"@"+elementParams.name, UUID.fromString(elementParams.template_id),elementParams.name, elementParams.element_interval,1, elementParams.status, elementParams.index,100000, HostType.Linux);
-				user.addNewDiscoveryElement(element,host);
+				BaseElement baseElement=null;
+				switch(elementParams.elements_type)
+				{
+				case Constants.bw: 
+					baseElement=new NicElement(user,elementParams.discovery_id+"@"+elementParams.name, UUID.fromString(elementParams.template_id),elementParams.name, elementParams.element_interval,1, elementParams.status, elementParams.index,100000, HostType.Linux);
+					break;
+				case Constants.ds:
+					break;
+				}
+				user.addNewDiscoveryElement(baseElement,host);
 				}
 				
 			} catch (Exception e) {
