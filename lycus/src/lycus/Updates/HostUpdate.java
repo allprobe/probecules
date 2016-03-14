@@ -5,12 +5,12 @@ import java.util.UUID;
 import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
 
-import GlobalConstants.Constants;
-import GlobalConstants.Enums.ApiAction;
-import GlobalConstants.LogType;
-import Model.UpdateModel;
-import lycus.DAL;
-import lycus.GeneralFunctions;
+import lycus.GlobalConstants.Constants;
+import lycus.GlobalConstants.Enums.ApiAction;
+import lycus.GlobalConstants.LogType;
+import lycus.Model.UpdateModel;
+import lycus.DAL.DAL;
+import lycus.Utils.GeneralFunctions;
 import lycus.Host;
 import lycus.Log;
 import lycus.RunnableProbe;

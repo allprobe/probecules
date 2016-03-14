@@ -19,19 +19,24 @@ import org.json.simple.JSONArray;
 import org.json.simple.parser.JSONParser;
 import com.google.gson.Gson;
 
-import GlobalConstants.Constants;
-import GlobalConstants.Enums;
-import GlobalConstants.Enums.HostType;
-import GlobalConstants.LogType;
-import GlobalConstants.SnmpDataType;
-import GlobalConstants.TriggerSeverity;
-import Model.ConditionUpdateModel;
-import Model.DiscoveryElementParams;
-import Model.HostParams;
-import Model.ProbeParams;
-import Model.SnmpTemplateParams;
-import Utils.Logit;
-import lycus.Probes.Probe;
+import lycus.GlobalConstants.Constants;
+import lycus.GlobalConstants.Enums;
+import lycus.GlobalConstants.Enums.HostType;
+import lycus.GlobalConstants.LogType;
+import lycus.GlobalConstants.SnmpDataType;
+import lycus.GlobalConstants.SnmpUnit;
+import lycus.GlobalConstants.TriggerSeverity;
+import lycus.Model.ConditionUpdateModel;
+import lycus.Model.DiscoveryElementParams;
+import lycus.Model.HostParams;
+import lycus.Model.ProbeParams;
+import lycus.Model.SnmpTemplateParams;
+import lycus.Utils.GeneralFunctions;
+import lycus.Utils.Logit;
+import lycus.DAL.ApiInterface;
+import lycus.Elements.BaseElement;
+import lycus.Elements.NicElement;
+import lycus.Probes.BaseProbe;
 
 /**
  * 
@@ -397,7 +402,7 @@ public class UsersManager {
 							.Record(new Log("No user exists for trigger: " + triggerJson.toJSONString(), LogType.Warn));
 					continue;
 				}
-				Probe probe = user.getTemplateProbes().get(probeId);
+				BaseProbe probe = user.getTemplateProbes().get(probeId);
 				if (probe == null) {
 					SysLogger.Record(
 							new Log("No probe exists for trigger: " + triggerJson.toJSONString(), LogType.Warn));

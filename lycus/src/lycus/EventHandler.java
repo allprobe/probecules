@@ -5,9 +5,12 @@ import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Map;
 
-import GlobalConstants.Enums;
-import GlobalConstants.LogType;
-import Utils.Logit;
+import lycus.DAL.ApiInterface;
+import lycus.GlobalConstants.Enums;
+import lycus.GlobalConstants.LogType;
+import lycus.Utils.GeneralFunctions;
+import lycus.Utils.Logit;
+import lycus.Results.BaseResults;
 
 public class EventHandler implements Runnable {
 	private RunnableProbesHistory history;

@@ -2,15 +2,13 @@ package lycus.Updates;
 
 import java.util.UUID;
 
-import GlobalConstants.Constants;
-import GlobalConstants.Enums;
-import GlobalConstants.Enums.Action;
-import Model.UpdateModel;
-import lycus.Host;
+import lycus.GlobalConstants.Constants;
+import lycus.GlobalConstants.Enums;
+import lycus.GlobalConstants.Enums.Action;
+import lycus.Model.UpdateModel;
 import lycus.User;
 import lycus.UsersManager;
 import lycus.Interfaces.IUpdate;
-import lycus.Probes.Probe;
 
 public abstract class BaseUpdate implements IUpdate{
 

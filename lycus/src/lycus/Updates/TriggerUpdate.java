@@ -2,18 +2,14 @@ package lycus.Updates;
 
 import java.util.ArrayList;
 import java.util.UUID;
-
-import GlobalConstants.Constants;
-import GlobalConstants.TriggerSeverity;
-import Model.UpdateModel;
-import lycus.GeneralFunctions;
-import lycus.RunnableProbe;
-import lycus.SnmpUnit;
+import lycus.GlobalConstants.Constants;
+import lycus.Model.UpdateModel;
+import lycus.Utils.GeneralFunctions;
 import lycus.Trigger;
 import lycus.TriggerCondition;
-import lycus.User;
 import lycus.UsersManager;
-import lycus.Probes.Probe;
+import lycus.Probes.BaseProbe;
+import lycus.GlobalConstants.SnmpUnit;
 
 public class TriggerUpdate extends BaseUpdate {
 
@@ -26,7 +22,7 @@ public class TriggerUpdate extends BaseUpdate {
 	public Boolean New()
 	{
 		super.New();
-		Probe probe = getUser().getProbeFor(getUpdate().probe_id);
+		BaseProbe probe = getUser().getProbeFor(getUpdate().probe_id);
 		ArrayList<TriggerCondition>  conditions = UsersManager.getTriggerConds(getUpdate().update_value.conditions);
 		
 		// From SsmpUnit swap integer and string to none - Roi
@@ -42,7 +38,7 @@ public class TriggerUpdate extends BaseUpdate {
 	public Boolean Update()
 	{
 		super.Update();
-		Probe probe = getUser().getProbeFor(getUpdate().probe_id);
+		BaseProbe probe = getUser().getProbeFor(getUpdate().probe_id);
 		Trigger trigger = probe.getTriggers().get(getUpdate().object_id);
 		ArrayList<TriggerCondition>  conditions = UsersManager.getTriggerConds(getUpdate().update_value.conditions);
 		
@@ -77,7 +73,7 @@ public class TriggerUpdate extends BaseUpdate {
 	public Boolean Delete()
 	{
 		super.Delete();
-		Probe probe = null;
+		BaseProbe probe = null;
 		if (!GeneralFunctions.isNullOrEmpty(getUpdate().probe_id) && 
 			!GeneralFunctions.isNullOrEmpty(getUpdate().object_id))
 		{

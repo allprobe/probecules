@@ -8,9 +8,9 @@ import java.util.Set;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ScheduledFuture;
 
-import GlobalConstants.Global;
-import GlobalConstants.LogType;
-import lycus.Probes.Probe;
+import lycus.GlobalConstants.Global;
+import lycus.GlobalConstants.LogType;
+import lycus.Probes.BaseProbe;
 
 public class SnmpManager {
 	private User user;
@@ -82,7 +82,7 @@ public class SnmpManager {
 			try {
 				SnmpProbesBatch batch = _batch.getValue();
 				Host host = rp.getHost();
-				Probe probe = rp.getProbe();
+				BaseProbe probe = rp.getProbe();
 				if (batch.getBatchId().contains(host.getHostId().toString() + "@" + probe.getTemplate_id().toString()
 						+ "@" + probe.getInterval()) && batch.getSnmpProbes().size() < this.getBatchesSize()) {
 					batch.getSnmpProbes().put(rp.getRPString(), rp);

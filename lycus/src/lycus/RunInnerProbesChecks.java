@@ -10,9 +10,9 @@ import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.ScheduledFuture;
 import java.util.concurrent.TimeUnit;
 
-import GlobalConstants.Global;
-import GlobalConstants.LogType;
-import GlobalConstants.ProbeTypes;
+import lycus.GlobalConstants.Global;
+import lycus.GlobalConstants.LogType;
+import lycus.GlobalConstants.ProbeTypes;
 import lycus.Probes.PingerProbe;
 import lycus.Probes.PorterProbe;
 import lycus.Probes.RBLProbe;

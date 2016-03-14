@@ -6,8 +6,11 @@ import com.google.gson.JsonArray;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonParser;
 
-import GlobalConstants.Enums;
-import GlobalConstants.LogType;
+import lycus.DAL.ApiInterface;
+import lycus.GlobalConstants.Enums;
+import lycus.GlobalConstants.LogType;
+import lycus.Results.BaseResults;
+import lycus.Utils.GeneralFunctions;
 
 public class RollupsMemoryDump implements Runnable {
 

@@ -2,7 +2,7 @@ package lycus.Interfaces;
 
 import org.json.simple.JSONObject;
 
-import GlobalConstants.Enums;
+import lycus.GlobalConstants.Enums;
 
 public interface IDAL {
 	JSONObject get(Enums.ApiAction action);

@@ -4,17 +4,18 @@ import java.util.ArrayList;
 import java.util.UUID;
 import org.snmp4j.smi.OID;
 
-import GlobalConstants.SnmpDataType;
-import GlobalConstants.Enums.SnmpStoreAs;
-import Model.KeyUpdateModel;
-import lycus.GeneralFunctions;
+import lycus.GlobalConstants.SnmpDataType;
+import lycus.GlobalConstants.SnmpUnit;
+import lycus.GlobalConstants.Enums.SnmpStoreAs;
+import lycus.Model.KeyUpdateModel;
+import lycus.Model.UpdateValueModel;
+import lycus.Utils.GeneralFunctions;
 import lycus.Host;
 import lycus.Net;
-import lycus.SnmpUnit;
 import lycus.User;
 import lycus.UsersManager;
 
-public class SnmpProbe extends Probe {
+public class SnmpProbe extends BaseProbe {
 	private OID oid;
 	private SnmpDataType dataType;
 	private SnmpUnit unit;
@@ -81,17 +82,17 @@ public class SnmpProbe extends Probe {
 		return s.toString();
 	}
 	
-	public boolean updateKeyValues(KeyUpdateModel key)
+	public boolean updateKeyValues(UpdateValueModel updateValue)
 	{
-		super.updateKeyValues(key);
-		if (!GeneralFunctions.isNullOrEmpty(key.snmp_oid))
-			oid = new OID(key.snmp_oid);
-		if (!GeneralFunctions.isNullOrEmpty(key.value_unit))
-			unit = UsersManager.getSnmpUnit(key.value_unit);
-		if (!GeneralFunctions.isNullOrEmpty(key.value_type))
-			dataType =  UsersManager.getSnmpDataType(key.value_type);
-		if (key.store_value_as != null)
-			storeAs = SnmpStoreAs.values()[key.store_value_as];
+		super.updateKeyValues(updateValue);
+		if (!GeneralFunctions.isNullOrEmpty(updateValue.key.snmp_oid))
+			oid = new OID(updateValue.key.snmp_oid);
+		if (!GeneralFunctions.isNullOrEmpty(updateValue.key.value_unit))
+			unit = UsersManager.getSnmpUnit(updateValue.key.value_unit);
+		if (!GeneralFunctions.isNullOrEmpty(updateValue.key.value_type))
+			dataType =  UsersManager.getSnmpDataType(updateValue.key.value_type);
+		if (updateValue.key.store_value_as != null)
+			storeAs = SnmpStoreAs.values()[updateValue.key.store_value_as];
 		return true;
 	}
 }

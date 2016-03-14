@@ -1,6 +1,6 @@
 package lycus.Updates;
 
-import Model.UpdateModel;
+import lycus.Model.UpdateModel;
 
 public class UserUpdate extends BaseUpdate{
 

@@ -1,6 +1,6 @@
 package lycus.Updates;
 
-import Model.UpdateModel;
+import lycus.Model.UpdateModel;
 
 public class BucketUpdate  extends BaseUpdate{
 	public BucketUpdate(UpdateModel update) {

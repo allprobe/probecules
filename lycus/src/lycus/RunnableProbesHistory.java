@@ -16,8 +16,11 @@ import org.json.simple.JSONObject;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 
-import GlobalConstants.Enums;
-import GlobalConstants.LogType;
+import lycus.DAL.ApiInterface;
+import lycus.GlobalConstants.Enums;
+import lycus.GlobalConstants.LogType;
+import lycus.Results.BaseResults;
+import lycus.Utils.GeneralFunctions;
 
 public class RunnableProbesHistory implements Runnable {
 	private HashMap<String, BaseResults> results;

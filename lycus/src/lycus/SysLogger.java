@@ -14,7 +14,8 @@ import org.apache.commons.io.FileUtils;
 import org.productivity.java.syslog4j.Syslog;
 import org.productivity.java.syslog4j.SyslogIF;
 
-import GlobalConstants.Global;
+import lycus.GlobalConstants.BashColor;
+import lycus.GlobalConstants.Global;
 
 public class SysLogger {
 

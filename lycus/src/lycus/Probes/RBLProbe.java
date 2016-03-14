@@ -3,13 +3,14 @@ package lycus.Probes;
 import java.util.ArrayList;
 import java.util.UUID;
 
-import Model.KeyUpdateModel;
-import lycus.GeneralFunctions;
+import lycus.Model.KeyUpdateModel;
+import lycus.Model.UpdateValueModel;
+import lycus.Utils.GeneralFunctions;
 import lycus.Host;
 import lycus.Net;
 import lycus.User;
 
-public class RBLProbe extends Probe {
+public class RBLProbe extends BaseProbe {
 	private String RBL;
 	public RBLProbe(User user,String probe_id,UUID template_id,String name, long interval,float multiplier,boolean status,String rbl)
 	{
@@ -45,11 +46,11 @@ public class RBLProbe extends Probe {
 		return s.toString();
 	}
 	
-	 public boolean updateKeyValues(KeyUpdateModel key)
+	 public boolean updateKeyValues(UpdateValueModel updateValue)
 		{
-			super.updateKeyValues(key);
-			if (!GeneralFunctions.isNullOrEmpty(key.rbl))
-				this.setRBL(key.rbl);
+			super.updateKeyValues(updateValue);
+			if (!GeneralFunctions.isNullOrEmpty(updateValue.key.rbl))
+				this.setRBL(updateValue.key.rbl);
 			return true;
 		}
 }

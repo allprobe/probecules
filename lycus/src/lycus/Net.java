@@ -56,8 +56,9 @@ import org.snmp4j.util.TreeEvent;
 import org.snmp4j.util.TreeListener;
 import org.snmp4j.util.TreeUtils;
 
-import GlobalConstants.Global;
-import GlobalConstants.LogType;
+import lycus.GlobalConstants.Global;
+import lycus.GlobalConstants.LogType;
+import lycus.Utils.GeneralFunctions;
 
 /**
  * 

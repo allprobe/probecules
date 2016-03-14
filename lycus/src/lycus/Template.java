@@ -4,16 +4,16 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.UUID;
 
-import lycus.Probes.Probe;
+import lycus.Probes.BaseProbe;
 
 public class Template {
 	private UUID templateId;
-	private Map<String,Probe> probes;
+	private Map<String,BaseProbe> probes;
 	private boolean status;
 	public Template(UUID templateId)
 	{
 		this.setTemplateId(templateId);	
-		this.setProbes(new HashMap<String,Probe>());
+		this.setProbes(new HashMap<String,BaseProbe>());
 		this.setStatus(true);
 	}
 	//#region Getters/Setters
@@ -39,12 +39,12 @@ public class Template {
 	}
 
 
-	public Map<String,Probe> getProbes() {
+	public Map<String,BaseProbe> getProbes() {
 		return probes;
 	}
 
 
-	public void setProbes(Map<String,Probe> probes) {
+	public void setProbes(Map<String,BaseProbe> probes) {
 		this.probes = probes;
 	}
 	//#endregion
@@ -52,7 +52,7 @@ public class Template {
 	public String toString()
 	{
 		StringBuilder s = new StringBuilder("Template "+this.getTemplateId()+":\n");
-		for(Probe p:this.getProbes().values())
+		for(BaseProbe p:this.getProbes().values())
 		{
         s.append(p.toString()).append("\n");
 		}

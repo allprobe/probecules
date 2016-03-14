@@ -2,13 +2,14 @@ package lycus;
 
 import java.util.ArrayList;
 
-import GlobalConstants.TriggerSeverity;
-import lycus.Probes.Probe;
+import lycus.GlobalConstants.SnmpUnit;
+import lycus.GlobalConstants.TriggerSeverity;
+import lycus.Probes.BaseProbe;
 
 public class Trigger implements Cloneable {
 	private String triggerId;
 	private String name;
-	private Probe probe;
+	private BaseProbe probe;
 	private TriggerSeverity svrty;
 	private boolean status;
 	private String elementType;
@@ -16,7 +17,7 @@ public class Trigger implements Cloneable {
 	private ArrayList<TriggerCondition> condtions;
 	private boolean isTriggered;
 
-	public Trigger(String triggerId, String name, Probe probe, TriggerSeverity svrty, boolean status,
+	public Trigger(String triggerId, String name, BaseProbe probe, TriggerSeverity svrty, boolean status,
 			String elementType, SnmpUnit unit, ArrayList<TriggerCondition> condtions) {
 		this.triggerId = triggerId;
 		this.name = name;
@@ -53,11 +54,11 @@ public class Trigger implements Cloneable {
 		this.name = name;
 	}
 
-	public Probe getProbe() {
+	public BaseProbe getProbe() {
 		return probe;
 	}
 
-	public void setProbe(Probe probe) {
+	public void setProbe(BaseProbe probe) {
 		this.probe = probe;
 	}
 

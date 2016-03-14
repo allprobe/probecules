@@ -1,23 +1,18 @@
 package lycus.Probes;
 
-import java.awt.List;
 import java.util.ArrayList;
 import java.util.Map;
 import java.util.UUID;
-
-import javax.persistence.EnumType;
-
-import GlobalConstants.Enums;
-import GlobalConstants.LogType;
-import GlobalConstants.Enums.DiscoveryElementType;
-import GlobalConstants.Enums.HostType;
+import lycus.GlobalConstants.Enums;
+import lycus.GlobalConstants.LogType;
+import lycus.GlobalConstants.Enums.HostType;
 import lycus.Host;
 import lycus.Log;
 import lycus.Net;
 import lycus.SysLogger;
 import lycus.User;
 
-public class DiscoveryProbe extends Probe {
+public class DiscoveryProbe extends BaseProbe {
 	private Enums.DiscoveryElementType type;
 	private long elementsInterval;
 
@@ -73,7 +68,6 @@ public class DiscoveryProbe extends Probe {
 		// TODO Auto-generated method stub
 		return null;
 	}
-
 
 	private ArrayList<Object> checkForBandwidthElements(Host h) {
 		long checkTime;		

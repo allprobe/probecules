@@ -7,8 +7,9 @@ package lycus.Probes;
 import java.util.ArrayList;
 import java.util.UUID;
 
-import Model.KeyUpdateModel;
-import lycus.GeneralFunctions;
+import lycus.Model.KeyUpdateModel;
+import lycus.Model.UpdateValueModel;
+import lycus.Utils.GeneralFunctions;
 import lycus.Host;
 import lycus.Net;
 import lycus.User;
@@ -17,7 +18,7 @@ import lycus.User;
  *
  * @author Roi
  */
-public class WeberProbe extends Probe {
+public class WeberProbe extends BaseProbe {
 
     private String httpRequestType;
     private String authMethod;//none,basic,...
@@ -166,22 +167,22 @@ public class WeberProbe extends Probe {
         return s.toString();
     }
     
-    public boolean updateKeyValues(KeyUpdateModel key)
+    public boolean updateKeyValues(UpdateValueModel updateValue)
 	{
-		super.updateKeyValues(key);
+		super.updateKeyValues(updateValue);
 //		super.updateProbe(probeNewName, probeNewInterval, probeNewMultiplier, probeNewStatus);
-		if (key.urls != null)
-			this.setUrl(GeneralFunctions.Base64Decode(key.urls));
-		if (!GeneralFunctions.isNullOrEmpty(key.http_method))
-			this.setHttpRequestType(key.http_method);
-		if (!GeneralFunctions.isNullOrEmpty(key.http_auth))
-			this.setAuthStatus(key.http_auth);
-		if (!GeneralFunctions.isNullOrEmpty(key.http_auth_user))
-			this.setAuthUsername(GeneralFunctions.Base64Decode(key.http_auth_user));
-		if (!GeneralFunctions.isNullOrEmpty(key.http_auth_password))
-			this.setAuthPassword(GeneralFunctions.Base64Decode(key.http_auth_password));
-		if (key.timeout != null)
-			this.setTimeout(key.timeout);
+		if (updateValue.key.urls != null)
+			this.setUrl(GeneralFunctions.Base64Decode(updateValue.key.urls));
+		if (!GeneralFunctions.isNullOrEmpty(updateValue.key.http_method))
+			this.setHttpRequestType(updateValue.key.http_method);
+		if (!GeneralFunctions.isNullOrEmpty(updateValue.key.http_auth))
+			this.setAuthStatus(updateValue.key.http_auth);
+		if (!GeneralFunctions.isNullOrEmpty(updateValue.key.http_auth_user))
+			this.setAuthUsername(GeneralFunctions.Base64Decode(updateValue.key.http_auth_user));
+		if (!GeneralFunctions.isNullOrEmpty(updateValue.key.http_auth_password))
+			this.setAuthPassword(GeneralFunctions.Base64Decode(updateValue.key.http_auth_password));
+		if (updateValue.key.timeout != null)
+			this.setTimeout(updateValue.key.timeout);
     	
 		return true;
 	}

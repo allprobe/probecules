@@ -2,7 +2,7 @@ package lycus.Updates;
 
 import java.util.UUID;
 
-import Model.UpdateModel;
+import lycus.Model.UpdateModel;
 import lycus.SnmpTemplate;
 
 public class SnmpUpdate  extends BaseUpdate{

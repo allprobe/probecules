@@ -1,5 +1,7 @@
 package lycus;
 
+import lycus.GlobalConstants.DataPointsRollupSize;
+
 public class DataPointsRollup {
 	private String runnableProbeId;
 	private long startTime;

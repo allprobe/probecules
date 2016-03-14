@@ -8,11 +8,11 @@ import org.apache.log4j.Logger;
 import org.apache.log4j.PropertyConfigurator;
 import org.json.simple.JSONObject;
 
-import GlobalConstants.Enums.ApiAction;
-import Model.ThreadsUpdates;
-import Model.UpdateModel;
-import Utils.JsonUtil;
-import lycus.DAL;
+import lycus.GlobalConstants.Enums.ApiAction;
+import lycus.Model.ThreadsUpdates;
+import lycus.Model.UpdateModel;
+import lycus.Utils.JsonUtil;
+import lycus.DAL.DAL;
 import lycus.UsersManager;
 import lycus.Interfaces.IDAL;
 import lycus.Updates.BaseUpdate;

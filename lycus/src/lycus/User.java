@@ -12,28 +12,33 @@ import java.util.UUID;
 import org.json.simple.JSONObject;
 import org.snmp4j.smi.OID;
 
-import GlobalConstants.Constants;
-import GlobalConstants.Enums;
-import GlobalConstants.LogType;
-import GlobalConstants.SnmpDataType;
-import GlobalConstants.TriggerSeverity;
-import Model.DiscoveryElementParams;
-import Model.HostParams;
-import Model.ProbeParams;
-import Model.SnmpTemplateParams;
+import lycus.GlobalConstants.Constants;
+import lycus.GlobalConstants.Enums;
+import lycus.GlobalConstants.LogType;
+import lycus.GlobalConstants.SnmpDataType;
+import lycus.GlobalConstants.SnmpUnit;
+import lycus.GlobalConstants.TriggerSeverity;
+import lycus.Model.DiscoveryElementParams;
+import lycus.Model.HostParams;
+import lycus.Model.ProbeParams;
+import lycus.Model.SnmpTemplateParams;
+import lycus.Elements.BaseElement;
+import lycus.Elements.DiskElement;
+import lycus.Elements.NicElement;
 import lycus.Probes.DiscoveryProbe;
 import lycus.Probes.PingerProbe;
 import lycus.Probes.PorterProbe;
-import lycus.Probes.Probe;
+import lycus.Probes.BaseProbe;
 import lycus.Probes.RBLProbe;
 import lycus.Probes.SnmpProbe;
 import lycus.Probes.WeberProbe;
+import lycus.Utils.GeneralFunctions;
 
 public class User {
 	private UUID userId;
 	private String email;
 	private Map<UUID, Host> hosts;
-	private Map<String, Probe> templateProbes;
+	private Map<String, BaseProbe> templateProbes;
 	private Map<UUID, SnmpTemplate> snmpTemplates;
 	private SnmpManager snmpManager;
 
@@ -51,7 +56,7 @@ public class User {
 	public User(UUID userId) {
 		this.setUserId(userId);
 		this.setHosts(new HashMap<UUID, Host>());
-		this.setTemplateProbes(new HashMap<String, Probe>());
+		this.setTemplateProbes(new HashMap<String, BaseProbe>());
 		this.setSnmpTemplates(new HashMap<UUID, SnmpTemplate>());
 		this.setSnmpManager(new SnmpManager(this));
 	}
@@ -121,11 +126,11 @@ public class User {
 		return true;
 	}
 
-	public Map<String, Probe> getTemplateProbes() {
+	public Map<String, BaseProbe> getTemplateProbes() {
 		return templateProbes;
 	}
 
-	public void setTemplateProbes(Map<String, Probe> templateProbes) {
+	public void setTemplateProbes(Map<String, BaseProbe> templateProbes) {
 		this.templateProbes = templateProbes;
 	}
 
@@ -174,7 +179,7 @@ public class User {
 		String probeId = rpID.split("@")[2];
 		UUID hostId = UUID.fromString(rpID.split("@")[1]);
 		Host host = this.getHosts().get(hostId);
-		Probe probe = this.getTemplateProbes().get(probeId);
+		BaseProbe probe = this.getTemplateProbes().get(probeId);
 		RunnableProbe newRunnableProbe;
 
 		String rpStr = hostId.toString() + "@" + probeId;
@@ -330,8 +335,8 @@ public class User {
 		return this.getUserId().toString();
 	}
 
-	public Probe getProbeFor(String probe_id) {
-		Map<String, Probe> probes = getTemplateProbes();
+	public BaseProbe getProbeFor(String probe_id) {
+		Map<String, BaseProbe> probes = getTemplateProbes();
 		return probes.get(probe_id);
 	}
 
@@ -430,7 +435,7 @@ public class User {
 			boolean status = probeParams.is_active;
 			String type = probeParams.type;
 
-			Probe probe = null;
+			BaseProbe probe = null;
 
 			switch (type) {
 			case Constants.icmp: {

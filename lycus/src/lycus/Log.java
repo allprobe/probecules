@@ -6,7 +6,7 @@ package lycus;
 
 import java.util.Map;
 
-import GlobalConstants.LogType;
+import lycus.GlobalConstants.LogType;
 
 /**
  *

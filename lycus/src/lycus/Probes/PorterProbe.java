@@ -7,8 +7,9 @@ package lycus.Probes;
 import java.util.ArrayList;
 import java.util.UUID;
 
-import Model.KeyUpdateModel;
-import lycus.GeneralFunctions;
+import lycus.Model.KeyUpdateModel;
+import lycus.Model.UpdateValueModel;
+import lycus.Utils.GeneralFunctions;
 import lycus.Host;
 import lycus.Net;
 import lycus.User;
@@ -17,7 +18,7 @@ import lycus.User;
  * 
  * @author Roi
  */
-public class PorterProbe extends Probe {
+public class PorterProbe extends BaseProbe {
 
 	private String proto;
 	private int port;
@@ -29,24 +30,25 @@ public class PorterProbe extends Probe {
 	PorterProbe() {
 	}
 
-	public PorterProbe(User user,String probe_id,UUID template_id,String name,long interval,float multiplier,boolean status,int timeout, String type, int port, String sendString, String acceptString) {
-		super(user, probe_id,template_id,name,interval,multiplier,status);
+	public PorterProbe(User user, String probe_id, UUID template_id, String name, long interval, float multiplier,
+			boolean status, int timeout, String type, int port, String sendString, String acceptString) {
+		super(user, probe_id, template_id, name, interval, multiplier, status);
 		this.proto = type;
 		this.port = port;
-		this.timeout=timeout;
-		this.sendString=sendString;
-		this.receiveString=acceptString;
+		this.timeout = timeout;
+		this.sendString = sendString;
+		this.receiveString = acceptString;
 	}
-	
-	public PorterProbe(User user,String probe_id,UUID template_id,String name,long interval,float multiplier,boolean status,int timeout, String type, int port) {
-		super(user, probe_id,template_id,name,interval,multiplier,status);
+
+	public PorterProbe(User user, String probe_id, UUID template_id, String name, long interval, float multiplier,
+			boolean status, int timeout, String type, int port) {
+		super(user, probe_id, template_id, name, interval, multiplier, status);
 		this.proto = type;
 		this.port = port;
-		this.timeout=timeout;
+		this.timeout = timeout;
 		this.sendString = "";
 		this.receiveString = "";
 	}
-	
 
 	// Getters/Setters
 
@@ -108,37 +110,36 @@ public class PorterProbe extends Probe {
 		return sendType;
 	}
 
-	
 	public void updateProbeAttributes(String probeNewName, long probeNewInterval, float probeNewMultiplier,
-			boolean probeNewStatus,String newType,int newPort,int newTimeout,String newSendString,String newReceiveString)
-    {
-    	this.setProto(newType);
-    	this.setPort(newPort);
-    	this.setSendString(newSendString);
-    	this.setReceiveString(newReceiveString);
-    	this.setTimeout(newTimeout);
-    }
-	
+			boolean probeNewStatus, String newType, int newPort, int newTimeout, String newSendString,
+			String newReceiveString) {
+		this.setProto(newType);
+		this.setPort(newPort);
+		this.setSendString(newSendString);
+		this.setReceiveString(newReceiveString);
+		this.setTimeout(newTimeout);
+	}
+
 	@Override
-    public ArrayList<Object> Check(Host h)
-    {
+	public ArrayList<Object> Check(Host h) {
 		if (!h.isHostStatus())
-    		return null;
-		
+			return null;
+
 		String rpStr = h.getHostId().toString();
-		if (rpStr.contains(
-				"b631bd96-e2e6-4163-940b-ff376d7d2138"))
+		if (rpStr.contains("b631bd96-e2e6-4163-940b-ff376d7d2138"))
 			System.out.println("BREAKPOINT - PorterProbe");
-		ArrayList<Object> results=null;
-		switch(this.getProto())
-		{
-		case "TCP":results=Net.TcpPorter(h.getHostIp(), this.getPort(), this.getTimeout());
-    			   break;
-		case "UDP":results=Net.UdpPorter(h.getHostIp(), this.getPort(), this.getTimeout(), this.getSendString(), this.getReceiveString());
-				   break;
+		ArrayList<Object> results = null;
+		switch (this.getProto()) {
+		case "TCP":
+			results = Net.TcpPorter(h.getHostIp(), this.getPort(), this.getTimeout());
+			break;
+		case "UDP":
+			results = Net.UdpPorter(h.getHostIp(), this.getPort(), this.getTimeout(), this.getSendString(),
+					this.getReceiveString());
+			break;
 		}
 		return results;
-    }
+	}
 
 	@Override
 	public String toString() {
@@ -147,21 +148,19 @@ public class PorterProbe extends Probe {
 		s.append("Port Number:").append(this.getPort()).append("; ");
 		s.append("Sending Type:").append(this.getSendType()).append("; ");
 		s.append("Send String:").append(this.getSendString()).append("; ");
-		s.append("Receive String:").append(this.getReceiveString())
-				.append("; ");
-        s.append("Auth Password:").append(this.getTimeout()).append("; ");
+		s.append("Receive String:").append(this.getReceiveString()).append("; ");
+		s.append("Auth Password:").append(this.getTimeout()).append("; ");
 		return s.toString();
 	}
-	
-	 public boolean updateKeyValues(KeyUpdateModel key)
-		{
-			super.updateKeyValues(key);
-			if (key.port != null)
-				this.setPort(key.port);
-			if (!GeneralFunctions.isNullOrEmpty(key.proto))
-				this.setProto(key.proto);
-			if (key.timeout != null)
-				this.setTimeout(key.timeout);
-			return true;
-		}
+
+	public boolean updateKeyValues(UpdateValueModel updateValue) {
+		super.updateKeyValues(updateValue);
+		if (updateValue.key.port != null)
+			this.setPort(updateValue.key.port);
+		if (!GeneralFunctions.isNullOrEmpty(updateValue.key.proto))
+			this.setProto(updateValue.key.proto);
+		if (updateValue.key.timeout != null)
+			this.setTimeout(updateValue.key.timeout);
+		return true;
+	}
 }

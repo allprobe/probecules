@@ -7,8 +7,9 @@ package lycus.Probes;
 import java.util.ArrayList;
 import java.util.UUID;
 
-import GlobalConstants.LogType;
-import Model.KeyUpdateModel;
+import lycus.GlobalConstants.LogType;
+import lycus.Model.KeyUpdateModel;
+import lycus.Model.UpdateValueModel;
 import lycus.Host;
 import lycus.Log;
 import lycus.Net;
@@ -19,7 +20,7 @@ import lycus.User;
  *
  * @author Roi
  */
-public class PingerProbe extends Probe {
+public class PingerProbe extends BaseProbe {
 
     private int count;
     private int bytes;
@@ -101,15 +102,15 @@ public class PingerProbe extends Probe {
     return s.toString();
     }
     
-    public boolean updateKeyValues(KeyUpdateModel key)
+    public boolean updateKeyValues(UpdateValueModel updateValue)
 	{
-		super.updateKeyValues(key);
-		if (key.npings != null)
-			this.setCount(key.npings);
-		if (key.bytes != null)
-			this.setBytes(key.bytes);
-		if (key.timeout != null)
-			this.setTimeout(key.timeout);
+		super.updateKeyValues(updateValue);
+		if (updateValue.key.npings != null)
+			this.setCount(updateValue.key.npings);
+		if (updateValue.key.bytes != null)
+			this.setBytes(updateValue.key.bytes);
+		if (updateValue.key.timeout != null)
+			this.setTimeout(updateValue.key.timeout);
 		return true;
 	}
 }
