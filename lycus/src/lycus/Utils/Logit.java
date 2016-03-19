@@ -1,8 +1,11 @@
 package lycus.Utils;
 import org.apache.log4j.Logger;
+import org.apache.log4j.LogManager;
+
 
 public class Logit {
 	static Logger log = Logger.getLogger("");
+//	static Logger log = LogManager.getLogger("");
 
 //	public Logit(String className)
 //	{

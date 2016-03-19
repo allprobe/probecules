@@ -34,7 +34,6 @@
 	<classpathentry kind="lib" path="lib/Apache/HttpClient/httpcore-4.3-sources.jar"/>
 	<classpathentry kind="lib" path="lib/Apache/HttpClient/httpcore-4.3.jar"/>
 	<classpathentry kind="lib" path="lib/Apache/HttpClient/httpmime-4.3.1.jar"/>
-	<classpathentry kind="lib" path="lib/base/apache-logging-log4j.jar"/>
 	<classpathentry kind="lib" path="lib/base/cassandra-thrift-1.1.0.jar"/>
 	<classpathentry kind="lib" path="lib/base/cloning-1.9.0.jar"/>
 	<classpathentry kind="lib" path="lib/base/commons-pool-1.6.jar"/>
@@ -52,9 +51,42 @@
 	<classpathentry kind="lib" path="lib/network/javadoc_net.sourceforge.jpcap-0.01.18.jar"/>
 	<classpathentry kind="lib" path="lib/network/net.sourceforge.jpcap-0.01.18.jar"/>
 	<classpathentry kind="lib" path="lib/base/syslog4j-0.9.46-bin.jar"/>
-	<classpathentry kind="lib" path="lib/base/slf4j-log4j12-1.7.1.jar"/>
 	<classpathentry kind="lib" path="lib/base/snmp4j-2.4.1-javadoc.jar"/>
 	<classpathentry kind="lib" path="lib/base/snmp4j-2.4.1.jar" sourcepath="/home/roi/Desktop/snmp4j-2.4.1/src"/>
+	<classpathentry kind="lib" path="lib/Apache/apache-log4j-2.5-bin/log4j-1.2-api-2.5-javadoc.jar"/>
+	<classpathentry kind="lib" path="lib/Apache/apache-log4j-2.5-bin/log4j-1.2-api-2.5-sources.jar"/>
+	<classpathentry kind="lib" path="lib/Apache/apache-log4j-2.5-bin/log4j-1.2-api-2.5.jar"/>
+	<classpathentry kind="lib" path="lib/Apache/apache-log4j-2.5-bin/log4j-api-2.5-javadoc.jar"/>
+	<classpathentry kind="lib" path="lib/Apache/apache-log4j-2.5-bin/log4j-api-2.5-sources.jar"/>
+	<classpathentry kind="lib" path="lib/Apache/apache-log4j-2.5-bin/log4j-api-2.5.jar"/>
+	<classpathentry kind="lib" path="lib/Apache/apache-log4j-2.5-bin/log4j-core-2.5-javadoc.jar"/>
+	<classpathentry kind="lib" path="lib/Apache/apache-log4j-2.5-bin/log4j-core-2.5-sources.jar"/>
+	<classpathentry kind="lib" path="lib/Apache/apache-log4j-2.5-bin/log4j-core-2.5-tests.jar"/>
+	<classpathentry kind="lib" path="lib/Apache/apache-log4j-2.5-bin/log4j-core-2.5.jar"/>
+	<classpathentry kind="lib" path="lib/Apache/apache-log4j-2.5-bin/log4j-flume-ng-2.5-javadoc.jar"/>
+	<classpathentry kind="lib" path="lib/Apache/apache-log4j-2.5-bin/log4j-flume-ng-2.5-sources.jar"/>
+	<classpathentry kind="lib" path="lib/Apache/apache-log4j-2.5-bin/log4j-flume-ng-2.5.jar"/>
+	<classpathentry kind="lib" path="lib/Apache/apache-log4j-2.5-bin/log4j-iostreams-2.5-javadoc.jar"/>
+	<classpathentry kind="lib" path="lib/Apache/apache-log4j-2.5-bin/log4j-iostreams-2.5-sources.jar"/>
+	<classpathentry kind="lib" path="lib/Apache/apache-log4j-2.5-bin/log4j-iostreams-2.5.jar"/>
+	<classpathentry kind="lib" path="lib/Apache/apache-log4j-2.5-bin/log4j-jcl-2.5-javadoc.jar"/>
+	<classpathentry kind="lib" path="lib/Apache/apache-log4j-2.5-bin/log4j-jcl-2.5-sources.jar"/>
+	<classpathentry kind="lib" path="lib/Apache/apache-log4j-2.5-bin/log4j-jcl-2.5.jar"/>
+	<classpathentry kind="lib" path="lib/Apache/apache-log4j-2.5-bin/log4j-jmx-gui-2.5-javadoc.jar"/>
+	<classpathentry kind="lib" path="lib/Apache/apache-log4j-2.5-bin/log4j-jmx-gui-2.5-sources.jar"/>
+	<classpathentry kind="lib" path="lib/Apache/apache-log4j-2.5-bin/log4j-jmx-gui-2.5.jar"/>
+	<classpathentry kind="lib" path="lib/Apache/apache-log4j-2.5-bin/log4j-jul-2.5-javadoc.jar"/>
+	<classpathentry kind="lib" path="lib/Apache/apache-log4j-2.5-bin/log4j-jul-2.5-sources.jar"/>
+	<classpathentry kind="lib" path="lib/Apache/apache-log4j-2.5-bin/log4j-jul-2.5.jar"/>
+	<classpathentry kind="lib" path="lib/Apache/apache-log4j-2.5-bin/log4j-nosql-2.5-javadoc.jar"/>
+	<classpathentry kind="lib" path="lib/Apache/apache-log4j-2.5-bin/log4j-nosql-2.5-sources.jar"/>
+	<classpathentry kind="lib" path="lib/Apache/apache-log4j-2.5-bin/log4j-nosql-2.5.jar"/>
+	<classpathentry kind="lib" path="lib/Apache/apache-log4j-2.5-bin/log4j-taglib-2.5-javadoc.jar"/>
+	<classpathentry kind="lib" path="lib/Apache/apache-log4j-2.5-bin/log4j-taglib-2.5-sources.jar"/>
+	<classpathentry kind="lib" path="lib/Apache/apache-log4j-2.5-bin/log4j-taglib-2.5.jar"/>
+	<classpathentry kind="lib" path="lib/Apache/apache-log4j-2.5-bin/log4j-web-2.5-javadoc.jar"/>
+	<classpathentry kind="lib" path="lib/Apache/apache-log4j-2.5-bin/log4j-web-2.5-sources.jar"/>
+	<classpathentry kind="lib" path="lib/Apache/apache-log4j-2.5-bin/log4j-web-2.5.jar"/>
 	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER"/>
 	<classpathentry kind="output" path="bin"/>
 </classpath>

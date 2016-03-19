@@ -59,6 +59,7 @@ import org.snmp4j.util.TreeUtils;
 import lycus.GlobalConstants.Global;
 import lycus.GlobalConstants.LogType;
 import lycus.Utils.GeneralFunctions;
+import lycus.Utils.Logit;
 
 /**
  * 
@@ -444,7 +445,7 @@ public class Net {
 
 			
 		} catch (Exception e) {
-			SysLogger.Record(new Log("Unable to process http request for URL: " + _url, LogType.Error, e));
+			Logit.LogError(null,"Unable to process http request for URL: " + _url);
 			return null;
 		}
 		return webResults;
@@ -568,8 +569,7 @@ public class Net {
 			}
 			}
 		} catch (IOException e) {
-			SysLogger.Record(new Log("Socket binding for failed for checkHostSnmpActive:" + h.getHostId().toString(),
-					LogType.Error, e));
+			Logit.LogError(null, "Socket binding for failed for checkHostSnmpActive:" + h.getHostId().toString());
 		} finally {
 			try {
 				if (snmp != null) {
@@ -579,7 +579,7 @@ public class Net {
 					transport.close();
 				}
 			} catch (Exception e) {
-				SysLogger.Record(new Log("Memory leak, unable to close network connection!", LogType.Error, e));
+				Logit.LogError(null, "Memory leak, unable to close network connection!");
 			}
 		}
 		return "host problem";
@@ -628,7 +628,7 @@ public class Net {
 				}
 			}
 		} catch (Exception e) {
-			SysLogger.Record(new Log("Unable to run Snmp2 GETBULK check!", LogType.Error, e));
+			Logit.LogError(null, "Unable to run Snmp2 GETBULK check!");
 			return null;
 		}
 		return oidsValues;
@@ -677,23 +677,21 @@ public class Net {
 				}
 			}
 		} catch (Exception e) {
-			SysLogger.Record(new Log("Unable to run Snmp2 GETBULK check!", LogType.Error, e));
+			Logit.LogError(null, "Unable to run Snmp2 GETBULK check!");
 			return null;
 		} finally {
 			if (transport != null) {
 				try {
 					transport.close();
 				} catch (IOException e) {
-					SysLogger.Record(
-							new Log("Unable to close TransportMapping! may cause memory leak!", LogType.Error, e));
+					Logit.LogError(null, "Unable to close TransportMapping! may cause memory leak!");
 				}
 			}
 			if (snmp != null) {
 				try {
 					snmp.close();
 				} catch (IOException e) {
-					SysLogger.Record(new Log("Unable to close SNMP! may cause memory leak!", LogType.Error, e));
-
+					Logit.LogError(null,"Unable to close SNMP! may cause memory leak!");
 				}
 			}
 		}
@@ -770,7 +768,7 @@ public class Net {
 			}
 
 		} catch (Exception e) {
-			SysLogger.Record(new Log("Unable to run Snmp3 GETBULK check!", LogType.Error, e));
+			Logit.LogError(null, "Unable to run Snmp3 GETBULK check!");
 			return null;
 		}
 
@@ -848,23 +846,21 @@ public class Net {
 			}
 
 		} catch (Exception e) {
-			SysLogger.Record(new Log("Unable to run Snmp3 GETBULK check!", LogType.Error, e));
+			Logit.LogError(null, "Unable to run Snmp3 GETBULK check!");
 			return null;
 		} finally {
 			if (transport != null) {
 				try {
 					transport.close();
 				} catch (IOException e) {
-					SysLogger.Record(
-							new Log("Unable to close TransportMapping! may cause memory leak!", LogType.Error, e));
+					Logit.LogError(null, "Unable to close TransportMapping! may cause memory leak!");
 				}
 			}
 			if (snmp != null) {
 				try {
 					snmp.close();
 				} catch (IOException e) {
-					SysLogger.Record(new Log("Unable to close SNMP! may cause memory leak!", LogType.Error, e));
-
+					Logit.LogError(null, "Unable to close SNMP! may cause memory leak!");
 				}
 			}
 		}
@@ -902,7 +898,7 @@ public class Net {
 				return null;
 			}
 		} catch (Exception e) {
-			SysLogger.Record(new Log("Unable to run Snmp2 GET check!", LogType.Error, e));
+			Logit.LogError(null, "Unable to run Snmp2 GET check!");
 			return null;
 		}
 		// finally {
@@ -998,7 +994,7 @@ public class Net {
 				return null;
 			}
 		} catch (Exception e) {
-			SysLogger.Record(new Log("Unable to run Snmp3 GET check!", LogType.Error, e));
+			Logit.LogError(null, "Unable to run Snmp3 GET check!");
 			return null;
 		}
 		// finally {
@@ -1024,7 +1020,7 @@ public class Net {
 
 	}
 
-	public static Map<String, String> Snmp2Walk(String ip, int port, int timeout, String comName, String _oid) {
+	public static Map<String, String> Snmp2Walk(final String ip, int port, int timeout, String comName, String _oid) {
 		Address targetAddress = GenericAddress.parse("udp:" + ip + "/" + port);
 		CommunityTarget target = new CommunityTarget();
 		target.setAddress(targetAddress);
@@ -1086,8 +1082,7 @@ public class Net {
 //					System.out.println("Total walk time:        "+
 //			                           (System.nanoTime()-startTime)/SnmpConstants.MILLISECOND_TO_NANOSECOND+" milliseconds");
 			        if (e.isError()) {
-			          System.err.println("The following error occurred during walk:");
-			          System.err.println(e.getErrorMessage());
+						Logit.LogError("Net - Snmp2Walk","The following error occurred during walk:"+e.getErrorMessage()+", for host: "+ip);
 			        }
 			        finished = true;
 			        synchronized(this) {
@@ -1107,29 +1102,27 @@ public class Net {
 			        treeListener.wait();
 			      }
 			      catch (InterruptedException ex) {
-			        System.err.println("Tree retrieval interrupted: " + ex.getMessage());
+						Logit.LogError("Net - Snmp2Walk","Tree retrieval interrupted:"+ex.getMessage()+", for host: "+ip);
 			        Thread.currentThread().interrupt();
 			      }
 			    }
 			    return walkResults;
 		} catch (Exception e) {
-			SysLogger.Record(new Log("Unable to run Snmp2 WALK check!", LogType.Error, e));
+			Logit.LogError("Net - Snmp2Walk","Unable to run Snmp2 WALK check! "+e.getMessage()+", for host: "+ip);
 			return null;
 		} finally {
 			if (transport != null) {
 				try {
 					transport.close();
 				} catch (IOException e) {
-					SysLogger.Record(
-							new Log("Unable to close TransportMapping! may cause memory leak!", LogType.Error, e));
+					Logit.LogError("Net - Snmp2Walk","Unable to close TransportMapping! may cause memory leak! "+e.getMessage()+", for host: "+ip);
 				}
 			}
 			if (snmp != null) {
 				try {
 					snmp.close();
 				} catch (IOException e) {
-					SysLogger.Record(new Log("Unable to close SNMP! may cause memory leak!", LogType.Error, e));
-
+					Logit.LogError("Net - Snmp2Walk","Unable to close SNMP! may cause memory leak! "+e.getMessage()+", for host: "+ip);
 				}
 			}
 		}
