@@ -6,6 +6,7 @@ import java.util.HashMap;
 import org.json.simple.JSONArray;
 
 import lycus.GlobalConstants.LogType;
+import lycus.Utils.Logit;
 import lycus.DataPointsRollup;
 import lycus.Log;
 import lycus.RunnableProbe;
@@ -67,7 +68,7 @@ public class PorterResults extends BaseResult {
 		try {
 			checkIfTriggerd();
 		} catch (Exception e) {
-			SysLogger.Record(new Log("Error triggering RunnableProbe: " + this.getRp(), LogType.Warn, e));
+			Logit.LogError("PorterResults - acceptResults", "Error triggering RunnableProbe: " + this.getRp());
 		}
 	}
 

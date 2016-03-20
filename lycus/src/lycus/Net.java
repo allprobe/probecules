@@ -75,7 +75,7 @@ public class Net {
 		try {
 			inet = InetAddress.getByName(ip);
 		} catch (UnknownHostException ex) {
-			SysLogger.Record(new Log("Problem With Host IP:" + ip, "Net", "pinger", LogType.Debug, ex));
+			Logit.LogWarn("No IP address or ipv6 address for host: "+ip);
 			pingResults.add(System.currentTimeMillis());
 			pingResults.add(100);
 			pingResults.add(0.0);
@@ -101,12 +101,8 @@ public class Net {
 						return pingResults;
 					}
 				} catch (IOException ex) {
-					pingResults.add(System.currentTimeMillis());
-					pingResults.add(100);
-					pingResults.add(0.0);
-					pingResults.add(0);
-					SysLogger.Record(new Log("windows pinger problem " + ip, LogType.Error, ex));
-					return pingResults;
+					Logit.LogError("Net - Pinger","network error with windows pinger for host: " + ip);
+					return null;
 				}
 			} else {
 				/* Linux & OSX */
@@ -250,7 +246,7 @@ public class Net {
 		try {
 			address = InetAddress.getByName(ip);
 		} catch (UnknownHostException e) {
-			SysLogger.Record(new Log("incorrect host address" + ip, "Net", "UdpPorter", LogType.Error));
+			Logit.LogWarn("No IP address or ipv6 address for host: "+ip);
 			results.add(System.currentTimeMillis());
 			results.add(false);
 			results.add(0);
@@ -259,18 +255,9 @@ public class Net {
 		try {
 			dsock = new DatagramSocket();
 			dsock.setSoTimeout(timeout);
-		} catch (SocketException e) {
-			SysLogger.Record(new Log("Socket creation problem" + ip, "Net", "UdpPorter", LogType.Error, e));
-			results.add(System.currentTimeMillis());
-			results.add(false);
-			results.add(0);
-			return results;
 		} catch (Exception e) {
-			SysLogger.Record(new Log("Socket problem" + ip, "Net", "UdpPorter", LogType.Error, e));
-			results.add(System.currentTimeMillis());
-			results.add(false);
-			results.add(0);
-			return results;
+			Logit.LogError("Net - UdpPorter", "Error creating socket for udp porter!");
+			return null;
 		}
 		start = System.currentTimeMillis();
 		results.add(start);
@@ -278,8 +265,7 @@ public class Net {
 			dsock.send(new DatagramPacket(sendMessage.getBytes(), sendMessage.getBytes().length,
 					InetAddress.getByName(ip), port));
 		} catch (Exception e) {
-			SysLogger.Record(new Log("Socket send problem:" + ip + " Exception:" + e.getClass().getName(), "Net",
-					"UdpPorter", LogType.Error, e));
+			Logit.LogError("Net - UdpPorter", "Socket send problem:" + ip + " Exception:" + e.getMessage());
 			results.add(start);
 			results.add(false);
 			results.add(0);
@@ -305,21 +291,9 @@ public class Net {
 				results.add(querytime);
 				return results;
 			}
-		} catch (SocketTimeoutException ste) {
-			SysLogger.Record(new Log("UDP Port closed", "Net", "UdpPorter", LogType.Debug, ste));
-			results.add(false);
-			results.add(timeout);
-			return results;
-		} catch (IOException ioe) {
-			querytime = System.currentTimeMillis() - start;
-			SysLogger.Record(new Log("UDP Port closed", "Net", "UdpPorter", LogType.Debug, ioe));
-			results.add(false);
-			results.add(querytime);
-			return results;
 		} catch (Exception e) {
 			querytime = System.currentTimeMillis() - start;
-			SysLogger.Record(new Log("UDP Port closed" + ip + " Exception:" + e.getClass().getName(), "Net",
-					"UdpPorter", LogType.Error, e));
+			Logit.LogInfo("UDP Port closed" + ip + " Exception:" + e.getMessage());
 			results.add(false);
 			results.add(querytime);
 			return results;
@@ -465,10 +439,8 @@ public class Net {
 		try {
 			transport = new DefaultUdpTransportMapping();
 		} catch (IOException e) {
-			SysLogger.Record(new Log("Snmp Check " + ip + " Failed", "Net", "runSnmpCheckVer1", LogType.Error));
-			results.add(System.currentTimeMillis());
-			results.add("");
-			return results;
+			Logit.LogError("Net - runSnmpCheckVer1", "socket binding fails for snmpV1check, "+ip+":"+port);
+			return null;
 		}
 		Snmp snmp = new Snmp(transport);
 		try {

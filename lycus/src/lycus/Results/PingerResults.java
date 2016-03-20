@@ -6,6 +6,7 @@ import java.util.HashMap;
 import org.json.simple.JSONArray;
 
 import lycus.GlobalConstants.LogType;
+import lycus.Utils.Logit;
 import lycus.DataPointsRollup;
 import lycus.Log;
 import lycus.RunnableProbe;
@@ -101,7 +102,7 @@ public class PingerResults extends BaseResult {
 		}
 		catch(Exception e)
 		{
-			SysLogger.Record(new Log("Error triggering RunnableProbe: "+this.getRp(),LogType.Warn,e));
+			Logit.LogError("PingerResults - acceptResults", "Error triggering RunnableProbe: "+this.getRp());
 		}
 
 	}
@@ -253,8 +254,8 @@ public class PingerResults extends BaseResult {
 			} else {
 				if ((finishedPacketLostRollup == null && finishedRttRollup != null)
 						|| (finishedPacketLostRollup != null && finishedRttRollup == null)) {
-					SysLogger.Record(new Log("Bad RunnableProbeResults: " + this.getRp().getRPString()
-							+ ", DataPointsRollup values are not synced!", LogType.Error));
+					Logit.LogError("PingerResults - getResults", "Bad RunnableProbeResults: " + this.getRp().getRPString()
+							+ ", DataPointsRollup values are not synced!");
 				}
 			}
 		}

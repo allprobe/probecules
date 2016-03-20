@@ -16,6 +16,7 @@ import lycus.GlobalConstants.Enums.ElementChange;
 import lycus.GlobalConstants.Enums.HostType;
 import lycus.GlobalConstants.LogType;
 import lycus.Utils.GeneralFunctions;
+import lycus.Utils.Logit;
 import lycus.Log;
 import lycus.RunnableProbe;
 import lycus.SysLogger;
@@ -89,8 +90,7 @@ public class DiscoveryResults extends BaseResult {
 				continue;
 			int index = Integer.parseInt(entry.getValue());
 			if (index == 0) {
-				SysLogger.Record(
-						new Log("snmp OID index cannot be zero! ---" + this.getRp().getRPString(), LogType.Warn));
+				Logit.LogError("DiscoveryResults - convertNicsWalkToIndexes", "snmp OID index cannot be zero! ---" + this.getRp().getRPString());
 				continue;
 			}
 

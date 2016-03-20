@@ -7,6 +7,7 @@ import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 
 import lycus.GlobalConstants.LogType;
+import lycus.Utils.Logit;
 import lycus.DataPointsRollup;
 import lycus.GlobalConstants.DataPointsRollupSize;
 import lycus.Log;
@@ -79,7 +80,7 @@ public class BaseResult {
 			return 3;
 		if (interval >= 21600)
 			return 2;
-		SysLogger.Record(new Log("Wrong interval at Runnable Probe:" + getRp().toString(), LogType.Error));
+		Logit.LogError("BaseResult - getNumberOfRollupTables", "Wrong interval at Runnable Probe:" + getRp().toString());
 		return 0;
 	}
 
@@ -115,8 +116,8 @@ public class BaseResult {
 	public DataPointsRollup[] initRollupSeries(DataPointsRollup[] rollups) {
 		int n = this.getNumberOfRollupTables();
 		if (n == 0) {
-			SysLogger.Record(new Log("Unable to init rtt Rollups of Runnable Probe Results: "
-					+ this.getRp().getRPString() + " check interval!", LogType.Error));
+			Logit.LogError("BaseResult - initRollupSeries", "Unable to init rtt Rollups of Runnable Probe Results: "
+					+ this.getRp().getRPString() + " check interval!");
 			return null;
 		}
 		for (int i = 0; i < n; i++) {
@@ -157,7 +158,7 @@ public class BaseResult {
 	 */
 
 	public HashMap<String, String> getResults() throws Throwable {
-		SysLogger.Record(new Log("Collecting DATA for Runnable Probe: " + this.getRp().getRPString(), LogType.Debug));
+		Logit.LogDebug("Collecting DATA for Runnable Probe: " + this.getRp().getRPString());
 
 		String rpStr = this.getRp().getRPString();
 		if (rpStr.contains("7352a46f-5189-428c-b4c0-fb98dedd10b1@inner_036f81e0-4ec0-468a-8396-77c21dd9ae5a"))
@@ -181,7 +182,7 @@ public class BaseResult {
 	}
 
 	protected void addRollupsFromExistingMemoryDump(DataPointsRollup[] original, DataPointsRollup[] memoryDump) {
-		SysLogger.Record(new Log("Merging existing rollup for => " + this.getRp().getRPString(), LogType.Debug));
+		Logit.LogDebug("Merging existing rollup for => " + this.getRp().getRPString());
 		for (int i = 0; i < 6; i++) {
 			if (original[i] != null) {
 				original[i].mergeRollup(memoryDump[i]);
@@ -190,7 +191,7 @@ public class BaseResult {
 	}
 
 	protected void checkIfTriggerd() throws Exception {
-		SysLogger.Record(new Log("Triggering Runnable Probe: " + this.getRp().getRPString(), LogType.Debug));
+		Logit.LogDebug("Triggering Runnable Probe: " + this.getRp().getRPString());
 	}
 
 	public void processTriggerResult(Trigger trigger, boolean triggered) {
@@ -199,8 +200,8 @@ public class BaseResult {
 			// if trigger event became true and normal again send event to api
 			lastEvent.setStatus(true);
 			lastEvent.setSent(false);
-			SysLogger.Record(new Log("Trigger " + trigger.getTriggerId() + " of Runnable Probe: "
-					+ this.getRp().getRPString() + " deactivated, will send event to API...", LogType.Debug));
+			Logit.LogDebug("Trigger " + trigger.getTriggerId() + " of Runnable Probe: "
+					+ this.getRp().getRPString() + " deactivated, will send event to API...");
 		} else if (lastEvent == null && triggered) {
 			TriggerEvent event = new TriggerEvent(this.getRp(), trigger, false);
 			event.setSent(false);

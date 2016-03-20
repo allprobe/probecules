@@ -6,6 +6,7 @@ import java.util.HashMap;
 import org.json.simple.JSONArray;
 
 import lycus.GlobalConstants.LogType;
+import lycus.Utils.Logit;
 import lycus.Log;
 import lycus.RunnableProbe;
 import lycus.SysLogger;
@@ -44,7 +45,7 @@ public class RblResults extends BaseResult {
 		}
 		catch(Exception e)
 		{
-			SysLogger.Record(new Log("Error triggering RunnableProbe: "+this.getRp(),LogType.Warn,e));
+			Logit.LogError("RblResults - acceptResults","Error triggering RunnableProbe: "+this.getRp() );
 		}
 		
 		

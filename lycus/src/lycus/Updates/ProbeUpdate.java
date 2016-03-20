@@ -50,7 +50,7 @@ public class ProbeUpdate extends BaseUpdate {
 		}
 		host = getUser().getHost(UUID.fromString(getUpdate().host_id));
 		if (host == null) {
-			SysLogger.Record(new Log("Failed update from type NEW PROBE - unknown host", LogType.Warn));
+			Logit.LogError("ProbeUpdate - New()", "Failed update from type NEW PROBE - unknown host");
 			return false;
 		}
 

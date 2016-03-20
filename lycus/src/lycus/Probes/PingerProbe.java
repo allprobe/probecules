@@ -10,6 +10,7 @@ import java.util.UUID;
 import lycus.GlobalConstants.LogType;
 import lycus.Model.KeyUpdateModel;
 import lycus.Model.UpdateValueModel;
+import lycus.Utils.Logit;
 import lycus.Host;
 import lycus.Log;
 import lycus.Net;
@@ -85,7 +86,7 @@ public class PingerProbe extends BaseProbe {
 		}
 		catch(Throwable th)
 		{
-			SysLogger.Record(new Log("Faild to run runnable probe check for: "+h.getHostId().toString()+"@"+this.getProbe_id(),LogType.Error));
+			Logit.LogError("PingerProbe - Check","Faild to run runnable probe check for: "+h.getHostId().toString()+"@"+this.getProbe_id());
 		}
 		
 				

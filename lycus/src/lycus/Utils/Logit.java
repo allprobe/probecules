@@ -4,8 +4,8 @@ import org.apache.log4j.LogManager;
 
 
 public class Logit {
-	static Logger log = Logger.getLogger("");
-//	static Logger log = LogManager.getLogger("");
+//	static Logger log = Logger.getLogger("");
+	static Logger log = LogManager.getLogger("syslogger");
 
 //	public Logit(String className)
 //	{

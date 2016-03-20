@@ -11,6 +11,7 @@ import lycus.GlobalConstants.LogType;
 import lycus.Model.UpdateModel;
 import lycus.DAL.DAL;
 import lycus.Utils.GeneralFunctions;
+import lycus.Utils.Logit;
 import lycus.Host;
 import lycus.Log;
 import lycus.RunnableProbe;
@@ -38,7 +39,7 @@ public class HostUpdate extends BaseUpdate {
 	public Boolean Update() {
 		super.Update();
 
-		SysLogger.Record(new Log("Updating Host:"+getUpdate().host_id,LogType.Info));
+		Logit.LogInfo("Updating Host:"+getUpdate().host_id);
 		
 		Host host = getUser().getHost(UUID.fromString(getUpdate().host_id));
 		if (host == null)

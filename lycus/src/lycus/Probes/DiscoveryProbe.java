@@ -5,6 +5,7 @@ import java.util.Map;
 import java.util.UUID;
 import lycus.GlobalConstants.Enums;
 import lycus.GlobalConstants.LogType;
+import lycus.Utils.Logit;
 import lycus.GlobalConstants.Enums.HostType;
 import lycus.Host;
 import lycus.Log;
@@ -56,9 +57,7 @@ public class DiscoveryProbe extends BaseProbe {
 				break;
 			}
 		} catch (Throwable th) {
-			SysLogger.Record(new Log(
-					"Faild to run runnable probe check for: " + h.getHostId().toString() + "@" + this.getProbe_id(),
-					LogType.Error));
+			Logit.LogError("DiscoveryProbe - Check", "Faild to run runnable probe check for: " + h.getHostId().toString() + "@" + this.getProbe_id());
 		}
 
 		return results;

@@ -6,6 +6,7 @@ import java.util.HashMap;
 import org.json.simple.JSONArray;
 
 import lycus.GlobalConstants.LogType;
+import lycus.Utils.Logit;
 import lycus.DataPointsRollup;
 import lycus.Log;
 import lycus.RunnableProbe;
@@ -99,7 +100,7 @@ public class WeberResults extends BaseResult {
 		}
 		catch(Exception e)
 		{
-			SysLogger.Record(new Log("Error triggering RunnableProbe: "+this.getRp(),LogType.Warn,e));
+			Logit.LogError("WeberResults - acceptResults", "Error triggering RunnableProbe: "+this.getRp());
 		}
 	}
 	
@@ -250,7 +251,7 @@ public class WeberResults extends BaseResult {
 			
 			if(currentResponseTimeRollup==null)
 			{
-				SysLogger.Record(new Log("Wrong Rollup Tables Number Of: "+this.getRp().getRPString(),LogType.Debug));
+				Logit.LogError("WeberResults - getResults", "Wrong Rollup Tables Number Of: "+this.getRp().getRPString());
 				continue;
 			}
 				if (finishedResponseTimeRollup!=null) {

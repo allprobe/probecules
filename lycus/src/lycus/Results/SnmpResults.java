@@ -42,9 +42,7 @@ public class SnmpResults extends BaseResult {
 			break;
 		}
 		default:
-			SysLogger.Record(new Log(
-					"Unable to determine snmp probe type: " + rp.getRPString() + ", RP results didn't initialized!",
-					LogType.Error));
+			Logit.LogError("SnmpResults - SnmpResults", "Unable to determine snmp probe type: " + rp.getRPString() + ", RP results didn't initialized!");
 		}
 	}
 
@@ -121,14 +119,14 @@ public class SnmpResults extends BaseResult {
 		try {
 			checkIfTriggerd();
 		} catch (Exception e) {
-			SysLogger.Record(new Log("Error triggering RunnableProbe: " + this.getRp(), LogType.Warn, e));
+			Logit.LogError("SnmpResults - acceptResults", "Error triggering RunnableProbe: " + this.getRp());
 		}
 	}
 
 	private void acceptTextResults(ArrayList<Object> results) {
 		String stringData = (String) results.get(1);
 		if (stringData == null) {
-			SysLogger.Record(new Log("Error parsing snmp probe results: " + this.getRp().getRPString(), LogType.Warn));
+			Logit.LogError("SnmpResults - acceptTextResults", "Error parsing snmp probe results: " + this.getRp().getRPString());
 			this.setStringData(null);
 			return;
 		} else if (stringData.equals(Constants.WRONG_OID)) {

@@ -1,4 +1,4 @@
-package lycus;
+	package lycus;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -33,6 +33,7 @@ import lycus.Probes.RBLProbe;
 import lycus.Probes.SnmpProbe;
 import lycus.Probes.WeberProbe;
 import lycus.Utils.GeneralFunctions;
+import lycus.Utils.Logit;
 
 public class User {
 	private UUID userId;
@@ -194,8 +195,7 @@ public class User {
 		try {
 			newRunnableProbe = new RunnableProbe(host, probe);
 		} catch (Exception e) {
-			SysLogger.Record(
-					new Log("Unable to create Runnable Probe: " + rpID + ", check probe type!", LogType.Error, e));
+			Logit.LogError("User - addRunnableProbe(String rpID)", "Unable to create Runnable Probe: " + rpID + ", check probe type!");
 			return;
 		}
 		host.getRunnableProbes().put(rpID, newRunnableProbe);
