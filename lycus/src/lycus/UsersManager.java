@@ -50,14 +50,13 @@ public class UsersManager {
 	
 	public static void Initialize() {
 		BasicConfigurator.configure();
-		Logit.LogInfo("Service start Ver 1.0.0.0");
 		
 		setUsers(new HashMap<UUID, User>());
 		if (!UsersManager.Build()) {
 			setInitialized(false);
 			return;
 		}
-		SysLogger.Record(new Log("Server successfully initialized with all user's data.", LogType.Info));
+		Logit.LogInfo("Server successfully initialized with all user's data.");
 		setInitialized(true);
 	}
 
@@ -89,7 +88,7 @@ public class UsersManager {
 		HashMap<String, UUID> probeByUser = getProbeByUser(runnableProbesIds);
 
 		if (runnableProbesIds == null) {
-			SysLogger.Record(new Log("no probes found for this server!", LogType.Info));
+			Logit.LogFatal("UsersManager", "no probes found for this server!");
 			return false;
 		}
 
@@ -179,9 +178,7 @@ public class UsersManager {
 					continue;
 				user.addSnmpTemplate(snmpTemplateParams);
 			} catch (Exception e) {
-				SysLogger.Record(
-						new Log("Creation of Snmp Template Failed: " + snmpTempJson.toJSONString() + " , not added!",
-								LogType.Warn, e));
+				Logit.LogWarn("Creation of Snmp Template Failed: " + snmpTempJson.toJSONString() + " , not added! E: "+e.getMessage());
 				continue;
 			}
 		}
@@ -225,9 +222,7 @@ public class UsersManager {
 				}
 				
 			} catch (Exception e) {
-				SysLogger.Record(
-						new Log("Creation of Discovery Element Failed: " + allElementsJson.toJSONString() + " , not added!",
-								LogType.Warn, e));
+				Logit.LogWarn("Creation of Discovery Element Failed: " + allElementsJson.toJSONString() + " , not added! E: "+e.getMessage());
 				continue;
 			}
 		}
@@ -277,7 +272,7 @@ public class UsersManager {
 				probeParams.probe_id = (String) probeJson.get("probe_id");
 				String rpStr = probeParams.probe_id;
 				if (rpStr.contains(
-						"inner_b0fb65d1-c50d-4639-a728-0f173588f56b"))
+						"inner_657259e4-b70b-47d2-9e4a-3db904a367e1"))
 					System.out.println("BREAKPOINT");
 				probeParams.name = (String) probeJson.get("probe_name");
 				probeParams.interval = Long.parseLong(probeJson.get("probe_interval").toString());
@@ -297,7 +292,7 @@ public class UsersManager {
 					break;
 				}
 				case Constants.port: {
-					String proto = (String) probeKeyJson.get("proto");
+					probeParams.protocol=(String) probeKeyJson.get("proto");
 					probeParams.port = Integer.parseInt(probeKeyJson.get("port").toString());
 					probeParams.timeout = Integer.parseInt(probeKeyJson.get("timeout").toString());
 					probeParams.port_extra = (String) probeKeyJson.get("port_extra");
@@ -341,7 +336,7 @@ public class UsersManager {
 				}
 				user.addTemplateProbe(probeParams);
 			} catch (Exception e) {
-				SysLogger.Record(new Log("Unable to parse probe params for:" + probeJson, LogType.Warn));
+				Logit.LogWarn("Unable to parse probe params for:" + probeJson+", E:"+e.getMessage());
 				continue;
 			}
 		}
@@ -388,7 +383,7 @@ public class UsersManager {
 				String name = (String) triggerJson.get("name");
 				TriggerSeverity severity = getTriggerSev((String) triggerJson.get("severity"));
 				if (severity == null)
-					SysLogger.Record(new Log("Unable to get trigger severity for: " + triggerId, LogType.Warn));
+					Logit.LogWarn("Unable to get trigger severity for: " + triggerId);
 				boolean status = ((String) triggerJson.get("status")).equals("1") ? true : false;
 				String elementType = (String) triggerJson.get("trigger_type");
 				String unitType = (String) triggerJson.get("xvalue_unit");
@@ -404,8 +399,7 @@ public class UsersManager {
 				}
 				BaseProbe probe = user.getTemplateProbes().get(probeId);
 				if (probe == null) {
-					SysLogger.Record(
-							new Log("No probe exists for trigger: " + triggerJson.toJSONString(), LogType.Warn));
+					Logit.LogWarn("No probe exists for trigger: " + triggerJson.toJSONString());
 					continue;
 				}
 
@@ -415,8 +409,7 @@ public class UsersManager {
 				probe.addTrigger(trigger);
 
 			} catch (Exception e) {
-				SysLogger.Record(new Log("Creation of Trigger Failed: " + triggerJson.toJSONString() + " , not added!",
-						LogType.Warn, e));
+				Logit.LogWarn("Creation of Trigger Failed: " + triggerJson.toJSONString() + " , not added! E: "+e.getMessage());
 				continue;
 			}
 		}
@@ -602,12 +595,11 @@ public class UsersManager {
 		while (true) {
 			initServer = ApiInterface.executeRequest(Enums.ApiAction.InitServer, "GET", null);
 			if (initServer == null) {
-				SysLogger.Record(new Log("Error starting server, no API connectivity! trying again in 1 minutes...",
-						LogType.Error));
+				Logit.LogError("UsersManager - getServerInfoFromApi", "Error starting server, no API connectivity! trying again in 1 minutes...");
 				try {
 					Thread.sleep(60000);
 				} catch (InterruptedException e) {
-					SysLogger.Record(new Log("Main Thread Interrupted!", LogType.Error, e));
+					Logit.LogError("UsersManager - getServerInfoFromApi", "Main Thread Interrupted! E: "+e.getMessage());	
 				}
 			} else {
 				JSONObject jsonInitServer = (JSONObject) (initServer);
