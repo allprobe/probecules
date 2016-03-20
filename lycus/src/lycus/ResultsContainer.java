@@ -184,7 +184,7 @@ public class ResultsContainer implements IResultsContainer {
 			RunnableProbe rp = rpr.getRp();
 
 			String rpStr = rp.getRPString();
-			if (rpStr.contains("discovery_6b54463e-fe1c-4e2c-a090-452dbbf2d510"))
+			if (rpStr.contains("fc46cf87-0872-4e5d-9b83-c44a3d1f3ea6@icmp_1f1aed08-7331-4126-97ef-225e90b4a969"))
 				System.out.println("BREAKPOINT - RunnableProbesHistory");
 
 			if (rpr.getLastTimestamp() == null || rpr.getLastTimestamp() == 0)
@@ -247,7 +247,17 @@ public class ResultsContainer implements IResultsContainer {
 			}
 		}
 		Gson gson = new GsonBuilder().setPrettyPrinting().create();
-		return (gson.toJson(results));
+		String jsonString=null;
+		try
+		{
+			jsonString=gson.toJson(newResults);
+		}
+		catch(Exception e)
+		{
+			Logit.LogFatal("ResultsContainer - getResults()","Unable to parse results to json format! not sent!, E: "+e.getMessage());
+		}
+		
+		return jsonString;
 	}
 
 	@Override
