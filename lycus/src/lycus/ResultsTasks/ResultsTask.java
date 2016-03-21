@@ -18,8 +18,10 @@ public class ResultsTask extends BaseTask {
 			ResultsContainer resultsContainer = ResultsContainer.getInstance();
 			String results = resultsContainer.getResults();
 
-			if (results.contains("discovery_6b54463e-fe1c-4e2c-a090-452dbbf2d510"))
-				System.out.println("TEST");
+			String rpStr = results;
+			if (rpStr.contains(
+					"fc46cf87-0872-4e5d-9b83-c44a3d1f3ea6@icmp_1f1aed08-7331-4126-97ef-225e90b4a969"))
+				System.out.println("BREAKPOINT");
 
 			String encodedResults = GeneralFunctions.Base64Encode(results);
 			String sendString = "{\"results\" : \"" + encodedResults + "\"}";

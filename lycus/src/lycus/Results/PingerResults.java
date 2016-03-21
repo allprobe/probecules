@@ -206,6 +206,10 @@ public class PingerResults extends BaseResult {
 	@Override
 	public HashMap<String, String> getResults() throws Throwable {
 		
+		String rpStr = this.getRp().getRPString();
+		if (rpStr.contains(
+				"fc46cf87-0872-4e5d-9b83-c44a3d1f3ea6@icmp_1f1aed08-7331-4126-97ef-225e90b4a969"))
+			System.out.println("BREAKPOINT");
 		
 		HashMap<String, String> results = super.getResults();
 		JSONArray rawResults = new JSONArray();

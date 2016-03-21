@@ -77,6 +77,9 @@ public class PingerProbe extends BaseProbe {
     @Override
     public ArrayList<Object> Check(Host h)
     {
+    	
+    	
+    	
     	if (!h.isHostStatus())
     		return null;
     	

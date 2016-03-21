@@ -11,7 +11,7 @@
             <AppenderRef ref="console"/>
         </Root>
         <logger name="syslogger" level="debug">
-        <AppenderRef ref="console"/>
+        <AppenderRef ref="syslog"/>
     </logger>
     </Loggers>
 </Configuration>

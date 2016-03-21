@@ -188,8 +188,7 @@ public class User {
 			System.out.println("BREAKPOINT");
 
 		if (probe == null || host == null) {
-			SysLogger.Record(new Log("Unable to create Runnable Probe: " + rpID + ", one of its elements is missing!",
-					LogType.Error));
+			Logit.LogWarn("Unable to create Runnable Probe: " + rpID + ", one of its elements is missing!");
 			return;
 		}
 		try {
@@ -273,18 +272,6 @@ public class User {
 		return matchedRps;
 	}
 
-	private boolean reInsertProbeRunningPool(String probeId) {
-		List<RunnableProbe> rps = this.getRPSbyProbeID(probeId);
-		if (rps == null) {
-			SysLogger.Record(new Log("Unable to re enable probe: " + probeId + " no RPS found!", LogType.Error));
-			return false;
-		}
-		for (RunnableProbe rp : rps) {
-			if (this.stopRunnableProbe(rp))
-				return this.startRunnableProbe(rp);
-		}
-		return false;
-	}
 
 	public boolean startRunnableProbe(RunnableProbe rp) {
 		if (rp.getProbe() instanceof SnmpProbe) {
@@ -306,7 +293,7 @@ public class User {
 			rp.stop();
 			return true;
 		} catch (Exception e) {
-			SysLogger.Record(new Log("Unable To stop RunnableProbe: " + rp.getRPString(), LogType.Error));
+			Logit.LogError("User - stopRunnableProbe", "Unable To stop RunnableProbe: " + rp.getRPString());
 			return false;
 		}
 	}
@@ -364,8 +351,7 @@ public class User {
 			try {
 				notif_groups = UUID.fromString(hostParams.notificationGroups);
 			} catch (Exception e) {
-				SysLogger.Record(new Log("Unable to parse notifications group: " + hostParams.notificationGroups,
-						LogType.Warn, e));
+				Logit.LogWarn("Unable to parse notifications group: " + hostParams.notificationGroups+", E: "+e.getMessage());
 				notif_groups = null;
 			}
 
@@ -373,7 +359,7 @@ public class User {
 			try {
 				snmp_template = UUID.fromString(hostParams.snmpTemp);
 			} catch (Exception e) {
-				SysLogger.Record(new Log("Unable to parse snmp template: " + hostParams.snmpTemp, LogType.Warn, e));
+				Logit.LogWarn("Unable to parse snmp template id for host: " + hostParams.host_id);
 				snmp_template = null;
 			}
 
@@ -387,7 +373,7 @@ public class User {
 			}
 			this.getHosts().put(host_id, host);
 		} catch (Exception e) {
-			SysLogger.Record(new Log("Creation of Host Failed: " + hostParams + " , not added!", LogType.Warn, e));
+			Logit.LogWarn("Creation of Host Failed: " + hostParams + " , not added! E: "+e.getMessage());
 		}
 	}
 
@@ -417,9 +403,7 @@ public class User {
 			this.getSnmpTemplates().put(snmpTemp.getSnmpTemplateId(), snmpTemp);
 
 		} catch (Exception e) {
-			SysLogger.Record(new Log(
-					"Unable to add SNMP Template: " + snmpTemplateParams.snmp_template_id.toString() + " , not added!",
-					LogType.Warn, e));
+			Logit.LogWarn("Unable to add SNMP Template: " + snmpTemplateParams.snmp_template_id.toString() + " , not added!");
 		}
 
 	}
@@ -479,13 +463,13 @@ public class User {
 				String valueUnit = probeParams.snmp_unit;
 				SnmpDataType dataType = getSnmpDataType(valueType);
 				if (dataType == null) {
-					SysLogger.Record(new Log("Probe: " + probeId + " Wrong Data Type, Doesn't Added!", LogType.Error));
+					Logit.LogWarn("Probe: " + probeId + " Wrong Data Type, Doesn't Added!");
 					return;
 				}
 
 				SnmpUnit unit = getSnmpUnit(valueUnit);
 				if (unit == null) {
-					SysLogger.Record(new Log("Probe: " + probeId + " Wrong Unit Type, Doesn't Added!", LogType.Error));
+					Logit.LogWarn("Probe: " + probeId + " Wrong Unit Type, Doesn't Added!");
 					return;
 				}
 				probe = new SnmpProbe(this,probeId, templateId, name, interval, multiplier, status, oid, dataType, unit,

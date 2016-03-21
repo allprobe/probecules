@@ -125,9 +125,10 @@ public class PorterProbe extends BaseProbe {
 		if (!h.isHostStatus())
 			return null;
 
-		String rpStr = h.getHostId().toString();
-		if (rpStr.contains("b631bd96-e2e6-4163-940b-ff376d7d2138"))
+		String rpStr = h.getHostId().toString()+"@"+this.getProbe_id();
+		if (rpStr.contains("9dc99972-e28a-4e90-aabd-7e8bad61b232@inner_657259e4-b70b-47d2-9e4a-3db904a367e1"))
 			System.out.println("BREAKPOINT - PorterProbe");
+		
 		ArrayList<Object> results = null;
 		switch (this.getProto()) {
 		case "TCP":

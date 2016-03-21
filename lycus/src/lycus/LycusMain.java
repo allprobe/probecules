@@ -35,14 +35,13 @@ public class LycusMain {
 		if (!Global.Initialize())
 			return;
 		SysLogger.Init();
-		System.out.println("Probecules Version: 0.7.1.2");
+		Logit.LogInfo("Probecules Version: 0.7.3");
 		boolean apiInit = ApiInterface.Initialize();
 		if (!apiInit)
 			return;
 		UsersManager.Initialize();// setup initial config (InitServer)
 
 		
-		Logit.LogError("gswerw", "ttu4t87276yd");
 		// Net.Snmp2Walk("62.90.132.150", port, timeout, comName, _oid)
 
 		// Net.Snmp2Walk("62.90.132.131", 161, 5000, "ADCD-LAN2",
