@@ -13,6 +13,7 @@ import lycus.Probes.SnmpProbe;
 import lycus.Probes.WeberProbe;
 import lycus.Results.BaseResult;
 import lycus.Rollups.RollupsContainer;
+import lycus.Utils.Logit;
 
 public class RunnableProbe implements Runnable {
 	private Host host;
@@ -97,7 +98,7 @@ public class RunnableProbe implements Runnable {
 			ResultsContainer.getInstance().addResult(result);
 			RollupsContainer.getInstance().addResult(result);
 		} catch (Exception e) {
-			SysLogger.Record(new Log("Unable Probing Runnable Probe of: " + this.getId(), LogType.Error, e));
+			Logit.LogError("RunnableProbe - run()", "Unable Probing Runnable Probe of: " + this.getId() + "\n" + e.getMessage());
 		}
 //		try {
 //			//TODO: take care of events and triggers
@@ -107,8 +108,8 @@ public class RunnableProbe implements Runnable {
 //			SysLogger.Record(
 //					new Log("Unable to set Runnable Probe results from Check " + this.getRPString(), LogType.Error, e));
 //		}
-		SysLogger.Record(new Log("Running Probe: " + this.getId() + " at Host: " + this.getHost().getHostIp()
-				+ "(" + this.getHost().getName() + ")" + ", Results: " + result + " ...", LogType.Debug));
+		Logit.LogDebug("Running Probe: " + this.getId() + " at Host: " + this.getHost().getHostIp()
+				+ "(" + this.getHost().getName() + ")" + ", Results: " + result + " ...");
 	}
 
 	// returns this.isRunning();
@@ -148,9 +149,7 @@ public class RunnableProbe implements Runnable {
 				rpThread = RunInnerProbesChecks.getRblProbeFutureMap().remove(this.getId());
 			}
 			if (rpThread == null) {
-				SysLogger.Record(
-						new Log("RunnableProbe: " + this.getId() + " running, but doesn't exists in thread pool!",
-								LogType.Error));
+				Logit.LogError("RunnableProbe - stop()", "RunnableProbe: " + this.getId() + " running, but doesn't exists in thread pool!");
 				return false;
 			} else
 				rpThread.cancel(false);

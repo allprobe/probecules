@@ -10,12 +10,6 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.util.Properties;
 
-import org.apache.log4j.Logger;
-
-import lycus.Utils.Logit;
-import lycus.Log;
-import lycus.SysLogger;
-
 /**
  *
  * @author ran

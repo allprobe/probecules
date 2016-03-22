@@ -1,18 +1,11 @@
 package lycus;
 
-import java.io.PrintWriter;
-import java.io.StringWriter;
 import java.util.ArrayList;
-import java.util.Collection;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.UUID;
-import java.util.concurrent.Executors;
-import java.util.concurrent.ScheduledExecutorService;
-import java.util.concurrent.ScheduledFuture;
-import java.util.concurrent.TimeUnit;
 import org.json.simple.JSONObject;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
@@ -23,7 +16,6 @@ import lycus.Results.BaseResult;
 import lycus.Utils.GeneralFunctions;
 import lycus.Utils.JsonUtil;
 import lycus.Utils.Logit;
-import sun.misc.Queue;
 import lycus.Interfaces.IResultsContainer;
 
 public class ResultsContainer implements IResultsContainer {
@@ -123,17 +115,15 @@ public class ResultsContainer implements IResultsContainer {
 
 	public void pullCurrentLiveEvents() {
 		while (true) {
-			SysLogger.Record(new Log("Retrieving existing live eventsHandler from REDIS...", LogType.Debug));
+			Logit.LogDebug("Retrieving existing live eventsHandler from REDIS...");
 			Object eventsObject = ApiInterface.executeRequest(Enums.ApiAction.GetServerLiveEvents, "GET", null);
 
 			if (eventsObject == null) {
-				SysLogger.Record(
-						new Log("Unable to retrieve existing live eventsHandler, trying again in about 30 secs...",
-								LogType.Warn));
+				Logit.LogWarn("Unable to retrieve existing live eventsHandler, trying again in about 30 secs...");
 				try {
 					Thread.sleep(30000);
 				} catch (InterruptedException e) {
-					SysLogger.Record(new Log("Main thread interrupted!", LogType.Error, e));
+					Logit.LogError("ResultsContainer - pullCurrentLiveEvents()", "Main thread interrupted!" + e.getMessage());
 					continue;
 				}
 				continue;

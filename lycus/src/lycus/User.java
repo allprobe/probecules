@@ -503,7 +503,7 @@ public class User {
 				TriggerSeverity severity = getTriggerSev(probeParams.discovery_trigger_severity);
 				SnmpUnit trigValueUnit = getSnmpUnit(unitType);
 				if (trigValueUnit == null) {
-					SysLogger.Record(new Log("Probe: " + probeId + " Wrong Unit Type, Doesn't Added!", LogType.Error));
+					Logit.LogError("User = addTemplateProbe()", "Probe: " + probeId + " Wrong Unit Type, Doesn't Added!");
 					return;
 				}
 				Enums.DiscoveryElementType discoveryType;
@@ -537,13 +537,12 @@ public class User {
 			}
 			}
 			if (probe == null) {
-				SysLogger.Record(
-						new Log("Creation of Probe: " + probeParams.probe_id + " failed, skipping!", LogType.Warn));
+				Logit.LogWarn("Creation of Probe: " + probeParams.probe_id + " failed, skipping!");
 				throw new Exception("Error parsing one of probe elements!");
 			}
 			this.getTemplateProbes().put(probeId, probe);
 		} catch (Exception e) {
-			SysLogger.Record(new Log("Creation of Probe Failed: " + probeParams + " , not added!", LogType.Warn, e));
+			Logit.LogWarn("Creation of Probe Failed: " + probeParams + " , not added!\n" + e.getMessage());
 			return;
 
 		}
@@ -646,9 +645,9 @@ public class User {
 	private void addNicRunnableProbes(NicElement newElement, Host host) {
 		this.templateProbes.put(newElement.getProbe_id(), newElement);
 		if (newElement == null || host == null) {
-			SysLogger.Record(new Log("Unable to create Runnable Probe: " + newElement.getTemplate_id().toString() + "@"
+			Logit.LogError("User - addNicRunnableProbes()", "Unable to create Runnable Probe: " + newElement.getTemplate_id().toString() + "@"
 					+ host.getHostId().toString() + "@" + newElement.getProbe_id()
-					+ ", one of its elements is missing!", LogType.Error));
+					+ ", one of its elements is missing!");
 			return;
 		}
 		if (!newElement.isActive())
@@ -661,10 +660,8 @@ public class User {
 			inOctetsRunnableProbe = new RunnableProbe(host, newElement.getIfInOctets());
 			outOctetsRunnableProbe = new RunnableProbe(host, newElement.getIfOutOctets());
 		} catch (Exception e) {
-			SysLogger.Record(new Log(
-					"Unable to create Runnable Probe: " + newElement.getTemplate_id().toString() + "@"
-							+ host.getHostId().toString() + "@" + newElement.getProbe_id() + ", check probe type!",
-					LogType.Error, e));
+			Logit.LogError("User - addNicRunnableProbes()", "Unable to create Runnable Probe: " + newElement.getTemplate_id().toString() + "@"
+					+ host.getHostId().toString() + "@" + newElement.getProbe_id() + ", check probe type!\n" + e.getMessage());
 			return;
 		}
 		

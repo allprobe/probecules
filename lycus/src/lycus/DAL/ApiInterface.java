@@ -22,13 +22,10 @@ import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
 import org.json.simple.parser.JSONParser;
 import org.json.simple.parser.ParseException;
-
 import lycus.Utils.GeneralFunctions;
-import lycus.Log;
-import lycus.SysLogger;
+import lycus.Utils.Logit;
 import lycus.GlobalConstants.Enums;
 import lycus.GlobalConstants.Global;
-import lycus.GlobalConstants.LogType;
 
 public class ApiInterface {
 
@@ -63,25 +60,22 @@ public class ApiInterface {
 		try {
 			url = new URL(fullUrl);
 		} catch (MalformedURLException e) {
-			SysLogger.Record(new Log("Unable to process URL: " + fullUrl + ", failed to communicate with API!",
-					LogType.Error, e));
+			Logit.LogError("ApiInterface - executeRequest()", "Unable to process URL: " + fullUrl + ", failed to communicate with API!\n" + e.getMessage());
 			return null;
 		}
 		HttpURLConnection conn;
 		try {
 			conn = (HttpURLConnection) url.openConnection();
 		} catch (IOException e) {
-			SysLogger.Record(
-					new Log("Unable to open connection with URL: " + fullUrl + ", failed to communicate with API!",
-							LogType.Error, e));
+			Logit.LogError("ApiInterface - executeRequest()", "Unable to open connection with URL: " + fullUrl + ", failed to communicate with API!\n" + e.getMessage());
 			return null;
 		}
 
 		try {
 			conn.setRequestMethod(reqMethod);
 		} catch (ProtocolException e) {
-			SysLogger.Record(new Log("Unable to set " + reqMethod + " request method for URL: " + fullUrl
-					+ ", failed to communicate with API!", LogType.Error, e));
+			Logit.LogError("ApiInterface - executeRequest()", "Unable to set " + reqMethod + " request method for URL: " + fullUrl
+					+ ", failed to communicate with API!\n" + e.getMessage());
 			return null;
 		}
 		String authCredentials = GeneralFunctions.Base64Encode(Global.getApiUser() + ":" + Global.getApiPass());
@@ -110,13 +104,11 @@ public class ApiInterface {
 					return response.equals("")?null:response;
 			}
 		} catch (ParseException pe) {
-			SysLogger.Record(new Log("Unable to parse json string from URL: " + fullUrl + ", failed to init server!",
-					LogType.Error));
+			Logit.LogError("ApiInterface - executeRequest()","Unable to parse json string from URL: " + fullUrl +  " failed to init server!");
 			return null;
 
 		} catch (Exception e) {
-			SysLogger.Record(new Log("Failed to request URL: " + fullUrl + ", response code is different than 200 OK !",
-					LogType.Error));
+			Logit.LogError("ApiInterface - executeRequest()", "Failed to request URL: " + fullUrl + ", response code is different than 200 OK !");
 			return null;
 		} finally {
 			conn.disconnect();
@@ -166,11 +158,11 @@ public class ApiInterface {
 			try {
 				mainFolder.mkdir();
 			} catch (SecurityException se) {
-				SysLogger.Record(new Log("Unable to create failed_api folder!", LogType.Error));
+				Logit.LogError("ApiInterface - createFailsFolder()", "Unable to create failed_api folder!");
 			}
-			SysLogger.Record(new Log("Successfully failed_api folder created.", LogType.Info));
+			Logit.LogError("ApiInterface - createFailsFolder()", "Successfully failed_api folder created.");
 		} else {
-			SysLogger.Record(new Log("Folder failed_api already exists, no new folder created.", LogType.Info));
+			Logit.LogError("ApiInterface - createFailsFolder()", "Folder failed_api already exists, no new folder created.");
 		}
 	}
 
@@ -220,7 +212,7 @@ public class ApiInterface {
 			writer.println(data);
 			writer.close();
 		} catch (FileNotFoundException e) {
-			SysLogger.Record(new Log("DATA LOST! unable to write failed api request to file!", LogType.Error, e));
+			Logit.LogError("ApiInterface - createFailedRequestFile()", "DATA LOST! unable to write failed api request to file!\n" + e.getMessage());
 		}
 	}
 	

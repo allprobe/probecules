@@ -5,12 +5,11 @@ import java.text.NumberFormat;
 import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.TimeUnit;
-
 import lycus.Utils.GeneralFunctions;
+import lycus.Utils.Logit;
 import lycus.Log;
 import lycus.RunInnerProbesChecks;
 import lycus.ResultsContainer;
-import lycus.SysLogger;
 import lycus.GlobalConstants.LogType;
 
 public class SysInfo implements Runnable {
@@ -162,11 +161,11 @@ public class SysInfo implements Runnable {
     	info.append("--------------------------------------------------");
     	info.append("\n");	
     	
-    	SysLogger.Record(new Log("!Probecules Information!\n"+info,LogType.Info));
+    	Logit.LogInfo("!Probecules Information!\n");
 		}
 		catch(Exception e)
 		{
-			SysLogger.Record(new Log("Error with sys info thread!",LogType.Error));
+			Logit.LogError("SysInfo - run()", "Error with sys info thread!");
 		}
     }
     public void start()

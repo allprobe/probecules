@@ -9,14 +9,10 @@ import java.util.UUID;
 import org.snmp4j.Snmp;
 import org.snmp4j.TransportMapping;
 import org.snmp4j.transport.DefaultUdpTransportMapping;
-
 import NetConnection.NetResults;
 import lycus.GlobalConstants.LogType;
-import lycus.Probes.BaseProbe;
 import lycus.Probes.SnmpProbe;
 import lycus.Results.SnmpResult;
-import lycus.Rollups.RollupsContainer;
-import lycus.Utils.GeneralFunctions;
 import lycus.Utils.Logit;
 
 public class SnmpProbesBatch implements Runnable {
@@ -52,8 +48,7 @@ public class SnmpProbesBatch implements Runnable {
 			this.setTransport(new DefaultUdpTransportMapping());
 			this.getTransport().listen();
 		} catch (IOException e) {
-			SysLogger
-					.Record(new Log("Socket binding for failed for Snmp Batch:" + this.getBatchId(), LogType.Error, e));
+			Logit.LogError("SnmpProbesBatch - startSnmpListener()", "Socket binding for failed for Snmp Batch:" + this.getBatchId() + "\n" + e.getMessage());
 		}
 		this.setSnmp(new Snmp(this.getTransport()));
 	}
@@ -67,7 +62,7 @@ public class SnmpProbesBatch implements Runnable {
 				this.getTransport().close();
 			}
 		} catch (Throwable t) {
-			SysLogger.Record(new Log("Memory leak, unable to close network connection!", LogType.Error));
+			Logit.LogError("SnmpProbesBatch - startSnmpListener()", "Memory leak, unable to close network connection!");
 			throw t;
 		} finally {
 			super.finalize();
@@ -158,9 +153,7 @@ public class SnmpProbesBatch implements Runnable {
 
 				if (host.getSnmpTemp() == null) {
 					for (RunnableProbe rp : snmpProbes) {
-						SysLogger.Record(
-								new Log("Snmp Probe doesn't run: " + rp.getId() + ", no SNMP template configured!",
-										LogType.Info));
+						Logit.LogInfo("Snmp Probe doesn't run: " + rp.getId() + ", no SNMP template configured!");
 					}
 					return;
 				}
@@ -175,14 +168,10 @@ public class SnmpProbesBatch implements Runnable {
 
 				if (response == null) {
 					for (RunnableProbe runnableProbe : snmpProbes) {
-						SysLogger.Record(
-								new Log("Unable Probing Runnable Probe of: " + runnableProbe.getId(), LogType.Warn));
+						Logit.LogWarn("Unable Probing Runnable Probe of: " + runnableProbe.getId());
 					}
-					SysLogger
-							.Record(new Log(
-									"Failed running  snmp batch - host: " + this.getHost().getHostIp()
-											+ ", snmp template:" + this.getHost().getSnmpTemp().toString(),
-									LogType.Info));
+					Logit.LogInfo("Failed running  snmp batch - host: " + this.getHost().getHostIp()
+							+ ", snmp template:" + this.getHost().getSnmpTemp().toString());
 					return;
 					// switch (Net.checkHostSnmpActive(host)) {
 					// case "host problem":
@@ -240,7 +229,7 @@ public class SnmpProbesBatch implements Runnable {
 				}
 			}
 		} catch (Throwable th) {
-			SysLogger.Record(new Log("Error running snmp probes batch:" + this.getBatchId(), LogType.Error));
+			Logit.LogError("SnmpProbesBatch - run()", "Error running snmp probes batch:" + this.getBatchId());
 		}
 	}
 

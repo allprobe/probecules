@@ -18,6 +18,7 @@ import lycus.Probes.PorterProbe;
 import lycus.Probes.RBLProbe;
 import lycus.Probes.SnmpProbe;
 import lycus.Probes.WeberProbe;
+import lycus.Utils.Logit;
 
 /**
  * 
@@ -228,7 +229,7 @@ public class RunInnerProbesChecks extends Thread {
 				return false;
 			}
 		} catch (Exception e) {
-			SysLogger.Record(new Log("Unable to start Runnable Probe Thread of: "+rp.getId()+", check probe type!", LogType.Warn, e));
+			Logit.LogWarn("Unable to start Runnable Probe Thread of: "+rp.getId()+", check probe type!\n" + e.getMessage());
 		}
 		return false;
 	}

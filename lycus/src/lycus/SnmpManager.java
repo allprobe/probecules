@@ -11,6 +11,7 @@ import java.util.concurrent.ScheduledFuture;
 import lycus.GlobalConstants.Global;
 import lycus.GlobalConstants.LogType;
 import lycus.Probes.BaseProbe;
+import lycus.Utils.Logit;
 
 public class SnmpManager {
 	private User user;
@@ -61,7 +62,7 @@ public class SnmpManager {
 		for (RunnableProbe rp : rps) {
 			boolean status = this.startProbe(rp);
 			if (!status) {
-				SysLogger.Record(new Log("Failed to run runnable probe: " + rp.getId(), LogType.Warn));
+				Logit.LogWarn("Failed to run runnable probe: " + rp.getId());
 			}
 		}
 	}
@@ -89,8 +90,7 @@ public class SnmpManager {
 					return batch;
 				}
 			} catch (Exception e) {
-				SysLogger.Record(new Log("Unable to add Runnable Probe to existing batch: " + rp.getId(),
-						LogType.Warn, e));
+				Logit.LogWarn("Unable to add Runnable Probe to existing batch: " + rp.getId() + " \n" + e.getMessage());
 				return null;
 			}
 		}
@@ -100,8 +100,7 @@ public class SnmpManager {
 			_batches.put(newBatch.getBatchId(), newBatch);
 			return newBatch;
 		} catch (Exception e) {
-			SysLogger
-					.Record(new Log("Unable to add Runnable Probe to new batch: " + rp.getId(), LogType.Warn, e));
+			Logit.LogWarn("Unable to add Runnable Probe to new batch: " + rp.getId() + "\n" + e.getMessage());
 			return null;
 		}
 	}
@@ -132,7 +131,7 @@ public class SnmpManager {
 			}
 			return false;
 		} catch (Exception e) {
-			SysLogger.Record(new Log("Unable to stop running probe: " + rp.getId(), LogType.Warn, e));
+			Logit.LogWarn("Unable to stop running probe: " + rp.getId()+ ",\n" + e.getMessage());
 			return false;
 		}
 	}

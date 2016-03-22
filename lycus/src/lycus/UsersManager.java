@@ -415,8 +415,7 @@ public class UsersManager {
 
 				User user = getUsers().get(probeByUser.get(probeId));
 				if (user == null) {
-					SysLogger
-							.Record(new Log("No user exists for trigger: " + triggerJson.toJSONString(), LogType.Warn));
+					Logit.LogWarn("No user exists for trigger: " + triggerJson.toJSONString());
 					continue;
 				}
 				BaseProbe probe = user.getTemplateProbes().get(probeId);

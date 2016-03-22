@@ -8,18 +8,14 @@ import org.json.simple.JSONObject;
 
 import lycus.GlobalConstants.Constants;
 import lycus.GlobalConstants.Enums.ApiAction;
-import lycus.GlobalConstants.LogType;
 import lycus.Model.UpdateModel;
 import lycus.DAL.DAL;
 import lycus.Utils.GeneralFunctions;
 import lycus.Utils.Logit;
 import lycus.Host;
-import lycus.Log;
 import lycus.RunnableProbe;
 import lycus.RunnableProbeContainer;
 import lycus.SnmpTemplate;
-import lycus.SysLogger;
-import lycus.User;
 import lycus.UsersManager;
 import lycus.Interfaces.IDAL;
 
