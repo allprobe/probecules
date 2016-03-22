@@ -14,24 +14,20 @@ public class Host {
 	private boolean hostStatus;
 	private String bucket;
 	private UUID notificationGroups;
-	private HashMap<String,RunnableProbe> runnableProbes;
 	
-	
-
 	public Host(UUID host_id, String name, String host_ip,
-			SnmpTemplate snmpTemp,boolean hostStatus, boolean snmpStatus,String bucket,UUID notifGroups) {
+			SnmpTemplate snmpTemp,boolean hostStatus, boolean snmpStatus,String bucket,UUID notifGroups, String userId) {
 		this.setName(name);
 		this.setHostId(host_id);
 		this.setHostIp(host_ip);
 		this.setSnmpTemp(snmpTemp);
 		this.setSnmpStatus(snmpStatus);
 		this.setHostStatus(hostStatus);
-		this.setRunnableProbes(new HashMap<String,RunnableProbe>());
 		this.setBucket(bucket);
 		this.setNotificationGroups(notifGroups);
 	}
 	public Host(UUID host_id, String name, String host_ip,
-			boolean hostStatus, boolean snmpStatus,String bucket,UUID notifGroups) {
+			boolean hostStatus, boolean snmpStatus,String bucket,UUID notifGroups, String userId) {
 		this.setName(name);
 		this.setHostId(host_id);
 		this.setHostIp(host_ip);
@@ -39,7 +35,6 @@ public class Host {
 		this.setHostStatus(hostStatus);
 		this.setBucket(bucket);
 		this.setNotificationGroups(notifGroups);
-		this.setRunnableProbes(new HashMap<String,RunnableProbe>());
 	}
 
 	// Getters/Setters
@@ -106,30 +101,30 @@ public class Host {
 		this.notificationGroups = notificationGroups;
 	}
 	
-	public HashMap<String,RunnableProbe> getRunnableProbes() {
-		return runnableProbes;
-	}
+//	public HashMap<String,RunnableProbe> getRunnableProbes() {
+//		return runnableProbes;
+//	}
 
-	public RunnableProbe getRunnableProbe(UUID uid)
-	{
-		return getRunnableProbes().get(uid);
-	}
+//	public RunnableProbe getRunnableProbe(UUID uid)
+//	{
+//		return getRunnableProbes().get(uid);
+//	}
 	
-	public List<RunnableProbe> getRunnableProbes(String probe_id)
-	{
-		List<RunnableProbe> runnableProbes = new ArrayList<RunnableProbe>();
-		for (RunnableProbe runnableProbe : getRunnableProbes().values())
-		{
-			if (runnableProbe.getProbe().getProbe_id().equals(probe_id))
-				runnableProbes.add(runnableProbe);
-		}
-		return runnableProbes;
-	}
+//	public List<RunnableProbe> getRunnableProbes(String probe_id)
+//	{
+//		List<RunnableProbe> runnableProbes = new ArrayList<RunnableProbe>();
+//		for (RunnableProbe runnableProbe : getRunnableProbes().values())
+//		{
+//			if (runnableProbe.getProbe().getProbe_id().equals(probe_id))
+//				runnableProbes.add(runnableProbe);
+//		}
+//		return runnableProbes;
+//	}
 	
 	
-	private void setRunnableProbes(HashMap<String,RunnableProbe> runnableProbes) {
-		this.runnableProbes = runnableProbes;
-	}
+//	private void setRunnableProbes(HashMap<String,RunnableProbe> runnableProbes) {
+//		this.runnableProbes = runnableProbes;
+//	}
 
 	public String toString() {
 		StringBuilder s = new StringBuilder();
@@ -138,41 +133,46 @@ public class Host {
 		return s.toString();
 	}
 
-	public boolean removeRunnableProbes(UUID teplate_id)
-	{
-		List<String> keys = new ArrayList();
-		for (String key : this.runnableProbes.keySet())
-		{
-			if (runnableProbes.get(key).getProbe().getTemplate_id().equals(teplate_id))
-				keys.add(key);
-		}
-		
-		for (String key : keys)
-		{
-			try
-			{
-				RunnableProbe runnableProbe = this.runnableProbes.get(key);
-				runnableProbe.stop();
-				runnableProbe.getProbe().getTriggers().clear();
-				this.runnableProbes.remove(key);
-				
-			}
-			catch (Exception ex)
-			{
-				
-			}
-		}
-		return true;
-	}
+//	public boolean removeRunnableProbes(UUID teplate_id)
+//	{
+//		List<String> keys = new ArrayList();
+//		for (String key : this.runnableProbes.keySet())
+//		{
+//			if (runnableProbes.get(key).getProbe().getTemplate_id().equals(teplate_id))
+//				keys.add(key);
+//		}
+//		
+//		for (String key : keys)
+//		{
+//			try
+//			{
+//				RunnableProbe runnableProbe = this.runnableProbes.get(key);
+//				runnableProbe.stop();
+//				runnableProbe.getProbe().getTriggers().clear();
+//				this.runnableProbes.remove(key);
+//				
+//			}
+//			catch (Exception ex)
+//			{
+//				
+//			}
+//		}
+//		return true;
+//	}
 	
-	public List<RunnableProbe>  getRunnableProbes(UUID teplate_id)
-	{
-		List<RunnableProbe> runnableProbes =  new  ArrayList();
-		for (RunnableProbe runnableProbe : this.runnableProbes.values())
-		{
-			if (runnableProbe.getProbe().getTemplate_id().equals(teplate_id))
-				runnableProbes.add(runnableProbe);
-		}
-		return runnableProbes;
-	}
+//	public RunnableProbe getRunnableProbe(String runnableProbeId)
+//	{
+//		return getRunnableProbes().get(runnableProbeId);
+//	}
+	
+//	public List<RunnableProbe> getRunnableProbes(UUID teplate_id)
+//	{
+//		List<RunnableProbe> runnableProbes =  new  ArrayList();
+//		for (RunnableProbe runnableProbe : this.runnableProbes.values())
+//		{
+//			if (runnableProbe.getProbe().getTemplate_id().equals(teplate_id))
+//				runnableProbes.add(runnableProbe);
+//		}
+//		return runnableProbes;
+//	}
 }

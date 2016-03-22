@@ -1,5 +1,6 @@
 package lycus.Updates;
 
+import java.util.HashMap;
 import java.util.UUID;
 
 import org.json.simple.JSONArray;
@@ -15,6 +16,7 @@ import lycus.Utils.Logit;
 import lycus.Host;
 import lycus.Log;
 import lycus.RunnableProbe;
+import lycus.RunnableProbeContainer;
 import lycus.SnmpTemplate;
 import lycus.SysLogger;
 import lycus.User;
@@ -100,14 +102,16 @@ public class HostUpdate extends BaseUpdate {
 		if (host == null)
 			return false;
 
-		for (RunnableProbe runnableProbe : host.getRunnableProbes().values()) {
+		 HashMap<String, RunnableProbe> runnableProbes = RunnableProbeContainer.getInstanece().getByHost(host.getHostId().toString());
+		for (RunnableProbe runnableProbe : runnableProbes.values()) {
 			try {
 				runnableProbe.stop();
+				RunnableProbeContainer.getInstanece().remove(runnableProbe);
+				
 			} catch (Exception e) {
 			}
 		}
 
-		host.getRunnableProbes().clear();
 		getUser().getHosts().remove(UUID.fromString(getUpdate().host_id));
 		return true;
 	}

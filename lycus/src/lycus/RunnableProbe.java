@@ -1,12 +1,9 @@
 package lycus;
 
-import java.util.ArrayList;
 import java.util.concurrent.ScheduledFuture;
-
 import lycus.GlobalConstants.LogType;
 import lycus.GlobalConstants.ProbeTypes;
 import lycus.Elements.BaseElement;
-import lycus.Elements.NicElement;
 import lycus.Probes.DiscoveryProbe;
 import lycus.Probes.PingerProbe;
 import lycus.Probes.PorterProbe;
@@ -15,22 +12,14 @@ import lycus.Probes.RBLProbe;
 import lycus.Probes.SnmpProbe;
 import lycus.Probes.WeberProbe;
 import lycus.Results.BaseResult;
-import lycus.Results.DiscoveryResults;
-import lycus.Results.NicResults;
-import lycus.Results.PingerResults;
-import lycus.Results.PorterResults;
-import lycus.Results.RblResults;
-import lycus.Results.SnmpResults;
-import lycus.Results.TraceRouteResults;
-import lycus.Results.WeberResults;
+import lycus.Rollups.RollupsContainer;
 
 public class RunnableProbe implements Runnable {
 	private Host host;
 	private BaseProbe probe;
 	private boolean isActive;
 	private boolean isRunning;
-	private BaseResult result;
-
+	
 	public RunnableProbe(Host host, BaseProbe probe) {
 		this.setHost(host);
 		this.setProbe(probe);
@@ -39,39 +28,6 @@ public class RunnableProbe implements Runnable {
 			// Must be handled by Roi
 			return;
 		}
-
-		switch (this.getProbeType()) {
-		case PING:
-			result = new PingerResults(this);
-			break;
-		case PORT:
-			result = new PorterResults(this);
-			break;
-		case WEB:
-			result = new WeberResults(this);
-			break;
-		case SNMP:
-			result = new SnmpResults(this);
-			break;
-		case SNMPv1:
-			result = new SnmpResults(this);
-			break;
-		case RBL:
-			result = new RblResults(this);
-			break;
-		case TRACEROUTE:
-			result = new TraceRouteResults(this);
-			break;
-		case DISCOVERY:
-			result = new DiscoveryResults(this);
-			break;
-		case DISCOVERYELEMENT:
-			if (probe instanceof NicElement)
-				result = new NicResults(this);
-			break;
-		}
-		
-		ResultsContainer.getInstance().addResult(result);
 	}
 
 	public Host getHost() {
@@ -98,13 +54,6 @@ public class RunnableProbe implements Runnable {
 		this.isActive = isActive;
 	}
 
-	public BaseResult getResult() {
-		return result;
-	}
-
-	public void setResult(BaseResult results) {
-		this.result = results;
-	}
 
 	private boolean isRunning() {
 		return isRunning;
@@ -114,7 +63,7 @@ public class RunnableProbe implements Runnable {
 		this.isRunning = isRunning;
 	}
 
-	public String getRPString() {
+	public String getId() {
 		return this.getProbe().getTemplate_id().toString() + "@" + this.getHost().getHostId().toString() + "@"
 				+ this.getProbe().getProbe_id();
 	}
@@ -138,26 +87,27 @@ public class RunnableProbe implements Runnable {
 	}
 
 	public void run() {
-
-		ArrayList<Object> result = null;
-
-		String rpStr = this.getRPString();
-		if (rpStr.contains(
-				"e8b03d1e-48c8-4bd1-abeb-7e9a96a4cae4@ae1981c3-c157-4ce2-9086-11e869d4a344@icmp_a0285ff7-748f-4d79-96e5-72c8eaed384e"))
-			System.out.println("BREAKPOINT");
+		//TODO: eliminate this from facatory
+	
+		BaseResult result = null;
 
 		try {
-			result = getProbe().Check(this.getHost());
+			result = getProbe().getResult(this.getHost());
+			result.checkIfTriggerd(getProbe().getTriggers());
+			ResultsContainer.getInstance().addResult(result);
+			RollupsContainer.getInstance().addResult(result);
 		} catch (Exception e) {
-			SysLogger.Record(new Log("Unable Probing Runnable Probe of: " + this.getRPString(), LogType.Error, e));
+			SysLogger.Record(new Log("Unable Probing Runnable Probe of: " + this.getId(), LogType.Error, e));
 		}
-		try {
-			this.getResult().acceptResults(result);
-		} catch (Exception e) {
-			SysLogger.Record(
-					new Log("Unable to set Runnable Probe results from Check " + this.getRPString(), LogType.Error, e));
-		}
-		SysLogger.Record(new Log("Running Probe: " + this.getRPString() + " at Host: " + this.getHost().getHostIp()
+//		try {
+//			//TODO: take care of events and triggers
+////			this.getResult().acceptResults(checkResult);
+//			
+//		} catch (Exception e) {
+//			SysLogger.Record(
+//					new Log("Unable to set Runnable Probe results from Check " + this.getRPString(), LogType.Error, e));
+//		}
+		SysLogger.Record(new Log("Running Probe: " + this.getId() + " at Host: " + this.getHost().getHostIp()
 				+ "(" + this.getHost().getName() + ")" + ", Results: " + result + " ...", LogType.Debug));
 	}
 
@@ -186,20 +136,20 @@ public class RunnableProbe implements Runnable {
 			ScheduledFuture<?> rpThread = null;
 			switch (this.getProbeType()) {
 			case PING:
-				rpThread = RunInnerProbesChecks.getPingerFutureMap().remove(this.getRPString());
+				rpThread = RunInnerProbesChecks.getPingerFutureMap().remove(this.getId());
 			case PORT:
-				rpThread = RunInnerProbesChecks.getPorterFutureMap().remove(this.getRPString());
+				rpThread = RunInnerProbesChecks.getPorterFutureMap().remove(this.getId());
 			case WEB:
-				rpThread = RunInnerProbesChecks.getWeberFutureMap().remove(this.getRPString());
+				rpThread = RunInnerProbesChecks.getWeberFutureMap().remove(this.getId());
 			case SNMP:
 				this.setRunning(false);
 				return this.getProbe().getUser().getSnmpManager().stopProbe(this);
 			case RBL:
-				rpThread = RunInnerProbesChecks.getRblProbeFutureMap().remove(this.getRPString());
+				rpThread = RunInnerProbesChecks.getRblProbeFutureMap().remove(this.getId());
 			}
 			if (rpThread == null) {
 				SysLogger.Record(
-						new Log("RunnableProbe: " + this.getRPString() + " running, but doesn't exists in thread pool!",
+						new Log("RunnableProbe: " + this.getId() + " running, but doesn't exists in thread pool!",
 								LogType.Error));
 				return false;
 			} else

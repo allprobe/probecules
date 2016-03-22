@@ -7,6 +7,7 @@ import lycus.Utils.Logit;
 import lycus.Host;
 import lycus.User;
 import lycus.Probes.BaseProbe;
+import lycus.Results.BaseResult;
 
 public class BaseElement extends BaseProbe {
 
@@ -34,7 +35,7 @@ public class BaseElement extends BaseProbe {
 
 
 	@Override
-	public ArrayList<Object> Check(Host h) {
+	public BaseResult getResult(Host h) {
 		Logit.LogInfo("Running Discovery Element Probe: "+this.getTemplate_id()+"@"+h.getHostId().toString()+"@"+this.getProbe_id());
 		return null;
 	}

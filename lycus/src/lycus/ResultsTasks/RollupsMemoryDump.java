@@ -90,11 +90,6 @@ public class RollupsMemoryDump extends BaseTask {
 			String rpID = sampleRollup.getRunnableProbeId();
 			
 			BaseResult rpr = ResultsContainer.getInstance().getResult(rpID);
-			if (rpr != null)
-				rpr.insertExistingRollups(rollupsResult);
-			else {
-				// handle runnable probe without results object
-			}
 		}
 		
 		setRollupsMerged(true);

@@ -1,12 +1,10 @@
 package lycus.Probes;
 
-import java.util.ArrayList;
 import java.util.UUID;
-
 import lycus.Host;
-import lycus.Net;
 import lycus.User;
 import lycus.Probes.BaseProbe;
+import lycus.Results.BaseResult;
 
 public class TracerouteProbe extends BaseProbe {
 
@@ -25,9 +23,8 @@ public class TracerouteProbe extends BaseProbe {
 		this.timeout = timeout;
 	}
 	 @Override
-	 public ArrayList<Object> Check(Host h)
+	 public BaseResult getResult(Host h)
 	 {
-	  	ArrayList<Object> results=Net.Traceroute(h.getHostIp());
-	    return results;
+	  	return null;
 	 }
 }

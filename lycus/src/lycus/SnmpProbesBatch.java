@@ -6,13 +6,18 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.UUID;
-
 import org.snmp4j.Snmp;
 import org.snmp4j.TransportMapping;
 import org.snmp4j.transport.DefaultUdpTransportMapping;
 
+import NetConnection.NetResults;
 import lycus.GlobalConstants.LogType;
+import lycus.Probes.BaseProbe;
 import lycus.Probes.SnmpProbe;
+import lycus.Results.SnmpResult;
+import lycus.Rollups.RollupsContainer;
+import lycus.Utils.GeneralFunctions;
+import lycus.Utils.Logit;
 
 public class SnmpProbesBatch implements Runnable {
 	private String batchId;// hostId@templateId@interval@batchUUID
@@ -31,7 +36,7 @@ public class SnmpProbesBatch implements Runnable {
 		this.setHost(rp.getHost());
 		this.setInterval(rp.getProbe().getInterval());
 		this.setSnmpProbes(new HashMap<String, RunnableProbe>());
-		this.getSnmpProbes().put(rp.getRPString(), rp);
+		this.getSnmpProbes().put(rp.getId(), rp);
 		this.batchId = this.getHost().getHostId().toString() + "@" + rp.getProbe().getTemplate_id().toString() + "@"
 				+ rp.getProbe().getInterval() + "@" + UUID.randomUUID().toString();
 		this.setRunning(false);
@@ -151,55 +156,27 @@ public class SnmpProbesBatch implements Runnable {
 
 				List<RunnableProbe> snmpProbes = new ArrayList<RunnableProbe>(this.getSnmpProbes().values());
 
-
 				if (host.getSnmpTemp() == null) {
 					for (RunnableProbe rp : snmpProbes) {
-						SysLogger.Record(new Log(
-								"Snmp Probe doesn't run: " + rp.getRPString() + ", no SNMP template configured!",
-								LogType.Info));
+						SysLogger.Record(
+								new Log("Snmp Probe doesn't run: " + rp.getId() + ", no SNMP template configured!",
+										LogType.Info));
 					}
 					return;
 				}
-				List<String> listOids = new ArrayList<String>();
+
+				List<SnmpProbe> _snmpProbes = new ArrayList<SnmpProbe>();
+
 				for (RunnableProbe rp : snmpProbes) {
-					
-					String rpStr = rp.getRPString();
-					if (rpStr.contains(
-							"e7ecd619-b7a5-49b7-a849-b2c9b1b64bf3@inner_d5be36d2-87ff-414a-88ba-be2da43adabf"))	
-						System.out.println("BREAKPOINT");
-					
-					SysLogger.Record(new Log("Running Probe: " + rp.getRPString() + " at Host: "
-							+ this.getHost().getHostIp() + "(" + this.getHost().getName() + ")...", LogType.Debug));
-
-					if (rp.isActive()) {
-						listOids.add(((SnmpProbe) rp.getProbe()).getOid().toString());
-					}
+					_snmpProbes.add((SnmpProbe) rp.getProbe());
 				}
-				Map<String, String> response = null;
-				if (host.getSnmpTemp().getVersion() == 2) {
-					response = Net.Snmp2GETBULK(host.getHostIp(), host.getSnmpTemp().getPort(),host.getSnmpTemp().getTimeout(), host.getSnmpTemp().getCommunityName(), listOids);
-					// response = Net.Snmp2GETBULK(host.getHostIp(), host
-					// .getSnmpTemp().getPort(), host.getSnmpTemp()
-					// .getTimeout(), host.getSnmpTemp().getCommunityName(),
-					// listOids,this.getTransport(),this.getSnmp());
-				} else if (host.getSnmpTemp().getVersion() == 3) {
-					response = Net.Snmp3GETBULK(host.getHostIp(), host.getSnmpTemp().getPort(),
-							host.getSnmpTemp().getTimeout(), host.getSnmpTemp().getUserName(),
-							host.getSnmpTemp().getAuthPass(), host.getSnmpTemp().getAlgo(),
-							host.getSnmpTemp().getCryptPass(), host.getSnmpTemp().getCryptType(), listOids);
 
-					// response = Net.Snmp3GETBULK(host.getHostIp(), host
-					// .getSnmpTemp().getPort(), host.getSnmpTemp()
-					// .getTimeout(), host.getSnmpTemp().getUserName(), host
-					// .getSnmpTemp().getAuthPass(), host.getSnmpTemp()
-					// .getAlgo(), host.getSnmpTemp().getCryptPass(), host
-					// .getSnmpTemp().getCryptType(),
-					// listOids,this.getTransport(),this.getSnmp());
-				}
+				List<SnmpResult> response = NetResults.getInstanece().getSnmpResults(this.getHost(), _snmpProbes);
+
 				if (response == null) {
 					for (RunnableProbe runnableProbe : snmpProbes) {
-						SysLogger.Record(new Log("Unable Probing Runnable Probe of: " + runnableProbe.getRPString(),
-								LogType.Warn));
+						SysLogger.Record(
+								new Log("Unable Probing Runnable Probe of: " + runnableProbe.getId(), LogType.Warn));
 					}
 					SysLogger
 							.Record(new Log(
@@ -232,37 +209,33 @@ public class SnmpProbesBatch implements Runnable {
 					long resultsTimestamp = System.currentTimeMillis();
 					// if(this.isSnmpError())
 					// this.setSnmpError(false);
-					for (RunnableProbe _rp : snmpProbes) {
-						String rpStr = _rp.getRPString();
-						if (rpStr.contains(
-								"788b1b9e-d753-4dfa-ac46-61c4374eeb84@inner_d5be36d2-87ff-414a-88ba-be2da43adabf"))
-							System.out.println("BREAKPOINT - RunnableSnmpProbeResults");
-						if (_rp.isActive()) {
+					for (SnmpResult result : response) {
+						ResultsContainer.getInstance().addResult(result);
 
-							SnmpProbe snmpProbe = (SnmpProbe) _rp.getProbe();
-							String _value = response.get(snmpProbe.getOid().toString());
-							ArrayList<Object> results = new ArrayList<Object>();
-							if (_value != null) {
-								results.add(resultsTimestamp);
-								results.add(_value);
-								SysLogger.Record(new Log("Running Probe: " + _rp.getRPString() + " at Host: "
-										+ this.getHost().getHostIp() + "(" + this.getHost().getName() + ")"
-										+ ", Results: " + results + " ...", LogType.Debug));
-							} else {
-								SysLogger.Record(new Log("Unable to get results for SNMP Probe: " + _rp.getRPString()
-										+ " oid issue (" + snmpProbe.getOid() + ")", LogType.Info));
-								// wrong oid insert probe issues
-								results.add(resultsTimestamp);
-								results.add("WRONG_OID");
-							}
-							try {
-								_rp.getResult().acceptResults(results);
-							} catch (Exception e) {
-								SysLogger.Record(new Log(
-										"Unable to set Runnable Probe results from Check " + this.getSnmpProbes(),
-										LogType.Error, e));
-							}
-						}
+						// String rpStr = _rp.getId();
+						// if (rpStr.contains(
+						// "788b1b9e-d753-4dfa-ac46-61c4374eeb84@inner_d5be36d2-87ff-414a-88ba-be2da43adabf"))
+						// System.out.println("BREAKPOINT -
+						// RunnableSnmpProbeResults");
+						// if (_rp.isActive()) {
+
+						// SnmpProbe snmpProbe = (SnmpProbe) _rp.getProbe();
+						// SnmpResults snmpResult =
+						// response.get(snmpProbe.getOid().toString());
+						//
+						// if (snmpResult != null) {
+						// ResultsContainer.getInstance().addResult(snmpResult);
+						// RollupsContainer.getInstance().addResult(snmpResult);
+						// Logit.LogDebug("Running Probe: " + _rp.getId() + " at
+						// Host: "
+						// + this.getHost().getHostIp() + "(" +
+						// this.getHost().getName() + ")"
+						// + ", Results: " + snmpResult + " ...");
+						// } else {
+						// Logit.LogError("SnmpProbesBatch - run()","Unable to
+						// get results for SNMP Probe: " + _rp.getId()
+						// + " oid issue (" + snmpProbe.getOid() + ")");
+						// }
 					}
 				}
 			}
@@ -272,11 +245,11 @@ public class SnmpProbesBatch implements Runnable {
 	}
 
 	public void deleteSnmpProbe(RunnableProbe rp) {
-		this.getSnmpProbes().remove(rp.getRPString());
+		this.getSnmpProbes().remove(rp.getId());
 	}
 
 	public void addSnmpProbe(RunnableProbe rp) {
-		this.getSnmpProbes().put(rp.getRPString(), rp);
+		this.getSnmpProbes().put(rp.getId(), rp);
 	}
 
 	@Override

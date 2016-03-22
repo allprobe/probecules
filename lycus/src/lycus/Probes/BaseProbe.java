@@ -4,11 +4,10 @@
  */
 package lycus.Probes;
 
-import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.UUID;
-import lycus.Model.KeyUpdateModel;
 import lycus.Model.UpdateValueModel;
+import lycus.Results.BaseResult;
 import lycus.Host;
 import lycus.Trigger;
 import lycus.User;
@@ -116,6 +115,10 @@ public class BaseProbe  {
 		return triggers;
 	}
 
+	public Trigger getTrigger(String triggerId) {
+		return triggers.get(triggerId);
+	}
+	
 	public void setTriggers(HashMap<String,Trigger> triggers) {
 		this.triggers = triggers;
 	}
@@ -135,7 +138,7 @@ public class BaseProbe  {
 		return this.getTemplate_id().toString()+"@"+this.getProbe_id();
 	}
 	
-	public ArrayList<Object> Check(Host h)
+	public BaseResult getResult(Host h)
     {
     	return null;
     }

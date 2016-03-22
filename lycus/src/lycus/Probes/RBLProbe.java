@@ -1,13 +1,11 @@
 package lycus.Probes;
 
-import java.util.ArrayList;
 import java.util.UUID;
-
-import lycus.Model.KeyUpdateModel;
 import lycus.Model.UpdateValueModel;
+import lycus.Results.RblResult;
 import lycus.Utils.GeneralFunctions;
 import lycus.Host;
-import lycus.Net;
+import NetConnection.NetResults;
 import lycus.User;
 
 public class RBLProbe extends BaseProbe {
@@ -31,13 +29,13 @@ public class RBLProbe extends BaseProbe {
     }
 	
 	@Override
-    public ArrayList<Object> Check(Host h)
+    public RblResult getResult(Host h)
     {
 		if (!h.isHostStatus())
     		return null;
 		
-		ArrayList<Object> results=Net.RBLCheck(h.getHostIp(), this.getRBL());
-    	return results;
+		RblResult results=NetResults.getInstanece().getRblResult(h, this);
+		return results;
     }
 	@Override
 	public String toString() {

@@ -21,6 +21,7 @@ import lycus.GlobalConstants.Enums;
 import lycus.GlobalConstants.LogType;
 import lycus.Results.BaseResult;
 import lycus.Utils.GeneralFunctions;
+import lycus.Utils.JsonUtil;
 import lycus.Utils.Logit;
 import sun.misc.Queue;
 import lycus.Interfaces.IResultsContainer;
@@ -28,9 +29,11 @@ import lycus.Interfaces.IResultsContainer;
 public class ResultsContainer implements IResultsContainer {
 	private static ResultsContainer instance;
 	private List<BaseResult> results;
+	private HashMap<String, HashMap<String, Event>> events; // HashMap<runnableProbeId, HashMap<triggerId, Event>>
 
 	private ResultsContainer() {
 		results = new ArrayList<BaseResult>();
+		events = new HashMap<String, HashMap<String, Event>>();
 	}
 
 	public static ResultsContainer getInstance() {
@@ -39,41 +42,71 @@ public class ResultsContainer implements IResultsContainer {
 		return instance;
 	}
 
-	private HashMap<String, String> rollupResultsDBFormat(BaseResult rpr, String resultkey, String resultvalue) {
-
-		HashMap<String, String> tableResults;
-		tableResults = new HashMap<String, String>();
-		RunnableProbe rp = rpr.getRp();
-		tableResults.put("USER_ID", rp.getProbe().getUser().getUserId().toString());
-		// try {
-		if (rp.getProbeType() != null)
-			tableResults.put("PROBE_TYPE", rp.getProbeType().name());
-		else
+	public Event getEvent(String runnableProbeId, String triggerId) {
+		HashMap<String, Event> runnableProbeEvents = events.get(runnableProbeId);
+		if (runnableProbeEvents == null)
 			return null;
-
-		tableResults.put("RESULTS_TIME", resultkey.split("@")[2]);
-		tableResults.put("RESULTS_NAME", resultkey.split("@")[1]);
-		tableResults.put("RESULTS", resultvalue);
-		return tableResults;
-
+		return runnableProbeEvents.get(triggerId);
 	}
 
-	private HashMap<String, String> rawResultsDBFormat(BaseResult rpr, String resultkey, String resultvalue) {
-		HashMap<String, String> tableResults;
-		tableResults = new HashMap<String, String>();
-		RunnableProbe rp = rpr.getRp();
-		tableResults.put("USER_ID", rp.getProbe().getUser().getUserId().toString());
-		// try {
-		if (rp.getProbeType() != null)
-			tableResults.put("PROBE_TYPE", rp.getProbeType().name());
-		else
-			return null;
-
-		tableResults.put("RESULTS_TIME", resultkey.split("@")[2]);
-		tableResults.put("RESULTS_NAME", resultkey.split("@")[1]);
-		tableResults.put("RESULTS", resultvalue);
-		return tableResults;
+	public HashMap<String, Event> getEvent(String runnableProbeId) {
+		return events.get(runnableProbeId);
 	}
+
+	public boolean addEvent(String runnableProbeId, String triggerId, Event event) {
+		HashMap<String, Event> runnableProbeEvents = null;
+		if (events.containsKey(runnableProbeId))
+			runnableProbeEvents = events.get(runnableProbeId);
+		else {
+			runnableProbeEvents = new HashMap<String, Event>();
+		}
+
+		runnableProbeEvents.put(triggerId, event);
+		events.put(runnableProbeId, runnableProbeEvents);
+
+		return true;
+	}
+
+	// private HashMap<String, String> rollupResultsDBFormat(BaseResult rpr,
+	// String resultkey, String resultvalue) {
+	//
+	// HashMap<String, String> tableResults;
+	// tableResults = new HashMap<String, String>();
+	//
+	// tableResults.put("USER_ID",
+	// rp.getProbe().getUser().getUserId().toString());
+	// // try {
+	// if (rp.getProbeType() != null)
+	// tableResults.put("PROBE_TYPE", rpr.getRunnableProbeId().name());
+	// else
+	// return null;
+	//
+	// tableResults.put("RESULTS_TIME", resultkey.split("@")[2]);
+	// tableResults.put("RESULTS_NAME", resultkey.split("@")[1]);
+	// tableResults.put("RESULTS", resultvalue);
+	// return tableResults;
+	//
+	// }
+
+	// private HashMap<String, String> rawResultsDBFormat(BaseResult rpr, String
+	// resultkey, String resultvalue) {
+	// HashMap<String, String> tableResults;
+	// tableResults = new HashMap<String, String>();
+	// RunnableProbe rp = rpr.getRp();
+	//
+	// tableResults.put("USER_ID",
+	// rp.getProbe().getUser().getUserId().toString());
+	// // try {
+	// if (rp.getProbeType() != null)
+	// tableResults.put("PROBE_TYPE", rp.getProbeType().name());
+	// else
+	// return null;
+	//
+	// tableResults.put("RESULTS_TIME", resultkey.split("@")[2]);
+	// tableResults.put("RESULTS_NAME", resultkey.split("@")[1]);
+	// tableResults.put("RESULTS", resultvalue);
+	// return tableResults;
+	// }
 
 	// private HashMap<String, BaseResults> getAllResultsUsers(ArrayList<User>
 	// users) {
@@ -119,19 +152,22 @@ public class ResultsContainer implements IResultsContainer {
 					String probeId = it.split("@")[2];
 					UUID triggerId = UUID.fromString(it.split("@")[3]);
 					long timestamp = Long.parseLong((String) events.get(it));
-					
-					BaseResult rpr = getResult(templateId.toString() + "@" + hostId.toString() + "@" + probeId);
-					if (rpr == null)
+
+					BaseResult result = getResult(templateId.toString() + "@" + hostId.toString() + "@" + probeId);
+					if (result == null)
 						continue;
+					RunnableProbe runnableProbe = RunnableProbeContainer.getInstanece().
+							get(GeneralFunctions.getRunnableProbeId(templateId, hostId, probeId));
 					
-					Trigger trigger = rpr.getRp().getProbe().getTriggers()
+					Trigger trigger = runnableProbe.getProbe().getTriggers()
 							.get(templateId.toString() + "@" + probeId + "@" + triggerId.toString());
 
-					TriggerEvent event = new TriggerEvent(rpr.getRp(), trigger, false);
+					Event event = new Event(trigger, false);
 					event.setTime(timestamp);
 					event.setSent(true);
 
-					rpr.getEvents().put(trigger, event);
+					addEvent(runnableProbe.getId(), triggerId.toString(), event);
+//					result.getEvents().put(trigger, event);
 				} catch (Exception e) {
 					Logit.LogError("ResultsContainer - pullCurrentLiveEvents()", "Unable to process live event: ");
 				}
@@ -140,18 +176,16 @@ public class ResultsContainer implements IResultsContainer {
 		}
 	}
 
-	public BaseResult getResult(String rpId)
-	{
-		for (BaseResult result : results)
-		{
-			if (result.getRp().getRPString().equals(rpId))
-			{
-				return  result;
+	// TODO: has to return List<BaseResult> results
+	public BaseResult getResult(String runnableProbeId) {
+		for (BaseResult result : results) {
+			if (result.getRunnableProbeId().equals(runnableProbeId)) {
+				return result;
 			}
 		}
 		return null;
 	}
-	
+
 	@Override
 	public boolean addResult(BaseResult result) {
 		results.add(result);
@@ -170,102 +204,118 @@ public class ResultsContainer implements IResultsContainer {
 
 	@Override
 	public String getResults() {
-		HashMap<String, HashMap<String, HashMap<String, String>>> newResults = new HashMap<String, HashMap<String, HashMap<String, String>>>();
-		newResults.put("RAW", new HashMap<String, HashMap<String, String>>());
-		newResults.put("4mRollups", new HashMap<String, HashMap<String, String>>());
-		newResults.put("20mRollups", new HashMap<String, HashMap<String, String>>());
-		newResults.put("1hRollups", new HashMap<String, HashMap<String, String>>());
-		newResults.put("6hRollups", new HashMap<String, HashMap<String, String>>());
-		newResults.put("36hRollups", new HashMap<String, HashMap<String, String>>());
-		newResults.put("11dRollups", new HashMap<String, HashMap<String, String>>());
+		// HashMap<String, HashMap<String, HashMap<String, String>>> newResults
+		// = new HashMap<String, HashMap<String, HashMap<String, String>>>();
+		// newResults.put("RAW", new HashMap<String, HashMap<String,
+		// String>>());
+		//
+		//// newResults.put("4mRollups", new HashMap<String, HashMap<String,
+		// String>>());
+		//// newResults.put("20mRollups", new HashMap<String, HashMap<String,
+		// String>>());
+		//// newResults.put("1hRollups", new HashMap<String, HashMap<String,
+		// String>>());
+		//// newResults.put("6hRollups", new HashMap<String, HashMap<String,
+		// String>>());
+		//// newResults.put("36hRollups", new HashMap<String, HashMap<String,
+		// String>>());
+		//// newResults.put("11dRollups", new HashMap<String, HashMap<String,
+		// String>>());
+		//
+		// for (BaseResult result : results) {
+		//
+		// if
+		// (result.getRunnableProbeId().contains("fc46cf87-0872-4e5d-9b83-c44a3d1f3ea6@icmp_1f1aed08-7331-4126-97ef-225e90b4a969"))
+		// System.out.println("BREAKPOINT - RunnableProbesHistory");
+		//
+		// if (result.getLastTimestamp() == null || result.getLastTimestamp() ==
+		// 0)
+		// continue;
+		//
+		//// HashMap<String, String> probeResults;
+		//
+		// try {
+		//
+		//// probeResults = result.getResults();
+		//
+		//// if (probeResults.containsKey("error")) {
+		//// Logit.LogError("ResultsContainer - getResults()", "Seriious error
+		// getting runnable probe results of: " + result.getRunnableProbeId());
+		//// continue;
+		//// }
+		//// for (Map.Entry<String, String> probeResult :
+		// probeResults.entrySet()) {
+		//// String resultKey = probeResult.getKey();
+		//// String resultValue = probeResult.getValue();
+		//
+		// if (resultKey.contains("RAW")) {
+		// HashMap<String, String> test = rawResultsDBFormat(result, resultKey,
+		// resultValue);
+		// newResults.get("RAW").put(result.getRunnableProbeId(),
+		// rawResultsDBFormat(result, resultKey, resultValue));
+		// }
+		//// if (resultKey.contains("ROLLUP_4minutes")) {
+		//// newResults.get("4mRollups").put(rp.getRPString(),
+		//// rollupResultsDBFormat(result, resultKey, resultValue));
+		//// }
+		//// if (resultKey.contains("ROLLUP_20minutes")) {
+		//// newResults.get("20mRollups").put(rp.getRPString(),
+		//// rollupResultsDBFormat(result, resultKey, resultValue));
+		//// }
+		//// if (resultKey.contains("ROLLUP_1hour")) {
+		//// newResults.get("1hRollups").put(rp.getRPString(),
+		//// rollupResultsDBFormat(result, resultKey, resultValue));
+		//// }
+		//// if (resultKey.contains("ROLLUP_6hour")) {
+		//// newResults.get("6hRollups").put(rp.getRPString(),
+		//// rollupResultsDBFormat(result, resultKey, resultValue));
+		//// }
+		//// if (resultKey.contains("ROLLUP_36hour")) {
+		//// newResults.get("36hRollups").put(rp.getRPString(),
+		//// rollupResultsDBFormat(result, resultKey, resultValue));
+		//// }
+		//// if (resultKey.contains("ROLLUP_11day")) {
+		//// newResults.get("11dRollups").put(rp.getRPString(),
+		//// rollupResultsDBFormat(result, resultKey, resultValue));
+		//// }
+		//// }
+		// } catch (Throwable th) {
+		//
+		// Logit.LogError("ResultsContainer - getResults()",
+		// "Error collecting runnable probes results! stopped at: " +
+		// result.getRunnableProbeId());
+		// StringWriter sw = new StringWriter();
+		// PrintWriter pw = new PrintWriter(sw);
+		// th.printStackTrace(pw);
+		//
+		// Logit.LogError("ResultsContainer - getResults()", sw.toString());
+		// }
+		// }
+		//
+		// String jsonString = JsonUtil.ToJson(newResults);
 
-		for (BaseResult rpr : results) {
+		// Gson gson = new GsonBuilder().setPrettyPrinting().create();
+		// String jsonString = null;
+		// jsonString = gson.toJson(newResults);
 
-			RunnableProbe rp = rpr.getRp();
-
-			String rpStr = rp.getRPString();
-			if (rpStr.contains("fc46cf87-0872-4e5d-9b83-c44a3d1f3ea6@icmp_1f1aed08-7331-4126-97ef-225e90b4a969"))
-				System.out.println("BREAKPOINT - RunnableProbesHistory");
-
-			if (rpr.getLastTimestamp() == null || rpr.getLastTimestamp() == 0)
-				continue;
-
-			HashMap<String, String> probeResults;
-
-			try {
-
-				probeResults = rpr.getResults();
-
-				if (probeResults.containsKey("error")) {
-					SysLogger.Record(
-							new Log("Seriious error getting runnable probe results of: " + rpr.getRp().getRPString(),
-									LogType.Error));
-					continue;
-				}
-				for (Map.Entry<String, String> probeResult : probeResults.entrySet()) {
-					String resultKey = probeResult.getKey();
-					String resultValue = probeResult.getValue();
-
-					if (resultKey.contains("RAW")) {
-						HashMap<String, String> test = rawResultsDBFormat(rpr, resultKey, resultValue);
-						newResults.get("RAW").put(rp.getRPString(), rawResultsDBFormat(rpr, resultKey, resultValue));
-					}
-					if (resultKey.contains("ROLLUP_4minutes")) {
-						newResults.get("4mRollups").put(rp.getRPString(),
-								rollupResultsDBFormat(rpr, resultKey, resultValue));
-					}
-					if (resultKey.contains("ROLLUP_20minutes")) {
-						newResults.get("20mRollups").put(rp.getRPString(),
-								rollupResultsDBFormat(rpr, resultKey, resultValue));
-					}
-					if (resultKey.contains("ROLLUP_1hour")) {
-						newResults.get("1hRollups").put(rp.getRPString(),
-								rollupResultsDBFormat(rpr, resultKey, resultValue));
-					}
-					if (resultKey.contains("ROLLUP_6hour")) {
-						newResults.get("6hRollups").put(rp.getRPString(),
-								rollupResultsDBFormat(rpr, resultKey, resultValue));
-					}
-					if (resultKey.contains("ROLLUP_36hour")) {
-						newResults.get("36hRollups").put(rp.getRPString(),
-								rollupResultsDBFormat(rpr, resultKey, resultValue));
-					}
-					if (resultKey.contains("ROLLUP_11day")) {
-						newResults.get("11dRollups").put(rp.getRPString(),
-								rollupResultsDBFormat(rpr, resultKey, resultValue));
-					}
-				}
-			} catch (Throwable th) {
-
-				Logit.LogError("ResultsContainer - getResults()",
-						"Error collecting runnable probes results! stopped at: " + rpr.getRp().getRPString());
-				StringWriter sw = new StringWriter();
-				PrintWriter pw = new PrintWriter(sw);
-				th.printStackTrace(pw);
-
-				Logit.LogError("ResultsContainer - getResults()", sw.toString());
-			}
+		String jsonString = null;
+		try {
+			jsonString = JsonUtil.ToJson(results);
+		} catch (Exception e) {
+			Logit.LogFatal("ResultsContainer - getResults()",
+					"Unable to parse results to json format! not sent!, E: " + e.getMessage());
 		}
-		Gson gson = new GsonBuilder().setPrettyPrinting().create();
-		String jsonString=null;
-		try
-		{
-			jsonString=gson.toJson(newResults);
-		}
-		catch(Exception e)
-		{
-			Logit.LogFatal("ResultsContainer - getResults()","Unable to parse results to json format! not sent!, E: "+e.getMessage());
-		}
-		
+
 		return jsonString;
 	}
 
 	@Override
 	public String getRollups() {
 		ArrayList<DataPointsRollup[][]> dataRollups = new ArrayList<DataPointsRollup[][]>();
-		for (BaseResult result : results) {
-			dataRollups.add(result.retrieveExistingRollups());
-		}
+		// TODO: implement
+		// for (BaseResult result : results) {
+		// dataRollups.add(result.retrieveExistingRollups());
+		// }
 
 		Gson gson = new GsonBuilder().setPrettyPrinting().create();
 		return gson.toJson(dataRollups);
@@ -273,70 +323,69 @@ public class ResultsContainer implements IResultsContainer {
 
 	@Override
 	public String getEvents() {
-		ArrayList<HashMap<String, HashMap<String, String>>> events = new ArrayList<HashMap<String, HashMap<String, String>>>();
-		for (BaseResult rpr : results) {
-			try {
-				HashMap<Trigger, TriggerEvent> rprEvents = rpr.getEvents();
-				if (rprEvents.size() == 0)
-					continue;
-				Iterator mapIterator = rprEvents.entrySet().iterator();
-				while (mapIterator.hasNext()) {
-					Map.Entry<Trigger, TriggerEvent> pair = (Map.Entry<Trigger, TriggerEvent>) mapIterator.next();
-					Trigger trigger = pair.getKey();
-					TriggerEvent event = pair.getValue();
+		ArrayList<HashMap<String, HashMap<String, String>>> eventsToSend = new ArrayList<HashMap<String, HashMap<String, String>>>();
+		for (Map.Entry<String, HashMap<String, Event>> runnableProbeEventsEntry : events.entrySet()) {
+			String runnableProbeId = runnableProbeEventsEntry.getKey();
+			HashMap<String, Event> runnableProbeEvents = runnableProbeEventsEntry.getValue();
+
+			for (Map.Entry<String, Event> triggerEvent : runnableProbeEvents.entrySet()) {
+				String triggerId = triggerEvent.getKey();
+				Event event = triggerEvent.getValue();
+				RunnableProbe runnableProbe = RunnableProbeContainer.getInstanece().get(runnableProbeId);
+				Trigger trigger = runnableProbe.getProbe().getTrigger(triggerId);
+				try {
 					if (!event.isSent() && event.isStatus()) {
 						HashMap<String, HashMap<String, String>> sendingEvents = new HashMap<String, HashMap<String, String>>();
 						HashMap<String, String> eventValues = new HashMap<String, String>();
-						eventValues.put("trigger_id", trigger.getTriggerId().toString());
-						eventValues.put("host_id", rpr.getRp().getHost().getHostId().toString());
-						eventValues.put("host_name", rpr.getRp().getHost().getName());
-						eventValues.put("user_id", rpr.getRp().getProbe().getUser().getUserId().toString());
+						eventValues.put("trigger_id", triggerId);
+						eventValues.put("host_id", runnableProbe.getHost().getHostId().toString());
+						eventValues.put("host_name", runnableProbe.getHost().getName());
+						eventValues.put("user_id", runnableProbe.getProbe().getUser().getUserId().toString());
 						eventValues.put("trigger_name", trigger.getName());
 						eventValues.put("trigger_severity", trigger.getSvrty().toString());
 						eventValues.put("event_timestamp", String.valueOf(event.getTime()));
 						eventValues.put("event_status", String.valueOf(event.isStatus()));
-						eventValues.put("host_bucket", rpr.getRp().getHost().getBucket());
-						if (rpr.getRp().getHost().getNotificationGroups() != null)
+						eventValues.put("host_bucket", runnableProbe.getHost().getBucket());
+						if (runnableProbe.getHost().getNotificationGroups() != null)
 							eventValues.put("host_notifs_groups",
-									rpr.getRp().getHost().getNotificationGroups().toString());
+									runnableProbe.getHost().getNotificationGroups().toString());
 						else
 							eventValues.put("host_notifs_groups", null);
-						sendingEvents.put(rpr.getRp().getRPString(), eventValues);
+						sendingEvents.put(runnableProbe.getId(), eventValues);
 
-						events.add(sendingEvents);
-
-						mapIterator.remove();
+						eventsToSend.add(sendingEvents);
 					} else if (!event.isSent() && !event.isStatus()) {
 						HashMap<String, HashMap<String, String>> sendingEvents = new HashMap<String, HashMap<String, String>>();
 						HashMap<String, String> eventValues = new HashMap<String, String>();
-						eventValues.put("trigger_id", trigger.getTriggerId().toString());
-						eventValues.put("host_id", rpr.getRp().getHost().getHostId().toString());
-						eventValues.put("host_name", rpr.getRp().getHost().getName());
-						eventValues.put("user_id", rpr.getRp().getProbe().getUser().getUserId().toString());
+						eventValues.put("trigger_id", triggerId);
+						eventValues.put("host_id", runnableProbe.getHost().getHostId().toString());
+						eventValues.put("host_name", runnableProbe.getHost().getName());
+						eventValues.put("user_id", runnableProbe.getProbe().getUser().getUserId().toString());
 						eventValues.put("trigger_name", trigger.getName());
 						eventValues.put("trigger_severity", trigger.getSvrty().toString());
 						eventValues.put("event_timestamp", String.valueOf(event.getTime()));
 						eventValues.put("event_status", String.valueOf(event.isStatus()));
-						eventValues.put("host_bucket", rpr.getRp().getHost().getBucket());
-						if (rpr.getRp().getHost().getNotificationGroups() != null)
+						eventValues.put("host_bucket", runnableProbe.getHost().getBucket());
+						if (runnableProbe.getHost().getNotificationGroups() != null)
 							eventValues.put("host_notifs_groups",
-									rpr.getRp().getHost().getNotificationGroups().toString());
+									runnableProbe.getHost().getNotificationGroups().toString());
 						else
 							eventValues.put("host_notifs_groups", null);
-						sendingEvents.put(rpr.getRp().getRPString(), eventValues);
+						sendingEvents.put(runnableProbeId, eventValues);
 
-						events.add(sendingEvents);
+						eventsToSend.add(sendingEvents);
 
 						event.setSent(true);
 					}
+				} catch (Exception e) {
+					Logit.LogError(null, "Unable to process event for triggerId: " + triggerId + ", RunnableProbeId: " + runnableProbeId);
+					continue;
 				}
-			} catch (Exception e) {
-				Logit.LogError(null, "Unable to process event for RP:" + rpr.getRp().getRPString());
-				continue;
 			}
+
 		}
 
 		Gson gson = new GsonBuilder().setPrettyPrinting().create();
-		return (gson.toJson(events));
+		return (gson.toJson(eventsToSend));
 	}
 }

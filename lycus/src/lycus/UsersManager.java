@@ -68,10 +68,30 @@ public class UsersManager {
 		return getUsers().get(uid);
 	}
 
+	public static User getUser(String userId) {
+		return getUsers().get(UUID.fromString(userId));
+	}
+	
 	public static void setUsers(HashMap<UUID, User> users) {
 		UsersManager.users = users;
 	}
 
+	public static boolean removeHost(UUID hostId, UUID userId)
+	{
+		if (!getUser(userId).removeHost(hostId) && getUsers().containsKey(userId))
+		{
+			 getUsers().remove(userId);
+		}
+		return true;
+	}
+	
+	public static boolean removeUser(UUID userId)
+	{
+		if (getUsers().containsKey(userId))
+			getUsers().remove(userId);
+		return true;
+	}	
+	
 	public static boolean isInitialized() {
 		return initialized;
 	}
@@ -183,6 +203,7 @@ public class UsersManager {
 			}
 		}
 	}
+	
 	public static void addDiscoveryElements(JSONArray allElementsJson) {
 		for (int i = 0; i < allElementsJson.size(); i++) {
 			JSONObject hostElementsJson = (JSONObject) allElementsJson.get(i);
@@ -227,6 +248,7 @@ public class UsersManager {
 			}
 		}
 	}
+	
 	public static void addHosts(JSONArray allHostsJson) {
 		for (int i = 0; i < allHostsJson.size(); i++) {
 			JSONObject hostJson = (JSONObject) allHostsJson.get(i);
@@ -520,14 +542,15 @@ public class UsersManager {
 		}
 	}
 
-	public static HashMap<String, RunnableProbe> getAllUsersRunnableProbes() {
-		HashMap<String, RunnableProbe> allRps = new HashMap<String, RunnableProbe>();
-		for (User user : getUsers().values()) {
-			HashMap<String, RunnableProbe> allUserRps = user.getAllRunnableProbes();
-			allRps.putAll(allUserRps);
-		}
-		return allRps;
-	}
+//	public static HashMap<String, RunnableProbe> getAllUsersRunnableProbes() {
+//		HashMap<String, RunnableProbe> allRps = new HashMap<String, RunnableProbe>();
+//		for (User user : getUsers().values()) {
+////			HashMap<String, RunnableProbe> allUserRps = user.getAllRunnableProbes();
+//			HashMap<String, RunnableProbe> allUserRps = RunnableProbeContainer.getInstanece().getByUser(user.getUserId().toString());
+//			allRps.putAll(allUserRps);
+//		}
+//		return allRps;
+//	}
 
 	public static void printUsers() {
 		for (User user : getUsers().values()) {
@@ -577,10 +600,16 @@ public class UsersManager {
 	public static boolean unMergeTemplateHost(UUID userId, UUID templateId, UUID hostId) {
 		User user = getUsers().get(userId);
 		boolean flag = true;
-		List<RunnableProbe> rps = user.getRPSbyTemplateIdHostId(templateId, hostId);
-		for (RunnableProbe rp : rps) {
-			flag = user.removeRunnableProbe(rp);
+//		List<RunnableProbe> rps = user.getRPSbyTemplateIdHostId(templateId, hostId);
+//		for (RunnableProbe rp : rps) {
+//			flag = user.removeRunnableProbe(rp);
+//		}
+		HashMap<String,RunnableProbe> runnableProbes = RunnableProbeContainer.getInstanece().getByHostTemplate(hostId.toString(), templateId.toString());
+		for (RunnableProbe runnableProbe : runnableProbes.values()) {
+			flag = RunnableProbeContainer.getInstanece().remove(runnableProbe);
 		}
+		
+		//TODO: ROI what is this flag?
 		return flag;
 	}
 

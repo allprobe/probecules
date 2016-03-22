@@ -141,7 +141,7 @@ public class RunInnerProbesChecks extends Thread {
 		future = PingerExec.scheduleAtFixedRate(probe, 0, probe.getProbe()
 				.getInterval(), TimeUnit.SECONDS);
 		
-		getPingerFutureMap().put(probe.getRPString(), future);
+		getPingerFutureMap().put(probe.getId(), future);
 		PingerFutureCounter++;
 	}	
 
@@ -149,7 +149,7 @@ public class RunInnerProbesChecks extends Thread {
 		ScheduledFuture<?> future;
 		future = PorterExec.scheduleAtFixedRate(probe, 0, probe.getProbe()
 				.getInterval(), TimeUnit.SECONDS);
-		getPorterFutureMap().put(probe.getRPString(), future);
+		getPorterFutureMap().put(probe.getId(), future);
 		PorterFutureCounter++;
 		
 	}
@@ -158,7 +158,7 @@ public class RunInnerProbesChecks extends Thread {
 		ScheduledFuture<?> future;
 		future = WeberExec.scheduleAtFixedRate(probe, 0, probe.getProbe()
 				.getInterval(), TimeUnit.SECONDS);
-		getWeberFutureMap().put(probe.getRPString(), future);
+		getWeberFutureMap().put(probe.getId(), future);
 		WeberFutureCounter++;
 	}
 
@@ -166,7 +166,7 @@ public class RunInnerProbesChecks extends Thread {
 		ScheduledFuture<?> future;
 		future = SnmpProbeExec.scheduleAtFixedRate(probe, 0, probe.getProbe()
 				.getInterval(), TimeUnit.SECONDS);
-		getSnmpProbeFutureMap().put(probe.getRPString(), future);
+		getSnmpProbeFutureMap().put(probe.getId(), future);
 		SnmpProbeFutureCounter++;
 
 	}
@@ -175,7 +175,7 @@ public class RunInnerProbesChecks extends Thread {
 		ScheduledFuture<?> future;
 		future = RblProbeExec.scheduleAtFixedRate(probe, 0, probe.getProbe()
 				.getInterval(), TimeUnit.SECONDS);
-		getRblProbeFutureMap().put(probe.getRPString(), future);
+		getRblProbeFutureMap().put(probe.getId(), future);
 
 		RblProbeFutureCounter++;
 	}
@@ -184,7 +184,7 @@ public class RunInnerProbesChecks extends Thread {
 		ScheduledFuture<?> future;
 		future = DiscoveryExec.scheduleAtFixedRate(probe, 0, probe.getProbe()
 				.getInterval(), TimeUnit.SECONDS);
-		getDiscoveryFutureMap().put(probe.getRPString(), future);
+		getDiscoveryFutureMap().put(probe.getId(), future);
 
 		DiscoveryFutureCounter++;
 	}
@@ -228,7 +228,7 @@ public class RunInnerProbesChecks extends Thread {
 				return false;
 			}
 		} catch (Exception e) {
-			SysLogger.Record(new Log("Unable to start Runnable Probe Thread of: "+rp.getRPString()+", check probe type!", LogType.Warn, e));
+			SysLogger.Record(new Log("Unable to start Runnable Probe Thread of: "+rp.getId()+", check probe type!", LogType.Warn, e));
 		}
 		return false;
 	}
@@ -236,27 +236,27 @@ public class RunInnerProbesChecks extends Thread {
 		if(rp==null)
 			return false;
 		if (rp.getProbe() instanceof PingerProbe) {
-			RunInnerProbesChecks.getPingerFutureMap().get(rp.getRPString())
+			RunInnerProbesChecks.getPingerFutureMap().get(rp.getId())
 					.cancel(false);
 			PingerFutureCounter--;
 			return true;
 		} else if (rp.getProbe() instanceof PorterProbe) {
-			RunInnerProbesChecks.getPorterFutureMap().get(rp.getRPString())
+			RunInnerProbesChecks.getPorterFutureMap().get(rp.getId())
 					.cancel(false);
 			PorterFutureCounter--;
 			return true;
 		} else if (rp.getProbe() instanceof WeberProbe) {
-			RunInnerProbesChecks.getWeberFutureMap().get(rp.getRPString())
+			RunInnerProbesChecks.getWeberFutureMap().get(rp.getId())
 					.cancel(false);
 			WeberFutureCounter--;
 			return true;
 		} else if (rp.getProbe() instanceof RBLProbe) {
-			RunInnerProbesChecks.getRblProbeFutureMap().get(rp.getRPString())
+			RunInnerProbesChecks.getRblProbeFutureMap().get(rp.getId())
 					.cancel(false);
 			RblProbeFutureCounter--;
 			return true;
 		} else if (rp.getProbe() instanceof SnmpProbe) {
-			RunInnerProbesChecks.getSnmpProbeFutureMap().get(rp.getRPString())
+			RunInnerProbesChecks.getSnmpProbeFutureMap().get(rp.getId())
 					.cancel(false);
 			SnmpProbeFutureCounter--;
 			return true;
@@ -278,11 +278,11 @@ public class RunInnerProbesChecks extends Thread {
 //		}
 		switch(probeType)
 		{
-		case PING:return getPingerFutureMap().get(rp.getRPString());
-		case PORT:return getPorterFutureMap().get(rp.getRPString());
-		case WEB:return getWeberFutureMap().get(rp.getRPString());
-		case SNMP:return getPingerFutureMap().get(rp.getRPString());
-		case RBL:return getPingerFutureMap().get(rp.getRPString());
+		case PING:return getPingerFutureMap().get(rp.getId());
+		case PORT:return getPorterFutureMap().get(rp.getId());
+		case WEB:return getWeberFutureMap().get(rp.getId());
+		case SNMP:return getPingerFutureMap().get(rp.getId());
+		case RBL:return getPingerFutureMap().get(rp.getId());
 		}
 		return null;
 	}

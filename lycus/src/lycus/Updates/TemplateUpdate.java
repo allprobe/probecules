@@ -4,6 +4,7 @@ import java.util.UUID;
 
 import lycus.Model.UpdateModel;
 import lycus.Host;
+import lycus.RunnableProbeContainer;
 import lycus.UsersManager;
 
 public class TemplateUpdate  extends BaseUpdate{
@@ -29,19 +30,13 @@ public class TemplateUpdate  extends BaseUpdate{
 		return true;
 	}
 	
+	// object_id = templateId
 	@Override
 	public Boolean Delete()
 	{
 		super.Delete();
-		
-		for (Host host : getUser().getHosts().values())
-		{
-			host.removeRunnableProbes(UUID.fromString(getUpdate().object_id));
-			if(host.getRunnableProbes().size()==0)
-				getUser().getHosts().remove(host.getHostId());
-		}
-		if(getUser().getHosts().size()==0)
-			UsersManager.getUsers().remove(getUser().getUserId());
+		RunnableProbeContainer.getInstanece().removeByTemplateId(getUpdate().object_id);
+
 		return true;
 	}
 }

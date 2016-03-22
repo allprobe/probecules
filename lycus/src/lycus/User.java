@@ -127,6 +127,17 @@ public class User {
 		return true;
 	}
 
+	// return false when no more hosts
+	public Boolean removeHost(UUID hostId) {
+		if (hosts.containsKey(hostId))
+		{
+			getHosts().remove(hostId);
+			return !getHosts().isEmpty();
+		}
+
+		return true;
+	}
+	
 	public Map<String, BaseProbe> getTemplateProbes() {
 		return templateProbes;
 	}
@@ -135,23 +146,23 @@ public class User {
 		this.templateProbes = templateProbes;
 	}
 
-	public HashMap<String, RunnableProbe> getAllRunnableProbes() {
-		HashMap<String, RunnableProbe> allHostsRunnableProbes = new HashMap<String, RunnableProbe>();
-		Set<Host> hosts = new HashSet<Host>(this.getHosts().values());
-		for (Host host : hosts) {
-			allHostsRunnableProbes.putAll(host.getRunnableProbes());
-		}
-		return allHostsRunnableProbes;
-	}
+//	public HashMap<String, RunnableProbe> getAllRunnableProbes() {
+//		HashMap<String, RunnableProbe> allHostsRunnableProbes = new HashMap<String, RunnableProbe>();
+//		Set<Host> hosts = new HashSet<Host>(this.getHosts().values());
+//		for (Host host : hosts) {
+//			allHostsRunnableProbes.putAll(host.getRunnableProbes());
+//		}
+//		return allHostsRunnableProbes;
+//	}
 
-	public List<RunnableProbe> getRunnableProbesFor(String probe_id) {
-		List<RunnableProbe> runnableProbes = new ArrayList<RunnableProbe>();
-		Set<Host> hosts = new HashSet<Host>(this.getHosts().values());
-		for (Host host : hosts) {
-			runnableProbes.addAll(host.getRunnableProbes(probe_id));
-		}
-		return runnableProbes;
-	}
+//	public List<RunnableProbe> getRunnableProbesFor(String probe_id) {
+//		List<RunnableProbe> runnableProbes = new ArrayList<RunnableProbe>();
+//		Set<Host> hosts = new HashSet<Host>(this.getHosts().values());
+//		for (Host host : hosts) {
+//			runnableProbes.addAll(host.getRunnableProbes(probe_id));
+//		}
+//		return runnableProbes;
+//	}
 
 	// public Probe getProbe(UUID templateId, String probeId) {
 	// for (Map.Entry<String, RunnableProbe> entry :
@@ -176,6 +187,7 @@ public class User {
 	// return null;
 	// }
 
+	//TODO: check with Roi what to do with this function 
 	public void addRunnableProbe(String rpID) {
 		String probeId = rpID.split("@")[2];
 		UUID hostId = UUID.fromString(rpID.split("@")[1]);
@@ -197,12 +209,14 @@ public class User {
 			Logit.LogError("User - addRunnableProbe(String rpID)", "Unable to create Runnable Probe: " + rpID + ", check probe type!");
 			return;
 		}
-		host.getRunnableProbes().put(rpID, newRunnableProbe);
+		
+		RunnableProbeContainer.getInstanece().add(newRunnableProbe);
+//		host.getRunnableProbes().put(rpID, newRunnableProbe);
 	}
 
 	private void runProbes(List<RunnableProbe> rps) {
 		for (RunnableProbe rp : rps) {
-			if (rp.getRPString().contains(
+			if (rp.getId().contains(
 					"0b05919c-6cc0-42cc-a74b-de3b0dcd4a2a@6aadf750-e887-43ee-b872-326c94fbab7c@discovery_6b54463e-fe1c-4e2c-a090-452dbbf2d510"))
 				System.out.println("BREAKPOINT");
 			this.startRunnableProbe(rp);
@@ -210,7 +224,10 @@ public class User {
 	}
 
 	public void runProbesAtStart() {
-		this.runProbes(new ArrayList<RunnableProbe>(this.getAllRunnableProbes().values()));
+//		this.runProbes(new ArrayList<RunnableProbe>(this.getAllRunnableProbes().values()));
+		//TODO: Check with Roi if this is necesery
+		this.runProbes(new ArrayList<RunnableProbe>(RunnableProbeContainer.getInstanece().getByUser(getUserId().toString()).values()));
+		;
 		// this.runSnmpVer2_3();
 	}
 
@@ -250,27 +267,27 @@ public class User {
 	//
 	// }
 
-	public List<RunnableProbe> getRPSbyProbeID(String probeId) {
-		List<RunnableProbe> matchedRps = new ArrayList<RunnableProbe>();
-		HashMap<String, RunnableProbe> allRps = this.getAllRunnableProbes();
-		for (Map.Entry<String, RunnableProbe> entry : allRps.entrySet()) {
-			if (entry.getKey().contains(probeId)) {
-				matchedRps.add(entry.getValue());
-			}
-		}
-		return matchedRps;
-	}
+//	public List<RunnableProbe> getRPSbyProbeID(String probeId) {
+//		List<RunnableProbe> matchedRps = new ArrayList<RunnableProbe>();
+//		HashMap<String, RunnableProbe> allRps = this.getAllRunnableProbes();
+//		for (Map.Entry<String, RunnableProbe> entry : allRps.entrySet()) {
+//			if (entry.getKey().contains(probeId)) {
+//				matchedRps.add(entry.getValue());
+//			}
+//		}
+//		return matchedRps;
+//	}
 
-	public List<RunnableProbe> getRPSbyTemplateIdHostId(UUID templateId, UUID hostId) {
-		List<RunnableProbe> matchedRps = new ArrayList<RunnableProbe>();
-		HashMap<String, RunnableProbe> allRps = this.getAllRunnableProbes();
-		for (Map.Entry<String, RunnableProbe> entry : allRps.entrySet()) {
-			if (entry.getKey().contains(templateId.toString() + "@" + hostId.toString())) {
-				matchedRps.add(entry.getValue());
-			}
-		}
-		return matchedRps;
-	}
+//	public List<RunnableProbe> getRPSbyTemplateIdHostId(UUID templateId, UUID hostId) {
+//		List<RunnableProbe> matchedRps = new ArrayList<RunnableProbe>();
+//		HashMap<String, RunnableProbe> allRps = this.getAllRunnableProbes();
+//		for (Map.Entry<String, RunnableProbe> entry : allRps.entrySet()) {
+//			if (entry.getKey().contains(templateId.toString() + "@" + hostId.toString())) {
+//				matchedRps.add(entry.getValue());
+//			}
+//		}
+//		return matchedRps;
+//	}
 
 
 	public boolean startRunnableProbe(RunnableProbe rp) {
@@ -293,30 +310,31 @@ public class User {
 			rp.stop();
 			return true;
 		} catch (Exception e) {
-			Logit.LogError("User - stopRunnableProbe", "Unable To stop RunnableProbe: " + rp.getRPString());
+			Logit.LogError("User - stopRunnableProbe", "Unable To stop RunnableProbe: " + rp.getId());
 			return false;
 		}
 	}
 
-	public boolean addRunnableProbe(RunnableProbe rp) {
-		String rpStr = rp.getRPString();
+	public boolean addRunnableProbe(RunnableProbe runnableProbe) {
+		String rpStr = runnableProbe.getId();
 		if (rpStr.contains(
 				"0b05919c-6cc0-42cc-a74b-de3b0dcd4a2a@788b1b9e-d753-4dfa-ac46-61c4374eeb84@inner_b0fb65d1-c50d-4639-a728-0f173588f56b"))
 			System.out.println("BREAKPOINT");
 
-		this.getHost(rp.getHost().getHostId()).getRunnableProbes().put(rp.getRPString(), rp);
-		return this.startRunnableProbe(rp);
+		RunnableProbeContainer.getInstanece().add(runnableProbe);
+		return this.startRunnableProbe(runnableProbe);
 	}
 
-	public boolean removeRunnableProbe(RunnableProbe rp) {
-		UUID hostId = rp.getHost().getHostId();
-		this.getHosts().get(hostId).getRunnableProbes().remove(hostId);
-		if (this.getHosts().get(hostId).getRunnableProbes().size() == 0) {
-			this.getSnmpTemplates().remove(this.getHosts().get(hostId).getSnmpTemp().getSnmpTemplateId());
-			this.getHosts().remove(hostId);
-		}
-		return this.stopRunnableProbe(rp);
-	}
+//	public boolean removeRunnableProbe(RunnableProbe runnableProbe) {
+//		UUID hostId = runnableProbe.getHost().getHostId();
+//		RunnableProbeContainer.getInstanece().remove(runnableProbe);
+//		
+//		if (this.getHosts().get(hostId).getRunnableProbes().size() == 0) {
+//			this.getSnmpTemplates().remove(this.getHosts().get(hostId).getSnmpTemp().getSnmpTemplateId());
+//			this.getHosts().remove(hostId);
+//		}
+//		return this.stopRunnableProbe(runnableProbe);
+//	}
 
 	public String toString() {
 		return this.getUserId().toString();
@@ -331,13 +349,13 @@ public class User {
 		return getProbeFor(probe_id) != null;
 	}
 
-	public boolean removeRunnableProbes(String probe_id) {
-		List<RunnableProbe> runnableProbes = getRunnableProbesFor(probe_id);
-		for (RunnableProbe runnableProbe : runnableProbes) {
-			removeRunnableProbe(runnableProbe);
-		}
-		return true;
-	}
+//	public boolean removeRunnableProbes(String probe_id) {
+//		List<RunnableProbe> runnableProbes = getRunnableProbesFor(probe_id);
+//		for (RunnableProbe runnableProbe : runnableProbes) {
+//			removeRunnableProbe(runnableProbe);
+//		}
+//		return true;
+//	}
 
 	public void addHost(HostParams hostParams) {
 		try {
@@ -366,10 +384,10 @@ public class User {
 			Host host;
 
 			if (snmp_template == null) {
-				host = new Host(host_id, name, ip, status, true, bucket, notif_groups);
+				host = new Host(host_id, name, ip, status, true, bucket, notif_groups, getUserId().toString());
 			} else {
 				SnmpTemplate snmpTemp = this.getSnmpTemplates().get(snmp_template);
-				host = new Host(host_id, name, ip, snmpTemp, status, true, bucket, notif_groups);
+				host = new Host(host_id, name, ip, snmpTemp, status, true, bucket, notif_groups, getUserId().toString());
 			}
 			this.getHosts().put(host_id, host);
 		} catch (Exception e) {
@@ -636,12 +654,12 @@ public class User {
 		if (!newElement.isActive())
 			return;
 
-		RunnableProbe inOctets;
-		RunnableProbe outOctets;
+		RunnableProbe inOctetsRunnableProbe;
+		RunnableProbe outOctetsRunnableProbe;
 
 		try {
-			inOctets = new RunnableProbe(host, newElement.getIfInOctets());
-			outOctets = new RunnableProbe(host, newElement.getIfOutOctets());
+			inOctetsRunnableProbe = new RunnableProbe(host, newElement.getIfInOctets());
+			outOctetsRunnableProbe = new RunnableProbe(host, newElement.getIfOutOctets());
 		} catch (Exception e) {
 			SysLogger.Record(new Log(
 					"Unable to create Runnable Probe: " + newElement.getTemplate_id().toString() + "@"
@@ -649,22 +667,30 @@ public class User {
 					LogType.Error, e));
 			return;
 		}
-		this.getHost(host.getHostId()).getRunnableProbes().put(inOctets.getRPString(), inOctets);
-		this.getHost(host.getHostId()).getRunnableProbes().put(outOctets.getRPString(),outOctets);
+		
+//		HashMap<String, RunnableProbe> runnableProbes = RunnableProbeContainer.getInstanece().getByHost(host.getHostId().toString());
+//		if (runnableProbes != null)
+//		{
+			RunnableProbeContainer.getInstanece().add(inOctetsRunnableProbe);
+			RunnableProbeContainer.getInstanece().add(inOctetsRunnableProbe);
+//		}
+//		this.getHost(host.getHostId()).getRunnableProbes().put(inOctetsRunnableProbe.getId(), inOctetsRunnableProbe);
+//		this.getHost(host.getHostId()).getRunnableProbes().put(outOctetsRunnableProbe.getId(),outOctetsRunnableProbe);
 
 	}
 
-	public void removeDiscoveryElement(BaseElement baseElement, Host host) {
+	public void removeDiscoveryElement(BaseElement baseElement) {
 		if (baseElement instanceof NicElement) {
-			this.removeNicRunnableProbes((NicElement) baseElement, host);
+			this.removeNicRunnableProbes((NicElement) baseElement);
 		} else if (baseElement instanceof DiskElement) {
 			this.addDiskRunnableProbes((NicElement) baseElement);
 		}
 	}
 
-	private void removeNicRunnableProbes(NicElement baseElement, Host host) {
-		for (RunnableProbe rp : this.getRunnableProbesFor(baseElement.getProbe_id())) {
-			this.removeRunnableProbe(rp);
+	private void removeNicRunnableProbes(NicElement baseElement) {
+		for (RunnableProbe runnableProbe : RunnableProbeContainer.getInstanece().getByProbe(baseElement.getProbe_id()).values()) {
+			RunnableProbeContainer.getInstanece().remove(runnableProbe);
+//			this.removeRunnableProbe(runnableProbe);
 		}
 	}
 

@@ -10,17 +10,18 @@ import org.snmp4j.smi.OID;
 
 import lycus.GlobalConstants.Constants;
 import lycus.GlobalConstants.Enums;
-import lycus.GlobalConstants.LogType;
 import lycus.GlobalConstants.SnmpDataType;
+import lycus.Utils.GeneralFunctions;
 import lycus.Utils.Logit;
 import lycus.GlobalConstants.Enums.HostType;
 import lycus.GlobalConstants.Enums.SnmpStoreAs;
 import lycus.Host;
-import lycus.Log;
-import lycus.Net;
 import lycus.GlobalConstants.SnmpUnit;
 import lycus.User;
 import lycus.Probes.SnmpProbe;
+import lycus.Results.BaseResult;
+import lycus.Results.NicResult;
+import lycus.Results.SnmpResult;
 
 public class NicElement extends BaseElement {
 
@@ -49,54 +50,56 @@ public class NicElement extends BaseElement {
 
 
 	@Override
-	public ArrayList<Object> Check(Host h) {
-		super.Check(h);
+	public BaseResult getResult(Host host) {
+		super.getResult(host);
 		try {
-			Host host = h;
 			List<String> listOids = new ArrayList<String>();
-			;
-			if (h.isHostStatus() && h.isSnmpStatus()) {
+			NicResult result = null;;
+			
+			if (host.isHostStatus() && host.isSnmpStatus()) {
 				listOids.add(this.getIfinoctetsOID());
 				listOids.add(this.getIfoutoctetsOID());
-
 			}
-			Map<String, String> response = null;
-			if (host.getSnmpTemp().getVersion() == 2) {
-				response = Net.Snmp2GETBULK(host.getHostIp(), host.getSnmpTemp().getPort(),
-						host.getSnmpTemp().getTimeout(), host.getSnmpTemp().getCommunityName(), listOids);
-			} else if (host.getSnmpTemp().getVersion() == 3) {
-				response = Net.Snmp3GETBULK(host.getHostIp(), host.getSnmpTemp().getPort(),
-						host.getSnmpTemp().getTimeout(), host.getSnmpTemp().getUserName(),
-						host.getSnmpTemp().getAuthPass(), host.getSnmpTemp().getAlgo(),
-						host.getSnmpTemp().getCryptPass(), host.getSnmpTemp().getCryptType(), listOids);
-			}
+			
+			Map<String, SnmpResult> response = null;
+//			if (host.getSnmpTemp().getVersion() == 2) {
+//				response = Net.Snmp2GETBULK(host.getHostIp(), host.getSnmpTemp().getPort(),
+//						host.getSnmpTemp().getTimeout(), host.getSnmpTemp().getCommunityName(), listOids);
+//			} 
+//			else if (host.getSnmpTemp().getVersion() == 3) {
+//				response = Net.Snmp3GETBULK(host.getHostIp(), host.getSnmpTemp().getPort(),
+//						host.getSnmpTemp().getTimeout(), host.getSnmpTemp().getUserName(),
+//						host.getSnmpTemp().getAuthPass(), host.getSnmpTemp().getAlgo(),
+//						host.getSnmpTemp().getCryptPass(), host.getSnmpTemp().getCryptType(), listOids, 
+//						GeneralFunctions.getRunnableProbeId(getTemplate_id(), host.getHostId(), getProbe_id()));
+//			}
+			
 			if (response == null) {
-				Logit.LogInfo("no response for nic element probe" + this.getTemplate_id().toString() + "@"
-						+ h.getHostId().toString() + "@" + this.getProbe_id());
-				return null;
-			} else {
+				
+				Logit.LogInfo("no response for nic element probe" + GeneralFunctions.getRunnableProbeId(getTemplate_id(), host.getHostId(), getProbe_id()));
+			} 
+			else {
 				long resultsTimestamp = System.currentTimeMillis();
 
-				String ifInResults = response.get(this.getIfinoctetsOID());
-				String ifOutResults = response.get(this.getIfoutoctetsOID());
+				SnmpResult ifInResults = response.get(this.getIfinoctetsOID());
+				SnmpResult ifOutResults = response.get(this.getIfoutoctetsOID());
+
 				if (ifInResults == null || ifOutResults == null) {
-					Logit.LogInfo("no response for nic element probe" + this.getTemplate_id().toString() + "@"
-							+ h.getHostId().toString() + "@" + this.getProbe_id());
+					Logit.LogInfo("no response for nic element probe" + GeneralFunctions.getRunnableProbeId(getTemplate_id(), host.getHostId(), getProbe_id()));
 					return null;
 				}
 
-				long ifTotalTraffic = Long.parseLong(ifInResults) + Long.parseLong(ifOutResults);
-				ArrayList<Object> results = new ArrayList<Object>();
-				results.add(resultsTimestamp);
-				results.add(this.getIfSpeed());
-				results.add(ifInResults);
-				results.add(ifOutResults);
-				results.add(ifTotalTraffic);
-				return results;
+				
+				
+//				long ifTotalTraffic = Long.parseLong(ifInResults) + Long.parseLong(ifOutResults);
+				// TODO: add this.getIfSpeed() to results
+//				results.add(ifTotalTraffic);
+				
+				
+				return result;
 			}
 		} catch (Throwable th) {
-			Logit.LogError("NicElement - Check","Error running discovery element probe:" + this.getTemplate_id() + "@"
-					+ h.getHostId().toString() + "@" + this.getProbe_id());
+			Logit.LogError("NicElement - Check","Error running discovery element probe:" +  GeneralFunctions.getRunnableProbeId(getTemplate_id(), host.getHostId(), getProbe_id()));
 		}
 		return null;
 	}

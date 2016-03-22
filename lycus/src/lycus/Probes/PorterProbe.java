@@ -4,14 +4,12 @@
  */
 package lycus.Probes;
 
-import java.util.ArrayList;
 import java.util.UUID;
-
-import lycus.Model.KeyUpdateModel;
 import lycus.Model.UpdateValueModel;
+import lycus.Results.PortResult;
 import lycus.Utils.GeneralFunctions;
 import lycus.Host;
-import lycus.Net;
+import NetConnection.NetResults;
 import lycus.User;
 
 /**
@@ -121,7 +119,7 @@ public class PorterProbe extends BaseProbe {
 	}
 
 	@Override
-	public ArrayList<Object> Check(Host h) {
+	public PortResult getResult(Host h) {
 		if (!h.isHostStatus())
 			return null;
 
@@ -129,16 +127,7 @@ public class PorterProbe extends BaseProbe {
 		if (rpStr.contains("9dc99972-e28a-4e90-aabd-7e8bad61b232@inner_657259e4-b70b-47d2-9e4a-3db904a367e1"))
 			System.out.println("BREAKPOINT - PorterProbe");
 		
-		ArrayList<Object> results = null;
-		switch (this.getProto()) {
-		case "TCP":
-			results = Net.TcpPorter(h.getHostIp(), this.getPort(), this.getTimeout());
-			break;
-		case "UDP":
-			results = Net.UdpPorter(h.getHostIp(), this.getPort(), this.getTimeout(), this.getSendString(),
-					this.getReceiveString());
-			break;
-		}
+		PortResult results = NetResults.getInstanece().getPortResult(h,this);
 		return results;
 	}
 

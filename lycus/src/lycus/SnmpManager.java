@@ -61,7 +61,7 @@ public class SnmpManager {
 		for (RunnableProbe rp : rps) {
 			boolean status = this.startProbe(rp);
 			if (!status) {
-				SysLogger.Record(new Log("Failed to run runnable probe: " + rp.getRPString(), LogType.Warn));
+				SysLogger.Record(new Log("Failed to run runnable probe: " + rp.getId(), LogType.Warn));
 			}
 		}
 	}
@@ -85,11 +85,11 @@ public class SnmpManager {
 				BaseProbe probe = rp.getProbe();
 				if (batch.getBatchId().contains(host.getHostId().toString() + "@" + probe.getTemplate_id().toString()
 						+ "@" + probe.getInterval()) && batch.getSnmpProbes().size() < this.getBatchesSize()) {
-					batch.getSnmpProbes().put(rp.getRPString(), rp);
+					batch.getSnmpProbes().put(rp.getId(), rp);
 					return batch;
 				}
 			} catch (Exception e) {
-				SysLogger.Record(new Log("Unable to add Runnable Probe to existing batch: " + rp.getRPString(),
+				SysLogger.Record(new Log("Unable to add Runnable Probe to existing batch: " + rp.getId(),
 						LogType.Warn, e));
 				return null;
 			}
@@ -101,7 +101,7 @@ public class SnmpManager {
 			return newBatch;
 		} catch (Exception e) {
 			SysLogger
-					.Record(new Log("Unable to add Runnable Probe to new batch: " + rp.getRPString(), LogType.Warn, e));
+					.Record(new Log("Unable to add Runnable Probe to new batch: " + rp.getId(), LogType.Warn, e));
 			return null;
 		}
 	}
@@ -119,7 +119,7 @@ public class SnmpManager {
 				if (batchThread.getKey().contains(rp.getHost().getHostId().toString() + "@"
 						+ rp.getProbe().getTemplate_id().toString() + "@" + rp.getProbe().getInterval())) {
 					SnmpProbesBatch batch = this.getBatches().get(batchThread.getKey());
-					if (batch.getSnmpProbes().get(rp.getRPString()) != null) {
+					if (batch.getSnmpProbes().get(rp.getId()) != null) {
 						batch.deleteSnmpProbe(rp);
 						if (batch.getSnmpProbes().size() == 0) {
 							RunInnerProbesChecks.getSnmpBatchFutureMap().get(batch.getBatchId()).cancel(true);
@@ -132,14 +132,14 @@ public class SnmpManager {
 			}
 			return false;
 		} catch (Exception e) {
-			SysLogger.Record(new Log("Unable to stop running probe: " + rp.getRPString(), LogType.Warn, e));
+			SysLogger.Record(new Log("Unable to stop running probe: " + rp.getId(), LogType.Warn, e));
 			return false;
 		}
 	}
 
 	public boolean startProbe(RunnableProbe rp) {
 		
-		String rpStr = rp.getRPString();
+		String rpStr = rp.getId();
 		if (rpStr.contains(
 				"ca49f95f-3676-4129-86d9-34f87433314c@7352a46f-5189-428c-b4c0-fb98dedd10b1@inner_7be55137-c5d8-438e-bca7-325f56656071"))
 			System.out.println("BREAKPOINT");

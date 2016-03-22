@@ -1,17 +1,14 @@
 package lycus.Probes;
 
-import java.util.ArrayList;
 import java.util.UUID;
 import org.snmp4j.smi.OID;
-
 import lycus.GlobalConstants.SnmpDataType;
 import lycus.GlobalConstants.SnmpUnit;
 import lycus.GlobalConstants.Enums.SnmpStoreAs;
-import lycus.Model.KeyUpdateModel;
 import lycus.Model.UpdateValueModel;
+import lycus.Results.BaseResult;
 import lycus.Utils.GeneralFunctions;
 import lycus.Host;
-import lycus.Net;
 import lycus.User;
 import lycus.UsersManager;
 
@@ -65,14 +62,9 @@ public class SnmpProbe extends BaseProbe {
 	}
 
 	@Override
-	public ArrayList<Object> Check(Host h) // Only V1
+	public BaseResult getResult(Host h) // Only V1
 	{
-		if (!h.isHostStatus())
-    		return null;
-		
-		ArrayList<Object> results = Net.runSnmpCheckVer1(h.getHostIp(), h.getSnmpTemp().getPort(),
-				h.getSnmpTemp().getCommunityName(), this.getOid().toString(), h.getSnmpTemp().getTimeout());
-		return results;
+		return null;
 	}
 
 	@Override

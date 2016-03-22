@@ -9,4 +9,8 @@ public class JsonUtil {
 		T t = (T) new Gson().fromJson(jsonObject.toString(), generic);
 		return t;
 	}
+	
+	public static <T>String ToJson(T generic){
+		return new Gson().toJson(generic);
+	}
 }

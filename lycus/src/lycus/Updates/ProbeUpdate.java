@@ -1,22 +1,18 @@
 package lycus.Updates;
 
-import java.util.List;
+import java.util.HashMap;
 import java.util.UUID;
-
 import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
-
 import lycus.GlobalConstants.Constants;
-import lycus.GlobalConstants.LogType;
 import lycus.GlobalConstants.Enums.ApiAction;
 import lycus.Model.ProbeParams;
 import lycus.Model.UpdateModel;
 import lycus.DAL.DAL;
 import lycus.Utils.GeneralFunctions;
 import lycus.Host;
-import lycus.Log;
 import lycus.RunnableProbe;
-import lycus.SysLogger;
+import lycus.RunnableProbeContainer;
 import lycus.UsersManager;
 import lycus.Interfaces.IDAL;
 import lycus.Probes.BaseProbe;
@@ -106,10 +102,14 @@ public class ProbeUpdate extends BaseUpdate {
 		return true;
 	}
 
+	//TODO: check with ROI
 	private boolean ChangeInterval(long currentInterval) {
 		try {
 			if (currentInterval != getUpdate().update_value.interval) {
-				for (RunnableProbe runnableProbe : getUser().getRunnableProbesFor(getUpdate().probe_id)) {
+				HashMap<String, RunnableProbe> runnableProbes = RunnableProbeContainer.getInstanece().getByProbe(getUpdate().probe_id);
+				if (runnableProbes == null)
+					return false;
+				for (RunnableProbe runnableProbe : runnableProbes.values()) {
 					if (runnableProbe.stop())
 						runnableProbe.start();
 				}
@@ -124,8 +124,8 @@ public class ProbeUpdate extends BaseUpdate {
 	public Boolean Update() {
 		super.Update();
 
-		List<RunnableProbe> runnableProbes = getUser().getRunnableProbesFor(getUpdate().probe_id);
-		for (RunnableProbe runnableProbe : runnableProbes) {
+		HashMap<String, RunnableProbe> runnableProbes = RunnableProbeContainer.getInstanece().getByProbe(getUpdate().probe_id);
+		for (RunnableProbe runnableProbe : runnableProbes.values()) {
 			if (!GeneralFunctions.isNullOrEmpty(getUpdate().update_value.name))
 				runnableProbe.getProbe().setName(getUpdate().update_value.name);
 			if (getUpdate().update_value.multiplier != null)
@@ -152,8 +152,7 @@ public class ProbeUpdate extends BaseUpdate {
 	@Override
 	public Boolean Delete() {
 		super.Delete();
-		getUser().removeRunnableProbes(getUpdate().probe_id);
-
+		RunnableProbeContainer.getInstanece().removeByProbeId(getUpdate().probe_id);
 		return true;
 	}
 }

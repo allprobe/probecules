@@ -15,6 +15,8 @@ import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.UUID;
+
 import org.apache.commons.codec.binary.Base64;
 import org.snmp4j.PDU;
 import org.snmp4j.smi.OID;
@@ -195,4 +197,24 @@ public class GeneralFunctions {
     {
     	return str == null || str.length() == 0;
     }
+    
+    public static String getRunnableProbeId(UUID templateId, UUID hostId, String probeId)
+    {
+    	return templateId.toString() + "@" + hostId.toString() + "@" + probeId;
+    }
+    
+
+	public int getNumberOfRollupTables(long interval) {
+		if (interval < 240)
+			return 6;
+		if (interval >= 240 && interval < 1200)
+			return 5;
+		if (interval >= 1200 && interval < 3600)
+			return 4;
+		if (interval >= 3600 && interval < 21600)
+			return 3;
+		if (interval >= 21600)
+			return 2;
+		return 0;
+	}
 }
