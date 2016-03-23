@@ -9,14 +9,14 @@ import lycus.User;
 import lycus.Probes.BaseProbe;
 import lycus.Results.BaseResult;
 
-public class BaseElement extends BaseProbe {
+public class BaseElement {
 
-	
 	private int index;
+	private String name;
 	
-	public BaseElement(User user,String probe_id,UUID template_id,String name,long interval,float multiplier,boolean status,int index) {
-		super(null,probe_id,template_id,name,interval,multiplier,status);
+	public BaseElement(int index,String name) {
 		this.index=index;
+		this.name=name;
 	}
 
 
@@ -33,11 +33,5 @@ public class BaseElement extends BaseProbe {
 		return this.getIndex()==baseElement.getIndex();
 	}
 
-
-	@Override
-	public BaseResult getResult(Host h) {
-		Logit.LogInfo("Running Discovery Element Probe: "+this.getTemplate_id()+"@"+h.getHostId().toString()+"@"+this.getProbe_id());
-		return null;
-	}
 
 }

@@ -18,10 +18,6 @@ change server id
 ----------------
 sed -i 's/.*Server_token.*/Server_token=S3/' /home/roi/probecules/lycus/config.properties
 
-Bugging Check
--------------
-check log > check code sending > check probe > check probe thread
-check which thread presented at debugger debug prespective
 
 
 see applications performance
@@ -35,12 +31,18 @@ apt-get install visualvm
 /etc/init.d/probecules 2 stop
 
 
--snmp checks impelementation
 -traceroute dedicated implementation
--upgrade logger to log4j
 -snmp check improvements (retries,maxRepetiots)
 
 
 
 curl -i  -X PUT -d '{"hosts": ["e337d5e0-74c7-433d-b2c1-4a9b357676ce"]}' http://api.allprobe.com/v2/GetHosts/IL_D1-S1/9f34da71-0725-4380-9ab5-a90f691fbd9f
 
+
+
+
+Notes for Oren
+----------
+- number of DataPointsRollup in array of result rollup depends on probe interval - RollupsContainer.addPingerResult() need to know the interval for initializing the array.
+- handle delta results.
+- where to put NicElement (need to consider the change check everytime new result incoming).

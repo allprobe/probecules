@@ -14,6 +14,7 @@ public class Host {
 	private boolean hostStatus;
 	private String bucket;
 	private UUID notificationGroups;
+	private List<NicElement> nicElements;
 	
 	public Host(UUID host_id, String name, String host_ip,
 			SnmpTemplate snmpTemp,boolean hostStatus, boolean snmpStatus,String bucket,UUID notifGroups, String userId) {

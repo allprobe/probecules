@@ -3,11 +3,15 @@ package lycus.Interfaces;
 import java.util.List;
 
 import lycus.Host;
+import lycus.Probes.DiscoveryProbe;
+import lycus.Probes.NicProbe;
 import lycus.Probes.PingerProbe;
 import lycus.Probes.PorterProbe;
 import lycus.Probes.RBLProbe;
 import lycus.Probes.SnmpProbe;
 import lycus.Probes.WeberProbe;
+import lycus.Results.DiscoveryResult;
+import lycus.Results.NicResult;
 import lycus.Results.PingResult;
 import lycus.Results.PortResult;
 import lycus.Results.RblResult;
@@ -20,4 +24,6 @@ public interface INetResults {
 	WebResult  getWebResult(Host host,WeberProbe probe);
 	RblResult    getRblResult(Host host,RBLProbe probe);
 	List<SnmpResult>   getSnmpResults(Host host,List<SnmpProbe> snmpProbes);
+	NicResult getNicResult(Host host, NicProbe nicProbe);
+	DiscoveryResult getDiscoveryResult(Host h, DiscoveryProbe discoveryProbe);
 }

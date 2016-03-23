@@ -35,8 +35,8 @@ import lycus.Utils.GeneralFunctions;
 import lycus.Utils.Logit;
 import lycus.DAL.ApiInterface;
 import lycus.Elements.BaseElement;
-import lycus.Elements.NicElement;
 import lycus.Probes.BaseProbe;
+import lycus.Probes.NicProbe;
 
 /**
  * 
@@ -234,7 +234,7 @@ public class UsersManager {
 				switch(elementParams.elements_type)
 				{
 				case Constants.bw: 
-					baseElement=new NicElement(user,elementParams.discovery_id+"@"+elementParams.name, UUID.fromString(elementParams.template_id),elementParams.name, elementParams.element_interval,1, elementParams.status, elementParams.index,100000, HostType.Linux);
+					baseElement=new NicProbe(user,elementParams.discovery_id+"@"+elementParams.name, UUID.fromString(elementParams.template_id),elementParams.name, elementParams.element_interval,1, elementParams.status, elementParams.index,100000, HostType.Linux);
 					break;
 				case Constants.ds:
 					break;

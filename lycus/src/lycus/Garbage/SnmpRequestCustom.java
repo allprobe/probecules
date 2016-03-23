@@ -17,7 +17,7 @@
   _##  limitations under the License.
   _##  
   _##########################################################################*/
-package lycus;
+package lycus.Garbage;
 
 import java.io.*;
 import java.util.*;

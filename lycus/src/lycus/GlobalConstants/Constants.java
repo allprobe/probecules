@@ -1,5 +1,7 @@
 package lycus.GlobalConstants;
 
+import org.snmp4j.smi.OID;
+
 public class Constants {
 	public final static String https_prefix = "https://";
 	public final static String http_prefix = "http://";
@@ -69,6 +71,8 @@ public class Constants {
 	
 	public static final String and = "and";
 	public static final String or = "or";
+	public static final OID ifAll = new OID("1.3.6.1.2.1.2.2.1");
+	public static final OID sysDescr = new OID("1.3.6.1.2.1.1.1.0");
 
 
 }

@@ -1,35 +1,22 @@
 package lycus.Results;
 
 import java.util.HashMap;
+import java.util.List;
+
+import lycus.NicElement;
 import lycus.Trigger;
 import lycus.Elements.BaseElement;
 import lycus.GlobalConstants.Enums;
 
 public class DiscoveryResult extends BaseResult {
 
+	private List<BaseElement> elements;
 
-	private HashMap<String, BaseElement> currentElements = null;
-	private HashMap<BaseElement, Enums.ElementChange> elementsChanges = null;
-
-	public DiscoveryResult(String runnableProbeId) {
-		super(runnableProbeId);
+	public DiscoveryResult(String runnableProbeId,long timestamp,List<BaseElement> elements) {
+		super(runnableProbeId,timestamp);
+		this.elements=elements;
 	}
 	
-	public HashMap<String, BaseElement> getCurrentElements() {
-		return currentElements;
-	}
-
-	public void setCurrentElements(HashMap<String, BaseElement> currentElements) {
-		this.currentElements = currentElements;
-	}
-
-	public synchronized HashMap<BaseElement, Enums.ElementChange> getElementsChanges() {
-		return elementsChanges;
-	}
-
-	public synchronized void setElementsChanges(HashMap<BaseElement, Enums.ElementChange> newElements) {
-		this.elementsChanges = newElements;
-	}
 
 //	@Override
 //	public synchronized void acceptResults(ArrayList<Object> results) throws Exception {
@@ -56,52 +43,9 @@ public class DiscoveryResult extends BaseResult {
 //
 //		boolean sameElements = checkForElementsChanges(lastScanElements, timestamp);
 //	}
-//
-//	private HashMap<String, BaseElement> convertDisksWalkToIndexes(HashMap<String, String> hashMap, HostType hostType) {
-//		// TODO DiscoveryResults.convertDisksWalkToIndexes
-//		return null;
-//	}
-//
-//	private HashMap<String, BaseElement> convertNicsWalkToIndexes(HashMap<String, String> nicsWalk, HostType hostType) {
-//		HashMap<String, BaseElement> lastElements = new HashMap<String, BaseElement>();
-//		if (hostType == null)
-//			return null;
-//		for (Map.Entry<String, String> entry : nicsWalk.entrySet()) {
-//			if (!entry.getKey().toString().contains("1.3.6.1.2.1.2.2.1.1."))
-//				continue;
-//			int index = Integer.parseInt(entry.getValue());
-//			if (index == 0) {
-//				Logit.LogError("DiscoveryResults - convertNicsWalkToIndexes", "snmp OID index cannot be zero! ---" + this.getRp().getRPString());
-//				continue;
-//			}
-//
-//			String name;
-//			long ifSpeed;
-//
-//			ifSpeed = Long.parseLong(nicsWalk.get("1.3.6.1.2.1.2.2.1.5." + index));
-//			switch (hostType) {
-//			case Windows:
-//				name = GeneralFunctions.convertHexToString(nicsWalk.get("1.3.6.1.2.1.2.2.1.2." + index));
-//				break;
-//			case Linux:
-//				name = nicsWalk.get("1.3.6.1.2.1.2.2.1.2." + index);
-//				break;
-//			default:
-//				return null;
-//			}
-//			NicElement nicElement = new NicElement(this.getRp().getProbe().getUser(),
-//					this.getRp().getProbe().getProbe_id(), this.getRp().getProbe().getTemplate_id(), name,
-//					this.getRp().getProbe().getInterval(), this.getRp().getProbe().getMultiplier(),
-//					this.getRp().getProbe().isActive(), index, ifSpeed, hostType);
-//
-//			lastElements.put(name, nicElement);
-//		}
-//
-//		if (lastElements.size() == 0)
-//			return null;
-//
-//		return lastElements;
-//	}
+
+
+	
 
 	@Override
 	public void checkIfTriggerd(HashMap<String,Trigger> triggers) throws Exception {

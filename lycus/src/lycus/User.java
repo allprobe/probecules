@@ -24,8 +24,8 @@ import lycus.Model.ProbeParams;
 import lycus.Model.SnmpTemplateParams;
 import lycus.Elements.BaseElement;
 import lycus.Elements.DiskElement;
-import lycus.Elements.NicElement;
 import lycus.Probes.DiscoveryProbe;
+import lycus.Probes.NicProbe;
 import lycus.Probes.PingerProbe;
 import lycus.Probes.PorterProbe;
 import lycus.Probes.BaseProbe;
@@ -630,19 +630,19 @@ public class User {
 		if(newElement==null || host==null)
 			return;
 			
-		if (newElement instanceof NicElement) {
-			this.addNicRunnableProbes((NicElement) newElement, host);
+		if (newElement instanceof NicProbe) {
+			this.addNicRunnableProbes((NicProbe) newElement, host);
 		} else if (newElement instanceof DiskElement) {
-			this.addDiskRunnableProbes((NicElement) newElement);
+			this.addDiskRunnableProbes((NicProbe) newElement);
 		}
 	}
 
-	private void addDiskRunnableProbes(NicElement newElement) {
+	private void addDiskRunnableProbes(NicProbe newElement) {
 		// TODO User.addDiskRunnableProbes
 
 	}
 
-	private void addNicRunnableProbes(NicElement newElement, Host host) {
+	private void addNicRunnableProbes(NicProbe newElement, Host host) {
 		this.templateProbes.put(newElement.getProbe_id(), newElement);
 		if (newElement == null || host == null) {
 			Logit.LogError("User - addNicRunnableProbes()", "Unable to create Runnable Probe: " + newElement.getTemplate_id().toString() + "@"
@@ -677,14 +677,14 @@ public class User {
 	}
 
 	public void removeDiscoveryElement(BaseElement baseElement) {
-		if (baseElement instanceof NicElement) {
-			this.removeNicRunnableProbes((NicElement) baseElement);
+		if (baseElement instanceof NicProbe) {
+			this.removeNicRunnableProbes((NicProbe) baseElement);
 		} else if (baseElement instanceof DiskElement) {
-			this.addDiskRunnableProbes((NicElement) baseElement);
+			this.addDiskRunnableProbes((NicProbe) baseElement);
 		}
 	}
 
-	private void removeNicRunnableProbes(NicElement baseElement) {
+	private void removeNicRunnableProbes(NicProbe baseElement) {
 		for (RunnableProbe runnableProbe : RunnableProbeContainer.getInstanece().getByProbe(baseElement.getProbe_id()).values()) {
 			RunnableProbeContainer.getInstanece().remove(runnableProbe);
 //			this.removeRunnableProbe(runnableProbe);
