@@ -9,7 +9,7 @@ public class NicElement extends BaseElement {
 	private HostType hostType;
 	
 	public NicElement(int index,String name, HostType hostType) {
-		super(index);
+		super(index,name);
 		this.name=name;
 		this.hostType=hostType;
 	}

@@ -626,69 +626,69 @@ public class User {
 		return null;
 	}
 
-	public void addNewDiscoveryElement(BaseElement newElement, Host host) {
-		if(newElement==null || host==null)
-			return;
-			
-		if (newElement instanceof NicProbe) {
-			this.addNicRunnableProbes((NicProbe) newElement, host);
-		} else if (newElement instanceof DiskElement) {
-			this.addDiskRunnableProbes((NicProbe) newElement);
-		}
-	}
+//	public void addNewDiscoveryElement(BaseElement newElement, Host host) {
+//		if(newElement==null || host==null)
+//			return;
+//			
+//		if (newElement instanceof NicProbe) {
+//			this.addNicRunnableProbes((NicProbe) newElement, host);
+//		} else if (newElement instanceof DiskElement) {
+//			this.addDiskRunnableProbes((NicProbe) newElement);
+//		}
+//	}
 
 	private void addDiskRunnableProbes(NicProbe newElement) {
 		// TODO User.addDiskRunnableProbes
 
 	}
 
-	private void addNicRunnableProbes(NicProbe newElement, Host host) {
-		this.templateProbes.put(newElement.getProbe_id(), newElement);
-		if (newElement == null || host == null) {
-			Logit.LogError("User - addNicRunnableProbes()", "Unable to create Runnable Probe: " + newElement.getTemplate_id().toString() + "@"
-					+ host.getHostId().toString() + "@" + newElement.getProbe_id()
-					+ ", one of its elements is missing!");
-			return;
-		}
-		if (!newElement.isActive())
-			return;
-
-		RunnableProbe inOctetsRunnableProbe;
-		RunnableProbe outOctetsRunnableProbe;
-
-		try {
-			inOctetsRunnableProbe = new RunnableProbe(host, newElement.getIfInOctets());
-			outOctetsRunnableProbe = new RunnableProbe(host, newElement.getIfOutOctets());
-		} catch (Exception e) {
-			Logit.LogError("User - addNicRunnableProbes()", "Unable to create Runnable Probe: " + newElement.getTemplate_id().toString() + "@"
-					+ host.getHostId().toString() + "@" + newElement.getProbe_id() + ", check probe type!\n" + e.getMessage());
-			return;
-		}
-		
-//		HashMap<String, RunnableProbe> runnableProbes = RunnableProbeContainer.getInstanece().getByHost(host.getHostId().toString());
-//		if (runnableProbes != null)
-//		{
-			RunnableProbeContainer.getInstanece().add(inOctetsRunnableProbe);
-			RunnableProbeContainer.getInstanece().add(inOctetsRunnableProbe);
+//	private void addNicRunnableProbes(NicProbe newElement, Host host) {
+//		this.templateProbes.put(newElement.getProbe_id(), newElement);
+//		if (newElement == null || host == null) {
+//			Logit.LogError("User - addNicRunnableProbes()", "Unable to create Runnable Probe: " + newElement.getTemplate_id().toString() + "@"
+//					+ host.getHostId().toString() + "@" + newElement.getProbe_id()
+//					+ ", one of its elements is missing!");
+//			return;
 //		}
-//		this.getHost(host.getHostId()).getRunnableProbes().put(inOctetsRunnableProbe.getId(), inOctetsRunnableProbe);
-//		this.getHost(host.getHostId()).getRunnableProbes().put(outOctetsRunnableProbe.getId(),outOctetsRunnableProbe);
+//		if (!newElement.isActive())
+//			return;
+//
+//		RunnableProbe inOctetsRunnableProbe;
+//		RunnableProbe outOctetsRunnableProbe;
+//
+//		try {
+//			inOctetsRunnableProbe = new RunnableProbe(host, newElement.getIfInOctets());
+//			outOctetsRunnableProbe = new RunnableProbe(host, newElement.getIfOutOctets());
+//		} catch (Exception e) {
+//			Logit.LogError("User - addNicRunnableProbes()", "Unable to create Runnable Probe: " + newElement.getTemplate_id().toString() + "@"
+//					+ host.getHostId().toString() + "@" + newElement.getProbe_id() + ", check probe type!\n" + e.getMessage());
+//			return;
+//		}
+//		
+////		HashMap<String, RunnableProbe> runnableProbes = RunnableProbeContainer.getInstanece().getByHost(host.getHostId().toString());
+////		if (runnableProbes != null)
+////		{
+//			RunnableProbeContainer.getInstanece().add(inOctetsRunnableProbe);
+//			RunnableProbeContainer.getInstanece().add(inOctetsRunnableProbe);
+////		}
+////		this.getHost(host.getHostId()).getRunnableProbes().put(inOctetsRunnableProbe.getId(), inOctetsRunnableProbe);
+////		this.getHost(host.getHostId()).getRunnableProbes().put(outOctetsRunnableProbe.getId(),outOctetsRunnableProbe);
+//
+//	}
 
-	}
+//	public void removeDiscoveryElement(BaseElement baseElement) {
+//		if (baseElement instanceof NicProbe) {
+//			this.removeNicRunnableProbes((NicProbe) baseElement);
+//		} else if (baseElement instanceof DiskElement) {
+//			this.addDiskRunnableProbes((NicProbe) baseElement);
+//		}
+//	}
 
-	public void removeDiscoveryElement(BaseElement baseElement) {
-		if (baseElement instanceof NicProbe) {
-			this.removeNicRunnableProbes((NicProbe) baseElement);
-		} else if (baseElement instanceof DiskElement) {
-			this.addDiskRunnableProbes((NicProbe) baseElement);
-		}
-	}
-
-	private void removeNicRunnableProbes(NicProbe baseElement) {
-		for (RunnableProbe runnableProbe : RunnableProbeContainer.getInstanece().getByProbe(baseElement.getProbe_id()).values()) {
-			RunnableProbeContainer.getInstanece().remove(runnableProbe);
-//			this.removeRunnableProbe(runnableProbe);
-		}
-	}
+//	private void removeNicRunnableProbes(NicProbe baseElement) {
+//		for (RunnableProbe runnableProbe : RunnableProbeContainer.getInstanece().getByProbe(baseElement.getProbe_id()).values()) {
+//			RunnableProbeContainer.getInstanece().remove(runnableProbe);
+////			this.removeRunnableProbe(runnableProbe);
+//		}
+//	}
 
 }

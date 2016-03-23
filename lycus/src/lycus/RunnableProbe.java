@@ -82,8 +82,8 @@ public class RunnableProbe implements Runnable {
 			return ProbeTypes.RBL;
 		if (getProbe() instanceof DiscoveryProbe)
 			return ProbeTypes.DISCOVERY;
-		if (getProbe() instanceof BaseElement)
-			return ProbeTypes.DISCOVERYELEMENT;
+//		if (getProbe() instanceof BaseElement)
+//			return ProbeTypes.DISCOVERYELEMENT;
 		return null;
 	}
 

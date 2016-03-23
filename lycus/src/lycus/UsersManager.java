@@ -234,12 +234,13 @@ public class UsersManager {
 				switch(elementParams.elements_type)
 				{
 				case Constants.bw: 
-					baseElement=new NicProbe(user,elementParams.discovery_id+"@"+elementParams.name, UUID.fromString(elementParams.template_id),elementParams.name, elementParams.element_interval,1, elementParams.status, elementParams.index,100000, HostType.Linux);
+//					baseElement=new NicProbe(user,elementParams.discovery_id+"@"+elementParams.name, UUID.fromString(elementParams.template_id),elementParams.name, elementParams.element_interval,1, elementParams.status, elementParams.index,100000, HostType.Linux);
 					break;
 				case Constants.ds:
 					break;
 				}
-				user.addNewDiscoveryElement(baseElement,host);
+				// TODO add exisitng elements
+//				user.addNewDiscoveryElement(baseElement,host);
 				}
 				
 			} catch (Exception e) {

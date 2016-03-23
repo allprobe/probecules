@@ -17,6 +17,9 @@ public class DiscoveryResult extends BaseResult {
 		this.elements=elements;
 	}
 	
+	public DiscoveryResult(String runnableProbeId) {
+		super(runnableProbeId);
+	}
 
 //	@Override
 //	public synchronized void acceptResults(ArrayList<Object> results) throws Exception {
