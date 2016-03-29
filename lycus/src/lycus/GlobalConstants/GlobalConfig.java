@@ -14,7 +14,7 @@ import java.util.Properties;
  *
  * @author ran
  */
-public class Global {
+public class GlobalConfig {
 	
 	private static String confPath=null;
 	
@@ -37,6 +37,7 @@ public class Global {
     private static Boolean Debug=null;
     private static Boolean Development=null;
     private static String syslogHost=null;
+    private static String log4jConfigLocation=null;
     
     private static Character ArraySeperator=null;
     private static Character KeySeperator=null;
@@ -117,7 +118,7 @@ public class Global {
 
 
 	public static void setSyslogHost(String syslogHost) {
-		Global.syslogHost = syslogHost;
+		GlobalConfig.syslogHost = syslogHost;
 	}
 
 
@@ -127,7 +128,7 @@ public class Global {
 
 
 	public static void setMaxSnmpResponseInBytes(int maxSnmpResponseInBytes) {
-		Global.maxSnmpResponseInBytes = maxSnmpResponseInBytes;
+		GlobalConfig.maxSnmpResponseInBytes = maxSnmpResponseInBytes;
 	}
 
 	public static String getHostSnmpOK() {
@@ -145,7 +146,7 @@ public class Global {
 
 
 	public static void setApiUrl(String apiUrl) {
-		Global.apiUrl = apiUrl;
+		GlobalConfig.apiUrl = apiUrl;
 	}
 
 
@@ -155,7 +156,7 @@ public class Global {
 
 
 	public static void setApiSSL(Boolean apiSSL) {
-		Global.apiSSL = apiSSL;
+		GlobalConfig.apiSSL = apiSSL;
 	}
 
 
@@ -165,7 +166,7 @@ public class Global {
 
 
 	public static void setApiUser(String apiUser) {
-		Global.apiUser = apiUser;
+		GlobalConfig.apiUser = apiUser;
 	}
 
 
@@ -175,7 +176,7 @@ public class Global {
 
 
 	public static void setApiPass(String apiPass) {
-		Global.apiPass = apiPass;
+		GlobalConfig.apiPass = apiPass;
 	}
 
 
@@ -185,7 +186,7 @@ public class Global {
 
 
 	public static void setConfPath(String confPath) {
-		Global.confPath = confPath;
+		GlobalConfig.confPath = confPath;
 	}
 
 
@@ -195,7 +196,7 @@ public class Global {
 
 
 	public static void setApiAuthToken(String apiAuthToken) {
-		Global.apiAuthToken = apiAuthToken;
+		GlobalConfig.apiAuthToken = apiAuthToken;
 	}
 
 
@@ -228,6 +229,7 @@ public class Global {
             Debug = Boolean.valueOf(prop.getProperty("Debug")).booleanValue();
             Development = Boolean.valueOf(prop.getProperty("Development")).booleanValue();
             syslogHost=prop.getProperty("Syslog_host");
+            log4jConfigLocation=prop.getProperty("Log4j2_config_location");
             ArraySeperator = prop.getProperty("Array_seperator").charAt(0);
             KeySeperator = prop.getProperty("Key_seperator").charAt(0);
         } catch (FileNotFoundException e) {
@@ -298,6 +300,8 @@ public class Global {
     	if (Debug==null)
     		return false;
     	if (Development==null)
+    		return false;
+    	if(log4jConfigLocation==null)
     		return false;
 //    	if (syslogHost==null)
 //    		return false;

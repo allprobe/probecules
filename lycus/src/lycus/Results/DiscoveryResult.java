@@ -3,9 +3,9 @@ package lycus.Results;
 import java.util.HashMap;
 import java.util.List;
 
-import lycus.NicElement;
 import lycus.Trigger;
 import lycus.Elements.BaseElement;
+import lycus.Elements.NicElement;
 import lycus.GlobalConstants.Enums;
 
 public class DiscoveryResult extends BaseResult {

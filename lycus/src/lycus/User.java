@@ -187,33 +187,6 @@ public class User {
 	// return null;
 	// }
 
-	//TODO: check with Roi what to do with this function 
-	public void addRunnableProbe(String rpID) {
-		String probeId = rpID.split("@")[2];
-		UUID hostId = UUID.fromString(rpID.split("@")[1]);
-		Host host = this.getHosts().get(hostId);
-		BaseProbe probe = this.getTemplateProbes().get(probeId);
-		RunnableProbe newRunnableProbe;
-
-		String rpStr = hostId.toString() + "@" + probeId;
-		if (rpStr.contains("0b05919c-6cc0-42cc-a74b-de3b0dcd4a2a@788b1b9e-d753-4dfa-ac46-61c4374eeb84@inner_b0fb65d1-c50d-4639-a728-0f173588f56b"))
-			System.out.println("BREAKPOINT");
-
-		if (probe == null || host == null) {
-			Logit.LogWarn("Unable to create Runnable Probe: " + rpID + ", one of its elements is missing!");
-			return;
-		}
-		try {
-			newRunnableProbe = new RunnableProbe(host, probe);
-		} catch (Exception e) {
-			Logit.LogError("User - addRunnableProbe(String rpID)", "Unable to create Runnable Probe: " + rpID + ", check probe type!");
-			return;
-		}
-		
-		RunnableProbeContainer.getInstanece().add(newRunnableProbe);
-//		host.getRunnableProbes().put(rpID, newRunnableProbe);
-	}
-
 	private void runProbes(List<RunnableProbe> rps) {
 		for (RunnableProbe rp : rps) {
 			if (rp.getId().contains(
@@ -223,13 +196,12 @@ public class User {
 		}
 	}
 
-	public void runProbesAtStart() {
-//		this.runProbes(new ArrayList<RunnableProbe>(this.getAllRunnableProbes().values()));
-		//TODO: Check with Roi if this is necesery
-		this.runProbes(new ArrayList<RunnableProbe>(RunnableProbeContainer.getInstanece().getByUser(getUserId().toString()).values()));
-		;
-		// this.runSnmpVer2_3();
-	}
+//	public void runProbesAtStart() {
+////		this.runProbes(new ArrayList<RunnableProbe>(this.getAllRunnableProbes().values()));
+//		this.runProbes(new ArrayList<RunnableProbe>(RunnableProbeContainer.getInstanece().getByUser(getUserId().toString()).values()));
+//		;
+//		// this.runSnmpVer2_3();
+//	}
 
 	// public void runSnmpVer2_3() {
 	// this.getSnmpManager().runAllBatches();
@@ -291,10 +263,10 @@ public class User {
 
 
 	public boolean startRunnableProbe(RunnableProbe rp) {
-		if (rp.getProbe() instanceof SnmpProbe) {
-			this.getSnmpManager().startProbe(rp);
-			return true;
-		}
+//		if (rp.getProbe() instanceof SnmpProbe) {
+//			this.getSnmpManager().startProbe(rp);
+//			return true;
+//		}
 
 		return rp.start();
 	}
@@ -318,7 +290,7 @@ public class User {
 	public boolean addRunnableProbe(RunnableProbe runnableProbe) {
 		String rpStr = runnableProbe.getId();
 		if (rpStr.contains(
-				"0b05919c-6cc0-42cc-a74b-de3b0dcd4a2a@788b1b9e-d753-4dfa-ac46-61c4374eeb84@inner_b0fb65d1-c50d-4639-a728-0f173588f56b"))
+				"inner_996a80bf-913e-4ba4-ad46-a28c30f9fe36"))
 			System.out.println("BREAKPOINT");
 
 		RunnableProbeContainer.getInstanece().add(runnableProbe);

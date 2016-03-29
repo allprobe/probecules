@@ -46,7 +46,6 @@
 	<classpathentry kind="lib" path="lib/base/slf4j-api-1.7.1.jar"/>
 	<classpathentry kind="lib" path="lib/base/uuid-3.2.0-sources.jar"/>
 	<classpathentry kind="lib" path="lib/base/uuid-3.2.jar"/>
-	<classpathentry kind="lib" path="lib/google/gson-2.2.4.jar"/>
 	<classpathentry kind="lib" path="lib/json/json-simple-1.1.1.jar"/>
 	<classpathentry kind="lib" path="lib/network/javadoc_net.sourceforge.jpcap-0.01.18.jar"/>
 	<classpathentry kind="lib" path="lib/network/net.sourceforge.jpcap-0.01.18.jar"/>
@@ -87,6 +86,9 @@
 	<classpathentry kind="lib" path="lib/Apache/apache-log4j-2.5-bin/log4j-web-2.5-javadoc.jar"/>
 	<classpathentry kind="lib" path="lib/Apache/apache-log4j-2.5-bin/log4j-web-2.5-sources.jar"/>
 	<classpathentry kind="lib" path="lib/Apache/apache-log4j-2.5-bin/log4j-web-2.5.jar"/>
+	<classpathentry kind="lib" path="lib/google/gson-2.6.2-javadoc.jar"/>
+	<classpathentry kind="lib" path="lib/google/gson-2.6.2-sources.jar"/>
+	<classpathentry kind="lib" path="lib/google/gson-2.6.2.jar"/>
 	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER"/>
 	<classpathentry kind="output" path="bin"/>
 </classpath>

@@ -5,6 +5,7 @@ import lycus.Utils.Logit;
 import lycus.Trigger;
 import lycus.Event;
 import lycus.ResultsContainer;
+import lycus.RunnableProbeContainer;
 
 public class BaseResult {
 	private Long lastTimestamp;
@@ -36,7 +37,22 @@ public class BaseResult {
 		this.lastTimestamp = lastTimestamp;
 	}
 
-
+	public int getNumberOfRollupTables()
+	{
+		long interval=RunnableProbeContainer.getInstanece().get(runnableProbeId).getProbe().getInterval();
+		if(interval<240)
+			return 6;
+		if(interval>=240&&interval<1200)
+			return 5;
+		if(interval>=1200&&interval<3600)
+			return 4;
+		if(interval>=3600&&interval<21600)
+			return 3;
+		if(interval>=21600)
+			return 2;
+		Logit.LogError("ProbeRollup - getNumberOfRollupTables", "Wrong interval at Runnable Probe:"+runnableProbeId);
+		return 0;
+	}
 	/**
 	 * return -1 if no change return n if new is the new number of rollup tables
 	 */

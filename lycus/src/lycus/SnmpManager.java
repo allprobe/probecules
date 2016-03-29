@@ -8,7 +8,7 @@ import java.util.Set;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ScheduledFuture;
 
-import lycus.GlobalConstants.Global;
+import lycus.GlobalConstants.GlobalConfig;
 import lycus.GlobalConstants.LogType;
 import lycus.Probes.BaseProbe;
 import lycus.Utils.Logit;
@@ -106,7 +106,7 @@ public class SnmpManager {
 	}
 
 	public int getBatchesSize() {
-		return 1400 / Global.getMaxSnmpResponseInBytes();
+		return 1400 / GlobalConfig.getMaxSnmpResponseInBytes();
 	}
 
 	// returns stopped or not (return false if no such probe found)

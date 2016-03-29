@@ -10,7 +10,7 @@ import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.ScheduledFuture;
 import java.util.concurrent.TimeUnit;
 
-import lycus.GlobalConstants.Global;
+import lycus.GlobalConstants.GlobalConfig;
 import lycus.GlobalConstants.LogType;
 import lycus.GlobalConstants.ProbeTypes;
 import lycus.Probes.PingerProbe;
@@ -33,34 +33,34 @@ public class RunInnerProbesChecks extends Thread {
 	private static ConcurrentHashMap<String, ScheduledFuture<?>> PingerFutureMap = new ConcurrentHashMap<>();
 	private static Integer PingerFutureCounter = 0;
 	private static ScheduledExecutorService PingerExec = Executors
-			.newScheduledThreadPool(Global.getPingerThreadCount());
+			.newScheduledThreadPool(GlobalConfig.getPingerThreadCount());
 	private static ConcurrentHashMap<String, ScheduledFuture<?>> PorterFutureMap = new ConcurrentHashMap<>();
 	private static Integer PorterFutureCounter = 0;
 	private static ScheduledExecutorService PorterExec = Executors
-			.newScheduledThreadPool(Global.getPorterThreadCount());
+			.newScheduledThreadPool(GlobalConfig.getPorterThreadCount());
 	private static ConcurrentHashMap<String, ScheduledFuture<?>> WeberFutureMap = new ConcurrentHashMap<>();
 	private static Integer WeberFutureCounter = 0;
 	private static ScheduledExecutorService WeberExec = Executors
-			.newScheduledThreadPool(Global.getWeberThreadCount());
+			.newScheduledThreadPool(GlobalConfig.getWeberThreadCount());
 	private static ConcurrentHashMap<String, ScheduledFuture<?>> SnmpProbeFutureMap = new ConcurrentHashMap<>();
 	private static Integer SnmpProbeFutureCounter = 0;
 	private static ScheduledExecutorService SnmpProbeExec = Executors
-			.newScheduledThreadPool(Global.getSnmpThreadCount());
+			.newScheduledThreadPool(GlobalConfig.getSnmpThreadCount());
 	private static ConcurrentHashMap<String, ScheduledFuture<?>> RblProbeFutureMap = new ConcurrentHashMap<>();
 	private static Integer RblProbeFutureCounter = 0;
 	private static ScheduledExecutorService RblProbeExec = Executors
-			.newScheduledThreadPool(Global.getRblThreadCount());
+			.newScheduledThreadPool(GlobalConfig.getRblThreadCount());
 
 	private static ConcurrentHashMap<String, ScheduledFuture<?>> SnmpBatchFutureMap = new ConcurrentHashMap<>();
 	private static Integer SnmpBatchFutureCounter = 0;
 	private static Integer SnmpProbeBatchFutureCounter = 0;
 	private static ScheduledExecutorService SnmpBatchExec = Executors
-			.newScheduledThreadPool(Global.getSnmpBatchThreadCount());
+			.newScheduledThreadPool(GlobalConfig.getSnmpBatchThreadCount());
 	
 	private static ConcurrentHashMap<String, ScheduledFuture<?>> DiscoveryFutureMap = new ConcurrentHashMap<>();
 	private static Integer DiscoveryFutureCounter = 0;
 	private static ScheduledExecutorService DiscoveryExec = Executors
-			.newScheduledThreadPool(Global.getSnmpBatchThreadCount());
+			.newScheduledThreadPool(GlobalConfig.getSnmpBatchThreadCount());
 
 	// Getters/Setters
 	public static ConcurrentHashMap<String, ScheduledFuture<?>> getPingerFutureMap() {
@@ -268,15 +268,10 @@ public class RunInnerProbesChecks extends Thread {
 	public static ScheduledFuture<?> getRunnableProbeThread(RunnableProbe rp)
 	{
 		ProbeTypes probeType;
-//		try {
 			if ( rp.getProbeType() != null)
 				probeType = rp.getProbeType();
 			else
 				return null;
-//		} catch (Exception e) {
-//			SysLogger.Record(new Log("Unable to get Runnable Probe Thread of: "+rp.getRPString()+", check probe type!",LogType.Warn ));
-//			return null;
-//		}
 		switch(probeType)
 		{
 		case PING:return getPingerFutureMap().get(rp.getId());

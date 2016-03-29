@@ -13,6 +13,7 @@ import NetConnection.NetResults;
 import lycus.GlobalConstants.LogType;
 import lycus.Probes.SnmpProbe;
 import lycus.Results.SnmpResult;
+import lycus.Rollups.RollupsContainer;
 import lycus.Utils.Logit;
 
 public class SnmpProbesBatch implements Runnable {
@@ -173,58 +174,11 @@ public class SnmpProbesBatch implements Runnable {
 					Logit.LogInfo("Failed running  snmp batch - host: " + this.getHost().getHostIp()
 							+ ", snmp template:" + this.getHost().getSnmpTemp().toString());
 					return;
-					// switch (Net.checkHostSnmpActive(host)) {
-					// case "host problem":
-					// SysLogger.Record(new Log(
-					// "Snmp Batch Failed - caused By Host: "
-					// + this.getHost().toString()
-					// + " didn't responsed! ", LogType.Debug));
-					// break;
-					// case "snmp problem":
-					// SysLogger.Record(new Log(
-					// "Snmp Batch Failed - caused By Snmp Template: "
-					// + this.getHost().getSnmpTemp().toString(),
-					// LogType.Debug));
-					// this.setSnmpError(true);
-					// break;
-					// case "no problem":
-					// SysLogger.Record(new Log(
-					// "Snmp Batch Failed - caused By Unknown, SNMP Batch:"
-					// + this.toString(),
-					// LogType.Error));
-					// break;
-					// }
 				} else {
 					long resultsTimestamp = System.currentTimeMillis();
-					// if(this.isSnmpError())
-					// this.setSnmpError(false);
 					for (SnmpResult result : response) {
 						ResultsContainer.getInstance().addResult(result);
-
-						// String rpStr = _rp.getId();
-						// if (rpStr.contains(
-						// "788b1b9e-d753-4dfa-ac46-61c4374eeb84@inner_d5be36d2-87ff-414a-88ba-be2da43adabf"))
-						// System.out.println("BREAKPOINT -
-						// RunnableSnmpProbeResults");
-						// if (_rp.isActive()) {
-
-						// SnmpProbe snmpProbe = (SnmpProbe) _rp.getProbe();
-						// SnmpResults snmpResult =
-						// response.get(snmpProbe.getOid().toString());
-						//
-						// if (snmpResult != null) {
-						// ResultsContainer.getInstance().addResult(snmpResult);
-						// RollupsContainer.getInstance().addResult(snmpResult);
-						// Logit.LogDebug("Running Probe: " + _rp.getId() + " at
-						// Host: "
-						// + this.getHost().getHostIp() + "(" +
-						// this.getHost().getName() + ")"
-						// + ", Results: " + snmpResult + " ...");
-						// } else {
-						// Logit.LogError("SnmpProbesBatch - run()","Unable to
-						// get results for SNMP Probe: " + _rp.getId()
-						// + " oid issue (" + snmpProbe.getOid() + ")");
-						// }
+						RollupsContainer.getInstance().addResult(result);
 					}
 				}
 			}

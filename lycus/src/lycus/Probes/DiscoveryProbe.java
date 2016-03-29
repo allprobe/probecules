@@ -56,7 +56,7 @@ public class DiscoveryProbe extends BaseProbe {
 	}
 
 	private BaseResult checkForDisksElements(Host h) {
-		// TODO Auto-generated method stub
+		// TODO DiscoveryProbe.checkForDisksElements
 		return null;
 	}
 

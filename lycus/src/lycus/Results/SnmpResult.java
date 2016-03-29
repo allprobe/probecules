@@ -1,9 +1,10 @@
 package lycus.Results;
 
 import java.util.HashMap;
-import lycus.DataPointsRollup;
+
 import lycus.Trigger;
 import lycus.Probes.SnmpProbe;
+import lycus.DataPointsRollup;
 import lycus.TriggerCondition;
 import lycus.GlobalConstants.Constants;
 

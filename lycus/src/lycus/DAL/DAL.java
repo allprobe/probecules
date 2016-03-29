@@ -16,7 +16,7 @@ import org.json.simple.parser.ParseException;
 import lycus.Utils.GeneralFunctions;
 import lycus.Utils.Logit;
 import lycus.GlobalConstants.Constants;
-import lycus.GlobalConstants.Global;
+import lycus.GlobalConstants.GlobalConfig;
 import lycus.GlobalConstants.Enums.ApiAction;
 import lycus.Interfaces.IDAL;
 
@@ -28,11 +28,11 @@ public class DAL implements IDAL {
 
 	protected DAL() {
 		apiUrl = "";
-		if (Global.getApiSSL())
+		if (GlobalConfig.getApiSSL())
 			apiUrl += Constants.https_prefix;
 		else
 			apiUrl += Constants.http_prefix;
-		apiUrl += Global.getApiUrl();
+		apiUrl += GlobalConfig.getApiUrl();
 	}
 
 	public static DAL getInstanece() {
@@ -45,7 +45,7 @@ public class DAL implements IDAL {
 	public JSONObject get(ApiAction action) {
 		String fullUrl = getApiUrl();
 		fullUrl += "/" + action.name() + "/";
-		fullUrl += Global.getDataCenterID() + "-" + Global.getThisHostToken() + "/" + Global.getApiAuthToken();
+		fullUrl += GlobalConfig.getDataCenterID() + "-" + GlobalConfig.getThisHostToken() + "/" + GlobalConfig.getApiAuthToken();
 
 		URL url;
 		try {
@@ -70,7 +70,7 @@ public class DAL implements IDAL {
 			return null;
 		}
 
-		String authCredentials = GeneralFunctions.Base64Encode(Global.getApiUser() + ":" + Global.getApiPass());
+		String authCredentials = GeneralFunctions.Base64Encode(GlobalConfig.getApiUser() + ":" + GlobalConfig.getApiPass());
 		conn.setRequestProperty("Authorization", "Basic " + authCredentials);
 		conn.setDoOutput(true);
 		conn.setUseCaches(false);
@@ -100,7 +100,7 @@ public class DAL implements IDAL {
 	public JSONObject put(ApiAction action, JSONObject reqBody) {
 		String fullUrl = getApiUrl();
 		fullUrl += "/" + action.name() + "/";
-		fullUrl += Global.getDataCenterID() + "-" + Global.getThisHostToken() + "/" + Global.getApiAuthToken();
+		fullUrl += GlobalConfig.getDataCenterID() + "-" + GlobalConfig.getThisHostToken() + "/" + GlobalConfig.getApiAuthToken();
 
 		URL url;
 		try {
@@ -124,7 +124,7 @@ public class DAL implements IDAL {
 			Logit.LogError("DAL - put", "Unable to set PUT request method for URL: " + fullUrl + ", failed to communicate with API!");
 			return null;
 		}
-		String authCredentials = GeneralFunctions.Base64Encode(Global.getApiUser() + ":" + Global.getApiPass());
+		String authCredentials = GeneralFunctions.Base64Encode(GlobalConfig.getApiUser() + ":" + GlobalConfig.getApiPass());
 		conn.setRequestProperty("Authorization", "Basic " + authCredentials);
 		conn.setDoOutput(true);
 		conn.setUseCaches(false);

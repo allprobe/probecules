@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 
 import org.json.simple.JSONArray;
+import org.json.simple.JSONObject;
 
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
@@ -14,6 +15,7 @@ import com.google.gson.JsonParser;
 import lycus.DataPointsRollup;
 import lycus.ResultsContainer;
 import lycus.DAL.ApiInterface;
+import lycus.GlobalConstants.DataPointsRollupSize;
 import lycus.GlobalConstants.Enums;
 import lycus.Interfaces.IRollupsContainer;
 import lycus.Results.BaseResult;
@@ -28,25 +30,29 @@ import lycus.Utils.Logit;
 public class RollupsContainer implements IRollupsContainer {
 
 	private static RollupsContainer instance;
-	private HashMap<String, DataPointsRollup[]> packetLossRollups;
-	private HashMap<String, DataPointsRollup[]> rttRollups;
-	private HashMap<String, DataPointsRollup[]> portResponseTimeRollups;
-	private HashMap<String, DataPointsRollup[]> webResponseTimeRollups;
-	private HashMap<String, DataPointsRollup[]> snmpDataRollups;
+	private HashMap<String, DataPointsRollup[]> packetLossRollups=new HashMap<String, DataPointsRollup[]>();
+	private HashMap<String, DataPointsRollup[]> rttRollups=new HashMap<String, DataPointsRollup[]>();
+	private HashMap<String, DataPointsRollup[]> portResponseTimeRollups= new HashMap<String, DataPointsRollup[]>();
+	private HashMap<String, DataPointsRollup[]> webResponseTimeRollups=new HashMap<String, DataPointsRollup[]>();
+	private HashMap<String, DataPointsRollup[]> snmpDataRollups=new HashMap<String, DataPointsRollup[]>();
 
-	private HashMap<String, ArrayList<DataPointsRollup>> rollups4m;
-	private HashMap<String, ArrayList<DataPointsRollup>> rollup20m;
-	private HashMap<String, ArrayList<DataPointsRollup>> rollup1h;
-	private HashMap<String, ArrayList<DataPointsRollup>> rollup6h;
-	private HashMap<String, ArrayList<DataPointsRollup>> rollup36h;
-	private HashMap<String, ArrayList<DataPointsRollup>> rollup11d;
+	
+	// Those are finished rollups
+	private HashMap<String, ArrayList<DataPointsRollup>> finishedRollups4m=new HashMap<String, ArrayList<DataPointsRollup>>();
+	private HashMap<String, ArrayList<DataPointsRollup>> finishedRollups20m=new HashMap<String, ArrayList<DataPointsRollup>>();
+	private HashMap<String, ArrayList<DataPointsRollup>> finishedRollups1h=new HashMap<String, ArrayList<DataPointsRollup>>();
+	private HashMap<String, ArrayList<DataPointsRollup>> finishedRollups6h=new HashMap<String, ArrayList<DataPointsRollup>>();
+	private HashMap<String, ArrayList<DataPointsRollup>> finishedRollups36h=new HashMap<String, ArrayList<DataPointsRollup>>();
+	private HashMap<String, ArrayList<DataPointsRollup>> finishedRollups11d=new HashMap<String, ArrayList<DataPointsRollup>>();
 
 	public static RollupsContainer getInstance() {
 		if (instance == null)
+		{
 			instance = new RollupsContainer();
-		return instance;
+		}
+			return instance;
 	}
-
+	
 	@Override
 	public boolean addResult(BaseResult result) {
 		if (result instanceof PingResult) {
@@ -63,7 +69,10 @@ public class RollupsContainer implements IRollupsContainer {
 	}
 
 	@Override
-	public String getAllFinsihedRollups() {
+	public synchronized String getAllFinsihedRollups() {
+		
+		JSONObject rollups=new JSONObject();
+		
 		for (int i = 0; i < 6; i++) {
 			for (DataPointsRollup[] rolups : packetLossRollups.values()) {
 				addFinished(i, rolups);
@@ -82,11 +91,53 @@ public class RollupsContainer implements IRollupsContainer {
 			}
 		}
 		 
-		 return JsonUtil.ToJson(rollups4m);
+		if(finishedRollups4m.size()!=0)
+		rollups.put("rollups4m", JsonUtil.ToJson(finishedRollups4m));
+		
+		if(finishedRollups20m.size()!= 0)
+		rollups.put("rollups20m", JsonUtil.ToJson(finishedRollups20m));
+		
+		if(finishedRollups1h.size()!=0)
+		rollups.put("rollups1h", JsonUtil.ToJson(finishedRollups1h));
+		
+		if(finishedRollups6h.size()!=0)
+		rollups.put("rollups6h", JsonUtil.ToJson(finishedRollups6h));
+		
+		if(finishedRollups36h.size()!= 0)
+		rollups.put("rollups36h", JsonUtil.ToJson(finishedRollups36h));
+		
+		if(finishedRollups11d.size() != 0)
+		rollups.put("rollups11d", JsonUtil.ToJson(finishedRollups11d));
+
+		if(rollups.size()==0) 
+		return null;
+		
+//			rollups.put("packetLossRollups", JsonUtil.ToJson(packetLossRollups));
+//			rollups.put("rttRollups", JsonUtil.ToJson(rttRollups));
+//			rollups.put("portResponseTimeRollups", JsonUtil.ToJson(portResponseTimeRollups));
+//			rollups.put("webResponseTimeRollups", JsonUtil.ToJson(webResponseTimeRollups));
+//			rollups.put("snmpDataRollups", JsonUtil.ToJson(snmpDataRollups));
+		
+		
+		 return rollups.toString();
+	}
+	
+	@Override
+	public synchronized String getAllCurrentLiveRollups() {
+		JSONObject rollups=new JSONObject();
+		
+		rollups.put("packetLossRollups", JsonUtil.ToJson(packetLossRollups));
+		rollups.put("rttRollups", JsonUtil.ToJson(rttRollups));
+		rollups.put("portResponseTimeRollups", JsonUtil.ToJson(portResponseTimeRollups));
+		rollups.put("webResponseTimeRollups", JsonUtil.ToJson(webResponseTimeRollups));
+		rollups.put("snmpDataRollups", JsonUtil.ToJson(snmpDataRollups));
+		 return rollups.toString();
 	}
 
 	private void addFinished(int i, DataPointsRollup[] rolups) {
 		DataPointsRollup currentDataRollup = rolups[i];
+		if (currentDataRollup == null)
+			return;
 		DataPointsRollup finishedDataRollup = currentDataRollup.getLastFinishedRollup();
 		if (finishedDataRollup == null)
 			return;
@@ -159,70 +210,129 @@ public class RollupsContainer implements IRollupsContainer {
 	private boolean addRollupTo(int rollupType, DataPointsRollup dataPointsRollup) {
 		switch (rollupType) {
 		case 0:
-			rollups4m.get(dataPointsRollup.getRunnableProbeId()).add(dataPointsRollup);
+			if(finishedRollups4m.get(dataPointsRollup.getRunnableProbeId())==null)
+				finishedRollups4m.put(dataPointsRollup.getRunnableProbeId(),new ArrayList<DataPointsRollup>());
+			finishedRollups4m.get(dataPointsRollup.getRunnableProbeId()).add(dataPointsRollup);
 			break;
 		case 1:
-			rollup20m.get(dataPointsRollup.getRunnableProbeId()).add(dataPointsRollup);
+			if(finishedRollups20m.get(dataPointsRollup.getRunnableProbeId())==null)
+				finishedRollups20m.put(dataPointsRollup.getRunnableProbeId(),new ArrayList<DataPointsRollup>());
+			finishedRollups20m.get(dataPointsRollup.getRunnableProbeId()).add(dataPointsRollup);
 			break;
 		case 2:
-			rollup1h.get(dataPointsRollup.getRunnableProbeId()).add(dataPointsRollup);
+			if(finishedRollups1h.get(dataPointsRollup.getRunnableProbeId())==null)
+				finishedRollups1h.put(dataPointsRollup.getRunnableProbeId(),new ArrayList<DataPointsRollup>());
+			finishedRollups1h.get(dataPointsRollup.getRunnableProbeId()).add(dataPointsRollup);
 			break;
 		case 3:
-			rollup6h.get(dataPointsRollup.getRunnableProbeId()).add(dataPointsRollup);
+			if(finishedRollups6h.get(dataPointsRollup.getRunnableProbeId())==null)
+				finishedRollups6h.put(dataPointsRollup.getRunnableProbeId(),new ArrayList<DataPointsRollup>());
+			finishedRollups6h.get(dataPointsRollup.getRunnableProbeId()).add(dataPointsRollup);
 			break;
 		case 4:
-			rollup36h.get(dataPointsRollup.getRunnableProbeId()).add(dataPointsRollup);
+			if(finishedRollups36h.get(dataPointsRollup.getRunnableProbeId())==null)
+				finishedRollups36h.put(dataPointsRollup.getRunnableProbeId(),new ArrayList<DataPointsRollup>());
+			finishedRollups36h.get(dataPointsRollup.getRunnableProbeId()).add(dataPointsRollup);
 			break;
 		case 5:
-			rollup11d.get(dataPointsRollup.getRunnableProbeId()).add(dataPointsRollup);
+			if(finishedRollups11d.get(dataPointsRollup.getRunnableProbeId())==null)
+				finishedRollups11d.put(dataPointsRollup.getRunnableProbeId(),new ArrayList<DataPointsRollup>());
+			finishedRollups11d.get(dataPointsRollup.getRunnableProbeId()).add(dataPointsRollup);
 			break;
 		}
 
 		return true;
 	}
-
+	private DataPointsRollupSize getRollupSize(int i)
+	{
+		switch(i)
+		{
+		case 0: return DataPointsRollupSize._11day;
+		case 1: return DataPointsRollupSize._36hour;
+		case 2: return DataPointsRollupSize._6hour;
+		case 3: return DataPointsRollupSize._1hour;
+		case 4: return DataPointsRollupSize._20minutes;
+		case 5: return DataPointsRollupSize._4minutes;
+		default: return null;
+		}
+	}
+	
 	private void addSnmpResult(BaseResult result) {
 		SnmpResult snmpResults = (SnmpResult) result;
-		for (int i = 0; i < snmpDataRollups.get(result.getRunnableProbeId()).length; i++) {
+		DataPointsRollup[] snmpRollups = snmpDataRollups.get(result.getRunnableProbeId());
+		if(snmpRollups == null)
+			snmpDataRollups.put(result.getRunnableProbeId(), new DataPointsRollup[6]);
+
+		for (int i = 0; i < result.getNumberOfRollupTables(); i++) {
 			DataPointsRollup snmpDataRollup = snmpDataRollups.get(result.getRunnableProbeId())[i];
 			if (snmpDataRollup == null)
-				continue;
-
+			{
+				snmpDataRollup = new DataPointsRollup(result.getRunnableProbeId(), this.getRollupSize(i));
+				snmpDataRollups.get(result.getRunnableProbeId())[i] = snmpDataRollup;
+			}
 			snmpDataRollup.add(snmpResults.getLastTimestamp(), snmpResults.getNumData());
 		}
 	}
 
 	private void addWeberResult(BaseResult result) {
 		WebResult weberResults = (WebResult) result;
-		for (int i = 0; i < webResponseTimeRollups.get(result.getRunnableProbeId()).length; i++) {
+		DataPointsRollup[] responseTimeRollups = webResponseTimeRollups.get(result.getRunnableProbeId());
+		if(responseTimeRollups == null)
+			webResponseTimeRollups.put(result.getRunnableProbeId(), new DataPointsRollup[6]);
+
+		for (int i = 0; i < result.getNumberOfRollupTables(); i++) {
 			DataPointsRollup responseTimeRollup = webResponseTimeRollups.get(result.getRunnableProbeId())[i];
 			if (responseTimeRollup == null)
-				continue;
-
+			{
+				responseTimeRollup = new DataPointsRollup(result.getRunnableProbeId(), this.getRollupSize(i));
+				webResponseTimeRollups.get(result.getRunnableProbeId())[i] = responseTimeRollup;
+			}
 			responseTimeRollup.add(weberResults.getLastTimestamp(), weberResults.getResponseTime());
 		}
 	}
 
 	private void addPorterResult(BaseResult result) {
 		PortResult porterResults = (PortResult) result;
-		for (int i = 0; i < portResponseTimeRollups.get(result.getRunnableProbeId()).length; i++) {
-			DataPointsRollup responseTimeRollup = portResponseTimeRollups.get(result.getRunnableProbeId())[i];
+		DataPointsRollup[] responseTimeRollups = portResponseTimeRollups.get(result.getRunnableProbeId());
+		if(responseTimeRollups == null)
+			portResponseTimeRollups.put(result.getRunnableProbeId(), new DataPointsRollup[6]);
+		for (int i = 0; i < result.getNumberOfRollupTables(); i++) {
+			DataPointsRollup responseTimeRollup=portResponseTimeRollups.get(result.getRunnableProbeId())[i];
 			if (responseTimeRollup == null)
-				continue;
-
+			{
+				responseTimeRollup = new DataPointsRollup(result.getRunnableProbeId(), this.getRollupSize(i));
+				portResponseTimeRollups.get(result.getRunnableProbeId())[i] = responseTimeRollup;
+			}
 			responseTimeRollup.add(porterResults.getLastTimestamp(), porterResults.getResponseTime());
 		}
 	}
 
 	private void addPingerResult(BaseResult result) {
 		PingResult pingerResults = (PingResult) result;
-		for (int i = 0; i < packetLossRollups.get(result.getRunnableProbeId()).length; i++) {
+		DataPointsRollup[] packetLostRollups = packetLossRollups.get(result.getRunnableProbeId());
+		DataPointsRollup[] pingResponseTimeRollups = rttRollups.get(result.getRunnableProbeId());
+
+		if(packetLostRollups == null || pingResponseTimeRollups == null)
+		{
+			packetLossRollups.put(result.getRunnableProbeId(), new DataPointsRollup[6]);
+			rttRollups.put(result.getRunnableProbeId(), new DataPointsRollup[6]);
+
+		}
+		for (int i = 0; i < result.getNumberOfRollupTables(); i++) {
 			DataPointsRollup packetLostRollup = packetLossRollups.get(result.getRunnableProbeId())[i];
 			DataPointsRollup rttRollup = rttRollups.get(result.getRunnableProbeId())[i];
 
+			if(packetLostRollup == null || rttRollup == null)
+			{
+				packetLostRollup = new DataPointsRollup(result.getRunnableProbeId(), this.getRollupSize(i));
+				packetLossRollups.get(result.getRunnableProbeId())[i] = packetLostRollup;
+				rttRollup = new DataPointsRollup(result.getRunnableProbeId(), this.getRollupSize(i));
+				rttRollups.get(result.getRunnableProbeId())[i] = rttRollup;
+			}
 			packetLostRollup.add(pingerResults.getLastTimestamp(), pingerResults.getPacketLost());
 			rttRollup.add(pingerResults.getLastTimestamp(), pingerResults.getRtt());
 		}
 	}
+	
 
 }

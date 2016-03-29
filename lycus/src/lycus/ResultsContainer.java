@@ -9,10 +9,13 @@ import java.util.UUID;
 import org.json.simple.JSONObject;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
+import com.google.gson.internal.bind.TypeAdapters;
 import lycus.DAL.ApiInterface;
 import lycus.GlobalConstants.Enums;
 import lycus.GlobalConstants.LogType;
 import lycus.Results.BaseResult;
+import lycus.DataPointsRollup;
+import lycus.Rollups.RollupsContainer;
 import lycus.Utils.GeneralFunctions;
 import lycus.Utils.JsonUtil;
 import lycus.Utils.Logit;
@@ -193,104 +196,105 @@ public class ResultsContainer implements IResultsContainer {
 	}
 
 	@Override
-	public String getResults() {
-		// HashMap<String, HashMap<String, HashMap<String, String>>> newResults
-		// = new HashMap<String, HashMap<String, HashMap<String, String>>>();
-		// newResults.put("RAW", new HashMap<String, HashMap<String,
-		// String>>());
-		//
-		//// newResults.put("4mRollups", new HashMap<String, HashMap<String,
-		// String>>());
-		//// newResults.put("20mRollups", new HashMap<String, HashMap<String,
-		// String>>());
-		//// newResults.put("1hRollups", new HashMap<String, HashMap<String,
-		// String>>());
-		//// newResults.put("6hRollups", new HashMap<String, HashMap<String,
-		// String>>());
-		//// newResults.put("36hRollups", new HashMap<String, HashMap<String,
-		// String>>());
-		//// newResults.put("11dRollups", new HashMap<String, HashMap<String,
-		// String>>());
-		//
-		// for (BaseResult result : results) {
-		//
-		// if
-		// (result.getRunnableProbeId().contains("fc46cf87-0872-4e5d-9b83-c44a3d1f3ea6@icmp_1f1aed08-7331-4126-97ef-225e90b4a969"))
-		// System.out.println("BREAKPOINT - RunnableProbesHistory");
-		//
-		// if (result.getLastTimestamp() == null || result.getLastTimestamp() ==
-		// 0)
-		// continue;
-		//
-		//// HashMap<String, String> probeResults;
-		//
-		// try {
-		//
-		//// probeResults = result.getResults();
-		//
-		//// if (probeResults.containsKey("error")) {
-		//// Logit.LogError("ResultsContainer - getResults()", "Seriious error
-		// getting runnable probe results of: " + result.getRunnableProbeId());
-		//// continue;
-		//// }
-		//// for (Map.Entry<String, String> probeResult :
-		// probeResults.entrySet()) {
-		//// String resultKey = probeResult.getKey();
-		//// String resultValue = probeResult.getValue();
-		//
-		// if (resultKey.contains("RAW")) {
-		// HashMap<String, String> test = rawResultsDBFormat(result, resultKey,
-		// resultValue);
-		// newResults.get("RAW").put(result.getRunnableProbeId(),
-		// rawResultsDBFormat(result, resultKey, resultValue));
-		// }
-		//// if (resultKey.contains("ROLLUP_4minutes")) {
-		//// newResults.get("4mRollups").put(rp.getRPString(),
-		//// rollupResultsDBFormat(result, resultKey, resultValue));
-		//// }
-		//// if (resultKey.contains("ROLLUP_20minutes")) {
-		//// newResults.get("20mRollups").put(rp.getRPString(),
-		//// rollupResultsDBFormat(result, resultKey, resultValue));
-		//// }
-		//// if (resultKey.contains("ROLLUP_1hour")) {
-		//// newResults.get("1hRollups").put(rp.getRPString(),
-		//// rollupResultsDBFormat(result, resultKey, resultValue));
-		//// }
-		//// if (resultKey.contains("ROLLUP_6hour")) {
-		//// newResults.get("6hRollups").put(rp.getRPString(),
-		//// rollupResultsDBFormat(result, resultKey, resultValue));
-		//// }
-		//// if (resultKey.contains("ROLLUP_36hour")) {
-		//// newResults.get("36hRollups").put(rp.getRPString(),
-		//// rollupResultsDBFormat(result, resultKey, resultValue));
-		//// }
-		//// if (resultKey.contains("ROLLUP_11day")) {
-		//// newResults.get("11dRollups").put(rp.getRPString(),
-		//// rollupResultsDBFormat(result, resultKey, resultValue));
-		//// }
-		//// }
-		// } catch (Throwable th) {
-		//
-		// Logit.LogError("ResultsContainer - getResults()",
-		// "Error collecting runnable probes results! stopped at: " +
-		// result.getRunnableProbeId());
-		// StringWriter sw = new StringWriter();
-		// PrintWriter pw = new PrintWriter(sw);
-		// th.printStackTrace(pw);
-		//
-		// Logit.LogError("ResultsContainer - getResults()", sw.toString());
-		// }
-		// }
-		//
-		// String jsonString = JsonUtil.ToJson(newResults);
-
-		// Gson gson = new GsonBuilder().setPrettyPrinting().create();
-		// String jsonString = null;
-		// jsonString = gson.toJson(newResults);
-
-		String jsonString = null;
+	public synchronized String getResults() {
+//		 HashMap<String, HashMap<String, HashMap<String, String>>> newResults
+//		 = new HashMap<String, HashMap<String, HashMap<String, String>>>();
+//		 newResults.put("RAW", new HashMap<String, HashMap<String,
+//		 String>>());
+//		
+//		 newResults.put("4mRollups", new HashMap<String, HashMap<String,
+//		 String>>());
+//		 newResults.put("20mRollups", new HashMap<String, HashMap<String,
+//		 String>>());
+//		 newResults.put("1hRollups", new HashMap<String, HashMap<String,
+//		 String>>());
+//		 newResults.put("6hRollups", new HashMap<String, HashMap<String,
+//		 String>>());
+//		 newResults.put("36hRollups", new HashMap<String, HashMap<String,
+//		 String>>());
+//		 newResults.put("11dRollups", new HashMap<String, HashMap<String,
+//		 String>>());
+//		
+//		 for (BaseResult result : results) {
+//		
+//		 if
+//		 (result.getRunnableProbeId().contains("fc46cf87-0872-4e5d-9b83-c44a3d1f3ea6@icmp_1f1aed08-7331-4126-97ef-225e90b4a969"))
+//		 System.out.println("BREAKPOINT - RunnableProbesHistory");
+//		
+//		 if (result.getLastTimestamp() == null || result.getLastTimestamp() ==
+//		 0)
+//		 continue;
+//		
+//		 HashMap<String, String> probeResults;
+//		
+//		 try {
+//		
+//		 probeResults = result.getResults();
+//		
+//		 if (probeResults.containsKey("error")) {
+//		 Logit.LogError("ResultsContainer - getResults()", "Seriious error
+//		 getting runnable probe results of: " + result.getRunnableProbeId());
+//		 continue;
+//		 }
+//		 for (Map.Entry<String, String> probeResult :
+//		 probeResults.entrySet()) {
+//		 String resultKey = probeResult.getKey();
+//		 String resultValue = probeResult.getValue();
+//		
+//		 if (resultKey.contains("RAW")) {
+//		 HashMap<String, String> test = rawResultsDBFormat(result, resultKey,
+//		 resultValue);
+//		 newResults.get("RAW").put(result.getRunnableProbeId(),
+//		 rawResultsDBFormat(result, resultKey, resultValue));
+//		 }
+//		 if (resultKey.contains("ROLLUP_4minutes")) {
+//		 newResults.get("4mRollups").put(rp.getRPString(),
+//		 rollupResultsDBFormat(result, resultKey, resultValue));
+//		 }
+//		 if (resultKey.contains("ROLLUP_20minutes")) {
+//		 newResults.get("20mRollups").put(rp.getRPString(),
+//		 rollupResultsDBFormat(result, resultKey, resultValue));
+//		 }
+//		 if (resultKey.contains("ROLLUP_1hour")) {
+//		 newResults.get("1hRollups").put(rp.getRPString(),
+//		 rollupResultsDBFormat(result, resultKey, resultValue));
+//		 }
+//		 if (resultKey.contains("ROLLUP_6hour")) {
+//		 newResults.get("6hRollups").put(rp.getRPString(),
+//		 rollupResultsDBFormat(result, resultKey, resultValue));
+//		 }
+//		 if (resultKey.contains("ROLLUP_36hour")) {
+//		 newResults.get("36hRollups").put(rp.getRPString(),
+//		 rollupResultsDBFormat(result, resultKey, resultValue));
+//		 }
+//		 if (resultKey.contains("ROLLUP_11day")) {
+//		 newResults.get("11dRollups").put(rp.getRPString(),
+//		 rollupResultsDBFormat(result, resultKey, resultValue));
+//		 }
+//		 }
+//		 } catch (Throwable th) {
+//		
+//		 Logit.LogError("ResultsContainer - getResults()",
+//		 "Error collecting runnable probes results! stopped at: " +
+//		 result.getRunnableProbeId());
+//		 StringWriter sw = new StringWriter();
+//		 PrintWriter pw = new PrintWriter(sw);
+//		 th.printStackTrace(pw);
+//		
+//		 Logit.LogError("ResultsContainer - getResults()", sw.toString());
+//		 }
+//		 }
+//		
+		
+		RuntimeTypeAdapterFactory<BaseResult> adapter = 
+                RuntimeTypeAdapterFactory
+               .of(ObixBaseObj.class)
+               .registerSubtype(ObixBaseObj.class)
+               .registerSubtype(ObixOp.class);
+		
+		String jsonString=null;
 		try {
-			jsonString = JsonUtil.ToJson(results);
+			jsonString = JsonUtil.ToJson(this.results);
 		} catch (Exception e) {
 			Logit.LogFatal("ResultsContainer - getResults()",
 					"Unable to parse results to json format! not sent!, E: " + e.getMessage());
@@ -301,14 +305,7 @@ public class ResultsContainer implements IResultsContainer {
 
 	@Override
 	public String getRollups() {
-		ArrayList<DataPointsRollup[][]> dataRollups = new ArrayList<DataPointsRollup[][]>();
-		// TODO: implement
-		// for (BaseResult result : results) {
-		// dataRollups.add(result.retrieveExistingRollups());
-		// }
-
-		Gson gson = new GsonBuilder().setPrettyPrinting().create();
-		return gson.toJson(dataRollups);
+		return RollupsContainer.getInstance().getAllFinsihedRollups();
 	}
 
 	@Override

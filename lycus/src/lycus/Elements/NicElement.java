@@ -1,17 +1,16 @@
-package lycus;
+package lycus.Elements;
 
-import lycus.Elements.BaseElement;
 import lycus.GlobalConstants.Enums.HostType;
 
 public class NicElement extends BaseElement {
 
-	private String name;
 	private HostType hostType;
+	private long ifSpeed;
 	
-	public NicElement(int index,String name, HostType hostType) {
+	public NicElement(int index,String name, HostType hostType,long ifSpeed) {
 		super(index,name);
-		this.name=name;
 		this.hostType=hostType;
+		this.ifSpeed=ifSpeed;
 	}
 
 }

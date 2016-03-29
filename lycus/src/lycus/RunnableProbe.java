@@ -88,7 +88,7 @@ public class RunnableProbe implements Runnable {
 	}
 
 	public void run() {
-		//TODO: eliminate this from facatory
+		//TODO: eliminate this from factory
 	
 		BaseResult result = null;
 
@@ -100,14 +100,6 @@ public class RunnableProbe implements Runnable {
 		} catch (Exception e) {
 			Logit.LogError("RunnableProbe - run()", "Unable Probing Runnable Probe of: " + this.getId() + "\n" + e.getMessage());
 		}
-//		try {
-//			//TODO: take care of events and triggers
-////			this.getResult().acceptResults(checkResult);
-//			
-//		} catch (Exception e) {
-//			SysLogger.Record(
-//					new Log("Unable to set Runnable Probe results from Check " + this.getRPString(), LogType.Error, e));
-//		}
 		Logit.LogDebug("Running Probe: " + this.getId() + " at Host: " + this.getHost().getHostIp()
 				+ "(" + this.getHost().getName() + ")" + ", Results: " + result + " ...");
 	}

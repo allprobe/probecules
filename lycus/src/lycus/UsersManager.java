@@ -37,6 +37,7 @@ import lycus.DAL.ApiInterface;
 import lycus.Elements.BaseElement;
 import lycus.Probes.BaseProbe;
 import lycus.Probes.NicProbe;
+import lycus.DataPointsRollup;
 
 /**
  * 
@@ -131,17 +132,17 @@ public class UsersManager {
 		JSONArray allTemplateTriggersJson = (JSONArray) initServer.get("triggers");
 		addTriggers(allTemplateTriggersJson, probeByUser);
 
-		addRPs(runnableProbesIds);
+		addRunnableProbes(runnableProbesIds);
 
 		return true;
 	}
 
-	public static void runAtStart() {
-		Set<User> allUsers = new HashSet<User>(getUsers().values());
-		for (User user : allUsers) {
-			user.runProbesAtStart();
-		}
-	}
+//	public static void runAtStart() {
+//		Set<User> allUsers = new HashSet<User>(getUsers().values());
+//		for (User user : allUsers) {
+//			user.runProbesAtStart();
+//		}
+//	}
 
 	private static HashMap<String, UUID> getProbeByUser(HashMap<String, UUID> runnableProbesIds) {
 		HashMap<String, UUID> probeByUser = new HashMap<String, UUID>();
@@ -528,7 +529,7 @@ public class UsersManager {
 		return null;
 	}
 
-	private static void addRPs(HashMap<String, UUID> runnableProbesIds) {
+	private static void addRunnableProbes(HashMap<String, UUID> runnableProbesIds) {
 		for (Map.Entry<String, UUID> rp : runnableProbesIds.entrySet()) {
 			UUID userID = rp.getValue();
 			String rpID = rp.getKey();
@@ -538,7 +539,18 @@ public class UsersManager {
 				System.out.println("BREAKPOINT");
 
 			User u = getUsers().get(userID);
-			u.addRunnableProbe(rpID);
+			Host host = u.getHosts().get(UUID.fromString(rpID.split("@")[1]));
+			BaseProbe probe = u.getTemplateProbes().get(rpID.split("@")[2]);
+			
+			if(host == null || probe == null)
+			{
+				Logit.LogWarn("Unable to initiate RunnableProbe, one of its elements is missing! ID: "+rpID);
+				continue;
+			}
+			
+			
+			RunnableProbe runnableProbe = new RunnableProbe(host, probe);
+			u.addRunnableProbe(runnableProbe);
 		}
 	}
 
@@ -557,60 +569,6 @@ public class UsersManager {
 			System.out.println("---User:" + user.getUserId() + "---");
 			System.out.println(user.toString());
 		}
-	}
-
-	// public static boolean updateRunnableProbe(UUID userId, UUID templateId,
-	// String probeNewName, String probeId,
-	// String probeType, long probeNewInterval, float probeNewMultiplier,
-	// boolean probeNewStatus,
-	// List<String> probeKey) {
-	// User user = getUsers().get(userId);
-	// if (user == null) {
-	// SysLogger.Record(
-	// new Log("User: " + userId.toString() + " Doesn't Exists! Probe Update
-	// Failed!", LogType.Error));
-	// return false;
-	// }
-	// switch (probeType) {
-	// case "ICMP":
-	// return user.updatePingerProbe(templateId, probeId, probeNewName,
-	// probeNewInterval, probeNewMultiplier,
-	// probeNewStatus, probeKey);
-	//
-	// case "PORT":
-	// return user.updatePorterProbe(templateId, probeId, probeNewName,
-	// probeNewInterval, probeNewMultiplier,
-	// probeNewStatus, probeKey);
-	// case "HTTP":
-	// return user.updateWeberProbe(templateId, probeId, probeNewName,
-	// probeNewInterval, probeNewMultiplier,
-	// probeNewStatus, probeKey);
-	// case "SNMP":
-	// return user.updateSnmpProbe(templateId, probeId, probeNewName,
-	// probeNewInterval, probeNewMultiplier,
-	// probeNewStatus, probeKey);
-	// case "RBL":
-	// return user.updateRBLProbe(templateId, probeId, probeNewName,
-	// probeNewInterval, probeNewMultiplier,
-	// probeNewStatus, probeKey);
-	// }
-	// return false;
-	// }
-
-	public static boolean unMergeTemplateHost(UUID userId, UUID templateId, UUID hostId) {
-		User user = getUsers().get(userId);
-		boolean flag = true;
-//		List<RunnableProbe> rps = user.getRPSbyTemplateIdHostId(templateId, hostId);
-//		for (RunnableProbe rp : rps) {
-//			flag = user.removeRunnableProbe(rp);
-//		}
-		HashMap<String,RunnableProbe> runnableProbes = RunnableProbeContainer.getInstanece().getByHostTemplate(hostId.toString(), templateId.toString());
-		for (RunnableProbe runnableProbe : runnableProbes.values()) {
-			flag = RunnableProbeContainer.getInstanece().remove(runnableProbe);
-		}
-		
-		//TODO: ROI what is this flag?
-		return flag;
 	}
 
 	public static String serializeDataPoints(HashMap<String, DataPointsRollup[][]> rollups) {

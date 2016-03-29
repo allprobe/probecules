@@ -9,4 +9,5 @@ public interface IRollupsContainer {
 	boolean addResult(BaseResult result);
 	String getAllFinsihedRollups();
 	boolean mergeRollups(JSONArray jsonArray);
+	String getAllCurrentLiveRollups();
 }

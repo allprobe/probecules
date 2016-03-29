@@ -25,7 +25,7 @@ import org.json.simple.parser.ParseException;
 import lycus.Utils.GeneralFunctions;
 import lycus.Utils.Logit;
 import lycus.GlobalConstants.Enums;
-import lycus.GlobalConstants.Global;
+import lycus.GlobalConstants.GlobalConfig;
 
 public class ApiInterface {
 
@@ -41,11 +41,11 @@ public class ApiInterface {
 	
 	public static boolean Initialize() {
 		String fullUrl = "";
-		if (Global.getApiSSL())
+		if (GlobalConfig.getApiSSL())
 			fullUrl += "https://";
 		else
 			fullUrl += "http://";
-		fullUrl += Global.getApiUrl();
+		fullUrl += GlobalConfig.getApiUrl();
 		apiUrl = fullUrl;
 		createFailsFolder();
 		processOfflineRequests();
@@ -55,7 +55,7 @@ public class ApiInterface {
 	public static Object executeRequest(Enums.ApiAction stage, String reqMethod, String reqBody) {
 		String fullUrl = getApiUrl();
 		fullUrl += "/" + stage.name() + "/";
-		fullUrl += Global.getDataCenterID() + "-" + Global.getThisHostToken() + "/" + Global.getApiAuthToken();
+		fullUrl += GlobalConfig.getDataCenterID() + "-" + GlobalConfig.getThisHostToken() + "/" + GlobalConfig.getApiAuthToken();
 		URL url;
 		try {
 			url = new URL(fullUrl);
@@ -78,7 +78,7 @@ public class ApiInterface {
 					+ ", failed to communicate with API!\n" + e.getMessage());
 			return null;
 		}
-		String authCredentials = GeneralFunctions.Base64Encode(Global.getApiUser() + ":" + Global.getApiPass());
+		String authCredentials = GeneralFunctions.Base64Encode(GlobalConfig.getApiUser() + ":" + GlobalConfig.getApiPass());
 		conn.setRequestProperty("Authorization", "Basic " + authCredentials);
 		conn.setDoOutput(true);
 		conn.setUseCaches(false);

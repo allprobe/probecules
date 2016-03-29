@@ -2,21 +2,24 @@ package lycus.ResultsTasks;
 
 import java.util.ArrayList;
 
+import org.json.simple.JSONObject;
+
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.google.gson.JsonArray;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonParser;
 
-import lycus.DataPointsRollup;
 import lycus.ResultsContainer;
 import lycus.DAL.ApiInterface;
 import lycus.GlobalConstants.Enums;
 import lycus.Results.BaseResult;
+import lycus.Rollups.RollupsContainer;
+import lycus.DataPointsRollup;
 import lycus.Utils.GeneralFunctions;
 import lycus.Utils.Logit;
 
-public class RollupsMemoryDump extends BaseTask {
+public class RollupsDumpTask extends BaseTask {
 	private long interval = 30; 
 	private boolean isRollupsMerged;
 
@@ -31,13 +34,17 @@ public class RollupsMemoryDump extends BaseTask {
 	@Override
 	public void run() {
 		ResultsContainer resultsContainer = ResultsContainer.getInstance();
-		String rollups = resultsContainer.getRollups();
+		String rollups = RollupsContainer.getInstance().getAllCurrentLiveRollups();
 		String rollupsEncoded = GeneralFunctions.Base64Encode(rollups);
 		
 		if (!this.isRollupsMerged())           // check if existing rollups pulled from API
-			this.mergeExistingRollupsFromMemDump();
+//			this.mergeExistingRollupsFromMemDump();
 		Logit.LogDebug("Sending MEMDUMP of rollups to DB...");
-		String sendString = "{\"last_rollups\":\"" + rollupsEncoded + "\"}";
+		
+		JSONObject jsonObject=new JSONObject();
+		jsonObject.put("last_rollups", rollupsEncoded);
+		
+		String sendString = jsonObject.toString();
 		ApiInterface.executeRequest(Enums.ApiAction.FlushServerMemory, "PUT", sendString);
 	}
 
@@ -73,26 +80,26 @@ public class RollupsMemoryDump extends BaseTask {
 		return allRollupsDeserialized;
 	}
 
-	public void mergeExistingRollupsFromMemDump() {
-		Logit.LogDebug("Retrieving existing rollups from DB...");
-		Object rollupsUnDecoded = ApiInterface.executeRequest(Enums.ApiAction.GetServerMemoryDump, "GET", null);
-
-		if (rollupsUnDecoded == null || ((String) rollupsUnDecoded).equals("0\n")) {
-			Logit.LogWarn("Unable to retrieve existing rollups, trying again in about 30 secs...");
-			return;
-		}
-
-		String rollups = ((String) rollupsUnDecoded).substring(1, ((String) rollupsUnDecoded).length() - 1);
-
-		ArrayList<DataPointsRollup[][]> rollupses = this.deserializeRollups(rollups);
-		for (DataPointsRollup[][] rollupsResult : rollupses) {
-			DataPointsRollup sampleRollup = rollupsResult[0][0];
-			String rpID = sampleRollup.getRunnableProbeId();
-			
-			BaseResult rpr = ResultsContainer.getInstance().getResult(rpID);
-		}
-		
-		setRollupsMerged(true);
-	}
+//	public void mergeExistingRollupsFromMemDump() {
+//		Logit.LogDebug("Retrieving existing rollups from DB...");
+//		Object rollupsUnDecoded = ApiInterface.executeRequest(Enums.ApiAction.GetServerMemoryDump, "GET", null);
+//
+//		if (rollupsUnDecoded == null || ((String) rollupsUnDecoded).equals("0\n")) {
+//			Logit.LogWarn("Unable to retrieve existing rollups, trying again in about 30 secs...");
+//			return;
+//		}
+//
+//		String rollups = ((String) rollupsUnDecoded).substring(1, ((String) rollupsUnDecoded).length() - 1);
+//
+//		ArrayList<DataPointsRollup[][]> rollupses = this.deserializeRollups(rollups);
+//		for (DataPointsRollup[][] rollupsResult : rollupses) {
+//			DataPointsRollup sampleRollup = rollupsResult[0][0];
+//			String rpID = sampleRollup.getRunnableProbeId();
+//			
+//			BaseResult rpr = ResultsContainer.getInstance().getResult(rpID);
+//		}
+//		
+//		setRollupsMerged(true);
+//	}
 
 }

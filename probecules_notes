@@ -41,8 +41,10 @@ curl -i  -X PUT -d '{"hosts": ["e337d5e0-74c7-433d-b2c1-4a9b357676ce"]}' http://
 
 
 
-Notes for Oren
+Notes
 ----------
-- number of DataPointsRollup in array of result rollup depends on probe interval - RollupsContainer.addPingerResult() need to know the interval for initializing the array.
-- handle delta results.
-- where to put NicElement (need to consider the change check everytime new result incoming).
+- number of DataPointsRollup in array of result rollup depends on probe interval - RollupsContainer.addPingerResult() need to know the interval for initializing the array. - getInterval() in BaseResult
+- handle delta results. - new result inherit from BaseResult
+- where to put NicElement (need to consider the change check everytime new result incoming - fit places: under Host/ElementsContainer).
+- bug on ResultsContainer.getResults(), java.util.ConcurrentModificationException
+- results converted to BaseResult instead of TypeResult

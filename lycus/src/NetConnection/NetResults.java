@@ -11,9 +11,9 @@ import java.util.Set;
 import org.snmp4j.smi.OID;
 
 import lycus.Host;
-import lycus.NicElement;
 import lycus.SnmpTemplate;
 import lycus.Elements.BaseElement;
+import lycus.Elements.NicElement;
 import lycus.GlobalConstants.Constants;
 import lycus.GlobalConstants.Enums;
 import lycus.GlobalConstants.Enums.ElementChange;
@@ -209,8 +209,9 @@ public class NetResults implements INetResults{
 			elements=this.getDiskElements(host);
 			break;
 		}
-		if(elements==null||elements.size()==0)
+		if(elements==null)
 			return null;
+		// TODO: handle elements.size()==0, might be a valid result ask Ran
 		discoveryResult=new DiscoveryResult(getRunnableProbeId(probe, host),timestamp,elements);
 		return discoveryResult;
 	}
@@ -300,7 +301,7 @@ public class NetResults implements INetResults{
 			default:
 				return null;
 			}
-			NicElement nicElement = new NicElement(index,name,hostType	);
+			NicElement nicElement = new NicElement(index,name,hostType,ifSpeed);
 			lastElements.add(nicElement);
 		}
 

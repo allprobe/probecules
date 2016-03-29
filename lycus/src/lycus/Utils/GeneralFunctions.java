@@ -29,11 +29,15 @@ public class GeneralFunctions {
 
 	public static String Base64Encode(String uri) {
 
+		if(uri==null)
+			return null;
 		String s = new String(Base64.encodeBase64(uri.getBytes()));
 		return s;
 	}
 
 	public static String Base64Decode(String uri) {
+		if(uri==null)
+			return null;
 		String s = new String(Base64.decodeBase64(uri.getBytes()));
 		return s;
 	}

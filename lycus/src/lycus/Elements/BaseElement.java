@@ -1,14 +1,5 @@
 package lycus.Elements;
 
-import java.util.ArrayList;
-import java.util.UUID;
-
-import lycus.Utils.Logit;
-import lycus.Host;
-import lycus.User;
-import lycus.Probes.BaseProbe;
-import lycus.Results.BaseResult;
-
 public class BaseElement {
 
 	private int index;

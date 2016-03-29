@@ -55,7 +55,7 @@ import org.snmp4j.util.TreeListener;
 import org.snmp4j.util.TreeUtils;
 
 import lycus.Host;
-import lycus.GlobalConstants.Global;
+import lycus.GlobalConstants.GlobalConfig;
 import lycus.GlobalConstants.LogType;
 import lycus.Utils.GeneralFunctions;
 import lycus.Utils.Logit;
@@ -491,7 +491,7 @@ public class Net {
 			switch (h.getSnmpTemp().getVersion()) {
 			case 1: {
 				ArrayList<Object> results = Net.runSnmpCheckVer1(h.getHostIp(), h.getSnmpTemp().getPort(),
-						h.getSnmpTemp().getCommunityName(), Global.getHostSnmpOK(), h.getSnmpTemp().getTimeout());
+						h.getSnmpTemp().getCommunityName(), GlobalConfig.getHostSnmpOK(), h.getSnmpTemp().getTimeout());
 				if (results == null) {
 					return "snmp problem";
 				} else {
@@ -504,7 +504,7 @@ public class Net {
 			}
 			case 2: {
 				String results = Net.Snmp2GET(h.getHostIp(), h.getSnmpTemp().getPort(), h.getSnmpTemp().getTimeout(),
-						h.getSnmpTemp().getCommunityName(), Global.getHostSnmpOK(), transport, snmp);
+						h.getSnmpTemp().getCommunityName(), GlobalConfig.getHostSnmpOK(), transport, snmp);
 				if (results == null) {
 					return "snmp problem";
 				} else {
@@ -518,7 +518,7 @@ public class Net {
 			}
 			case 3: {
 				String results = Net.Snmp3GET(h.getHostIp(), h.getSnmpTemp().getPort(), h.getSnmpTemp().getPort(),
-						Global.getHostSnmpOK(), h.getSnmpTemp().getUserName(), h.getSnmpTemp().getAuthPass(),
+						GlobalConfig.getHostSnmpOK(), h.getSnmpTemp().getUserName(), h.getSnmpTemp().getAuthPass(),
 						h.getSnmpTemp().getAlgo(), h.getSnmpTemp().getCryptPass(), h.getSnmpTemp().getCryptType(),
 						transport, snmp);
 				if (results == null) {
@@ -870,17 +870,15 @@ public class Net {
 		// try {
 		// transport.close();
 		// } catch (IOException e) {
-		// SysLogger.Record(
-		// new Log("Unable to close TransportMapping! may cause memory leak!",
-		// LogType.Error, e));
+//		Logit.LogError("Net - Snmp2GET", "Unable to close TransportMapping! may cause memory leak!");
 		// }
 		// }
 		// if (snmp != null) {
 		// try {
 		// snmp.close();
 		// } catch (IOException e) {
-		// SysLogger.Record(new Log("Unable to close SNMP! may cause memory
-		// leak!", LogType.Error, e));
+//		Logit.LogError("Net - Snmp2GET", "Unable to close TransportMapping! may cause memory leak!");
+
 		//
 		// }
 		// }
@@ -966,17 +964,16 @@ public class Net {
 		// try {
 		// transport.close();
 		// } catch (IOException e) {
-		// SysLogger.Record(
-		// new Log("Unable to close TransportMapping! may cause memory leak!",
-		// LogType.Error, e));
+//		Logit.LogError("Net - Snmp2GET", "Unable to close TransportMapping! may cause memory leak!");
+
 		// }
 		// }
 		// if (snmp != null) {
 		// try {
 		// snmp.close();
 		// } catch (IOException e) {
-		// SysLogger.Record(new Log("Unable to close SNMP! may cause memory
-		// leak!", LogType.Error, e));
+//		Logit.LogError("Net - Snmp2GET", "Unable to close TransportMapping! may cause memory leak!");
+
 		//
 		// }
 		// }
