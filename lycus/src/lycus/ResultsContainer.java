@@ -9,7 +9,7 @@ import java.util.UUID;
 import org.json.simple.JSONObject;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
-import com.google.gson.internal.bind.TypeAdapters;
+import com.google.gson.TypeAdapterFactory;
 import lycus.DAL.ApiInterface;
 import lycus.GlobalConstants.Enums;
 import lycus.GlobalConstants.LogType;
@@ -285,12 +285,12 @@ public class ResultsContainer implements IResultsContainer {
 //		 }
 //		 }
 //		
-		
-		RuntimeTypeAdapterFactory<BaseResult> adapter = 
-                RuntimeTypeAdapterFactory
-               .of(ObixBaseObj.class)
-               .registerSubtype(ObixBaseObj.class)
-               .registerSubtype(ObixOp.class);
+//		Run
+//		RuntimeTypeAdapterFactory<BaseResult> adapter = 
+//                RuntimeTypeAdapterFactory
+//               .of(ObixBaseObj.class)
+//               .registerSubtype(ObixBaseObj.class)
+//               .registerSubtype(ObixOp.class);
 		
 		String jsonString=null;
 		try {
