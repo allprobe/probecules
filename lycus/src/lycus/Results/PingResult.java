@@ -18,7 +18,7 @@ public class PingResult extends BaseResult {
 
 	public PingResult(String runnableProbeId,long timestamp, int packetLoss, double rtt, int ttl) {
 		super(runnableProbeId,timestamp);
-		this.probeType=ProbeTypes.PING;
+		this.probeType=ProbeTypes.ICMP;
 		this.packetLoss=packetLoss;
 		this.rtt=rtt;
 		this.ttl=ttl;

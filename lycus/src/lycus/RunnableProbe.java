@@ -71,11 +71,11 @@ public class RunnableProbe implements Runnable {
 
 	public ProbeTypes getProbeType() {
 		if (getProbe() instanceof PingerProbe)
-			return ProbeTypes.PING;
+			return ProbeTypes.ICMP;
 		if (getProbe() instanceof PorterProbe)
 			return ProbeTypes.PORT;
 		if (getProbe() instanceof WeberProbe)
-			return ProbeTypes.WEB;
+			return ProbeTypes.HTTP;
 		if ((getProbe() instanceof SnmpProbe))
 			return ProbeTypes.SNMP;
 		if (getProbe() instanceof RBLProbe)
@@ -129,11 +129,11 @@ public class RunnableProbe implements Runnable {
 
 			ScheduledFuture<?> rpThread = null;
 			switch (this.getProbeType()) {
-			case PING:
+			case ICMP:
 				rpThread = RunInnerProbesChecks.getPingerFutureMap().remove(this.getId());
 			case PORT:
 				rpThread = RunInnerProbesChecks.getPorterFutureMap().remove(this.getId());
-			case WEB:
+			case HTTP:
 				rpThread = RunInnerProbesChecks.getWeberFutureMap().remove(this.getId());
 			case SNMP:
 				this.setRunning(false);

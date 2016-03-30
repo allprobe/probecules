@@ -17,7 +17,7 @@ public class WebResult extends BaseResult {
 
 	public WebResult(String runnableProbeId, long timestamp, int responseCode, long responseTime2, long responseSize) {
 		super(runnableProbeId,timestamp);
-		this.probeType=ProbeTypes.WEB;
+		this.probeType=ProbeTypes.HTTP;
 
 		this.statusCode=responseCode;
 		this.responseTime=responseTime2;

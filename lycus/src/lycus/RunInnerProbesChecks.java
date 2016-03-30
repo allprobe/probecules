@@ -208,13 +208,13 @@ public class RunInnerProbesChecks extends Thread {
 		try {
 			switch(rp.getProbeType())
 			{
-			case PING:
+			case ICMP:
 				RunInnerProbesChecks.RunPingerThreads(rp);
 				return true;
 			case PORT:
 				RunInnerProbesChecks.RunPorterThreads(rp);
 				return true;
-			case WEB:
+			case HTTP:
 				RunInnerProbesChecks.RunWeberThreads(rp);
 				return true;
 			case TRACEROUTE:
@@ -274,9 +274,9 @@ public class RunInnerProbesChecks extends Thread {
 				return null;
 		switch(probeType)
 		{
-		case PING:return getPingerFutureMap().get(rp.getId());
+		case ICMP:return getPingerFutureMap().get(rp.getId());
 		case PORT:return getPorterFutureMap().get(rp.getId());
-		case WEB:return getWeberFutureMap().get(rp.getId());
+		case HTTP:return getWeberFutureMap().get(rp.getId());
 		case SNMP:return getPingerFutureMap().get(rp.getId());
 		case RBL:return getPingerFutureMap().get(rp.getId());
 		}

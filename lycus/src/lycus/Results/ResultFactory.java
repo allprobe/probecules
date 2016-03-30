@@ -6,11 +6,11 @@ import lycus.GlobalConstants.ProbeTypes;
 public class ResultFactory {
 	public static BaseResult getResult(ProbeTypes type, String runnableProbeId) {
 		switch (type) {
-		case PING:
+		case ICMP:
 			return new PingResult(runnableProbeId);
 		case PORT:
 			return new PortResult(runnableProbeId);
-		case WEB:
+		case HTTP:
 			return new WebResult(runnableProbeId);
 		case SNMP:
 			return new SnmpResult(runnableProbeId);
