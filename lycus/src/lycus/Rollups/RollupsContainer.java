@@ -208,32 +208,32 @@ public class RollupsContainer implements IRollupsContainer {
 
 	private boolean addRollupTo(int rollupType, DataPointsRollup dataPointsRollup) {
 		switch (rollupType) {
-		case 0:
+		case 5:
 			if (finishedRollups4m.get(dataPointsRollup.getRunnableProbeId()) == null)
 				finishedRollups4m.put(dataPointsRollup.getRunnableProbeId(), new ArrayList<DataPointsRollup>());
 			finishedRollups4m.get(dataPointsRollup.getRunnableProbeId()).add(dataPointsRollup);
 			break;
-		case 1:
+		case 4:
 			if (finishedRollups20m.get(dataPointsRollup.getRunnableProbeId()) == null)
 				finishedRollups20m.put(dataPointsRollup.getRunnableProbeId(), new ArrayList<DataPointsRollup>());
 			finishedRollups20m.get(dataPointsRollup.getRunnableProbeId()).add(dataPointsRollup);
 			break;
-		case 2:
+		case 3:
 			if (finishedRollups1h.get(dataPointsRollup.getRunnableProbeId()) == null)
 				finishedRollups1h.put(dataPointsRollup.getRunnableProbeId(), new ArrayList<DataPointsRollup>());
 			finishedRollups1h.get(dataPointsRollup.getRunnableProbeId()).add(dataPointsRollup);
 			break;
-		case 3:
+		case 2:
 			if (finishedRollups6h.get(dataPointsRollup.getRunnableProbeId()) == null)
 				finishedRollups6h.put(dataPointsRollup.getRunnableProbeId(), new ArrayList<DataPointsRollup>());
 			finishedRollups6h.get(dataPointsRollup.getRunnableProbeId()).add(dataPointsRollup);
 			break;
-		case 4:
+		case 1:
 			if (finishedRollups36h.get(dataPointsRollup.getRunnableProbeId()) == null)
 				finishedRollups36h.put(dataPointsRollup.getRunnableProbeId(), new ArrayList<DataPointsRollup>());
 			finishedRollups36h.get(dataPointsRollup.getRunnableProbeId()).add(dataPointsRollup);
 			break;
-		case 5:
+		case 0:
 			if (finishedRollups11d.get(dataPointsRollup.getRunnableProbeId()) == null)
 				finishedRollups11d.put(dataPointsRollup.getRunnableProbeId(), new ArrayList<DataPointsRollup>());
 			finishedRollups11d.get(dataPointsRollup.getRunnableProbeId()).add(dataPointsRollup);
