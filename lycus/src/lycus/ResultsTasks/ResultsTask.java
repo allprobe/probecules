@@ -21,6 +21,10 @@ public class ResultsTask extends BaseTask {
 			
 			ResultsContainer resultsContainer = ResultsContainer.getInstance();
 			String results = resultsContainer.getResults();
+			
+			if(results.contains("rtt") || results.contains("packetLost"))
+			System.err.println("BREAKPOINT - ResultsTask");
+			
 			RollupsContainer rollupsContainer = RollupsContainer.getInstance();
 			String rollups = rollupsContainer.getAllFinsihedRollups(); 
 			

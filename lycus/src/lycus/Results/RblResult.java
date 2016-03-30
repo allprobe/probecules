@@ -3,6 +3,7 @@ package lycus.Results;
 import java.util.HashMap;
 import lycus.Trigger;
 import lycus.TriggerCondition;
+import lycus.GlobalConstants.ProbeTypes;
 
 public class RblResult extends BaseResult {
 	
@@ -10,6 +11,8 @@ public class RblResult extends BaseResult {
 
 	public RblResult(String runnableProbeId, long timestamp, boolean isListed2) {
 		super(runnableProbeId,timestamp);
+		this.probeType=ProbeTypes.RBL;
+
 		this.IsListed=isListed2;
 	}
 	public RblResult(String runnableProbeId) {

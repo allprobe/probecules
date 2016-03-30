@@ -3,6 +3,7 @@ package lycus.Results;
 import java.util.HashMap;
 import lycus.Trigger;
 import lycus.TriggerCondition;
+import lycus.GlobalConstants.ProbeTypes;
 
 public class PortResult extends BaseResult {
 	private Boolean portStatus;
@@ -11,6 +12,8 @@ public class PortResult extends BaseResult {
 
 	public PortResult(String runnableProbeId, long timestamp, boolean portState, long responseTime2) {
 		super(runnableProbeId,timestamp);
+		this.probeType=ProbeTypes.PORT;
+
 		this.portStatus=portState;
 		this.responseTime=responseTime2;
 //		this.responseTimeRollups = this.initRollupSeries(new DataPointsRollup[6]);

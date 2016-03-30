@@ -3,10 +3,11 @@ package lycus.Results;
 import java.util.HashMap;
 import lycus.Trigger;
 import lycus.TriggerCondition;
+import lycus.GlobalConstants.ProbeTypes;
 
 public class PingResult extends BaseResult {
 
-	private Integer packetLost;
+	private Integer packetLoss;
 //	private DataPointsRollup[] packetLostRollups;
 	private Double rtt;
 //	private DataPointsRollup[] rttRollups;
@@ -14,7 +15,8 @@ public class PingResult extends BaseResult {
 
 	public PingResult(String runnableProbeId,long timestamp, int packetLoss, double rtt, int ttl) {
 		super(runnableProbeId,timestamp);
-		this.packetLost=packetLoss;
+		this.probeType=ProbeTypes.PING;
+		this.packetLoss=packetLoss;
 		this.rtt=rtt;
 		this.ttl=ttl;
 //		this.packetLostRollups = this.initRollupSeries(new DataPointsRollup[6]);
@@ -25,11 +27,11 @@ public class PingResult extends BaseResult {
 	}
 
 	public Integer getPacketLost() {
-		return packetLost;
+		return packetLoss;
 	}
 
 	public void setPacketLost(Integer packetLost) {
-		this.packetLost = packetLost;
+		this.packetLoss = packetLost;
 	}
 
 //	public DataPointsRollup[] getPacketLostRollups() {

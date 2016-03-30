@@ -3,6 +3,7 @@ package lycus.Results;
 import java.util.HashMap;
 import lycus.Utils.Logit;
 import lycus.Trigger;
+import lycus.GlobalConstants.ProbeTypes;
 import lycus.Event;
 import lycus.ResultsContainer;
 import lycus.RunnableProbeContainer;
@@ -12,6 +13,7 @@ public class BaseResult {
 //	private HashMap<Trigger, Event> events;
 	private boolean isSent;
 	private String runnableProbeId;
+	protected ProbeTypes probeType;
 	
 //	public BaseResult() {
 //		this.lastTimestamp = null;
@@ -20,6 +22,7 @@ public class BaseResult {
 //	}
  	
 	public BaseResult(String runnableProbeId,long timestamp) {
+		
 		this.runnableProbeId = runnableProbeId;
 		this.lastTimestamp = timestamp;
 		setSent(false);

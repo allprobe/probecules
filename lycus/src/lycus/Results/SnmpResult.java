@@ -7,6 +7,7 @@ import lycus.Probes.SnmpProbe;
 import lycus.DataPointsRollup;
 import lycus.TriggerCondition;
 import lycus.GlobalConstants.Constants;
+import lycus.GlobalConstants.ProbeTypes;
 
 public class SnmpResult extends BaseResult {
 
@@ -20,6 +21,8 @@ public class SnmpResult extends BaseResult {
 
 	public SnmpResult(String runnableProbeId,long timestamp,String data) {
 		super(runnableProbeId,timestamp);
+		this.probeType=ProbeTypes.SNMP;
+		this.data=data;
 //		this.setSnmpResultError(null);
 		
 //		switch (((SnmpProbe) rp.getProbe()).getDataType()) {

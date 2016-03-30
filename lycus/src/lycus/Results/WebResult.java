@@ -4,6 +4,7 @@ import java.util.HashMap;
 import lycus.Utils.Logit;
 import lycus.Trigger;
 import lycus.TriggerCondition;
+import lycus.GlobalConstants.ProbeTypes;
 
 public class WebResult extends BaseResult {
 	private Integer statusCode;
@@ -13,6 +14,8 @@ public class WebResult extends BaseResult {
 
 	public WebResult(String runnableProbeId, long timestamp, int responseCode, long responseTime2, long responseSize) {
 		super(runnableProbeId,timestamp);
+		this.probeType=ProbeTypes.WEB;
+
 		this.statusCode=responseCode;
 		this.responseTime=responseTime2;
 		this.pageSize=responseSize;
