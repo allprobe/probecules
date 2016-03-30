@@ -6,7 +6,7 @@ import lycus.GlobalConstants.Enums;
 import lycus.Utils.GeneralFunctions;
 import lycus.Utils.Logit;
 
-public class EventHandler extends BaseTask {
+public class EventTask extends BaseTask {
 	private long interval = 300; 
 
 	public void run() {

@@ -1,6 +1,9 @@
 package lycus.Results;
 
 import java.util.HashMap;
+
+import org.json.simple.JSONArray;
+
 import lycus.Trigger;
 import lycus.TriggerCondition;
 import lycus.GlobalConstants.ProbeTypes;
@@ -196,4 +199,12 @@ public class PortResult extends BaseResult {
 //
 //		return results;
 //	}
+	@Override
+	public String getResultString() {
+		JSONArray result=new JSONArray();
+		result.add(2);
+		result.add(portStatus);
+		result.add(responseTime);
+		return result.toString();
+	}
 }

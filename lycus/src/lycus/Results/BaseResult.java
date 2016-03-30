@@ -4,11 +4,12 @@ import java.util.HashMap;
 import lycus.Utils.Logit;
 import lycus.Trigger;
 import lycus.GlobalConstants.ProbeTypes;
+import lycus.Interfaces.IResult;
 import lycus.Event;
 import lycus.ResultsContainer;
 import lycus.RunnableProbeContainer;
 
-public class BaseResult {
+public class BaseResult implements IResult {
 	private Long lastTimestamp;
 //	private HashMap<Trigger, Event> events;
 	private boolean isSent;
@@ -194,5 +195,16 @@ public class BaseResult {
 	public void setRunnableProbeId(String runnableProbeId) {
 		this.runnableProbeId = runnableProbeId;
 	}
+	@Override
+	public String getName() {
+		// TODO Auto-generated method stub
+		return null;
+	}
+	@Override
+	public String getResultString() {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
 
 }

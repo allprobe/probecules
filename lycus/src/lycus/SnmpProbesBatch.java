@@ -10,8 +10,10 @@ import org.snmp4j.Snmp;
 import org.snmp4j.TransportMapping;
 import org.snmp4j.transport.DefaultUdpTransportMapping;
 import NetConnection.NetResults;
+import lycus.GlobalConstants.Enums.SnmpStoreAs;
 import lycus.GlobalConstants.LogType;
 import lycus.Probes.SnmpProbe;
+import lycus.Results.SnmpDeltaResult;
 import lycus.Results.SnmpResult;
 import lycus.Rollups.RollupsContainer;
 import lycus.Utils.Logit;
@@ -24,12 +26,15 @@ public class SnmpProbesBatch implements Runnable {
 	private long interval;
 	private boolean snmpError;
 	private boolean isRunning;
-
+	
+	private Map<String, SnmpResult> snmpPreviousResults;  //Map<runnableProbeId, SnmpResult> for calculating Delta result 
+	
 	// check vars
 	private TransportMapping transport;
 	private Snmp snmp;
 
 	public SnmpProbesBatch(SnmpManager SM, RunnableProbe rp) {
+		snmpPreviousResults = new HashMap<String, SnmpResult>();
 		this.setHost(rp.getHost());
 		this.setInterval(rp.getProbe().getInterval());
 		this.setSnmpProbes(new HashMap<String, RunnableProbe>());
@@ -177,8 +182,19 @@ public class SnmpProbesBatch implements Runnable {
 				} else {
 					long resultsTimestamp = System.currentTimeMillis();
 					for (SnmpResult result : response) {
-						ResultsContainer.getInstance().addResult(result);
-						RollupsContainer.getInstance().addResult(result);
+						SnmpStoreAs storeAs = ((SnmpProbe)RunnableProbeContainer.getInstanece().get(result.getRunnableProbeId()).getProbe()).getStoreAs();
+						if (storeAs == SnmpStoreAs.asIs)
+						{
+							ResultsContainer.getInstance().addResult(result);
+							RollupsContainer.getInstance().addResult(result);
+						}
+						else if (storeAs == SnmpStoreAs.delta)
+						{
+							SnmpDeltaResult snmpDeltaResult = getSnmpDeltaResult(result, resultsTimestamp);
+							ResultsContainer.getInstance().addResult(snmpDeltaResult);
+							RollupsContainer.getInstance().addResult(snmpDeltaResult);
+						}
+						
 					}
 				}
 			}
@@ -187,6 +203,19 @@ public class SnmpProbesBatch implements Runnable {
 		}
 	}
 
+	public SnmpDeltaResult getSnmpDeltaResult(SnmpResult result, long timeStamp)
+	{
+		SnmpDeltaResult snmpDeltaResult = new SnmpDeltaResult(result.getRunnableProbeId());
+		SnmpResult snmpPreviousData = snmpPreviousResults.get(result.getRunnableProbeId());
+		snmpPreviousData.setLastTimestamp(timeStamp);
+		
+		snmpDeltaResult.setData(snmpPreviousData != null ? snmpPreviousData.getData() : null, result.getData());
+		snmpPreviousResults.put(result.getRunnableProbeId(), result);
+		
+		return snmpDeltaResult;
+		
+	}
+	
 	public void deleteSnmpProbe(RunnableProbe rp) {
 		this.getSnmpProbes().remove(rp.getId());
 	}

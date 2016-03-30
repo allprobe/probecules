@@ -13,7 +13,7 @@ import com.sun.istack.internal.logging.Logger;
 
 import lycus.GlobalConstants.GlobalConfig;
 import lycus.GlobalConstants.LogType;
-import lycus.ResultsTasks.EventHandler;
+import lycus.ResultsTasks.EventTask;
 import lycus.ResultsTasks.ResultsTask;
 import lycus.ResultsTasks.RollupsDumpTask;
 import lycus.Utils.Logit;
@@ -81,7 +81,7 @@ public class LycusMain {
 		resultsThread.scheduleAtFixedRate(resultsTask, 0, resultsTask.getInterval(), TimeUnit.SECONDS);
 		
 		ResultsContainer.getInstance().pullCurrentLiveEvents();
-		EventHandler eventHandler = new EventHandler();
+		EventTask eventHandler = new EventTask();
 		ScheduledExecutorService eventsThread = Executors.newSingleThreadScheduledExecutor();
 		eventsThread.scheduleAtFixedRate(eventHandler, 0, eventHandler.getInterval(), TimeUnit.SECONDS);
 		

@@ -1,6 +1,9 @@
 package lycus.Results;
 
 import java.util.HashMap;
+
+import org.json.simple.JSONArray;
+
 import lycus.Trigger;
 import lycus.TriggerCondition;
 import lycus.GlobalConstants.ProbeTypes;
@@ -124,6 +127,20 @@ public class PingResult extends BaseResult {
 		}
 	}
 
+	@Override
+	public String getName() {
+		// TODO Auto-generated method stub
+		return super.getName();
+	}
+	@Override
+	public String getResultString() {
+		JSONArray result=new JSONArray();
+		result.add(1);
+		result.add(packetLoss);
+		result.add(rtt);
+		result.add(ttl);
+		return result.toString();
+	}
 	private boolean checkForPacketLostTrigger(Trigger trigger) {
 		boolean flag = false;
 		for (TriggerCondition condition : trigger.getCondtions()) {

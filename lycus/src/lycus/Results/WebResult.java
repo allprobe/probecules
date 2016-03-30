@@ -1,6 +1,9 @@
 package lycus.Results;
 
 import java.util.HashMap;
+
+import org.json.simple.JSONArray;
+
 import lycus.Utils.Logit;
 import lycus.Trigger;
 import lycus.TriggerCondition;
@@ -273,4 +276,13 @@ public class WebResult extends BaseResult {
 //		
 //		return results;
 //	}
+	@Override
+	public String getResultString() {
+		JSONArray result=new JSONArray();
+		result.add(3);
+		result.add(statusCode);
+		result.add(responseTime);
+		result.add(pageSize);
+		return result.toString();
+	}
 }
