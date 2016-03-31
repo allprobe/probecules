@@ -30,6 +30,7 @@ public class ResultsContainer implements IResultsContainer {
 															// HashMap<triggerId,
 															// Event>>
 	private Object lock1 = new Object();
+	private Object lockEvents = new Object();
 
 	private ResultsContainer() {
 		results = new ArrayList<BaseResult>();
@@ -62,33 +63,33 @@ public class ResultsContainer implements IResultsContainer {
 		}
 
 		runnableProbeEvents.put(triggerId, event);
-		events.put(runnableProbeId, runnableProbeEvents);
-
+		synchronized (lockEvents) {
+			events.put(runnableProbeId, runnableProbeEvents);
+		}
 		return true;
 	}
 
-	public boolean clear()
-	{
-		events.clear();
-		//TODO: Leave 10 last results from each kind on the list
+	public boolean clear() {
+		synchronized (lockEvents) {
+			events.clear();
+		}
+		// TODO: Leave 10 last results from each kind on the list
 		results.clear();
 		return true;
 	}
-	
 
+	private JSONObject rawResultsDBFormat(BaseResult rpr) {
+		JSONObject result = new JSONObject();
 
-	 private JSONObject rawResultsDBFormat(BaseResult rpr) {
-	 JSONObject result=new JSONObject();
-	 
-	 RunnableProbe rp = RunnableProbeContainer.getInstanece().get(rpr.getRunnableProbeId());
-	
-	 result.put("USER_ID",rp.getProbe().getUser().getUserId().toString());
-	 result.put("PROBE_TYPE", rp.getProbeType().name());
-	 result.put("RESULTS_TIME", rpr.getLastTimestamp());
-	 result.put("RESULTS_NAME", rpr.getName());
-	 result.put("RESULTS", rpr.getResultString());
-	 return result;
-	 }
+		RunnableProbe rp = RunnableProbeContainer.getInstanece().get(rpr.getRunnableProbeId());
+
+		result.put("USER_ID", rp.getProbe().getUser().getUserId().toString());
+		result.put("PROBE_TYPE", rp.getProbeType().name());
+		result.put("RESULTS_TIME", rpr.getLastTimestamp());
+		result.put("RESULTS_NAME", rpr.getName());
+		result.put("RESULTS", rpr.getResultString());
+		return result;
+	}
 
 	// private HashMap<String, BaseResults> getAllResultsUsers(ArrayList<User>
 	// users) {
@@ -169,7 +170,7 @@ public class ResultsContainer implements IResultsContainer {
 
 	@Override
 	public boolean addResult(BaseResult result) {
-		synchronized(lock1) {
+		synchronized (lock1) {
 			results.add(result);
 		}
 		return true;
@@ -179,7 +180,7 @@ public class ResultsContainer implements IResultsContainer {
 	public boolean removeSentResults() {
 		for (BaseResult result : results) {
 			if (result.isSent())
-				synchronized(lock1) {
+				synchronized (lock1) {
 					results.remove(result);
 				}
 			result = null;
@@ -283,26 +284,26 @@ public class ResultsContainer implements IResultsContainer {
 		// .of(ObixBaseObj.class)
 		// .registerSubtype(ObixBaseObj.class)
 		// .registerSubtype(ObixOp.class);
-		JSONArray resultsDBFormat=new JSONArray();
-		for(BaseResult result:results)
-		{
-			JSONObject resultDBFormat=rawResultsDBFormat(result);
+		JSONArray resultsDBFormat = new JSONArray();
+		for (BaseResult result : results) {
+			JSONObject resultDBFormat = rawResultsDBFormat(result);
 			resultsDBFormat.add(resultDBFormat);
 		}
 		return resultsDBFormat.toString();
-		
-//		try {
-//			String jsonString = null;
-//			synchronized(lock1) {
-//				jsonString = JsonUtil.ToJson(this.results);
-//			}
-//			return jsonString;
-//		} catch (Exception e) {
-//			Logit.LogFatal("ResultsContainer - getResults()",
-//					"Unable to parse results to json format! not sent!, E: " + e.getMessage());
-//
-//			return null;
-//		}
+
+		// try {
+		// String jsonString = null;
+		// synchronized(lock1) {
+		// jsonString = JsonUtil.ToJson(this.results);
+		// }
+		// return jsonString;
+		// } catch (Exception e) {
+		// Logit.LogFatal("ResultsContainer - getResults()",
+		// "Unable to parse results to json format! not sent!, E: " +
+		// e.getMessage());
+		//
+		// return null;
+		// }
 	}
 
 	@Override
