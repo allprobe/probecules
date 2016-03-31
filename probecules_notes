@@ -44,3 +44,4 @@ curl -i  -X PUT -d '{"hosts": ["e337d5e0-74c7-433d-b2c1-4a9b357676ce"]}' http://
 Notes
 ----------
 - handle delta results. - new result inherit from BaseResult
+- discuss the way finishedRollups represented

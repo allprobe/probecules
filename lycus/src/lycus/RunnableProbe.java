@@ -92,6 +92,12 @@ public class RunnableProbe implements Runnable {
 	
 		BaseResult result = null;
 
+		String rpStr = this.getHost().getHostId().toString()+"@"+getProbe().getProbe_id();
+		if (rpStr.contains(
+				"75f89477-6965-4893-bd82-af6ac9135714@port_a7fe90dc-cbcf-4c76-bb54-52e889fe75b1"))
+			System.out.println("BREAKPOINT - RunnableProbe");
+		
+		
 		try {
 			result = getProbe().getResult(this.getHost());
 			result.checkIfTriggerd(getProbe().getTriggers());

@@ -75,26 +75,7 @@ public class ResultsContainer implements IResultsContainer {
 		return true;
 	}
 	
-	// private HashMap<String, String> rollupResultsDBFormat(BaseResult rpr,
-	// String resultkey, String resultvalue) {
-	//
-	// HashMap<String, String> tableResults;
-	// tableResults = new HashMap<String, String>();
-	//
-	// tableResults.put("USER_ID",
-	// rp.getProbe().getUser().getUserId().toString());
-	// // try {
-	// if (rp.getProbeType() != null)
-	// tableResults.put("PROBE_TYPE", rpr.getRunnableProbeId().name());
-	// else
-	// return null;
-	//
-	// tableResults.put("RESULTS_TIME", resultkey.split("@")[2]);
-	// tableResults.put("RESULTS_NAME", resultkey.split("@")[1]);
-	// tableResults.put("RESULTS", resultvalue);
-	// return tableResults;
-	//
-	// }
+
 
 	 private JSONObject rawResultsDBFormat(BaseResult rpr) {
 	 JSONObject result=new JSONObject();

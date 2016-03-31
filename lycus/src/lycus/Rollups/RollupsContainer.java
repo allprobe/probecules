@@ -2,6 +2,8 @@ package lycus.Rollups;
 
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.Iterator;
+import java.util.Map;
 
 import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
@@ -37,12 +39,12 @@ public class RollupsContainer implements IRollupsContainer {
 	private HashMap<String, DataPointsRollup[]> snmpDataRollups = new HashMap<String, DataPointsRollup[]>();
 
 	// Those are finished rollups
-	private HashMap<String, ArrayList<DataPointsRollup>> finishedRollups4m = new HashMap<String, ArrayList<DataPointsRollup>>();
-	private HashMap<String, ArrayList<DataPointsRollup>> finishedRollups20m = new HashMap<String, ArrayList<DataPointsRollup>>();
-	private HashMap<String, ArrayList<DataPointsRollup>> finishedRollups1h = new HashMap<String, ArrayList<DataPointsRollup>>();
-	private HashMap<String, ArrayList<DataPointsRollup>> finishedRollups6h = new HashMap<String, ArrayList<DataPointsRollup>>();
-	private HashMap<String, ArrayList<DataPointsRollup>> finishedRollups36h = new HashMap<String, ArrayList<DataPointsRollup>>();
-	private HashMap<String, ArrayList<DataPointsRollup>> finishedRollups11d = new HashMap<String, ArrayList<DataPointsRollup>>();
+	private JSONObject finishedRollups4m = new JSONObject();// JSONObject<runnableProbeId,JSONArray<DataPointsRollup>>
+	private JSONObject finishedRollups20m = new JSONObject();
+	private JSONObject finishedRollups1h = new JSONObject();
+	private JSONObject finishedRollups6h = new JSONObject();
+	private JSONObject finishedRollups36h = new JSONObject();
+	private JSONObject finishedRollups11d = new JSONObject();
 
 	public static RollupsContainer getInstance() {
 		if (instance == null) {
@@ -66,12 +68,28 @@ public class RollupsContainer implements IRollupsContainer {
 		return false;
 	}
 
+	 private String rollupResultsDBFormat(DataPointsRollup dataPointsRollup) {
+		JSONObject rollup=new JSONObject();
+		
+//		rollup.put("USER_ID", rp.getProbe().getUser().getUserId().toString());
+		rollup.put("RESULTS_TIME", dataPointsRollup.getEndTime());
+//		rollup.put("RESULTS_NAME", resultkey.split("@")[1]);
+		rollup.put("RESULTS", dataPointsRollup.getResultString());
+	 
+		return rollup.toString();
+	
+	 }
+	
 	@Override
 	public synchronized String getAllFinsihedRollups() {
 
 		JSONObject rollups = new JSONObject();
 
 		for (int i = 0; i < 6; i++) {
+//			for(Map.Entry<K, V>)
+//			{
+//				
+//			}
 			for (DataPointsRollup[] rolups : packetLossRollups.values()) {
 				addFinished(i, rolups);
 			}
@@ -210,33 +228,33 @@ public class RollupsContainer implements IRollupsContainer {
 		switch (rollupType) {
 		case 5:
 			if (finishedRollups4m.get(dataPointsRollup.getRunnableProbeId()) == null)
-				finishedRollups4m.put(dataPointsRollup.getRunnableProbeId(), new ArrayList<DataPointsRollup>());
-			finishedRollups4m.get(dataPointsRollup.getRunnableProbeId()).add(dataPointsRollup);
+				finishedRollups4m.put(dataPointsRollup.getRunnableProbeId(), new JSONArray());
+			((JSONArray)finishedRollups4m.get(dataPointsRollup.getRunnableProbeId())).add(rollupResultsDBFormat(dataPointsRollup));
 			break;
 		case 4:
 			if (finishedRollups20m.get(dataPointsRollup.getRunnableProbeId()) == null)
-				finishedRollups20m.put(dataPointsRollup.getRunnableProbeId(), new ArrayList<DataPointsRollup>());
-			finishedRollups20m.get(dataPointsRollup.getRunnableProbeId()).add(dataPointsRollup);
+				finishedRollups20m.put(dataPointsRollup.getRunnableProbeId(), new JSONArray());
+			((JSONArray)finishedRollups20m.get(dataPointsRollup.getRunnableProbeId())).add(rollupResultsDBFormat(dataPointsRollup));
 			break;
 		case 3:
 			if (finishedRollups1h.get(dataPointsRollup.getRunnableProbeId()) == null)
-				finishedRollups1h.put(dataPointsRollup.getRunnableProbeId(), new ArrayList<DataPointsRollup>());
-			finishedRollups1h.get(dataPointsRollup.getRunnableProbeId()).add(dataPointsRollup);
+				finishedRollups1h.put(dataPointsRollup.getRunnableProbeId(), new JSONArray());
+			((JSONArray)finishedRollups1h.get(dataPointsRollup.getRunnableProbeId())).add(rollupResultsDBFormat(dataPointsRollup));
 			break;
 		case 2:
 			if (finishedRollups6h.get(dataPointsRollup.getRunnableProbeId()) == null)
-				finishedRollups6h.put(dataPointsRollup.getRunnableProbeId(), new ArrayList<DataPointsRollup>());
-			finishedRollups6h.get(dataPointsRollup.getRunnableProbeId()).add(dataPointsRollup);
+				finishedRollups6h.put(dataPointsRollup.getRunnableProbeId(), new JSONArray());
+			((JSONArray)finishedRollups6h.get(dataPointsRollup.getRunnableProbeId())).add(rollupResultsDBFormat(dataPointsRollup));
 			break;
 		case 1:
 			if (finishedRollups36h.get(dataPointsRollup.getRunnableProbeId()) == null)
-				finishedRollups36h.put(dataPointsRollup.getRunnableProbeId(), new ArrayList<DataPointsRollup>());
-			finishedRollups36h.get(dataPointsRollup.getRunnableProbeId()).add(dataPointsRollup);
+				finishedRollups36h.put(dataPointsRollup.getRunnableProbeId(), new JSONArray());
+			((JSONArray)finishedRollups36h.get(dataPointsRollup.getRunnableProbeId())).add(rollupResultsDBFormat(dataPointsRollup));
 			break;
 		case 0:
 			if (finishedRollups11d.get(dataPointsRollup.getRunnableProbeId()) == null)
-				finishedRollups11d.put(dataPointsRollup.getRunnableProbeId(), new ArrayList<DataPointsRollup>());
-			finishedRollups11d.get(dataPointsRollup.getRunnableProbeId()).add(dataPointsRollup);
+				finishedRollups11d.put(dataPointsRollup.getRunnableProbeId(), new JSONArray());
+			((JSONArray)finishedRollups11d.get(dataPointsRollup.getRunnableProbeId())).add(rollupResultsDBFormat(dataPointsRollup));
 			break;
 		}
 

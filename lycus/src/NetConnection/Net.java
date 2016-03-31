@@ -213,7 +213,7 @@ public class Net {
 		} catch (Exception e) {
 			portResults.add(System.currentTimeMillis());
 			portResults.add(false);
-			portResults.add(0);
+			portResults.add(0L);
 			return portResults;
 		}
 	}
