@@ -253,7 +253,7 @@ public class NetResults implements INetResults{
 					h.getSnmpTemp().getUserName(), h.getSnmpTemp().getAuthPass(), h.getSnmpTemp().getAlgo(),
 					h.getSnmpTemp().getCryptPass(), h.getSnmpTemp().getCryptType(), oids);
 		}
-		if (ifDescrResults == null)
+		if (ifDescrResults == null || sysDescrResults==null || ifDescrResults.size()==0 || sysDescrResults.size()==0)
 			return null;
 
 		Enums.HostType hostType = this.getHostType(sysDescrResults.get(Constants.sysDescr.toString()));

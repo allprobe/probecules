@@ -100,6 +100,11 @@ public class RunnableProbe implements Runnable {
 		
 		try {
 			result = getProbe().getResult(this.getHost());
+			if(result==null)
+			{
+				Logit.LogError("RunnableProbe - run()", "Error getting runnable probe results!");
+				return;
+			}
 			result.checkIfTriggerd(getProbe().getTriggers());
 			ResultsContainer.getInstance().addResult(result);
 			RollupsContainer.getInstance().addResult(result);

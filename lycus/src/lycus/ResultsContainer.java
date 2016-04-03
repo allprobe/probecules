@@ -84,6 +84,8 @@ public class ResultsContainer implements IResultsContainer {
 		result.put("RESULTS_TIME", rpr.getLastTimestamp());
 		result.put("RESULTS_NAME", rpr.getName());
 		result.put("RESULTS", rpr.getResultString());
+		result.put("RUNNABLE_PROBE_ID", rp.getId());
+
 		return result;
 	}
 
