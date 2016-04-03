@@ -45,3 +45,5 @@ Notes
 ----------
 - handle delta results. - new result inherit from BaseResult
 - discuss the way finishedRollups represented
+- concurrent modification exception at lycus.ResultsContainer.getResults(ResultsContainer.java:288)
+

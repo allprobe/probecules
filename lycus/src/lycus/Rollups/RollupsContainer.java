@@ -16,6 +16,7 @@ import com.google.gson.JsonParser;
 
 import lycus.DataPointsRollup;
 import lycus.ResultsContainer;
+import lycus.RunnableProbeContainer;
 import lycus.DAL.ApiInterface;
 import lycus.GlobalConstants.DataPointsRollupSize;
 import lycus.GlobalConstants.Enums;
@@ -39,15 +40,16 @@ public class RollupsContainer implements IRollupsContainer {
 	private HashMap<String, DataPointsRollup[]> snmpDataRollups = new HashMap<String, DataPointsRollup[]>();
 
 	// Those are finished rollups
-//	private JSONObject finishedRollups4m = new JSONObject();  // JSONObject<runnableProbeId,JSONArray<DataPointsRollup>>
-//	private JSONObject finishedRollups20m = new JSONObject();
-//	private JSONObject finishedRollups1h = new JSONObject();
-//	private JSONObject finishedRollups6h = new JSONObject();
-//	private JSONObject finishedRollups36h = new JSONObject();
-//	private JSONObject finishedRollups11d = new JSONObject();
+	// private JSONObject finishedRollups4m = new JSONObject(); //
+	// JSONObject<runnableProbeId,JSONArray<DataPointsRollup>>
+	// private JSONObject finishedRollups20m = new JSONObject();
+	// private JSONObject finishedRollups1h = new JSONObject();
+	// private JSONObject finishedRollups6h = new JSONObject();
+	// private JSONObject finishedRollups36h = new JSONObject();
+	// private JSONObject finishedRollups11d = new JSONObject();
 
 	private JSONArray finishedRollups = new JSONArray();
-	
+
 	public static RollupsContainer getInstance() {
 		if (instance == null) {
 			instance = new RollupsContainer();
@@ -70,42 +72,29 @@ public class RollupsContainer implements IRollupsContainer {
 		return false;
 	}
 
-	 private String rollupResultsDBFormat(DataPointsRollup dataPointsRollup) {
-		JSONObject rollup=new JSONObject();
-		
-//		rollup.put("USER_ID", rp.getProbe().getUser().getUserId().toString());
-		rollup.put("RESULTS_TIME", dataPointsRollup.getEndTime());
-//		rollup.put("RESULTS_NAME", resultkey.split("@")[1]);
-		rollup.put("RESULTS", dataPointsRollup.getResultString());
-		rollup.put("RUNNABLE_PROBE_ID", dataPointsRollup.getRunnableProbeId());
-		return rollup.toString();
-	
-	 }
-	
 	@Override
 	public synchronized String getAllFinsihedRollups() {
 
 		JSONObject rollups = new JSONObject();
 
 		for (int i = 0; i < 6; i++) {
-			for(Map.Entry<String, DataPointsRollup[]> rolups:packetLossRollups.entrySet())
-			{
+			for (Map.Entry<String, DataPointsRollup[]> rolups : packetLossRollups.entrySet()) {
 				DataPointsRollup[] dataPointsRollups = rttRollups.get(rolups.getKey());
 				addFinished(i, rolups.getValue(), dataPointsRollups);
-				
-			}
-//			for (DataPointsRollup[] rolups : packetLossRollups.values()) {
-//				
-//				addFinished(i, rolups);
-//			}
 
-//			finishedRollups.a
-//			for (DataPointsRollup[] rolups : rttRollups.values()) {
-//				addFinished(i, rolups);
-//			}
-			 
-//			finishedRollups // otef otam
-			
+			}
+			// for (DataPointsRollup[] rolups : packetLossRollups.values()) {
+			//
+			// addFinished(i, rolups);
+			// }
+
+			// finishedRollups.a
+			// for (DataPointsRollup[] rolups : rttRollups.values()) {
+			// addFinished(i, rolups);
+			// }
+
+			// finishedRollups // otef otam
+
 			for (DataPointsRollup[] rolups : webResponseTimeRollups.values()) {
 				addFinished(i, rolups);
 			}
@@ -116,26 +105,26 @@ public class RollupsContainer implements IRollupsContainer {
 				addFinished(i, rolups);
 			}
 		}
-		
-//		finishedRollups // otef hakol
 
-//		if (finishedRollups4m.size() != 0)
-//			rollups.put("rollups4m", JsonUtil.ToJson(finishedRollups4m));
-//
-//		if (finishedRollups20m.size() != 0)
-//			rollups.put("rollups20m", JsonUtil.ToJson(finishedRollups20m));
-//
-//		if (finishedRollups1h.size() != 0)
-//			rollups.put("rollups1h", JsonUtil.ToJson(finishedRollups1h));
-//
-//		if (finishedRollups6h.size() != 0)
-//			rollups.put("rollups6h", JsonUtil.ToJson(finishedRollups6h));
-//
-//		if (finishedRollups36h.size() != 0)
-//			rollups.put("rollups36h", JsonUtil.ToJson(finishedRollups36h));
-//
-//		if (finishedRollups11d.size() != 0)
-//			rollups.put("rollups11d", JsonUtil.ToJson(finishedRollups11d));
+		// finishedRollups // otef hakol
+
+		// if (finishedRollups4m.size() != 0)
+		// rollups.put("rollups4m", JsonUtil.ToJson(finishedRollups4m));
+		//
+		// if (finishedRollups20m.size() != 0)
+		// rollups.put("rollups20m", JsonUtil.ToJson(finishedRollups20m));
+		//
+		// if (finishedRollups1h.size() != 0)
+		// rollups.put("rollups1h", JsonUtil.ToJson(finishedRollups1h));
+		//
+		// if (finishedRollups6h.size() != 0)
+		// rollups.put("rollups6h", JsonUtil.ToJson(finishedRollups6h));
+		//
+		// if (finishedRollups36h.size() != 0)
+		// rollups.put("rollups36h", JsonUtil.ToJson(finishedRollups36h));
+		//
+		// if (finishedRollups11d.size() != 0)
+		// rollups.put("rollups11d", JsonUtil.ToJson(finishedRollups11d));
 
 		if (finishedRollups.size() == 0)
 			return null;
@@ -150,7 +139,6 @@ public class RollupsContainer implements IRollupsContainer {
 
 		return finishedRollups.toString();
 	}
-
 
 	@Override
 	public synchronized String getAllCurrentLiveRollups() {
@@ -173,31 +161,30 @@ public class RollupsContainer implements IRollupsContainer {
 			return;
 
 		addFinishedRollup(finishedDataRollup);
-		
-//		addRollupTo(i, finishedDataRollup);
+
+		// addRollupTo(i, finishedDataRollup);
 		currentDataRollup.setLastFinishedRollup(null);
 	}
-	
-	private void addFinished(int i, DataPointsRollup[] rolups1,DataPointsRollup[] rolups2) {
+
+	private void addFinished(int i, DataPointsRollup[] rolups1, DataPointsRollup[] rolups2) {
 		DataPointsRollup currentDataRollup1 = rolups1[i];
 		DataPointsRollup currentDataRollup2 = rolups2[i];
 
-		if (currentDataRollup1 == null||currentDataRollup2==null)
+		if (currentDataRollup1 == null || currentDataRollup2 == null)
 			return;
 		DataPointsRollup finishedDataRollup1 = currentDataRollup1.getLastFinishedRollup();
 		DataPointsRollup finishedDataRollup2 = currentDataRollup2.getLastFinishedRollup();
 
-		if (finishedDataRollup1 == null||finishedDataRollup2 == null)
+		if (finishedDataRollup1 == null || finishedDataRollup2 == null)
 			return;
 
-		addFinishedRollup(finishedDataRollup1,finishedDataRollup2);
-		
-//		addRollupTo(i, finishedDataRollup);
+		addFinishedRollup(finishedDataRollup1, finishedDataRollup2);
+
+		// addRollupTo(i, finishedDataRollup);
 		currentDataRollup1.setLastFinishedRollup(null);
 		currentDataRollup2.setLastFinishedRollup(null);
 
 	}
-
 
 	@Override
 	public boolean mergeRollups(JSONArray jsonArray) {
@@ -260,70 +247,102 @@ public class RollupsContainer implements IRollupsContainer {
 		return allRollupsDeserialized;
 	}
 
-//	private boolean addRollupTo(int rollupType, DataPointsRollup dataPointsRollup) {
-//		
-//		
-//		
-//		switch (rollupType) {
-//		case 5:
-//			if (finishedRollups4m.get(dataPointsRollup.getRunnableProbeId()) == null)
-//				finishedRollups4m.put(dataPointsRollup.getRunnableProbeId(), new JSONArray());
-//			((JSONArray)finishedRollups4m.get(dataPointsRollup.getRunnableProbeId())).add(rollupResultsDBFormat(dataPointsRollup));
-//			break;
-//		case 4:
-//			if (finishedRollups20m.get(dataPointsRollup.getRunnableProbeId()) == null)
-//				finishedRollups20m.put(dataPointsRollup.getRunnableProbeId(), new JSONArray());
-//			((JSONArray)finishedRollups20m.get(dataPointsRollup.getRunnableProbeId())).add(rollupResultsDBFormat(dataPointsRollup));
-//			break;
-//		case 3:
-//			if (finishedRollups1h.get(dataPointsRollup.getRunnableProbeId()) == null)
-//				finishedRollups1h.put(dataPointsRollup.getRunnableProbeId(), new JSONArray());
-//			((JSONArray)finishedRollups1h.get(dataPointsRollup.getRunnableProbeId())).add(rollupResultsDBFormat(dataPointsRollup));
-//			break;
-//		case 2:
-//			if (finishedRollups6h.get(dataPointsRollup.getRunnableProbeId()) == null)
-//				finishedRollups6h.put(dataPointsRollup.getRunnableProbeId(), new JSONArray());
-//			((JSONArray)finishedRollups6h.get(dataPointsRollup.getRunnableProbeId())).add(rollupResultsDBFormat(dataPointsRollup));
-//			break;
-//		case 1:
-//			if (finishedRollups36h.get(dataPointsRollup.getRunnableProbeId()) == null)
-//				finishedRollups36h.put(dataPointsRollup.getRunnableProbeId(), new JSONArray());
-//			((JSONArray)finishedRollups36h.get(dataPointsRollup.getRunnableProbeId())).add(rollupResultsDBFormat(dataPointsRollup));
-//			break;
-//		case 0:
-//			if (finishedRollups11d.get(dataPointsRollup.getRunnableProbeId()) == null)
-//				finishedRollups11d.put(dataPointsRollup.getRunnableProbeId(), new JSONArray());
-//			((JSONArray)finishedRollups11d.get(dataPointsRollup.getRunnableProbeId())).add(rollupResultsDBFormat(dataPointsRollup));
-//			break;
-//		}
-//
-//		return true;
-//	}
+	// private boolean addRollupTo(int rollupType, DataPointsRollup
+	// dataPointsRollup) {
+	//
+	//
+	//
+	// switch (rollupType) {
+	// case 5:
+	// if (finishedRollups4m.get(dataPointsRollup.getRunnableProbeId()) == null)
+	// finishedRollups4m.put(dataPointsRollup.getRunnableProbeId(), new
+	// JSONArray());
+	// ((JSONArray)finishedRollups4m.get(dataPointsRollup.getRunnableProbeId())).add(rollupResultsDBFormat(dataPointsRollup));
+	// break;
+	// case 4:
+	// if (finishedRollups20m.get(dataPointsRollup.getRunnableProbeId()) ==
+	// null)
+	// finishedRollups20m.put(dataPointsRollup.getRunnableProbeId(), new
+	// JSONArray());
+	// ((JSONArray)finishedRollups20m.get(dataPointsRollup.getRunnableProbeId())).add(rollupResultsDBFormat(dataPointsRollup));
+	// break;
+	// case 3:
+	// if (finishedRollups1h.get(dataPointsRollup.getRunnableProbeId()) == null)
+	// finishedRollups1h.put(dataPointsRollup.getRunnableProbeId(), new
+	// JSONArray());
+	// ((JSONArray)finishedRollups1h.get(dataPointsRollup.getRunnableProbeId())).add(rollupResultsDBFormat(dataPointsRollup));
+	// break;
+	// case 2:
+	// if (finishedRollups6h.get(dataPointsRollup.getRunnableProbeId()) == null)
+	// finishedRollups6h.put(dataPointsRollup.getRunnableProbeId(), new
+	// JSONArray());
+	// ((JSONArray)finishedRollups6h.get(dataPointsRollup.getRunnableProbeId())).add(rollupResultsDBFormat(dataPointsRollup));
+	// break;
+	// case 1:
+	// if (finishedRollups36h.get(dataPointsRollup.getRunnableProbeId()) ==
+	// null)
+	// finishedRollups36h.put(dataPointsRollup.getRunnableProbeId(), new
+	// JSONArray());
+	// ((JSONArray)finishedRollups36h.get(dataPointsRollup.getRunnableProbeId())).add(rollupResultsDBFormat(dataPointsRollup));
+	// break;
+	// case 0:
+	// if (finishedRollups11d.get(dataPointsRollup.getRunnableProbeId()) ==
+	// null)
+	// finishedRollups11d.put(dataPointsRollup.getRunnableProbeId(), new
+	// JSONArray());
+	// ((JSONArray)finishedRollups11d.get(dataPointsRollup.getRunnableProbeId())).add(rollupResultsDBFormat(dataPointsRollup));
+	// break;
+	// }
+	//
+	// return true;
+	// }
 
 	private boolean addFinishedRollup(DataPointsRollup dataPointsRollup) {
-		
-	finishedRollups.add(rollupResultsDBFormat(dataPointsRollup));
-	return true;
-	}
-	private boolean addFinishedRollup(DataPointsRollup dataPointsRollup1,DataPointsRollup dataPointsRollup2) {
-		
-		finishedRollups.add(rollupResultsDBFormat(dataPointsRollup1,dataPointsRollup2));
+
+		finishedRollups.add(rollupResultsDBFormat(dataPointsRollup));
 		return true;
-		}
-	
+	}
+
+	private boolean addFinishedRollup(DataPointsRollup dataPointsRollup1, DataPointsRollup dataPointsRollup2) {
+
+		finishedRollups.add(rollupResultsDBFormat(dataPointsRollup1, dataPointsRollup2));
+		return true;
+	}
+
 	private String rollupResultsDBFormat(DataPointsRollup dataPointsRollup1, DataPointsRollup dataPointsRollup2) {
-		JSONObject rollup=new JSONObject();
-		
-//		rollup.put("USER_ID", rp.getProbe().getUser().getUserId().toString());
+		JSONObject rollup = new JSONObject();
+
+		// rollup.put("USER_ID",
+		// rp.getProbe().getUser().getUserId().toString());
 		rollup.put("RESULTS_TIME", dataPointsRollup1.getEndTime());
-//		rollup.put("RESULTS_NAME", resultkey.split("@")[1]);
-		JSONArray resultsStrings=new JSONArray();
+		// rollup.put("RESULTS_NAME", resultkey.split("@")[1]);
+		JSONArray resultsStrings = new JSONArray();
 		resultsStrings.add(dataPointsRollup1.getResultString());
 		resultsStrings.add(dataPointsRollup2.getResultString());
-		rollup.put("RESULTS",resultsStrings.toString());
+		rollup.put("RESULTS", resultsStrings.toString());
 		rollup.put("RUNNABLE_PROBE_ID", dataPointsRollup1.getRunnableProbeId());
+		rollup.put("ROLLUP_SIZE", dataPointsRollup1.getTimePeriod());
+		rollup.put("USER_ID", RunnableProbeContainer.getInstanece().get(dataPointsRollup1.getRunnableProbeId())
+				.getProbe().getUser().getUserId().toString());
+
 		return rollup.toString();
-	
+
+	}
+
+	private String rollupResultsDBFormat(DataPointsRollup dataPointsRollup) {
+		JSONObject rollup = new JSONObject();
+
+		// rollup.put("USER_ID",
+		// rp.getProbe().getUser().getUserId().toString());
+		rollup.put("RESULTS_TIME", dataPointsRollup.getEndTime());
+		// rollup.put("RESULTS_NAME", resultkey.split("@")[1]);
+		rollup.put("RESULTS", dataPointsRollup.getResultString());
+		rollup.put("RUNNABLE_PROBE_ID", dataPointsRollup.getRunnableProbeId());
+		rollup.put("ROLLUP_SIZE", dataPointsRollup.getTimePeriod());
+		rollup.put("USER_ID", RunnableProbeContainer.getInstanece().get(dataPointsRollup.getRunnableProbeId())
+				.getProbe().getUser().getUserId().toString());
+		return rollup.toString();
+
 	}
 
 	private DataPointsRollupSize getRollupSize(int i) {
@@ -415,6 +434,27 @@ public class RollupsContainer implements IRollupsContainer {
 			packetLostRollup.add(pingerResults.getLastTimestamp(), pingerResults.getPacketLost());
 			rttRollup.add(pingerResults.getLastTimestamp(), pingerResults.getRtt());
 		}
+	}
+
+	public boolean mergeExistingRollupsFromMemDump() {
+		Logit.LogDebug("Retrieving existing rollups from DB...");
+		Object rollupsUnDecoded = ApiInterface.executeRequest(Enums.ApiAction.GetServerMemoryDump, "GET", null);
+
+		if (rollupsUnDecoded == null || ((String) rollupsUnDecoded).equals("0\n")) {
+			Logit.LogWarn("Unable to retrieve existing rollups!");
+			return false;
+		}
+
+		String rollups = ((String) rollupsUnDecoded).substring(1, ((String) rollupsUnDecoded).length() - 1);
+
+		ArrayList<DataPointsRollup[][]> rollupses = this.deserializeRollups(rollups);
+		for (DataPointsRollup[][] rollupsResult : rollupses) {
+			DataPointsRollup sampleRollup = rollupsResult[0][0];
+			String rpID = sampleRollup.getRunnableProbeId();
+
+			BaseResult rpr = ResultsContainer.getInstance().getResult(rpID);
+		}
+		return true;
 	}
 
 }

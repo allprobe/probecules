@@ -11,15 +11,11 @@ import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
-import com.google.gson.TypeAdapterFactory;
 import lycus.DAL.ApiInterface;
 import lycus.GlobalConstants.Enums;
-import lycus.GlobalConstants.LogType;
 import lycus.Results.BaseResult;
-import lycus.DataPointsRollup;
 import lycus.Rollups.RollupsContainer;
 import lycus.Utils.GeneralFunctions;
-import lycus.Utils.JsonUtil;
 import lycus.Utils.Logit;
 import lycus.Interfaces.IResultsContainer;
 
