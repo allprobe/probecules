@@ -108,7 +108,7 @@ public class ResultsContainer implements IResultsContainer {
 
 	public void pullCurrentLiveEvents() {
 		while (true) {
-			Logit.LogDebug("Retrieving existing live eventsHandler from REDIS...");
+			Logit.LogInfo("Retrieving existing live eventsHandler from REDIS...");
 			Object eventsObject = ApiInterface.executeRequest(Enums.ApiAction.GetServerLiveEvents, "GET", null);
 
 			if (eventsObject == null) {

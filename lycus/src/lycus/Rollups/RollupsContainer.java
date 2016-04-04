@@ -188,7 +188,7 @@ public class RollupsContainer implements IRollupsContainer {
 
 	@Override
 	public boolean mergeRollups(JSONArray jsonArray) {
-		Logit.LogDebug("Retrieving existing rollups from DB...");
+		Logit.LogInfo("Retrieving existing rollups from DB...");
 		Object rollupsEncoded = ApiInterface.executeRequest(Enums.ApiAction.GetServerMemoryDump, "GET", null);
 
 		if (rollupsEncoded == null || ((String) rollupsEncoded).equals("0\n")) {
@@ -439,7 +439,7 @@ public class RollupsContainer implements IRollupsContainer {
 	}
 
 	public boolean mergeExistingRollupsFromMemDump() {
-		Logit.LogDebug("Retrieving existing rollups from DB...");
+		Logit.LogInfo("Retrieving existing rollups from DB...");
 		Object rollupsUnDecoded = ApiInterface.executeRequest(Enums.ApiAction.GetServerMemoryDump, "GET", null);
 
 		if (rollupsUnDecoded == null || ((String) rollupsUnDecoded).equals("0\n")) {

@@ -48,7 +48,7 @@ public class GeneralFunctions {
 			return s.getBytes(encoding);
 		} catch (UnsupportedEncodingException ex) {
 			vars.put("s", s);
-			Logit.LogDebug("GeneralFunctions - GeneralFunctions, Encoding Problem x\n" + ex.getMessage());
+			Logit.LogInfo("GeneralFunctions - GeneralFunctions, Encoding Problem x\n" + ex.getMessage());
 			return null;
 		}
 	}

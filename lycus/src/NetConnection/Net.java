@@ -1314,7 +1314,7 @@ public class Net {
 		try {
 			endAddress = InetAddress.getByName(ip);
 		} catch (UnknownHostException ex) {
-			Logit.LogDebug("Problem With Host IP:" + ip + "\n" + ex.getMessage());
+			Logit.LogInfo("Problem With Host IP:" + ip + "\n" + ex.getMessage());
 			return null;
 		}
 		String route = "";
@@ -1335,11 +1335,11 @@ public class Net {
 			// read any errors from the attempted command
 			String errors = GeneralFunctions.convertStreamToString(traceRt.getErrorStream());
 			if (errors != "") {
-				Logit.LogDebug("Error while processing traceroute on address" + ip);
+				Logit.LogInfo("Error while processing traceroute on address" + ip);
 				return null;
 			}
 		} catch (IOException e) {
-			Logit.LogDebug("Error while processing traceroute on address" + ip);
+			Logit.LogInfo("Error while processing traceroute on address" + ip);
 			return null;
 		}
 

@@ -46,7 +46,7 @@ public class RollupsDumpTask extends BaseTask {
 		String rollups = RollupsContainer.getInstance().getAllCurrentLiveRollups();
 		String rollupsEncoded = GeneralFunctions.Base64Encode(rollups);
 
-		Logit.LogDebug("Sending current live rollups dump to API...");
+		Logit.LogInfo("Sending current live rollups dump to API...");
 
 		JSONObject jsonObject = new JSONObject();
 		jsonObject.put("last_rollups", rollupsEncoded);
