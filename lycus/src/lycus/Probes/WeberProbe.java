@@ -176,37 +176,37 @@ public class WeberProbe extends BaseProbe {
 		if (updateValue.key.urls != null && !updateValue.key.urls.equals(getUrl()))
 		{
 			this.setUrl(GeneralFunctions.Base64Decode(updateValue.key.urls));
-			Logit.LogDebug("Snmp data for " + getName() +  " has changed to " + updateValue.key.value_type);
+			Logit.LogCheck("Snmp data for " + getName() +  " has changed to " + updateValue.key.value_type);
 		}
 		
 		if (!GeneralFunctions.isNullOrEmpty(updateValue.key.http_method) && !updateValue.key.http_method.equals(getHttpRequestType()))
 		{
 			this.setHttpRequestType(updateValue.key.http_method);
-			Logit.LogDebug("Http requery type for " + getName() +  " has changed to " + updateValue.key.http_method);
+			Logit.LogCheck("Http requery type for " + getName() +  " has changed to " + updateValue.key.http_method);
 		}
 			
 		if (!GeneralFunctions.isNullOrEmpty(updateValue.key.http_auth) && !updateValue.key.http_auth.equals(getAuthStatus()))
 		{
 			this.setAuthStatus(updateValue.key.http_auth);
-			Logit.LogDebug("Authorization status for " + getName() +  " has changed to " + updateValue.key.http_auth);
+			Logit.LogCheck("Authorization status for " + getName() +  " has changed to " + updateValue.key.http_auth);
 		}
 			
 		if (!GeneralFunctions.isNullOrEmpty(updateValue.key.http_auth_user) && !updateValue.key.http_auth_user.equals(getAuthUsername()))
 		{
 			this.setAuthUsername(GeneralFunctions.Base64Decode(updateValue.key.http_auth_user));
-			Logit.LogDebug("Authorization user name for " + getName() +  " has changed to " + updateValue.key.http_auth_user);
+			Logit.LogCheck("Authorization user name for " + getName() +  " has changed to " + updateValue.key.http_auth_user);
 		}
 			
 		if (!GeneralFunctions.isNullOrEmpty(updateValue.key.http_auth_password) && !updateValue.key.http_auth_password.equals(getAuthPassword()))
 		{
 			this.setAuthPassword(GeneralFunctions.Base64Decode(updateValue.key.http_auth_password));
-			Logit.LogDebug("Authorization password for " + getName() +  " has changed");
+			Logit.LogCheck("Authorization password for " + getName() +  " has changed");
 		}
 			
 		if (updateValue.key.timeout != null && updateValue.key.timeout != getTimeout())
 		{
 			this.setTimeout(updateValue.key.timeout);
-			Logit.LogDebug("Timeout for " + getName() +  " has changed to " + updateValue.key.timeout);
+			Logit.LogCheck("Timeout for " + getName() +  " has changed to " + updateValue.key.timeout);
 		}
 		
 

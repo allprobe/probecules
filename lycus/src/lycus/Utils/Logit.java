@@ -6,9 +6,10 @@ import org.apache.log4j.LogManager;
 public class Logit {
 //	static Logger log = Logger.getLogger("");
 	static Logger log = LogManager.getLogger("syslogger");
-	static boolean isDebug = true;
+	static boolean isDebug = false;
 	static boolean isInfo = false;
 	static boolean isWarn = false;
+	static boolean isCheck = true;
 //	public Logit(String className)
 //	{
 //		log = Logger.getLogger(className);
@@ -19,6 +20,11 @@ public class Logit {
 			log.debug(message);
 	}
 
+	public static void LogCheck(String message) {
+		if (log.isDebugEnabled() && isDebug)
+			log.debug(message);
+	}
+	
 	public static void LogInfo(String message) {
 //		if (log.isInfoEnabled())
 //			log.info(message);

@@ -97,19 +97,19 @@ public class PingerProbe extends BaseProbe {
 		if (updateValue.key.npings != null && getCount() != updateValue.key.npings)
 		{
 			this.setCount(updateValue.key.npings);
-			Logit.LogDebug("Npings count for " + getName() +  " has changed to " + updateValue.key.npings);
+			Logit.LogCheck("Npings count for " + getName() +  " has changed to " + updateValue.key.npings);
 		}
 		
 		if (updateValue.key.bytes != null &&  getBytes() != updateValue.key.npings)
 		{
 			this.setBytes(updateValue.key.bytes);
-			Logit.LogDebug("Bytes for " + getName() +  " has changed to " + updateValue.key.bytes);
+			Logit.LogCheck("Bytes for " + getName() +  " has changed to " + updateValue.key.bytes);
 		}
 			
 		if (updateValue.key.timeout != null && getTimeout() != updateValue.key.timeout)
 		{
 			this.setTimeout(updateValue.key.timeout);
-			Logit.LogDebug("Timeout for" + getName() +  " has changed to " + updateValue.key.timeout);
+			Logit.LogCheck("Timeout for" + getName() +  " has changed to " + updateValue.key.timeout);
 		}
 			
 		return true;

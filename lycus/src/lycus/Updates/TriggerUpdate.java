@@ -82,7 +82,7 @@ public class TriggerUpdate extends BaseUpdate {
 			probe.removeTrigger(UUID.fromString(getUpdate().object_id));
 		
 //			Trigger trigger = probe.getTriggers().get(getUpdate().object_id);
-			Logit.LogDebug("Trigger: " + getUpdate().object_id + " was removed");
+			Logit.LogCheck("Trigger: " + getUpdate().object_id + " was removed");
 			return true;
 		}
 		return false;

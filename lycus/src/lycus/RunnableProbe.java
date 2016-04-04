@@ -181,7 +181,7 @@ public class RunnableProbe implements Runnable {
 			return false;
 		}
 		this.start();
-		Logit.LogDebug("Interval for " + this.getId() + " was changed to " + interval);
+		Logit.LogCheck("Interval for " + this.getId() + " was changed to " + interval);
 		return true;
 	}
 

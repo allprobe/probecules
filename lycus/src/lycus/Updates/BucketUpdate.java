@@ -30,7 +30,7 @@ public class BucketUpdate  extends BaseUpdate{
 	{
 		super.Delete();
 		getUser().deleteBucket(getUpdate().object_id);
-		Logit.LogDebug("Bucket: " + getUpdate().object_id + " was removed");
+		Logit.LogCheck("Bucket: " + getUpdate().object_id + " was removed");
 		return true;
 	}
 }

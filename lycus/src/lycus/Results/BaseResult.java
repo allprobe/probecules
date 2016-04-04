@@ -163,7 +163,7 @@ public class BaseResult implements IResult {
 //	}
 
 	public void checkIfTriggerd(HashMap<String,Trigger> triggers) throws Exception {
-		Logit.LogDebug("Triggering Runnable Probe: " + getRunnableProbeId());
+		Logit.LogCheck("Triggering Runnable Probe: " + getRunnableProbeId());
 	}
 
 	public void processTriggerResult(Trigger trigger, boolean triggered) {
@@ -172,7 +172,7 @@ public class BaseResult implements IResult {
 			// if trigger event became true and normal again send event to api
 			lastEvent.setStatus(true);
 			lastEvent.setSent(false);
-			Logit.LogDebug("Trigger " + trigger.getTriggerId() + " of Runnable Probe: "
+			Logit.LogCheck("Trigger " + trigger.getTriggerId() + " of Runnable Probe: "
 					+ getRunnableProbeId() + " deactivated, will send event to API...");
 		} else if (lastEvent == null && triggered) {
 			Event event = new Event(trigger, false);

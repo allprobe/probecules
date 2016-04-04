@@ -51,7 +51,7 @@ public class RBLProbe extends BaseProbe {
 			if (!GeneralFunctions.isNullOrEmpty(updateValue.key.rbl) && !getRBL().equals(updateValue.key.rbl))
 			{
 				this.setRBL(updateValue.key.rbl);
-				Logit.LogDebug("Rbl for " + getName() +  " has changed to " + updateValue.key.rbl);
+				Logit.LogCheck("Rbl for " + getName() +  " has changed to " + updateValue.key.rbl);
 			}
 				
 			return true;

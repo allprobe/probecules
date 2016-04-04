@@ -9,7 +9,6 @@ import lycus.GlobalConstants.Enums.ApiAction;
 import lycus.Model.ProbeParams;
 import lycus.Model.UpdateModel;
 import lycus.DAL.DAL;
-import lycus.Utils.GeneralFunctions;
 import lycus.Host;
 import lycus.RunnableProbe;
 import lycus.RunnableProbeContainer;

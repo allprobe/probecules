@@ -149,19 +149,19 @@ public class PorterProbe extends BaseProbe {
 		if (updateValue.key.port != null && getPort() != updateValue.key.port )
 		{
 			this.setPort(updateValue.key.port);
-			Logit.LogDebug("Port for " + getName() +  " has changed to " + updateValue.key.port);
+			Logit.LogCheck("Port for " + getName() +  " has changed to " + updateValue.key.port);
 		}
 			
 		if (!GeneralFunctions.isNullOrEmpty(updateValue.key.proto) && !getProto().equals(updateValue.key.proto))
 		{
 			this.setProto(updateValue.key.proto);
-			Logit.LogDebug("Proto for " + getName() +  " has changed to " + updateValue.key.proto);
+			Logit.LogCheck("Proto for " + getName() +  " has changed to " + updateValue.key.proto);
 		}
 			
 		if (updateValue.key.timeout != null && getTimeout() != updateValue.key.timeout)
 		{
 			this.setTimeout(updateValue.key.timeout);
-			Logit.LogDebug("Timeout for " + getName() +  " has changed to " + updateValue.key.timeout);
+			Logit.LogCheck("Timeout for " + getName() +  " has changed to " + updateValue.key.timeout);
 		}
 		
 		return true;

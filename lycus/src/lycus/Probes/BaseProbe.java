@@ -170,19 +170,19 @@ public class BaseProbe  {
 		if (updateValue.status != null && isActive() != updateValue.status.equals(Constants._true))
 		{
 			setActive(updateValue.status.equals(Constants._true));
-			Logit.LogDebug("Is active for " + getName() +  " has changed to " + isActive);
+			Logit.LogCheck("Is active for " + getName() +  " has changed to " + isActive);
 		}
 			
 		if (GeneralFunctions.isChanged(getMultiplier(), updateValue.multiplier))
 		{
 			setMultiplier(updateValue.multiplier);
-			Logit.LogDebug("Multiplier " + getName() +  " has changed to " + multiplier);
+			Logit.LogCheck("Multiplier " + getName() +  " has changed to " + multiplier);
 		}
 			
 		if (GeneralFunctions.isChanged(getName(), updateValue.name))
 		{
 			setName(updateValue.name);
-			Logit.LogDebug("Name " + getProbe_id() +  " has changed to " + name);
+			Logit.LogCheck("Name " + getProbe_id() +  " has changed to " + name);
 		}			
 		
 		
