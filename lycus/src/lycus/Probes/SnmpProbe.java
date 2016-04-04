@@ -8,6 +8,7 @@ import lycus.GlobalConstants.Enums.SnmpStoreAs;
 import lycus.Model.UpdateValueModel;
 import lycus.Results.BaseResult;
 import lycus.Utils.GeneralFunctions;
+import lycus.Utils.Logit;
 import lycus.Host;
 import lycus.User;
 import lycus.UsersManager;
@@ -77,14 +78,30 @@ public class SnmpProbe extends BaseProbe {
 	public boolean updateKeyValues(UpdateValueModel updateValue)
 	{
 		super.updateKeyValues(updateValue);
-		if (!GeneralFunctions.isNullOrEmpty(updateValue.key.snmp_oid))
+		if (!GeneralFunctions.isNullOrEmpty(updateValue.key.snmp_oid) && !getOid().equals(updateValue.key.snmp_oid))
+		{
 			oid = new OID(updateValue.key.snmp_oid);
-		if (!GeneralFunctions.isNullOrEmpty(updateValue.key.value_unit))
+			Logit.LogDebug("OID for " + getName() +  " has changed to " + updateValue.key.snmp_oid);
+		}
+			
+		if (!GeneralFunctions.isNullOrEmpty(updateValue.key.value_unit) && !updateValue.key.value_unit.equals(unit.toString()))
+		{
 			unit = UsersManager.getSnmpUnit(updateValue.key.value_unit);
-		if (!GeneralFunctions.isNullOrEmpty(updateValue.key.value_type))
+			Logit.LogDebug("Snmp unit for " + getName() +  " has changed to " + updateValue.key.value_unit);
+		}
+		
+		if (!GeneralFunctions.isNullOrEmpty(updateValue.key.value_type) && !updateValue.key.value_type.equals(dataType.toString()))
+		{
 			dataType =  UsersManager.getSnmpDataType(updateValue.key.value_type);
-		if (updateValue.key.store_value_as != null)
+			Logit.LogDebug("Snmp data for " + getName() +  " has changed to " + updateValue.key.value_type);
+		}
+		
+		if (updateValue.key.store_value_as != null && !updateValue.key.store_value_as.equals(storeAs.toString()))
+		{
 			storeAs = SnmpStoreAs.values()[updateValue.key.store_value_as];
+			Logit.LogDebug("Snmp store as.. for " + getName() +  " has changed to " + updateValue.key.store_value_as);
+		}
+			
 		return true;
 	}
 }

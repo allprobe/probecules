@@ -8,6 +8,7 @@ import java.util.UUID;
 import lycus.Model.UpdateValueModel;
 import lycus.Results.PortResult;
 import lycus.Utils.GeneralFunctions;
+import lycus.Utils.Logit;
 import lycus.Host;
 import NetConnection.NetResults;
 import lycus.User;
@@ -145,12 +146,24 @@ public class PorterProbe extends BaseProbe {
 
 	public boolean updateKeyValues(UpdateValueModel updateValue) {
 		super.updateKeyValues(updateValue);
-		if (updateValue.key.port != null)
+		if (updateValue.key.port != null && getPort() != updateValue.key.port )
+		{
 			this.setPort(updateValue.key.port);
-		if (!GeneralFunctions.isNullOrEmpty(updateValue.key.proto))
+			Logit.LogDebug("Port for " + getName() +  " has changed to " + updateValue.key.port);
+		}
+			
+		if (!GeneralFunctions.isNullOrEmpty(updateValue.key.proto) && !getProto().equals(updateValue.key.proto))
+		{
 			this.setProto(updateValue.key.proto);
-		if (updateValue.key.timeout != null)
+			Logit.LogDebug("Proto for " + getName() +  " has changed to " + updateValue.key.proto);
+		}
+			
+		if (updateValue.key.timeout != null && getTimeout() != updateValue.key.timeout)
+		{
 			this.setTimeout(updateValue.key.timeout);
+			Logit.LogDebug("Timeout for " + getName() +  " has changed to " + updateValue.key.timeout);
+		}
+		
 		return true;
 	}
 }

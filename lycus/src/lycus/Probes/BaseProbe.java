@@ -8,6 +8,8 @@ import java.util.HashMap;
 import java.util.UUID;
 import lycus.Model.UpdateValueModel;
 import lycus.Results.BaseResult;
+import lycus.Utils.GeneralFunctions;
+import lycus.Utils.Logit;
 import lycus.Host;
 import lycus.Trigger;
 import lycus.User;
@@ -101,6 +103,7 @@ public class BaseProbe  {
 
 	public void setActive(boolean isActive) {
 		this.isActive = isActive;
+	
 	}
 
 	public float getMultiplier() {
@@ -156,9 +159,32 @@ public class BaseProbe  {
 	
 	public boolean updateKeyValues(UpdateValueModel updateValue)
 	{
-		setActive(updateValue.status.equals(Constants._true));
-		setMultiplier(updateValue.multiplier);
-		setName(updateValue.name);
+//		if (GeneralFunctions.isChanged(runnableProbe.getProbe().getName(), getUpdate().update_value.name))
+//			runnableProbe.getProbe().setName(getUpdate().update_value.name);
+//		if (GeneralFunctions.isChanged(runnableProbe.getProbe().getMultiplier(), getUpdate().update_value.multiplier))
+//			runnableProbe.getProbe().setMultiplier(getUpdate().update_value.multiplier);
+//		if (getUpdate().update_value.status != null && runnableProbe.getProbe().isActive() != getUpdate().update_value.status.equals(Constants._true))
+//			runnableProbe.getProbe().setActive(getUpdate().update_value.status.equals(Constants._true));
+		
+		
+		if (updateValue.status != null && isActive() != updateValue.status.equals(Constants._true))
+		{
+			setActive(updateValue.status.equals(Constants._true));
+			Logit.LogDebug("Is active for " + getName() +  " has changed to " + isActive);
+		}
+			
+		if (GeneralFunctions.isChanged(getMultiplier(), updateValue.multiplier))
+		{
+			setMultiplier(updateValue.multiplier);
+			Logit.LogDebug("Multiplier " + getName() +  " has changed to " + multiplier);
+		}
+			
+		if (GeneralFunctions.isChanged(getName(), updateValue.name))
+		{
+			setName(updateValue.name);
+			Logit.LogDebug("Name " + getProbe_id() +  " has changed to " + name);
+		}			
+		
 		
 		return true;
 	}

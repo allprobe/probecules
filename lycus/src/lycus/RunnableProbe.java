@@ -177,9 +177,11 @@ public class RunnableProbe implements Runnable {
 			this.stop();
 			this.getProbe().setInterval(interval);
 		} catch (Exception e) {
+			Logit.LogError("RunnableProbe - changeRunnableProbeInterval()", "Could not change interval to " + interval + ", " + this.getId());
 			return false;
 		}
 		this.start();
+		Logit.LogDebug("Interval for " + this.getId() + " was changed to " + interval);
 		return true;
 	}
 

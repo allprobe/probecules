@@ -1,6 +1,4 @@
 package lycus.Results;
-
-import lycus.RunnableProbe;
 import lycus.GlobalConstants.ProbeTypes;
 
 public class ResultFactory {
@@ -22,6 +20,8 @@ public class ResultFactory {
 			return new TraceRouteResult(runnableProbeId);
 		case DISCOVERY:
 			return new DiscoveryResult(runnableProbeId);
+		case SNMPDELTA:
+			return new SnmpDeltaResult(runnableProbeId);
 		// case DISCOVERYELEMENT:
 		// if (probe instanceof NicElement)
 		// return new NicResults(runnableProbe);

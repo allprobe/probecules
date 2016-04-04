@@ -1,22 +1,19 @@
 /**
  * 
  */
-package lycus.Config;
+package lycus.Updates;
 
-import org.apache.log4j.BasicConfigurator;
 import org.apache.log4j.Logger;
-import org.apache.log4j.PropertyConfigurator;
 import org.json.simple.JSONObject;
 
+import lycus.GlobalConstants.Enums;
 import lycus.GlobalConstants.Enums.ApiAction;
 import lycus.Model.ThreadsUpdates;
 import lycus.Model.UpdateModel;
 import lycus.Utils.JsonUtil;
+import lycus.DAL.ApiInterface;
 import lycus.DAL.DAL;
-import lycus.UsersManager;
 import lycus.Interfaces.IDAL;
-import lycus.Updates.BaseUpdate;
-import lycus.Updates.UpdateFactory;
 
 /**
  * @author orenharari
@@ -33,7 +30,8 @@ public class Updates implements Runnable {
 		else
 		{
 //			JSONObject jsonObject = dal.get(ApiAction.DevGetThreadsUpdates);
-			JSONObject jsonObject = dal.get(ApiAction.GetThreadsUpdates);
+			JSONObject jsonObject = (JSONObject)ApiInterface.executeRequest(Enums.ApiAction.GetThreadsUpdates, "GET", null);
+//			JSONObject jsonObject = dal.get(ApiAction.GetThreadsUpdates);
 			runUpdates(jsonObject);
 		}
 		

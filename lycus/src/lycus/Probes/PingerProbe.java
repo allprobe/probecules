@@ -8,6 +8,7 @@ import java.util.UUID;
 import lycus.Model.UpdateValueModel;
 import lycus.Results.BaseResult;
 import lycus.Results.PingResult;
+import lycus.Utils.Logit;
 import lycus.Host;
 import NetConnection.NetResults;
 import lycus.User;
@@ -93,12 +94,24 @@ public class PingerProbe extends BaseProbe {
 
 	public boolean updateKeyValues(UpdateValueModel updateValue) {
 		super.updateKeyValues(updateValue);
-		if (updateValue.key.npings != null)
+		if (updateValue.key.npings != null && getCount() != updateValue.key.npings)
+		{
 			this.setCount(updateValue.key.npings);
-		if (updateValue.key.bytes != null)
+			Logit.LogDebug("Npings count for " + getName() +  " has changed to " + updateValue.key.npings);
+		}
+		
+		if (updateValue.key.bytes != null &&  getBytes() != updateValue.key.npings)
+		{
 			this.setBytes(updateValue.key.bytes);
-		if (updateValue.key.timeout != null)
+			Logit.LogDebug("Bytes for " + getName() +  " has changed to " + updateValue.key.bytes);
+		}
+			
+		if (updateValue.key.timeout != null && getTimeout() != updateValue.key.timeout)
+		{
 			this.setTimeout(updateValue.key.timeout);
+			Logit.LogDebug("Timeout for" + getName() +  " has changed to " + updateValue.key.timeout);
+		}
+			
 		return true;
 	}
 }

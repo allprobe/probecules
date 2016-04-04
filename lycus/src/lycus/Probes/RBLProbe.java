@@ -4,6 +4,7 @@ import java.util.UUID;
 import lycus.Model.UpdateValueModel;
 import lycus.Results.RblResult;
 import lycus.Utils.GeneralFunctions;
+import lycus.Utils.Logit;
 import lycus.Host;
 import NetConnection.NetResults;
 import lycus.User;
@@ -47,8 +48,12 @@ public class RBLProbe extends BaseProbe {
 	 public boolean updateKeyValues(UpdateValueModel updateValue)
 		{
 			super.updateKeyValues(updateValue);
-			if (!GeneralFunctions.isNullOrEmpty(updateValue.key.rbl))
+			if (!GeneralFunctions.isNullOrEmpty(updateValue.key.rbl) && !getRBL().equals(updateValue.key.rbl))
+			{
 				this.setRBL(updateValue.key.rbl);
+				Logit.LogDebug("Rbl for " + getName() +  " has changed to " + updateValue.key.rbl);
+			}
+				
 			return true;
 		}
 }

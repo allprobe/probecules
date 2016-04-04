@@ -186,9 +186,25 @@ public class GeneralFunctions {
 	}
 
 	public static boolean isNullOrEmpty(String str) {
-		return str == null || str.length() == 0;
+		return str == null || str.isEmpty();
 	}
 
+	public static boolean isChanged(String oldStr, String newStr)
+	{
+		return !isNullOrEmpty(newStr) && !oldStr.equals(newStr);
+	}
+	
+	public static boolean isChanged(float oldVal, float newVal)
+	{
+		return newVal != 0 && oldVal != newVal;
+	}
+	
+	public static boolean isChanged(Integer oldVal, Integer newVal)
+	{
+		return newVal != null && oldVal != newVal;
+	}
+	
+	
 	public static String getRunnableProbeId(UUID templateId, UUID hostId, String probeId) {
 		return templateId.toString() + "@" + hostId.toString() + "@" + probeId;
 	}

@@ -16,8 +16,8 @@ import lycus.GlobalConstants.LogType;
 import lycus.ResultsTasks.EventTask;
 import lycus.ResultsTasks.ResultsTask;
 import lycus.ResultsTasks.RollupsDumpTask;
+import lycus.Updates.Updates;
 import lycus.Utils.Logit;
-import lycus.Config.Updates;
 import lycus.DAL.ApiInterface;
 
 /**

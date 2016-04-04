@@ -203,6 +203,11 @@ public class PingResult extends BaseResult {
 		return flag;
 	}
 
+	//TODO: Oren ask ran what is true?
+	public Boolean isActive() {
+		return packetLoss > 80;
+	}
+
 //	@Override
 //	public void insertExistingRollups(DataPointsRollup[][] existing) {
 //		this.addRollupsFromExistingMemoryDump(this.getPacketLostRollups(), existing[0]);

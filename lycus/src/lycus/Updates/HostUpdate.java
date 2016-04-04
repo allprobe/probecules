@@ -104,11 +104,13 @@ public class HostUpdate extends BaseUpdate {
 				runnableProbe.stop();
 				RunnableProbeContainer.getInstanece().remove(runnableProbe);
 				
+				
 			} catch (Exception e) {
 			}
 		}
 
 		getUser().getHosts().remove(UUID.fromString(getUpdate().host_id));
+		
 		return true;
 	}
 }

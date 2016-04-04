@@ -8,6 +8,7 @@ import java.util.UUID;
 import lycus.Model.UpdateValueModel;
 import lycus.Results.WebResult;
 import lycus.Utils.GeneralFunctions;
+import lycus.Utils.Logit;
 import lycus.Host;
 import NetConnection.NetResults;
 import lycus.User;
@@ -172,18 +173,42 @@ public class WeberProbe extends BaseProbe {
 		super.updateKeyValues(updateValue);
 		// super.updateProbe(probeNewName, probeNewInterval, probeNewMultiplier,
 		// probeNewStatus);
-		if (updateValue.key.urls != null)
+		if (updateValue.key.urls != null && !updateValue.key.urls.equals(getUrl()))
+		{
 			this.setUrl(GeneralFunctions.Base64Decode(updateValue.key.urls));
-		if (!GeneralFunctions.isNullOrEmpty(updateValue.key.http_method))
+			Logit.LogDebug("Snmp data for " + getName() +  " has changed to " + updateValue.key.value_type);
+		}
+		
+		if (!GeneralFunctions.isNullOrEmpty(updateValue.key.http_method) && !updateValue.key.http_method.equals(getHttpRequestType()))
+		{
 			this.setHttpRequestType(updateValue.key.http_method);
-		if (!GeneralFunctions.isNullOrEmpty(updateValue.key.http_auth))
+			Logit.LogDebug("Http requery type for " + getName() +  " has changed to " + updateValue.key.http_method);
+		}
+			
+		if (!GeneralFunctions.isNullOrEmpty(updateValue.key.http_auth) && !updateValue.key.http_auth.equals(getAuthStatus()))
+		{
 			this.setAuthStatus(updateValue.key.http_auth);
-		if (!GeneralFunctions.isNullOrEmpty(updateValue.key.http_auth_user))
+			Logit.LogDebug("Authorization status for " + getName() +  " has changed to " + updateValue.key.http_auth);
+		}
+			
+		if (!GeneralFunctions.isNullOrEmpty(updateValue.key.http_auth_user) && !updateValue.key.http_auth_user.equals(getAuthUsername()))
+		{
 			this.setAuthUsername(GeneralFunctions.Base64Decode(updateValue.key.http_auth_user));
-		if (!GeneralFunctions.isNullOrEmpty(updateValue.key.http_auth_password))
+			Logit.LogDebug("Authorization user name for " + getName() +  " has changed to " + updateValue.key.http_auth_user);
+		}
+			
+		if (!GeneralFunctions.isNullOrEmpty(updateValue.key.http_auth_password) && !updateValue.key.http_auth_password.equals(getAuthPassword()))
+		{
 			this.setAuthPassword(GeneralFunctions.Base64Decode(updateValue.key.http_auth_password));
-		if (updateValue.key.timeout != null)
+			Logit.LogDebug("Authorization password for " + getName() +  " has changed");
+		}
+			
+		if (updateValue.key.timeout != null && updateValue.key.timeout != getTimeout())
+		{
 			this.setTimeout(updateValue.key.timeout);
+			Logit.LogDebug("Timeout for " + getName() +  " has changed to " + updateValue.key.timeout);
+		}
+		
 
 		return true;
 	}

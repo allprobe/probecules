@@ -24,11 +24,12 @@ public class PortResult extends BaseResult {
 	public PortResult(String runnableProbeId) {
 		super(runnableProbeId);
 	}
-	public Boolean isPortStatus() {
+	
+	public Boolean isActive() {
 		return portStatus;
 	}
 
-	public void setPortStatus(Boolean portStatus) {
+	public void setIsActive(Boolean portStatus) {
 		this.portStatus = portStatus;
 	}
 
@@ -96,7 +97,7 @@ public class PortResult extends BaseResult {
 		boolean flag = false;
 		for (TriggerCondition condition : trigger.getCondtions()) {
 			boolean x = Boolean.parseBoolean((condition.getxValue()));
-			boolean lastValue = this.isPortStatus();
+			boolean lastValue = this.isActive();
 			switch (condition.getCode()) {
 			case 3:
 				if (lastValue == x)
