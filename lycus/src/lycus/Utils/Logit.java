@@ -6,19 +6,23 @@ import org.apache.log4j.LogManager;
 public class Logit {
 //	static Logger log = Logger.getLogger("");
 	static Logger log = LogManager.getLogger("syslogger");
-
+	static boolean isDebug = true;
+	static boolean isInfo = false;
+	static boolean isWarn = false;
 //	public Logit(String className)
 //	{
 //		log = Logger.getLogger(className);
 //	}
 
 	public static void LogDebug(String message) {
-		if (log.isDebugEnabled())
+		if (log.isDebugEnabled() && isDebug)
 			log.debug(message);
 	}
 
 	public static void LogInfo(String message) {
-		if (log.isInfoEnabled())
+//		if (log.isInfoEnabled())
+//			log.info(message);
+		if(log.isInfoEnabled() && isInfo)
 			log.info(message);
 	}
 	
@@ -33,7 +37,8 @@ public class Logit {
 	}
 	
 	public static void LogWarn(String message) {
-		log.warn(message);
+		if(isWarn)
+			log.warn(message);
 	}
 	
 	public static void LogTrace(String message) {
