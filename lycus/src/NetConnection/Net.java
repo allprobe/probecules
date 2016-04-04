@@ -69,8 +69,6 @@ public class Net {
 	public static ArrayList<Object> Pinger(String ip, int numOfPings, int sizeOfPings, int timeout) {
 		InetAddress inet;
 		ArrayList<Object> pingResults = new ArrayList<Object>();
-		if(ip.contains("62.90.102.19"))
-			System.err.println("BREAKPOINT");
 		try {
 			inet = InetAddress.getByName(ip);
 		} catch (UnknownHostException ex) {

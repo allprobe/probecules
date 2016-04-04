@@ -336,9 +336,11 @@ public class RollupsContainer implements IRollupsContainer {
 		// rp.getProbe().getUser().getUserId().toString());
 		rollup.put("RESULTS_TIME", dataPointsRollup.getEndTime());
 		// rollup.put("RESULTS_NAME", resultkey.split("@")[1]);
-		rollup.put("RESULTS", dataPointsRollup.getResultString());
+		JSONArray resultsStrings = new JSONArray();
+		resultsStrings.add(dataPointsRollup.getResultString());
+		rollup.put("RESULTS", resultsStrings);
 		rollup.put("RUNNABLE_PROBE_ID", dataPointsRollup.getRunnableProbeId());
-		rollup.put("ROLLUP_SIZE", dataPointsRollup.getTimePeriod());
+		rollup.put("ROLLUP_SIZE", dataPointsRollup.getTimePeriod().toString());
 		rollup.put("USER_ID", RunnableProbeContainer.getInstanece().get(dataPointsRollup.getRunnableProbeId())
 				.getProbe().getUser().getUserId().toString());
 		return rollup.toString();

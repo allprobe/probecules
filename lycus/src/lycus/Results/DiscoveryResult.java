@@ -7,6 +7,7 @@ import lycus.Trigger;
 import lycus.Elements.BaseElement;
 import lycus.Elements.NicElement;
 import lycus.GlobalConstants.Enums;
+import lycus.Utils.JsonUtil;
 
 public class DiscoveryResult extends BaseResult {
 
@@ -54,7 +55,10 @@ public class DiscoveryResult extends BaseResult {
 	public void checkIfTriggerd(HashMap<String,Trigger> triggers) throws Exception {
 		super.checkIfTriggerd(triggers);
 	}
-
+	@Override
+	public String getResultString() {
+		return JsonUtil.ToJson(this.elements).toString();
+	}
 	// returns true if there is any change made on the host elements
 //	private boolean checkForElementsChanges(HashMap<String, BaseElement> lastScanElements, long timestamp) {
 //		HashMap<BaseElement, Enums.ElementChange> elementsChanges = new HashMap<BaseElement, Enums.ElementChange>();

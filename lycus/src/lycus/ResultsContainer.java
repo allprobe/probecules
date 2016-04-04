@@ -67,11 +67,23 @@ public class ResultsContainer implements IResultsContainer {
 
 	public boolean clear() {
 		synchronized (lockEvents) {
-			events.clear();
+			eventsClear();
 		}
 		// TODO: Leave 10 last results from each kind on the list
 		results.clear();
 		return true;
+	}
+
+	private void eventsClear() {
+		for (HashMap<String, Event> runnableProbeEvents : events.values()) {
+			for (Map.Entry<String, Event> triggerEvent : runnableProbeEvents.entrySet()) {
+				String triggerId = triggerEvent.getKey();
+				Event event = triggerEvent.getValue();
+				if (event.isStatus() && event.isSent()) {
+					runnableProbeEvents.remove(triggerId);
+				}
+			}
+		}
 	}
 
 	private JSONObject rawResultsDBFormat(BaseResult rpr) {
@@ -168,6 +180,12 @@ public class ResultsContainer implements IResultsContainer {
 
 	@Override
 	public boolean addResult(BaseResult result) {
+
+		String rpStr = result.getRunnableProbeId();
+		if (rpStr.contains(
+				"47d364cf-50e3-4a3e-b3de-f58a0d6c3802@74cda666-3d85-4e56-a804-9d53c4e16259@discovery_777938b0-e4b0-4ec6-b0f2-ea880a0c09ef"))
+			System.out.println("BREAKPOINT");
+
 		synchronized (lock1) {
 			results.add(result);
 		}
@@ -284,6 +302,12 @@ public class ResultsContainer implements IResultsContainer {
 		// .registerSubtype(ObixOp.class);
 		JSONArray resultsDBFormat = new JSONArray();
 		for (BaseResult result : results) {
+
+			String rpStr = result.getRunnableProbeId();
+			if (rpStr.contains(
+					"47d364cf-50e3-4a3e-b3de-f58a0d6c3802@74cda666-3d85-4e56-a804-9d53c4e16259@discovery_777938b0-e4b0-4ec6-b0f2-ea880a0c09ef"))
+				System.out.println("BREAKPOINT");
+
 			JSONObject resultDBFormat = rawResultsDBFormat(result);
 			resultsDBFormat.add(resultDBFormat);
 		}
