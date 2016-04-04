@@ -26,12 +26,12 @@ import lycus.Elements.BaseElement;
 import lycus.Elements.DiskElement;
 import lycus.Probes.DiscoveryProbe;
 import lycus.Probes.NicProbe;
-import lycus.Probes.PingerProbe;
-import lycus.Probes.PorterProbe;
+import lycus.Probes.IcmpProbe;
+import lycus.Probes.PortProbe;
 import lycus.Probes.BaseProbe;
 import lycus.Probes.RBLProbe;
 import lycus.Probes.SnmpProbe;
-import lycus.Probes.WeberProbe;
+import lycus.Probes.HttpProbe;
 import lycus.Utils.GeneralFunctions;
 import lycus.Utils.Logit;
 
@@ -416,7 +416,7 @@ public class User {
 				int npings = probeParams.npings;
 				int bytes = probeParams.bytes;
 				int timeout = probeParams.timeout;
-				probe = new PingerProbe(this, probeId, templateId, name, interval, multiplier, status, timeout, npings,
+				probe = new IcmpProbe(this, probeId, templateId, name, interval, multiplier, status, timeout, npings,
 						bytes);
 				break;
 			}
@@ -424,7 +424,7 @@ public class User {
 				String proto = probeParams.protocol;
 				int port = probeParams.port;
 				int timeout = probeParams.timeout;
-				probe = new PorterProbe(this, probeId, templateId, name, interval, multiplier, status, timeout, proto,
+				probe = new PortProbe(this, probeId, templateId, name, interval, multiplier, status, timeout, proto,
 						port);
 				break;
 			}
@@ -437,10 +437,10 @@ public class User {
 				int timeout = probeParams.timeout;
 
 				if (auth.equals(Constants.no))
-					probe = new WeberProbe(this, probeId, templateId, name, interval, multiplier, status, timeout,
+					probe = new HttpProbe(this, probeId, templateId, name, interval, multiplier, status, timeout,
 							method, url);
 				else
-					probe = new WeberProbe(this, probeId, templateId, name, interval, multiplier, status, timeout,
+					probe = new HttpProbe(this, probeId, templateId, name, interval, multiplier, status, timeout,
 							method, url, auth, authUser, authPass);
 				break;
 			}
