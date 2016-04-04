@@ -126,7 +126,7 @@ public class ProbeUpdate extends BaseUpdate {
 
 		HashMap<String, RunnableProbe> runnableProbes = RunnableProbeContainer.getInstanece().getByProbe(getUpdate().probe_id);
 		for (RunnableProbe runnableProbe : runnableProbes.values()) {
-			if (!GeneralFunctions.isNullOrEmpty(getUpdate().update_value.name))
+			if (!GeneralFunctions.hasChanged(oldStr, getUpdate().update_value.name))
 				runnableProbe.getProbe().setName(getUpdate().update_value.name);
 			if (getUpdate().update_value.multiplier != null)
 				runnableProbe.getProbe().setMultiplier(getUpdate().update_value.multiplier);
