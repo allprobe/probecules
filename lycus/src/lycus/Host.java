@@ -72,6 +72,11 @@ public class Host {
 		this.hostStatus = hostStatus;
 	}
 
+	public boolean getHostStatus()
+	{
+		return hostStatus;
+	}
+	
 	public synchronized boolean isSnmpStatus() {
 		return snmpStatus;
 	}

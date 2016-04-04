@@ -199,7 +199,7 @@ public class GeneralFunctions {
 		return newVal != 0 && oldVal != newVal;
 	}
 	
-	public static boolean isChanged(Integer oldVal, Integer newVal)
+	public static boolean isChanged(int oldVal, Integer newVal)
 	{
 		return newVal != null && oldVal != newVal;
 	}

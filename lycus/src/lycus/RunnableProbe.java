@@ -110,7 +110,6 @@ public class RunnableProbe implements Runnable {
 			RollupsContainer.getInstance().addResult(result);
 		} catch (Exception e) {
 			Logit.LogError("RunnableProbe - run()", "Unable Probing Runnable Probe of: " + this.getId() + "\n" + e.getMessage());
-		System.err.println("test");
 		}
 		Logit.LogInfo("Running Probe: " + this.getId() + " at Host: " + this.getHost().getHostIp()
 				+ "(" + this.getHost().getName() + ")" + ", Results: " + result + " ...");

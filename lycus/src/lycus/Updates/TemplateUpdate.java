@@ -3,6 +3,7 @@ package lycus.Updates;
 import java.util.UUID;
 
 import lycus.Model.UpdateModel;
+import lycus.Utils.Logit;
 import lycus.Host;
 import lycus.RunnableProbeContainer;
 import lycus.UsersManager;
@@ -36,7 +37,7 @@ public class TemplateUpdate  extends BaseUpdate{
 	{
 		super.Delete();
 		RunnableProbeContainer.getInstanece().removeByTemplateId(getUpdate().object_id);
-
+		Logit.LogCheck("Template " + getUpdate().object_id +  " was removed");
 		return true;
 	}
 }
