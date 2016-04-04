@@ -37,12 +37,13 @@ public class HostUpdate extends BaseUpdate {
 	public Boolean Update() {
 		super.Update();
 
-		Logit.LogInfo("Updating Host:"+getUpdate().host_id);
+		
 		
 		Host host = getUser().getHost(UUID.fromString(getUpdate().host_id));
 		if (host == null)
 			return false;
-
+		Logit.LogInfo("Updating Host: "+getUpdate().host_id);
+		
 		if (!GeneralFunctions.isNullOrEmpty(getUpdate().update_value.name)) {
 			host.setName(getUpdate().update_value.name);
 		}

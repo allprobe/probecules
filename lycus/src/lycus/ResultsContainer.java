@@ -198,7 +198,7 @@ public class ResultsContainer implements IResultsContainer {
 	public boolean removeSentResults() {
 		for (BaseResult result : results) {
 			if (result.isSent())
-				synchronized (lock1) {
+				synchronized (lockResults) {
 					results.remove(result);
 				}
 			result = null;
