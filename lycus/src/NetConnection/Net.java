@@ -69,6 +69,8 @@ public class Net {
 	public static ArrayList<Object> Pinger(String ip, int numOfPings, int sizeOfPings, int timeout) {
 		InetAddress inet;
 		ArrayList<Object> pingResults = new ArrayList<Object>();
+		if(ip.contains("62.90.102.19"))
+			System.err.println("BREAKPOINT");
 		try {
 			inet = InetAddress.getByName(ip);
 		} catch (UnknownHostException ex) {
@@ -121,20 +123,12 @@ public class Net {
 					while ((s = stdInput.readLine()) != null) {
 						lines.add(s);
 						if (hasPingResult(s)) {
-							if ("0".equals(ttl)) {
-								// System.out.println(s);
 								ttl = checkLineTTL(s);
-							}
 						} else {
-							if (checkLinePacketLoss(s)) {
-								// System.out.println(s);
-								String split[] = s.split(" ");
-								PacketLoss = split[5].replace("%", "");
-							} else if (checkLineRTT(s)) {
-								// System.out.println(s);
-								String split[] = s.split(" ");
-								String rtt[] = split[3].split("/");
-								rtt_avg = rtt[1];
+							if (checkLinePacketLoss(s)!=null) {
+								PacketLoss = checkLinePacketLoss(s);
+							} else if (checkLineRTT(s)!=null) {
+								rtt_avg = checkLineRTT(s);
 							}
 						}
 					}
@@ -173,18 +167,37 @@ public class Net {
 	}
 
 	// #region pinger sub functions
-	private static boolean checkLinePacketLoss(String line) {
-		return line.contains("packets transmitted");
+	private static String checkLinePacketLoss(String line) {
+		if(!line.contains("packet loss"))
+			return null;
+		String split[] = line.split(" ");
+		for(String s:split)
+		{
+			if(s.contains("%"))
+				return s.split("%")[0];
+		}
+		return null;
 	}
 
 	private static String checkLineTTL(String line) {
+		if(!line.contains("ttl"))
+			return null;
 		String split[] = line.split(" ");
-		String ttl = split[5].split("=")[1];
-		return ttl;
+		for(String s:split)
+		{
+			if(s.contains("ttl"))
+				return s.split("=")[1];
+		}
+		return null;
 	}
 
-	private static boolean checkLineRTT(String line) {
-		return line.contains("rtt min");
+	private static String checkLineRTT(String line) {
+		if(!line.contains("rtt min"))
+			return null;
+		String rtt_avg = line.split(" ")[3].split("/")[1];
+//		String rtt_min = line.split(" ")[3].split("/")[0];
+//		String rtt_max = line.split(" ")[3].split("/")[2];
+		return rtt_avg;
 	}
 
 	private static boolean hasPingResult(String line) {
