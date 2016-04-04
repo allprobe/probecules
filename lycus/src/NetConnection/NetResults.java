@@ -22,11 +22,11 @@ import lycus.Interfaces.INetResults;
 import lycus.Probes.BaseProbe;
 import lycus.Probes.DiscoveryProbe;
 import lycus.Probes.NicProbe;
-import lycus.Probes.PingerProbe;
-import lycus.Probes.PorterProbe;
+import lycus.Probes.IcmpProbe;
+import lycus.Probes.PortProbe;
 import lycus.Probes.RBLProbe;
 import lycus.Probes.SnmpProbe;
-import lycus.Probes.WeberProbe;
+import lycus.Probes.HttpProbe;
 import lycus.Results.BaseResult;
 import lycus.Results.DiscoveryResult;
 import lycus.Results.NicResult;
@@ -51,7 +51,7 @@ public class NetResults implements INetResults{
 	}
 
 	@Override
-	public PingResult getPingResult(Host host,PingerProbe probe) {
+	public PingResult getPingResult(Host host,IcmpProbe probe) {
 		ArrayList<Object> rawResults = Net.Pinger(host.getHostIp(), probe.getCount(),probe.getBytes(), probe.getTimeout());
 		if(rawResults==null ||rawResults.size()==0)
 			return null;
@@ -68,7 +68,7 @@ public class NetResults implements INetResults{
 	}
 
 	@Override
-	public PortResult getPortResult(Host host,PorterProbe probe) {
+	public PortResult getPortResult(Host host,PortProbe probe) {
 		ArrayList<Object> rawResults=null;
 		switch(probe.getProto())
 		{
@@ -90,7 +90,7 @@ public class NetResults implements INetResults{
 	}
 
 	@Override
-	public WebResult getWebResult(Host host,WeberProbe probe) {
+	public WebResult getWebResult(Host host,HttpProbe probe) {
 		ArrayList<Object> rawResults = Net.Weber(probe.getUrl(), probe.getHttpRequestType(),probe.getAuthUsername(),probe.getAuthPassword(), probe.getTimeout());
 		if(rawResults==null ||rawResults.size()==0)
 			return null;

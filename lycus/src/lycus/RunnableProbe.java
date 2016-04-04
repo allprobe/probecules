@@ -5,12 +5,12 @@ import lycus.GlobalConstants.LogType;
 import lycus.GlobalConstants.ProbeTypes;
 import lycus.Elements.BaseElement;
 import lycus.Probes.DiscoveryProbe;
-import lycus.Probes.PingerProbe;
-import lycus.Probes.PorterProbe;
+import lycus.Probes.IcmpProbe;
+import lycus.Probes.PortProbe;
 import lycus.Probes.BaseProbe;
 import lycus.Probes.RBLProbe;
 import lycus.Probes.SnmpProbe;
-import lycus.Probes.WeberProbe;
+import lycus.Probes.HttpProbe;
 import lycus.Results.BaseResult;
 import lycus.Rollups.RollupsContainer;
 import lycus.Utils.Logit;
@@ -70,11 +70,11 @@ public class RunnableProbe implements Runnable {
 	}
 
 	public ProbeTypes getProbeType() {
-		if (getProbe() instanceof PingerProbe)
+		if (getProbe() instanceof IcmpProbe)
 			return ProbeTypes.ICMP;
-		if (getProbe() instanceof PorterProbe)
+		if (getProbe() instanceof PortProbe)
 			return ProbeTypes.PORT;
-		if (getProbe() instanceof WeberProbe)
+		if (getProbe() instanceof HttpProbe)
 			return ProbeTypes.HTTP;
 		if ((getProbe() instanceof SnmpProbe))
 			return ProbeTypes.SNMP;

@@ -13,11 +13,11 @@ import java.util.concurrent.TimeUnit;
 import lycus.GlobalConstants.GlobalConfig;
 import lycus.GlobalConstants.LogType;
 import lycus.GlobalConstants.ProbeTypes;
-import lycus.Probes.PingerProbe;
-import lycus.Probes.PorterProbe;
+import lycus.Probes.IcmpProbe;
+import lycus.Probes.PortProbe;
 import lycus.Probes.RBLProbe;
 import lycus.Probes.SnmpProbe;
-import lycus.Probes.WeberProbe;
+import lycus.Probes.HttpProbe;
 import lycus.Utils.Logit;
 
 /**
@@ -236,17 +236,17 @@ public class RunInnerProbesChecks extends Thread {
 	public static boolean deleteRegularRP(RunnableProbe rp) {
 		if(rp==null)
 			return false;
-		if (rp.getProbe() instanceof PingerProbe) {
+		if (rp.getProbe() instanceof IcmpProbe) {
 			RunInnerProbesChecks.getPingerFutureMap().get(rp.getId())
 					.cancel(false);
 			PingerFutureCounter--;
 			return true;
-		} else if (rp.getProbe() instanceof PorterProbe) {
+		} else if (rp.getProbe() instanceof PortProbe) {
 			RunInnerProbesChecks.getPorterFutureMap().get(rp.getId())
 					.cancel(false);
 			PorterFutureCounter--;
 			return true;
-		} else if (rp.getProbe() instanceof WeberProbe) {
+		} else if (rp.getProbe() instanceof HttpProbe) {
 			RunInnerProbesChecks.getWeberFutureMap().get(rp.getId())
 					.cancel(false);
 			WeberFutureCounter--;
