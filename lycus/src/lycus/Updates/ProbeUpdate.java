@@ -56,6 +56,7 @@ public class ProbeUpdate extends BaseUpdate {
 
 				host = getUser().getHost(UUID.fromString(getUpdate().host_id));
 				ProbeParams probeParams = new ProbeParams();
+				probeParams.template_id = getUpdate().template_id;
 				probeParams.bytes = getUpdate().update_value.key.bytes;
 				probeParams.npings = getUpdate().update_value.key.npings;
 				probeParams.discovery_elements_interval = getUpdate().update_value.key.element_interval;
@@ -88,7 +89,7 @@ public class ProbeUpdate extends BaseUpdate {
 				probeParams.discovery_trigger_severity = getUpdate().update_value.key.trigger_severity;
 				probeParams.discovery_trigger_code = getUpdate().update_value.key.discovery_trigger;
 
-				getUser().addTemplateProbe(probeParams);
+				probe = getUser().addTemplateProbe(probeParams);
 				RunnableProbe runnableProbe = new RunnableProbe(host, probe);
 				runnableProbe.start();
 				getUser().addRunnableProbe(runnableProbe);

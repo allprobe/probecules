@@ -398,7 +398,7 @@ public class User {
 
 	}
 
-	public void addTemplateProbe(ProbeParams probeParams) {
+	public BaseProbe addTemplateProbe(ProbeParams probeParams) {
 		try {
 			UUID templateId = UUID.fromString(probeParams.template_id);
 			String probeId = probeParams.probe_id;
@@ -454,13 +454,13 @@ public class User {
 				SnmpDataType dataType = getSnmpDataType(valueType);
 				if (dataType == null) {
 					Logit.LogWarn("Probe: " + probeId + " Wrong Data Type, Doesn't Added!");
-					return;
+					return null;
 				}
 
 				SnmpUnit unit = getSnmpUnit(valueUnit);
 				if (unit == null) {
 					Logit.LogWarn("Probe: " + probeId + " Wrong Unit Type, Doesn't Added!");
-					return;
+					return null;
 				}
 				probe = new SnmpProbe(this,probeId, templateId, name, interval, multiplier, status, oid, dataType, unit,
 						storeValue);
@@ -476,7 +476,7 @@ public class User {
 				SnmpUnit trigValueUnit = getSnmpUnit(unitType);
 				if (trigValueUnit == null) {
 					Logit.LogError("User = addTemplateProbe()", "Probe: " + probeId + " Wrong Unit Type, Doesn't Added!");
-					return;
+					return null;
 				}
 				Enums.DiscoveryElementType discoveryType;
 				switch (probeParams.discovery_type) {
@@ -513,9 +513,10 @@ public class User {
 				throw new Exception("Error parsing one of probe elements!");
 			}
 			this.getTemplateProbes().put(probeId, probe);
+			return probe;
 		} catch (Exception e) {
 			Logit.LogWarn("Creation of Probe Failed: " + probeParams + " , not added!\n" + e.getMessage());
-			return;
+			return null;
 
 		}
 	}
