@@ -173,42 +173,40 @@ public class WeberProbe extends BaseProbe {
 		super.updateKeyValues(updateValue);
 		// super.updateProbe(probeNewName, probeNewInterval, probeNewMultiplier,
 		// probeNewStatus);
-		if (updateValue.key.urls != null && !updateValue.key.urls.equals(getUrl()))
-		{
-			this.setUrl(GeneralFunctions.Base64Decode(updateValue.key.urls));
-			Logit.LogCheck("Snmp data for " + getName() +  " has changed to " + updateValue.key.value_type);
-		}
 		
-		if (!GeneralFunctions.isNullOrEmpty(updateValue.key.http_method) && !updateValue.key.http_method.equals(getHttpRequestType()))
+		String url = GeneralFunctions.Base64Decode(updateValue.key.urls);
+		if (GeneralFunctions.isChanged(getUrl(), url)) 
+		{
+			this.setUrl(url);
+			Logit.LogCheck("Url for " + getName() +  " has changed to " + url);
+		}
+		if (GeneralFunctions.isChanged(getHttpRequestType(), updateValue.key.http_method)) 
 		{
 			this.setHttpRequestType(updateValue.key.http_method);
-			Logit.LogCheck("Http requery type for " + getName() +  " has changed to " + updateValue.key.http_method);
+			Logit.LogCheck("Http method for " + getName() +  " has changed to " + updateValue.key.http_method);
 		}
-			
-		if (!GeneralFunctions.isNullOrEmpty(updateValue.key.http_auth) && !updateValue.key.http_auth.equals(getAuthStatus()))
+		if (getAuthStatus() == null || GeneralFunctions.isChanged(getAuthStatus(), updateValue.key.http_auth)) 
 		{
 			this.setAuthStatus(updateValue.key.http_auth);
-			Logit.LogCheck("Authorization status for " + getName() +  " has changed to " + updateValue.key.http_auth);
+			Logit.LogCheck("Http authorization for " + getName() +  " has changed to " + updateValue.key.http_auth);
 		}
-			
-		if (!GeneralFunctions.isNullOrEmpty(updateValue.key.http_auth_user) && !updateValue.key.http_auth_user.equals(getAuthUsername()))
+		String autorizationUserName = GeneralFunctions.Base64Decode(updateValue.key.http_auth_user);
+		if (getAuthUsername() == null || GeneralFunctions.isChanged(getAuthUsername(), autorizationUserName)) 
 		{
-			this.setAuthUsername(GeneralFunctions.Base64Decode(updateValue.key.http_auth_user));
-			Logit.LogCheck("Authorization user name for " + getName() +  " has changed to " + updateValue.key.http_auth_user);
+			this.setAuthUsername(autorizationUserName);
+			Logit.LogCheck("Authorization user name for " + getName() +  " has changed to " + autorizationUserName);
 		}
-			
-		if (!GeneralFunctions.isNullOrEmpty(updateValue.key.http_auth_password) && !updateValue.key.http_auth_password.equals(getAuthPassword()))
+		String autorizationPassword = GeneralFunctions.Base64Decode(updateValue.key.http_auth_password);
+		if (getAuthPassword() == null || GeneralFunctions.isChanged(getAuthPassword(), autorizationPassword)) 
 		{
-			this.setAuthPassword(GeneralFunctions.Base64Decode(updateValue.key.http_auth_password));
+			this.setAuthPassword(autorizationPassword);
 			Logit.LogCheck("Authorization password for " + getName() +  " has changed");
 		}
-			
-		if (updateValue.key.timeout != null && updateValue.key.timeout != getTimeout())
+		if (GeneralFunctions.isChanged( getTimeout(), updateValue.key.timeout)) 
 		{
 			this.setTimeout(updateValue.key.timeout);
 			Logit.LogCheck("Timeout for " + getName() +  " has changed to " + updateValue.key.timeout);
 		}
-		
 
 		return true;
 	}

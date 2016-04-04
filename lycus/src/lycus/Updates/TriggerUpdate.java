@@ -44,20 +44,38 @@ public class TriggerUpdate extends BaseUpdate {
 		ArrayList<TriggerCondition>  conditions = UsersManager.getTriggerConds(getUpdate().update_value.conditions);
 		
 		if (conditions != null && !conditions.isEmpty())
+		{
 			trigger.setCondtions(conditions);
-		if (!GeneralFunctions.isNullOrEmpty(getUpdate().update_value.type))
+			Logit.LogCheck("Conditions for trigger : " + getUpdate().object_id + " has updated even when not changed");
+		}
+		if (GeneralFunctions.isChanged(trigger.getElementType(), getUpdate().update_value.type))
+		{
 			trigger.setElementType(getUpdate().update_value.type);
-		if (!GeneralFunctions.isNullOrEmpty(getUpdate().update_value.name))
+			Logit.LogCheck("Type for trigger " + getUpdate().object_id +  " has changed to " + getUpdate().update_value.type);
+		}
+		if (GeneralFunctions.isChanged(trigger.getName(), getUpdate().update_value.name))
+		{
 			trigger.setName(getUpdate().update_value.name);
-		
+			Logit.LogCheck("Name for trigger " + getUpdate().object_id +  " has changed to " + getUpdate().update_value.name);
+		}
+			
 		trigger.setProbe(probe);      // Ran - Is it possible to change probe?
-		
-		if (!GeneralFunctions.isNullOrEmpty(getUpdate().update_value.status))
+		if (getUpdate().update_value.status != null && trigger.getStatus() != getUpdate().update_value.status.equals(Constants._true))
+		{
 			trigger.setStatus(getUpdate().update_value.status.equals(Constants._true));
-		if (!GeneralFunctions.isNullOrEmpty(getUpdate().update_value.severity))
+			Logit.LogCheck("Status for trigger " + getUpdate().object_id +  " has changed to " + getUpdate().update_value.status);
+		}
+		if (GeneralFunctions.isChanged(trigger.getName(), getUpdate().update_value.severity))
+		{
 			trigger.setSvrty(UsersManager.getTriggerSev(getUpdate().update_value.severity));
-		if (!GeneralFunctions.isNullOrEmpty(getUpdate().update_value.xvalue_unit))
+			Logit.LogCheck("Severity for trigger " + getUpdate().object_id +  " has changed to " + getUpdate().update_value.severity);
+		}
+		if (GeneralFunctions.isChanged(trigger.getUnit().toString(), getUpdate().update_value.xvalue_unit))
+		{
 			trigger.setUnit(SnmpUnit.valueOf(getUpdate().update_value.xvalue_unit));
+			Logit.LogCheck("X value unit for trigger " + getUpdate().object_id +  " has changed to " + getUpdate().update_value.xvalue_unit);
+		}
+			
 		
 //		trigger.setTriggered(isTriggered);    // What is it - Roi
 		

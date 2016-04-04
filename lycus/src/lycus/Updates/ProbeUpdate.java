@@ -5,9 +5,11 @@ import java.util.UUID;
 import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
 import lycus.GlobalConstants.Constants;
+import lycus.GlobalConstants.Enums;
 import lycus.GlobalConstants.Enums.ApiAction;
 import lycus.Model.ProbeParams;
 import lycus.Model.UpdateModel;
+import lycus.DAL.ApiInterface;
 import lycus.DAL.DAL;
 import lycus.Host;
 import lycus.RunnableProbe;
@@ -42,15 +44,12 @@ public class ProbeUpdate extends BaseUpdate {
 				JSONObject jsonObject = dal.put(ApiAction.GetHosts, hosts);
 				JSONArray jsonArray = (JSONArray) jsonObject.get("hosts");
 				UsersManager.addHosts(jsonArray);
+				Logit.LogCheck("New host was created from server");
 			}
 			
 			if (!getUser().isProbeExist(getUpdate().probe_id)) {
 				host = getUser().getHost(UUID.fromString(getUpdate().host_id));
 				if (host == null) {
-					
-					
-					
-					
 					Logit.LogError("ProbeUpdate - New()", "Failed update from type NEW PROBE - unknown host");
 					return false;
 				}

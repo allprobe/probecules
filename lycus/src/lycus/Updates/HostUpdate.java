@@ -43,17 +43,17 @@ public class HostUpdate extends BaseUpdate {
 
 		Logit.LogCheck("Updating Host: " + getUpdate().host_id);
 
-		if (!GeneralFunctions.isChanged(host.getName(), getUpdate().update_value.name)) {
+		if (GeneralFunctions.isChanged(host.getName(), getUpdate().update_value.name)) {
 			host.setName(getUpdate().update_value.name);
 			Logit.LogCheck("Host name for " + host.getName() + " has changed to " + getUpdate().update_value.name);
 		}
-		if (!GeneralFunctions.isChanged(host.getHostIp(), getUpdate().update_value.ip)) {
+		if (GeneralFunctions.isChanged(host.getHostIp(), getUpdate().update_value.ip)) {
 			host.setHostIp(getUpdate().update_value.ip);
 			Logit.LogCheck("Ip for host " + host.getName() + " has changed to " + getUpdate().update_value.ip);
 		}
 		// TODO: OREN, Check if host.getSnmpTemp().getSnmpTemplateName() is
 		// checged
-		if (!GeneralFunctions.isChanged(host.getSnmpTemp().getSnmpTemplateName(),
+		if (GeneralFunctions.isChanged(host.getSnmpTemp().getSnmpTemplateName(),
 				getUpdate().update_value.snmp_template)) {
 			SnmpTemplate snmpTemplate = getUser().getSnmpTemplates()
 					.get(UUID.fromString(getUpdate().update_value.snmp_template));
@@ -65,13 +65,13 @@ public class HostUpdate extends BaseUpdate {
 				Logit.LogCheck("Snmp Template for host " + host.getName() + " has changed");
 
 		}
-		if (!GeneralFunctions.isChanged(host.getNotificationGroups().toString(),
+		if (GeneralFunctions.isChanged(host.getNotificationGroups().toString(),
 				getUpdate().update_value.notifications_group)) {
 			host.setNotificationGroups(UUID.fromString(getUpdate().update_value.notifications_group));
 			Logit.LogCheck("Notifications group for host " + host.getName() + " has changed to "
 					+ getUpdate().update_value.notifications_group);
 		}
-		if (!GeneralFunctions.isChanged(host.getBucket(), getUpdate().update_value.bucket)) {
+		if (GeneralFunctions.isChanged(host.getBucket(), getUpdate().update_value.bucket)) {
 			host.setBucket(getUpdate().update_value.bucket);
 			Logit.LogCheck("Bucket for host " + host.getName() + " has changed to " + getUpdate().update_value.bucket);
 		}

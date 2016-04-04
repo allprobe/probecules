@@ -21,8 +21,8 @@ public class Logit {
 	}
 
 	public static void LogCheck(String message) {
-		if (log.isDebugEnabled() && isDebug)
-			log.debug(message);
+		if (isCheck)
+			log.info(message);
 	}
 	
 	public static void LogInfo(String message) {

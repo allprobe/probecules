@@ -70,7 +70,7 @@ public class Trigger implements Cloneable {
 		this.svrty = svrty;
 	}
 
-	public boolean isStatus() {
+	public boolean getStatus() {
 		return status;
 	}
 

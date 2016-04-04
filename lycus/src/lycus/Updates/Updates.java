@@ -27,8 +27,9 @@ public class Updates implements Runnable {
 			return false;
 		} else {
 			// JSONObject jsonObject = dal.get(ApiAction.DevGetThreadsUpdates);
-			JSONObject jsonObject = (JSONObject) ApiInterface.executeRequest(Enums.ApiAction.GetThreadsUpdates, "GET",
-					null);
+
+			Object json = ApiInterface.executeRequest(Enums.ApiAction.GetThreadsUpdates, "GET", null);
+			JSONObject jsonObject = (JSONObject) json;
 			// JSONObject jsonObject = dal.get(ApiAction.GetThreadsUpdates);
 			runUpdates(jsonObject);
 		}
