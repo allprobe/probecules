@@ -291,7 +291,7 @@ public class User {
 		String rpStr = runnableProbe.getId();
 		if (rpStr.contains(
 				"inner_996a80bf-913e-4ba4-ad46-a28c30f9fe36"))
-			System.out.println("BREAKPOINT");
+			Logit.LogDebug("BREAKPOINT");
 
 		RunnableProbeContainer.getInstanece().add(runnableProbe);
 		return this.startRunnableProbe(runnableProbe);
