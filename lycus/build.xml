@@ -1,0 +1,142 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<!-- WARNING: Eclipse auto-generated file.
+              Any modifications will be overwritten.
+              To include a user specific buildfile here, simply create one in the same
+              directory with the processing instruction <?eclipse.ant.import?>
+              as the first entry and export the buildfile again. --><project basedir="." default="build" name="lycus">
+    <property environment="env"/>
+    <property name="debuglevel" value="source,lines,vars"/>
+    <property name="target" value="1.7"/>
+    <property name="source" value="1.7"/>
+    <path id="lycus.classpath">
+        <pathelement location="bin"/>
+        <pathelement location="lib/other/jsr305-1.3.9.jar"/>
+        <pathelement location="lib/hector/cassandra-all-1.2.0.jar"/>
+        <pathelement location="lib/hector/FastInfoset-1.2.2.jar"/>
+        <pathelement location="lib/hector/guava-15.0.jar"/>
+        <pathelement location="lib/hector/hector-core-0.8.0-2.jar"/>
+        <pathelement location="lib/hector/high-scale-lib-1.1.4.jar"/>
+        <pathelement location="lib/hector/junit-4.8.1.jar"/>
+        <pathelement location="lib/hector/metrics-core-2.1.2.jar"/>
+        <pathelement location="lib/hector/mockito-core-1.8.0.jar"/>
+        <pathelement location="lib/hector/org.apache.commons.codec.jar"/>
+        <pathelement location="lib/hector/org.springframework.context.jar"/>
+        <pathelement location="lib/hector/org.springframework.test-3.0.5.RELEASE.jar"/>
+        <pathelement location="lib/hector/speed4j-0.15.jar"/>
+        <pathelement location="lib/Apache/Commons/collections4-4.0/commons-collections4-4.0-javadoc.jar"/>
+        <pathelement location="lib/Apache/Commons/collections4-4.0/commons-collections4-4.0-sources.jar"/>
+        <pathelement location="lib/Apache/Commons/collections4-4.0/commons-collections4-4.0-test-sources.jar"/>
+        <pathelement location="lib/Apache/Commons/collections4-4.0/commons-collections4-4.0-tests.jar"/>
+        <pathelement location="lib/Apache/Commons/collections4-4.0/commons-collections4-4.0.jar"/>
+        <pathelement location="lib/Apache/Commons/commons-pool2-2.3/commons-pool2-2.3-javadoc.jar"/>
+        <pathelement location="lib/Apache/Commons/commons-pool2-2.3/commons-pool2-2.3.jar"/>
+        <pathelement location="lib/Apache/Commons/io-2.4/commons-io-2.4-javadoc.jar"/>
+        <pathelement location="lib/Apache/Commons/io-2.4/commons-io-2.4-sources.jar"/>
+        <pathelement location="lib/Apache/Commons/io-2.4/commons-io-2.4-test-sources.jar"/>
+        <pathelement location="lib/Apache/Commons/io-2.4/commons-io-2.4-tests.jar"/>
+        <pathelement location="lib/Apache/Commons/io-2.4/commons-io-2.4.jar"/>
+        <pathelement location="lib/Apache/HttpClient/commons-codec-1.6.jar"/>
+        <pathelement location="lib/Apache/HttpClient/commons-logging-1.1.3.jar"/>
+        <pathelement location="lib/Apache/HttpClient/fluent-hc-4.3.1.jar"/>
+        <pathelement location="lib/Apache/HttpClient/httpclient-4.3.1.jar"/>
+        <pathelement location="lib/Apache/HttpClient/httpclient-cache-4.3.1.jar"/>
+        <pathelement location="lib/Apache/HttpClient/httpcore-4.3-sources.jar"/>
+        <pathelement location="lib/Apache/HttpClient/httpcore-4.3.jar"/>
+        <pathelement location="lib/Apache/HttpClient/httpmime-4.3.1.jar"/>
+        <pathelement location="lib/base/cassandra-thrift-1.1.0.jar"/>
+        <pathelement location="lib/base/cloning-1.9.0.jar"/>
+        <pathelement location="lib/base/commons-pool-1.6.jar"/>
+        <pathelement location="lib/base/guava-16.0.1.jar"/>
+        <pathelement location="lib/base/javax.persistence.jar"/>
+        <pathelement location="lib/base/jpingy0_1-alpha.jar"/>
+        <pathelement location="lib/base/libthrift-0.7.0.jar"/>
+        <pathelement location="lib/base/org.apache.commons.lang.jar"/>
+        <pathelement location="lib/base/scale7-core-1.3.0.jar"/>
+        <pathelement location="lib/base/slf4j-api-1.7.1.jar"/>
+        <pathelement location="lib/base/uuid-3.2.0-sources.jar"/>
+        <pathelement location="lib/base/uuid-3.2.jar"/>
+        <pathelement location="lib/json/json-simple-1.1.1.jar"/>
+        <pathelement location="lib/network/javadoc_net.sourceforge.jpcap-0.01.18.jar"/>
+        <pathelement location="lib/network/net.sourceforge.jpcap-0.01.18.jar"/>
+        <pathelement location="lib/base/syslog4j-0.9.46-bin.jar"/>
+        <pathelement location="lib/base/snmp4j-2.4.1-javadoc.jar"/>
+        <pathelement location="lib/base/snmp4j-2.4.1.jar"/>
+        <pathelement location="lib/Apache/apache-log4j-2.5-bin/log4j-1.2-api-2.5-javadoc.jar"/>
+        <pathelement location="lib/Apache/apache-log4j-2.5-bin/log4j-1.2-api-2.5-sources.jar"/>
+        <pathelement location="lib/Apache/apache-log4j-2.5-bin/log4j-1.2-api-2.5.jar"/>
+        <pathelement location="lib/Apache/apache-log4j-2.5-bin/log4j-api-2.5-javadoc.jar"/>
+        <pathelement location="lib/Apache/apache-log4j-2.5-bin/log4j-api-2.5-sources.jar"/>
+        <pathelement location="lib/Apache/apache-log4j-2.5-bin/log4j-api-2.5.jar"/>
+        <pathelement location="lib/Apache/apache-log4j-2.5-bin/log4j-core-2.5-javadoc.jar"/>
+        <pathelement location="lib/Apache/apache-log4j-2.5-bin/log4j-core-2.5-sources.jar"/>
+        <pathelement location="lib/Apache/apache-log4j-2.5-bin/log4j-core-2.5-tests.jar"/>
+        <pathelement location="lib/Apache/apache-log4j-2.5-bin/log4j-core-2.5.jar"/>
+        <pathelement location="lib/Apache/apache-log4j-2.5-bin/log4j-flume-ng-2.5-javadoc.jar"/>
+        <pathelement location="lib/Apache/apache-log4j-2.5-bin/log4j-flume-ng-2.5-sources.jar"/>
+        <pathelement location="lib/Apache/apache-log4j-2.5-bin/log4j-flume-ng-2.5.jar"/>
+        <pathelement location="lib/Apache/apache-log4j-2.5-bin/log4j-iostreams-2.5-javadoc.jar"/>
+        <pathelement location="lib/Apache/apache-log4j-2.5-bin/log4j-iostreams-2.5-sources.jar"/>
+        <pathelement location="lib/Apache/apache-log4j-2.5-bin/log4j-iostreams-2.5.jar"/>
+        <pathelement location="lib/Apache/apache-log4j-2.5-bin/log4j-jcl-2.5-javadoc.jar"/>
+        <pathelement location="lib/Apache/apache-log4j-2.5-bin/log4j-jcl-2.5-sources.jar"/>
+        <pathelement location="lib/Apache/apache-log4j-2.5-bin/log4j-jcl-2.5.jar"/>
+        <pathelement location="lib/Apache/apache-log4j-2.5-bin/log4j-jmx-gui-2.5-javadoc.jar"/>
+        <pathelement location="lib/Apache/apache-log4j-2.5-bin/log4j-jmx-gui-2.5-sources.jar"/>
+        <pathelement location="lib/Apache/apache-log4j-2.5-bin/log4j-jmx-gui-2.5.jar"/>
+        <pathelement location="lib/Apache/apache-log4j-2.5-bin/log4j-jul-2.5-javadoc.jar"/>
+        <pathelement location="lib/Apache/apache-log4j-2.5-bin/log4j-jul-2.5-sources.jar"/>
+        <pathelement location="lib/Apache/apache-log4j-2.5-bin/log4j-jul-2.5.jar"/>
+        <pathelement location="lib/Apache/apache-log4j-2.5-bin/log4j-nosql-2.5-javadoc.jar"/>
+        <pathelement location="lib/Apache/apache-log4j-2.5-bin/log4j-nosql-2.5-sources.jar"/>
+        <pathelement location="lib/Apache/apache-log4j-2.5-bin/log4j-nosql-2.5.jar"/>
+        <pathelement location="lib/Apache/apache-log4j-2.5-bin/log4j-taglib-2.5-javadoc.jar"/>
+        <pathelement location="lib/Apache/apache-log4j-2.5-bin/log4j-taglib-2.5-sources.jar"/>
+        <pathelement location="lib/Apache/apache-log4j-2.5-bin/log4j-taglib-2.5.jar"/>
+        <pathelement location="lib/Apache/apache-log4j-2.5-bin/log4j-web-2.5-javadoc.jar"/>
+        <pathelement location="lib/Apache/apache-log4j-2.5-bin/log4j-web-2.5-sources.jar"/>
+        <pathelement location="lib/Apache/apache-log4j-2.5-bin/log4j-web-2.5.jar"/>
+        <pathelement location="lib/google/gson-2.6.2-javadoc.jar"/>
+        <pathelement location="lib/google/gson-2.6.2-sources.jar"/>
+        <pathelement location="lib/google/gson-2.6.2.jar"/>
+    </path>
+    <target name="init">
+        <mkdir dir="bin"/>
+        <copy includeemptydirs="false" todir="bin">
+            <fileset dir="src">
+                <exclude name="**/*.java"/>
+            </fileset>
+        </copy>
+    </target>
+    <target name="clean">
+        <delete dir="bin"/>
+    </target>
+    <target depends="clean" name="cleanall"/>
+    <target depends="build-subprojects,build-project" name="build"/>
+    <target name="build-subprojects"/>
+    <target depends="init" name="build-project">
+        <echo message="${ant.project.name}: ${ant.file}"/>
+        <javac debug="true" debuglevel="${debuglevel}" destdir="bin" includeantruntime="false" source="${source}" target="${target}">
+            <src path="src"/>
+            <classpath refid="lycus.classpath"/>
+        </javac>
+    </target>
+    <target description="Build all projects which reference this project. Useful to propagate changes." name="build-refprojects"/>
+    <target description="copy Eclipse compiler jars to ant lib directory" name="init-eclipse-compiler">
+        <copy todir="${ant.library.dir}">
+            <fileset dir="${ECLIPSE_HOME}/plugins" includes="org.eclipse.jdt.core_*.jar"/>
+        </copy>
+        <unzip dest="${ant.library.dir}">
+            <patternset includes="jdtCompilerAdapter.jar"/>
+            <fileset dir="${ECLIPSE_HOME}/plugins" includes="org.eclipse.jdt.core_*.jar"/>
+        </unzip>
+    </target>
+    <target description="compile project with Eclipse compiler" name="build-eclipse-compiler">
+        <property name="build.compiler" value="org.eclipse.jdt.core.JDTCompilerAdapter"/>
+        <antcall target="build"/>
+    </target>
+    <target name="LycusMain">
+        <java classname="lycus.LycusMain" failonerror="true" fork="yes">
+            <classpath refid="lycus.classpath"/>
+        </java>
+    </target>
+</project>
