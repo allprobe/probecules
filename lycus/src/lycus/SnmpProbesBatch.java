@@ -155,7 +155,7 @@ public class SnmpProbesBatch implements Runnable {
 
 			String rpStr = this.getBatchId();
 			if (rpStr.contains(
-					"788b1b9e-d753-4dfa-ac46-61c4374eeb84@0b05919c-6cc0-42cc-a74b-de3b0dcd4a2a@60"))
+					"9dc99972-e28a-4e90-aabd-7e8bad61b232@0b05919c-6cc0-42cc-a74b-de3b0dcd4a2a@60"))
 				Logit.LogDebug("BREAKPOINT");
 			
 			if (this.getHost().isHostStatus() && this.getHost().isSnmpStatus()) {
@@ -213,8 +213,13 @@ public class SnmpProbesBatch implements Runnable {
 	{
 		SnmpDeltaResult snmpDeltaResult = new SnmpDeltaResult(result.getRunnableProbeId());
 		SnmpResult snmpPreviousData = snmpPreviousResults.get(result.getRunnableProbeId());
-		snmpPreviousData.setLastTimestamp(timeStamp);
-		
+		if (snmpPreviousData != null)
+		{
+			snmpPreviousData.setLastTimestamp(timeStamp);
+			snmpDeltaResult.setData(snmpPreviousData.getData(), result.getData());
+		}
+		else
+			snmpDeltaResult.setData(null, result.getData());
 		snmpDeltaResult.setData(snmpPreviousData != null ? snmpPreviousData.getData() : null, result.getData());
 		snmpPreviousResults.put(result.getRunnableProbeId(), result);
 		

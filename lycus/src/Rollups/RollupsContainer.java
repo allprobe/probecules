@@ -378,6 +378,8 @@ public class RollupsContainer implements IRollupsContainer {
 				snmpDataRollup = new DataPointsRollup(result.getRunnableProbeId(), this.getRollupSize(i));
 				snmpDataRollups.get(result.getRunnableProbeId())[i] = snmpDataRollup;
 			}
+			if(snmpResults.getNumData()==null)
+				break;
 			snmpDataRollup.add(snmpResults.getLastTimestamp(), snmpResults.getNumData());
 		}
 	}
