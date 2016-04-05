@@ -16,6 +16,8 @@ public class ResultsTask extends BaseTask {
 	private long interval = 30;
 
 	public void run() {
+		Logit.LogError("ResultsTask - run()", "thread results executed!");
+
 		try {
 			Logit.LogInfo("Sending collected results to API...");
 
@@ -31,7 +33,7 @@ public class ResultsTask extends BaseTask {
 				Logit.LogDebug("BREAKPOINT - ResultsTask");
 
 			if (results == null) {
-				Logit.LogDebug("BREAKPOINT - ResultsTask");
+				Logit.LogError("ResultsTask - run()", "BREAKPOINT");
 			}
 			String rpStr = results;
 			if (rpStr.contains("fc46cf87-0872-4e5d-9b83-c44a3d1f3ea6@icmp_1f1aed08-7331-4126-97ef-225e90b4a969"))
