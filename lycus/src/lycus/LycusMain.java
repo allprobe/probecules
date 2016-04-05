@@ -4,21 +4,18 @@
  */
 package lycus;
 
-import java.util.ArrayList;
 import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.TimeUnit;
 
-import com.sun.istack.internal.logging.Logger;
 
 import lycus.GlobalConstants.GlobalConfig;
-import lycus.GlobalConstants.LogType;
 import lycus.ResultsTasks.EventTask;
 import lycus.ResultsTasks.ResultsTask;
 import lycus.ResultsTasks.RollupsDumpTask;
 import lycus.Updates.Updates;
 import lycus.Utils.Logit;
-import lycus.DAL.ApiInterface;
+import lycus.DAL.ApiInterface;;
 
 /**
  * 
