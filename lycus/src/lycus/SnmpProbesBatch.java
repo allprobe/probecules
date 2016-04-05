@@ -9,14 +9,15 @@ import java.util.UUID;
 import org.snmp4j.Snmp;
 import org.snmp4j.TransportMapping;
 import org.snmp4j.transport.DefaultUdpTransportMapping;
+
+import GlobalConstants.LogType;
+import GlobalConstants.Enums.SnmpStoreAs;
 import NetConnection.NetResults;
-import lycus.GlobalConstants.Enums.SnmpStoreAs;
-import lycus.GlobalConstants.LogType;
-import lycus.Probes.SnmpProbe;
-import lycus.Results.SnmpDeltaResult;
-import lycus.Results.SnmpResult;
-import lycus.Rollups.RollupsContainer;
-import lycus.Utils.Logit;
+import Probes.SnmpProbe;
+import Results.SnmpDeltaResult;
+import Results.SnmpResult;
+import Rollups.RollupsContainer;
+import Utils.Logit;
 
 public class SnmpProbesBatch implements Runnable {
 	private String batchId;// hostId@templateId@interval@batchUUID
@@ -152,6 +153,11 @@ public class SnmpProbesBatch implements Runnable {
 
 		try {
 
+			String rpStr = this.getBatchId();
+			if (rpStr.contains(
+					"788b1b9e-d753-4dfa-ac46-61c4374eeb84@0b05919c-6cc0-42cc-a74b-de3b0dcd4a2a@60"))
+				Logit.LogDebug("BREAKPOINT");
+			
 			if (this.getHost().isHostStatus() && this.getHost().isSnmpStatus()) {
 				Host host = this.getHost();
 

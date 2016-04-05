@@ -3,7 +3,7 @@ package lycus;
 import java.util.HashMap;
 import java.util.UUID;
 
-import lycus.Interfaces.IRunnableProbeContainer;
+import Interfaces.IRunnableProbeContainer;
 
 public class RunnableProbeContainer implements IRunnableProbeContainer {
 

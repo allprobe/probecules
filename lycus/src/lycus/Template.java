@@ -4,7 +4,7 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.UUID;
 
-import lycus.Probes.BaseProbe;
+import Probes.BaseProbe;
 
 public class Template {
 	private UUID templateId;

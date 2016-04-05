@@ -12,28 +12,28 @@ import java.util.UUID;
 import org.json.simple.JSONObject;
 import org.snmp4j.smi.OID;
 
-import lycus.GlobalConstants.Constants;
-import lycus.GlobalConstants.Enums;
-import lycus.GlobalConstants.LogType;
-import lycus.GlobalConstants.SnmpDataType;
-import lycus.GlobalConstants.SnmpUnit;
-import lycus.GlobalConstants.TriggerSeverity;
-import lycus.Model.DiscoveryElementParams;
-import lycus.Model.HostParams;
-import lycus.Model.ProbeParams;
-import lycus.Model.SnmpTemplateParams;
-import lycus.Elements.BaseElement;
-import lycus.Elements.DiskElement;
-import lycus.Probes.DiscoveryProbe;
-import lycus.Probes.NicProbe;
-import lycus.Probes.IcmpProbe;
-import lycus.Probes.PortProbe;
-import lycus.Probes.BaseProbe;
-import lycus.Probes.RBLProbe;
-import lycus.Probes.SnmpProbe;
-import lycus.Probes.HttpProbe;
-import lycus.Utils.GeneralFunctions;
-import lycus.Utils.Logit;
+import Elements.BaseElement;
+import Elements.DiskElement;
+import GlobalConstants.Constants;
+import GlobalConstants.Enums;
+import GlobalConstants.LogType;
+import GlobalConstants.SnmpDataType;
+import GlobalConstants.SnmpUnit;
+import GlobalConstants.TriggerSeverity;
+import Model.DiscoveryElementParams;
+import Model.HostParams;
+import Model.ProbeParams;
+import Model.SnmpTemplateParams;
+import Probes.BaseProbe;
+import Probes.DiscoveryProbe;
+import Probes.HttpProbe;
+import Probes.IcmpProbe;
+import Probes.NicProbe;
+import Probes.PortProbe;
+import Probes.RBLProbe;
+import Probes.SnmpProbe;
+import Utils.GeneralFunctions;
+import Utils.Logit;
 
 public class User {
 	private UUID userId;
@@ -191,7 +191,7 @@ public class User {
 		for (RunnableProbe rp : rps) {
 			if (rp.getId().contains(
 					"0b05919c-6cc0-42cc-a74b-de3b0dcd4a2a@6aadf750-e887-43ee-b872-326c94fbab7c@discovery_6b54463e-fe1c-4e2c-a090-452dbbf2d510"))
-				System.out.println("BREAKPOINT");
+				Logit.LogDebug("BREAKPOINT");
 			this.startRunnableProbe(rp);
 		}
 	}

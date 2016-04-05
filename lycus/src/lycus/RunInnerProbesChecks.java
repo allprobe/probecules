@@ -10,15 +10,15 @@ import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.ScheduledFuture;
 import java.util.concurrent.TimeUnit;
 
-import lycus.GlobalConstants.GlobalConfig;
-import lycus.GlobalConstants.LogType;
-import lycus.GlobalConstants.ProbeTypes;
-import lycus.Probes.IcmpProbe;
-import lycus.Probes.PortProbe;
-import lycus.Probes.RBLProbe;
-import lycus.Probes.SnmpProbe;
-import lycus.Probes.HttpProbe;
-import lycus.Utils.Logit;
+import GlobalConstants.GlobalConfig;
+import GlobalConstants.LogType;
+import GlobalConstants.ProbeTypes;
+import Probes.HttpProbe;
+import Probes.IcmpProbe;
+import Probes.PortProbe;
+import Probes.RBLProbe;
+import Probes.SnmpProbe;
+import Utils.Logit;
 
 /**
  * 

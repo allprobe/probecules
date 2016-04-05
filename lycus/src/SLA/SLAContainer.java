@@ -1,9 +1,9 @@
 package SLA;
 
-import lycus.Results.BaseResult;
-import lycus.Results.PingResult;
-import lycus.Results.PortResult;
-import lycus.Results.WebResult;
+import Results.BaseResult;
+import Results.PingResult;
+import Results.PortResult;
+import Results.WebResult;
 
 public class SLAContainer {
 	private SLAObject webSLA;

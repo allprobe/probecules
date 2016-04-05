@@ -5,7 +5,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.UUID;
 
-import lycus.Elements.NicElement;
+import Elements.NicElement;
 
 public class Host {
 	private UUID hostId;

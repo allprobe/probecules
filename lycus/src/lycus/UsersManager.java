@@ -19,24 +19,24 @@ import org.json.simple.JSONArray;
 import org.json.simple.parser.JSONParser;
 import com.google.gson.Gson;
 
-import lycus.GlobalConstants.Constants;
-import lycus.GlobalConstants.Enums;
-import lycus.GlobalConstants.Enums.HostType;
-import lycus.GlobalConstants.LogType;
-import lycus.GlobalConstants.SnmpDataType;
-import lycus.GlobalConstants.SnmpUnit;
-import lycus.GlobalConstants.TriggerSeverity;
-import lycus.Model.ConditionUpdateModel;
-import lycus.Model.DiscoveryElementParams;
-import lycus.Model.HostParams;
-import lycus.Model.ProbeParams;
-import lycus.Model.SnmpTemplateParams;
-import lycus.Utils.GeneralFunctions;
-import lycus.Utils.Logit;
-import lycus.DAL.ApiInterface;
-import lycus.Elements.BaseElement;
-import lycus.Probes.BaseProbe;
-import lycus.Probes.NicProbe;
+import DAL.ApiInterface;
+import Elements.BaseElement;
+import GlobalConstants.Constants;
+import GlobalConstants.Enums;
+import GlobalConstants.LogType;
+import GlobalConstants.SnmpDataType;
+import GlobalConstants.SnmpUnit;
+import GlobalConstants.TriggerSeverity;
+import GlobalConstants.Enums.HostType;
+import Model.ConditionUpdateModel;
+import Model.DiscoveryElementParams;
+import Model.HostParams;
+import Model.ProbeParams;
+import Model.SnmpTemplateParams;
+import Probes.BaseProbe;
+import Probes.NicProbe;
+import Utils.GeneralFunctions;
+import Utils.Logit;
 import lycus.DataPointsRollup;
 
 /**
@@ -297,7 +297,7 @@ public class UsersManager {
 				String rpStr = probeParams.probe_id;
 				if (rpStr.contains(
 						"inner_657259e4-b70b-47d2-9e4a-3db904a367e1"))
-					System.out.println("BREAKPOINT");
+					Logit.LogDebug("BREAKPOINT");
 				probeParams.name = (String) probeJson.get("probe_name");
 				probeParams.interval = Long.parseLong(probeJson.get("probe_interval").toString());
 				probeParams.multiplier =GeneralFunctions.isNullOrEmpty(probeJson.get("probe_multiplier").toString())?1:Float.parseFloat(probeJson.get("probe_multiplier").toString());
@@ -401,7 +401,7 @@ public class UsersManager {
 				String rpStr = triggerId;
 				if (rpStr.contains(
 						"e8b03d1e-48c8-4bd1-abeb-7e9a96a4cae4@icmp_41468c4c-c7d4-4dae-bd03-a5b2ca0b44d6@2b082834-7c37-4988-a12a-14947b064430"))
-					System.out.println("BREAKPOINT");
+					Logit.LogDebug("BREAKPOINT");
 				
 				
 				String name = (String) triggerJson.get("name");
@@ -536,7 +536,7 @@ public class UsersManager {
 
 			if (rpID.contains(
 					"0b05919c-6cc0-42cc-a74b-de3b0dcd4a2a@788b1b9e-d753-4dfa-ac46-61c4374eeb84@inner_b0fb65d1-c50d-4639-a728-0f173588f56b"))
-				System.out.println("BREAKPOINT");
+				Logit.LogDebug("BREAKPOINT");
 
 			User u = getUsers().get(userID);
 			Host host = u.getHosts().get(UUID.fromString(rpID.split("@")[1]));
@@ -566,8 +566,7 @@ public class UsersManager {
 
 	public static void printUsers() {
 		for (User user : getUsers().values()) {
-			System.out.println("---User:" + user.getUserId() + "---");
-			System.out.println(user.toString());
+			Logit.LogDebug("---User:" + user.getUserId() + "---"+user.toString());
 		}
 	}
 

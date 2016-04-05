@@ -54,11 +54,11 @@ import org.snmp4j.util.TreeEvent;
 import org.snmp4j.util.TreeListener;
 import org.snmp4j.util.TreeUtils;
 
+import GlobalConstants.GlobalConfig;
+import GlobalConstants.LogType;
+import Utils.GeneralFunctions;
+import Utils.Logit;
 import lycus.Host;
-import lycus.GlobalConstants.GlobalConfig;
-import lycus.GlobalConstants.LogType;
-import lycus.Utils.GeneralFunctions;
-import lycus.Utils.Logit;
 
 /**
  * 
@@ -327,8 +327,8 @@ public class Net {
 
 		if (request.getIsTimeOut()) {
 			webResults.add(0);
-			webResults.add(0);
-			webResults.add(0);
+			webResults.add(0L);
+			webResults.add(0L);
 			return webResults;
 		} else {
 
@@ -353,8 +353,8 @@ public class Net {
 				return webResults;
 			} else {
 				webResults.add(-1);
-				webResults.add(-1);
-				webResults.add(-1);
+				webResults.add(-1L);
+				webResults.add(-1L);
 				return webResults;
 			}
 
@@ -1206,8 +1206,7 @@ public class Net {
 					// (System.nanoTime()-startTime)/SnmpConstants.MILLISECOND_TO_NANOSECOND+"
 					// milliseconds");
 					if (e.isError()) {
-						System.err.println("The following error occurred during walk:");
-						System.err.println(e.getErrorMessage());
+						Logit.LogError("Net - Snmp3Walk", "The following error occurred during walk:"+e.getErrorMessage());
 					}
 					finished = true;
 					synchronized (this) {
@@ -1225,7 +1224,7 @@ public class Net {
 				try {
 					treeListener.wait();
 				} catch (InterruptedException ex) {
-					System.err.println("Tree retrieval interrupted: " + ex.getMessage());
+					Logit.LogError("Net - Snmp3Walk()", "Tree retrieval interrupted: " + ex.getMessage());
 					Thread.currentThread().interrupt();
 				}
 				return walkResults;

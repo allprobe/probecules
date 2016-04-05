@@ -8,10 +8,10 @@ import java.util.Set;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ScheduledFuture;
 
-import lycus.GlobalConstants.GlobalConfig;
-import lycus.GlobalConstants.LogType;
-import lycus.Probes.BaseProbe;
-import lycus.Utils.Logit;
+import GlobalConstants.GlobalConfig;
+import GlobalConstants.LogType;
+import Probes.BaseProbe;
+import Utils.Logit;
 
 public class SnmpManager {
 	private User user;
@@ -141,7 +141,7 @@ public class SnmpManager {
 		String rpStr = rp.getId();
 		if (rpStr.contains(
 				"ca49f95f-3676-4129-86d9-34f87433314c@7352a46f-5189-428c-b4c0-fb98dedd10b1@inner_7be55137-c5d8-438e-bca7-325f56656071"))
-			System.out.println("BREAKPOINT");
+				Logit.LogDebug("BREAKPOINT");
 		
 		if (rp != null) {
 			SnmpProbesBatch batch = this.addRPtoBatches(rp);

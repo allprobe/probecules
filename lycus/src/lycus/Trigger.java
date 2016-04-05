@@ -2,9 +2,9 @@ package lycus;
 
 import java.util.ArrayList;
 
-import lycus.GlobalConstants.SnmpUnit;
-import lycus.GlobalConstants.TriggerSeverity;
-import lycus.Probes.BaseProbe;
+import GlobalConstants.SnmpUnit;
+import GlobalConstants.TriggerSeverity;
+import Probes.BaseProbe;
 
 public class Trigger implements Cloneable {
 	private String triggerId;

@@ -16,7 +16,7 @@ import org.apache.http.client.methods.HttpPost;
 import org.apache.http.client.methods.HttpRequestBase;
 import org.apache.http.impl.client.HttpClientBuilder;
 
-import lycus.Utils.GeneralFunctions;
+import Utils.GeneralFunctions;
 
 /**
  *

@@ -2,7 +2,7 @@ package lycus;
 
 import org.json.simple.JSONArray;
 
-import lycus.GlobalConstants.DataPointsRollupSize;
+import GlobalConstants.DataPointsRollupSize;
 
 public class DataPointsRollup {
 	private String runnableProbeId;

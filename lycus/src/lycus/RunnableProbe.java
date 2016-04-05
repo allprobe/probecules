@@ -1,19 +1,20 @@
 package lycus;
 
 import java.util.concurrent.ScheduledFuture;
-import lycus.GlobalConstants.LogType;
-import lycus.GlobalConstants.ProbeTypes;
-import lycus.Elements.BaseElement;
-import lycus.Probes.DiscoveryProbe;
-import lycus.Probes.IcmpProbe;
-import lycus.Probes.PortProbe;
-import lycus.Probes.BaseProbe;
-import lycus.Probes.RBLProbe;
-import lycus.Probes.SnmpProbe;
-import lycus.Probes.HttpProbe;
-import lycus.Results.BaseResult;
-import lycus.Rollups.RollupsContainer;
-import lycus.Utils.Logit;
+
+import Elements.BaseElement;
+import GlobalConstants.LogType;
+import GlobalConstants.ProbeTypes;
+import Probes.BaseProbe;
+import Probes.DiscoveryProbe;
+import Probes.HttpProbe;
+import Probes.IcmpProbe;
+import Probes.PortProbe;
+import Probes.RBLProbe;
+import Probes.SnmpProbe;
+import Results.BaseResult;
+import Rollups.RollupsContainer;
+import Utils.Logit;
 
 public class RunnableProbe implements Runnable {
 	private Host host;
@@ -94,8 +95,8 @@ public class RunnableProbe implements Runnable {
 
 		String rpStr = this.getHost().getHostId().toString()+"@"+getProbe().getProbe_id();
 		if (rpStr.contains(
-				"ff00ff2c-0f40-4616-9ac4-a71447b22431@inner_33695a83-654d-4177-b90d-0a89c5f0120d"))
-			System.out.println("BREAKPOINT - RunnableProbe");
+				"c3f052eb-d8e3-4672-9bab-cb25fc6e702f@http_50c8db3b-3352-4954-a599-5224ed9b0ea4"))
+			Logit.LogDebug("BREAKPOINT - RunnableProbe");
 		
 		
 		try {

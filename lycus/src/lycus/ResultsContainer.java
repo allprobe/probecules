@@ -12,14 +12,14 @@ import org.json.simple.JSONObject;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 
+import DAL.ApiInterface;
+import GlobalConstants.Enums;
+import Interfaces.IResultsContainer;
+import Results.BaseResult;
+import Rollups.RollupsContainer;
 import SLA.SLAContainer;
-import lycus.DAL.ApiInterface;
-import lycus.GlobalConstants.Enums;
-import lycus.Results.BaseResult;
-import lycus.Rollups.RollupsContainer;
-import lycus.Utils.GeneralFunctions;
-import lycus.Utils.Logit;
-import lycus.Interfaces.IResultsContainer;
+import Utils.GeneralFunctions;
+import Utils.Logit;
 
 public class ResultsContainer implements IResultsContainer {
 	private static ResultsContainer instance;
