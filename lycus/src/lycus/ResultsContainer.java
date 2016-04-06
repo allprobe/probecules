@@ -287,8 +287,9 @@ public class ResultsContainer implements IResultsContainer {
 		// .registerSubtype(ObixBaseObj.class)
 		// .registerSubtype(ObixOp.class);
 		JSONArray resultsDBFormat = new JSONArray();
-		for (BaseResult result : results) {
-			JSONObject resultDBFormat = rawResultsDBFormat(result);
+		for(int i=0;i<results.size();i++)
+		{
+			JSONObject resultDBFormat = rawResultsDBFormat(results.get(i));
 			resultsDBFormat.add(resultDBFormat);
 		}
 		return resultsDBFormat.toString();

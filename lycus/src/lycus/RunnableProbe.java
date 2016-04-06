@@ -95,7 +95,7 @@ public class RunnableProbe implements Runnable {
 
 		String rpStr = this.getHost().getHostId().toString()+"@"+getProbe().getProbe_id();
 		if (rpStr.contains(
-				"c3f052eb-d8e3-4672-9bab-cb25fc6e702f@http_50c8db3b-3352-4954-a599-5224ed9b0ea4"))
+				"6c32a465-2f46-4b69-aedb-99b8c027bf47@icmp_ab46ce77-719a-49ae-aaa6-88d634a6d562"))
 			Logit.LogDebug("BREAKPOINT - RunnableProbe");
 		
 		

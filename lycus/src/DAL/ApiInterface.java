@@ -48,8 +48,8 @@ public class ApiInterface {
 			fullUrl += "http://";
 		fullUrl += GlobalConfig.getApiUrl();
 		apiUrl = fullUrl;
-		createFailsFolder();
-		processOfflineRequests();
+//		createFailsFolder();
+//		processOfflineRequests();
 		return true;
 	}
 

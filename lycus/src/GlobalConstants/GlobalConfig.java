@@ -247,7 +247,7 @@ public class GlobalConfig {
         	System.err.println("Global Initialization Failed!");
         	return false;
         }
-        System.err.println("Global Initialization Succeed!");
+        System.out.println("Global Initialization Succeed!");
         return true;
     }
 
