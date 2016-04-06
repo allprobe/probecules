@@ -15,6 +15,7 @@ import com.google.gson.JsonElement;
 import com.google.gson.JsonParser;
 
 import DAL.ApiInterface;
+import DAL.DAL;
 import GlobalConstants.DataPointsRollupSize;
 import GlobalConstants.Enums;
 import Interfaces.IRollupsContainer;
@@ -321,7 +322,7 @@ public class RollupsContainer implements IRollupsContainer {
 		resultsStrings.add(dataPointsRollup2.getResultString());
 		rollup.put("RESULTS", resultsStrings.toString());
 		rollup.put("RUNNABLE_PROBE_ID", dataPointsRollup1.getRunnableProbeId());
-		rollup.put("ROLLUP_SIZE", dataPointsRollup1.getTimePeriod());
+		rollup.put("ROLLUP_SIZE", dataPointsRollup1.getTimePeriod().toString());
 		rollup.put("USER_ID", RunnableProbeContainer.getInstanece().get(dataPointsRollup1.getRunnableProbeId())
 				.getProbe().getUser().getUserId().toString());
 
@@ -442,14 +443,22 @@ public class RollupsContainer implements IRollupsContainer {
 
 	public boolean mergeExistingRollupsFromMemDump() {
 		Logit.LogInfo("Retrieving existing rollups from DB...");
-		Object rollupsUnDecoded = ApiInterface.executeRequest(Enums.ApiAction.GetServerMemoryDump, "GET", null);
 
-		if (rollupsUnDecoded == null || ((String) rollupsUnDecoded).equals("0\n")) {
+		JSONObject rollupsUnDecoded = DAL.getInstanece().get(Enums.ApiAction.GetServerMemoryDump);
+
+//		Object rollupsUnDecoded = ApiInterface.executeRequest(Enums.ApiAction.GetServerMemoryDump, "GET", null);
+
+		if (rollupsUnDecoded == null) {
 			Logit.LogWarn("Unable to retrieve existing rollups!");
 			return false;
 		}
 
-		String rollups = ((String) rollupsUnDecoded).substring(1, ((String) rollupsUnDecoded).length() - 1);
+		if(rollupsUnDecoded.get("last_rollups")==null)
+		{
+			return true;
+		}
+		
+		String rollups = (String)rollupsUnDecoded.get("last_rullups");
 
 		ArrayList<DataPointsRollup[][]> rollupses = this.deserializeRollups(rollups);
 		for (DataPointsRollup[][] rollupsResult : rollupses) {
