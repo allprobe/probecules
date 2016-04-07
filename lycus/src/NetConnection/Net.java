@@ -1056,8 +1056,9 @@ public class Net {
 					// (System.nanoTime()-startTime)/SnmpConstants.MILLISECOND_TO_NANOSECOND+"
 					// milliseconds");
 					if (e.isError()) {
-						Logit.LogError("Net - Snmp2Walk", "The following error occurred during walk:"
+						Logit.LogWarn("The following error occurred during walk:"
 								+ e.getErrorMessage() + ", for host: " + ip);
+						return;
 					}
 					finished = true;
 					synchronized (this) {
@@ -1206,7 +1207,8 @@ public class Net {
 					// (System.nanoTime()-startTime)/SnmpConstants.MILLISECOND_TO_NANOSECOND+"
 					// milliseconds");
 					if (e.isError()) {
-						Logit.LogError("Net - Snmp3Walk", "The following error occurred during walk:"+e.getErrorMessage());
+						Logit.LogWarn("The following error occurred during walk:"+e.getErrorMessage());
+						return;
 					}
 					finished = true;
 					synchronized (this) {

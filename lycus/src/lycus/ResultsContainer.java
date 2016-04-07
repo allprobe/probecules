@@ -71,12 +71,27 @@ public class ResultsContainer implements IResultsContainer {
 	}
 
 	public boolean clear() {
-		synchronized (lockEvents) {
-			events.clear();
-		}
+//		synchronized (lockEvents) {
+//			
+//			events.clear();
+//		}
+		eventsClear();
 		// TODO: Leave 10 last results from each kind on the list
 		results.clear();
 		return true;
+	}
+
+	private void eventsClear() {
+		for (Map.Entry<String,ConcurrentHashMap<String, Event>> runnableProbeEvents : events.entrySet()) {
+			String runnableProbeId=runnableProbeEvents.getKey();
+			for (Map.Entry<String, Event> triggerEvent : runnableProbeEvents.getValue().entrySet()) {
+				String triggerId = triggerEvent.getKey();
+				Event event = triggerEvent.getValue();
+				if (event.isStatus() && event.isSent()) {
+					runnableProbeEvents.getValue().remove(triggerId);
+				}
+			}
+		}
 	}
 
 	private JSONObject rawResultsDBFormat(BaseResult rpr) {
