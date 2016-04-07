@@ -45,13 +45,14 @@ public class DAL implements IDAL {
 	public JSONObject get(ApiAction action) {
 		String fullUrl = getApiUrl();
 		fullUrl += "/" + action.name() + "/";
-		fullUrl += GlobalConfig.getDataCenterID() + "-" + GlobalConfig.getThisHostToken() + "/" + GlobalConfig.getApiAuthToken();
+		fullUrl += GlobalConfig.getDataCenterID() + "-" + GlobalConfig.getThisHostToken() + "/"
+				+ GlobalConfig.getApiAuthToken();
 
 		URL url;
 		try {
 			url = new URL(fullUrl);
 		} catch (MalformedURLException e) {
-			Logit.LogFatal("DAL - get","Unable to process URL: " + fullUrl + ", failed to communicate with API!");
+			Logit.LogFatal("DAL - get", "Unable to process URL: " + fullUrl + ", failed to communicate with API!");
 			return null;
 		}
 
@@ -59,18 +60,21 @@ public class DAL implements IDAL {
 		try {
 			conn = (HttpURLConnection) url.openConnection();
 		} catch (IOException e) {
-			Logit.LogFatal("DAL - get","Unable to open connection with URL: " + fullUrl + ", failed to communicate with API!");
+			Logit.LogFatal("DAL - get",
+					"Unable to open connection with URL: " + fullUrl + ", failed to communicate with API!");
 			return null;
 		}
 
 		try {
 			conn.setRequestMethod(Constants.get);
 		} catch (ProtocolException e) {
-			Logit.LogFatal("DAL - get","Unable to set GET request method for URL: " + fullUrl + ", failed to communicate with API!");
+			Logit.LogFatal("DAL - get",
+					"Unable to set GET request method for URL: " + fullUrl + ", failed to communicate with API!");
 			return null;
 		}
 
-		String authCredentials = GeneralFunctions.Base64Encode(GlobalConfig.getApiUser() + ":" + GlobalConfig.getApiPass());
+		String authCredentials = GeneralFunctions
+				.Base64Encode(GlobalConfig.getApiUser() + ":" + GlobalConfig.getApiPass());
 		conn.setRequestProperty("Authorization", "Basic " + authCredentials);
 		conn.setDoOutput(true);
 		conn.setUseCaches(false);
@@ -79,16 +83,19 @@ public class DAL implements IDAL {
 		try {
 			String result = executeGetRequest(conn);
 			if (conn.getResponseCode() == HttpURLConnection.HTTP_OK) {
+				JSONParser jsonParser = new JSONParser();
 				JSONObject jsonData;
-				jsonData = (JSONObject) ((new JSONParser()).parse(result.toString()));
+				jsonData=(JSONObject) jsonParser.parse(result);
 				return jsonData;
 			}
 		} catch (ParseException pe) {
-			Logit.LogFatal("DAL - get","Unable to parse json string from URL: " + fullUrl + ", failed to init server!");
+			Logit.LogFatal("DAL - get",
+					"Unable to parse json string from URL: " + fullUrl + ", failed to init server!");
 			return null;
 
 		} catch (Exception e) {
-			Logit.LogFatal("DAL - get","Failed to request URL: " + fullUrl + ", response code is different than 200 OK !");
+			Logit.LogFatal("DAL - get",
+					"Failed to request URL: " + fullUrl + ", response code is different than 200 OK !");
 			return null;
 		} finally {
 			conn.disconnect();
@@ -100,13 +107,14 @@ public class DAL implements IDAL {
 	public JSONObject put(ApiAction action, JSONObject reqBody) {
 		String fullUrl = getApiUrl();
 		fullUrl += "/" + action.name() + "/";
-		fullUrl += GlobalConfig.getDataCenterID() + "-" + GlobalConfig.getThisHostToken() + "/" + GlobalConfig.getApiAuthToken();
+		fullUrl += GlobalConfig.getDataCenterID() + "-" + GlobalConfig.getThisHostToken() + "/"
+				+ GlobalConfig.getApiAuthToken();
 
 		URL url;
 		try {
 			url = new URL(fullUrl);
 		} catch (MalformedURLException e) {
-			
+
 			Logit.LogError("DAL - put", "Unable to process URL: " + fullUrl + ", failed to communicate with API!");
 			return null;
 		}
@@ -114,17 +122,20 @@ public class DAL implements IDAL {
 		try {
 			conn = (HttpURLConnection) url.openConnection();
 		} catch (IOException e) {
-			Logit.LogError("DAL - put","Unable to open connection with URL: " + fullUrl + ", failed to communicate with API!");
+			Logit.LogError("DAL - put",
+					"Unable to open connection with URL: " + fullUrl + ", failed to communicate with API!");
 			return null;
 		}
 
 		try {
 			conn.setRequestMethod(Constants.put);
 		} catch (ProtocolException e) {
-			Logit.LogError("DAL - put", "Unable to set PUT request method for URL: " + fullUrl + ", failed to communicate with API!");
+			Logit.LogError("DAL - put",
+					"Unable to set PUT request method for URL: " + fullUrl + ", failed to communicate with API!");
 			return null;
 		}
-		String authCredentials = GeneralFunctions.Base64Encode(GlobalConfig.getApiUser() + ":" + GlobalConfig.getApiPass());
+		String authCredentials = GeneralFunctions
+				.Base64Encode(GlobalConfig.getApiUser() + ":" + GlobalConfig.getApiPass());
 		conn.setRequestProperty("Authorization", "Basic " + authCredentials);
 		conn.setDoOutput(true);
 		conn.setUseCaches(false);
@@ -133,13 +144,16 @@ public class DAL implements IDAL {
 		try {
 			String response = executePutRequest(conn, reqBody.toJSONString());
 			if (conn.getResponseCode() == HttpURLConnection.HTTP_OK)
-				return response.equals("") ? null :  (JSONObject) ((new JSONParser()).parse(response.toString()));;
+				return response.equals("") ? null : (JSONObject) ((new JSONParser()).parse(response.toString()));
+			;
 		} catch (ParseException pe) {
-			Logit.LogError("DAL - put", "Unable to parse json string from URL: " + fullUrl + ", failed to init server!");
+			Logit.LogError("DAL - put",
+					"Unable to parse json string from URL: " + fullUrl + ", failed to init server!");
 			return null;
 
 		} catch (Exception e) {
-			Logit.LogError("DAL - put", "Failed to request URL: " + fullUrl + ", response code is different than 200 OK !");
+			Logit.LogError("DAL - put",
+					"Failed to request URL: " + fullUrl + ", response code is different than 200 OK !");
 			return null;
 		} finally {
 			conn.disconnect();
@@ -179,7 +193,7 @@ public class DAL implements IDAL {
 			sb.append("\n");
 		}
 		rd.close();
-		
+
 		return sb.toString();
 	}
 }

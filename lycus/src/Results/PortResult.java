@@ -5,6 +5,7 @@ import java.util.HashMap;
 import org.json.simple.JSONArray;
 
 import GlobalConstants.ProbeTypes;
+import Utils.Logit;
 import lycus.Trigger;
 import lycus.TriggerCondition;
 
@@ -119,7 +120,15 @@ public class PortResult extends BaseResult {
 	private boolean checkForResponseTimeTrigger(Trigger trigger) {
 		boolean flag = false;
 		for (TriggerCondition condition : trigger.getCondtions()) {
-			long x = Long.parseLong(condition.getxValue());
+			long x ;
+			try{
+			x = Long.parseLong(condition.getxValue());
+			}
+			catch(Exception e)
+			{
+				Logit.LogError("PortResult - checkForResponseTimeTrigger", "Unable to parse trigger X value for triggerId: "+trigger.getTriggerId()+", E: "+e.getMessage());
+				throw e;
+			}
 			long lastValue = this.getResponseTime();
 			switch (condition.getCode()) {
 			case 1:

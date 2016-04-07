@@ -127,7 +127,7 @@ public class PortProbe extends BaseProbe {
 
 		String rpStr = h.getHostId().toString()+"@"+this.getProbe_id();
 		if (rpStr.contains("9dc99972-e28a-4e90-aabd-7e8bad61b232@inner_657259e4-b70b-47d2-9e4a-3db904a367e1"))
-			System.out.println("BREAKPOINT - PorterProbe");
+			Logit.LogDebug("BREAKPOINT - PorterProbe");
 		
 		PortResult results = NetResults.getInstanece().getPortResult(h,this);
 		return results;

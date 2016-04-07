@@ -48,10 +48,11 @@ public class RollupsDumpTask extends BaseTask {
 
 		Logit.LogInfo("Sending current live rollups dump to API...");
 
-		JSONObject jsonObject = new JSONObject();
-		jsonObject.put("last_rollups", rollupsEncoded);
+//		JSONObject jsonObject=new JSONObject();
+//		jsonObject.put("last_rollups", rollupsEncoded);
 
-		String sendString = jsonObject.toString();
+		String sendString="{\"last_rollups\":\""+rollupsEncoded+"\"}";
+
 		ApiInterface.executeRequest(Enums.ApiAction.FlushServerMemory, "PUT", sendString);
 	}
 

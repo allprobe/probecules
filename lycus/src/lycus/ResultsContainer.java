@@ -6,6 +6,7 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.UUID;
+import java.util.concurrent.ConcurrentHashMap;
 
 import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
@@ -24,7 +25,7 @@ import Utils.Logit;
 public class ResultsContainer implements IResultsContainer {
 	private static ResultsContainer instance;
 	private List<BaseResult> results;
-	private HashMap<String, HashMap<String, Event>> events; // HashMap<runnableProbeId,
+	private ConcurrentHashMap<String, ConcurrentHashMap<String, Event>> events; // HashMap<runnableProbeId,
 															// HashMap<triggerId,
 															// Event>>
 	private SLAContainer slaContainer;
@@ -34,7 +35,7 @@ public class ResultsContainer implements IResultsContainer {
 
 	private ResultsContainer() {
 		results = new ArrayList<BaseResult>();
-		events = new HashMap<String, HashMap<String, Event>>();
+		events = new ConcurrentHashMap<String, ConcurrentHashMap<String, Event>>();
 	}
 
 	public static ResultsContainer getInstance() {
@@ -44,22 +45,22 @@ public class ResultsContainer implements IResultsContainer {
 	}
 
 	public Event getEvent(String runnableProbeId, String triggerId) {
-		HashMap<String, Event> runnableProbeEvents = events.get(runnableProbeId);
+		ConcurrentHashMap<String, Event> runnableProbeEvents = events.get(runnableProbeId);
 		if (runnableProbeEvents == null)
 			return null;
 		return runnableProbeEvents.get(triggerId);
 	}
 
-	public HashMap<String, Event> getEvent(String runnableProbeId) {
+	public ConcurrentHashMap<String, Event> getEvent(String runnableProbeId) {
 		return events.get(runnableProbeId);
 	}
 
 	public boolean addEvent(String runnableProbeId, String triggerId, Event event) {
-		HashMap<String, Event> runnableProbeEvents = null;
+		ConcurrentHashMap<String, Event> runnableProbeEvents = null;
 		if (events.containsKey(runnableProbeId))
 			runnableProbeEvents = events.get(runnableProbeId);
 		else {
-			runnableProbeEvents = new HashMap<String, Event>();
+			runnableProbeEvents = new ConcurrentHashMap<String, Event>();
 		}
 
 		runnableProbeEvents.put(triggerId, event);
@@ -317,9 +318,9 @@ public class ResultsContainer implements IResultsContainer {
 	@Override
 	public String getEvents() {
 		ArrayList<HashMap<String, HashMap<String, String>>> eventsToSend = new ArrayList<HashMap<String, HashMap<String, String>>>();
-		for (Map.Entry<String, HashMap<String, Event>> runnableProbeEventsEntry : events.entrySet()) {
+		for (Map.Entry<String, ConcurrentHashMap<String, Event>> runnableProbeEventsEntry : events.entrySet()) {
 			String runnableProbeId = runnableProbeEventsEntry.getKey();
-			HashMap<String, Event> runnableProbeEvents = runnableProbeEventsEntry.getValue();
+			ConcurrentHashMap<String, Event> runnableProbeEvents = runnableProbeEventsEntry.getValue();
 
 			for (Map.Entry<String, Event> triggerEvent : runnableProbeEvents.entrySet()) {
 				String triggerId = triggerEvent.getKey();
