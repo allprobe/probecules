@@ -6,7 +6,7 @@ public class UserUpdate extends BaseUpdate{
 
 	public UserUpdate(UpdateModel update) {
 		super(update);
-		// TODO Auto-generated constructor stub
+		// TODO UserUpdate()
 	}
 	
 	@Override

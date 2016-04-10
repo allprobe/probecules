@@ -6,7 +6,6 @@ import Utils.Logit;
 public class BucketUpdate  extends BaseUpdate{
 	public BucketUpdate(UpdateModel update) {
 		super(update);
-		// TODO Auto-generated constructor stub
 	}
 
 	@Override

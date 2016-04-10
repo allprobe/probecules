@@ -17,7 +17,7 @@ public class TriggerUpdate extends BaseUpdate {
 
 	public TriggerUpdate(UpdateModel update) {
 		super(update);
-		// TODO Auto-generated constructor stub
+		// TODO TriggerUpdate()
 	}
 	
 	@Override

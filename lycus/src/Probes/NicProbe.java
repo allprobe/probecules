@@ -101,7 +101,6 @@ public class NicProbe extends BaseProbe  {
 //				
 //				
 ////				long ifTotalTraffic = Long.parseLong(ifInResults) + Long.parseLong(ifOutResults);
-//				// TODO: add this.getIfSpeed() to results
 ////				results.add(ifTotalTraffic);
 //				
 //				

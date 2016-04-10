@@ -23,7 +23,6 @@ public class HostUpdate extends BaseUpdate {
 
 	public HostUpdate(UpdateModel update) {
 		super(update);
-		// TODO Auto-generated constructor stub
 	}
 
 	@Override

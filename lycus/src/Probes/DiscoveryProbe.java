@@ -55,14 +55,9 @@ public class DiscoveryProbe extends BaseProbe {
 		return discoveryResult;
 	}
 
-	private BaseResult checkForDisksElements(Host h) {
-		// TODO DiscoveryProbe.checkForDisksElements
-		return null;
-	}
 
 	
 
-		//TODO: discoveryResult.getCurrentElements() != null
 //		for (Map.Entry<String, BaseElement> lastElement : lastScanElements.entrySet()) {
 //			if (discoveryResult.getCurrentElements().get(lastElement.getKey()) == null) {
 //				elementsChanges.put(lastElement.getValue(), ElementChange.addedElement);
@@ -91,10 +86,7 @@ public class DiscoveryProbe extends BaseProbe {
 
 	
 
-	private HashMap<String, BaseElement> convertDisksWalkToIndexes(HashMap<String, String> hashMap, HostType hostType) {
-		// TODO DiscoveryResults.convertDisksWalkToIndexes
-		return null;
-	}
+	
 
 	
 	

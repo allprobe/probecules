@@ -199,7 +199,7 @@ public class NetResults implements INetResults{
 		String walkOid;
 		
 		long timestamp=System.currentTimeMillis();
-		List<BaseElement> elements=null;
+		HashMap<String,BaseElement> elements=null;
 		switch(probe.getType())
 		{
 		case nics:
@@ -211,11 +211,10 @@ public class NetResults implements INetResults{
 		}
 		if(elements==null)
 			return null;
-		// TODO: handle elements.size()==0, might be a valid result ask Ran
 		discoveryResult=new DiscoveryResult(getRunnableProbeId(probe, host),timestamp,elements);
 		return discoveryResult;
 	}
-	private List<BaseElement> getDiskElements(Host host) {
+	private HashMap<String,BaseElement> getDiskElements(Host host) {
 		// TODO NetResults.getDiskElements()
 		return null;
 	}
@@ -226,10 +225,9 @@ public class NetResults implements INetResults{
 			return Enums.HostType.Windows;
 		return null;
 	}
-	private List<BaseElement> getNicElements(Host h) {
+	private HashMap<String,BaseElement> getNicElements(Host h) {
 		
 		long checkTime;
-		List<BaseElement> nicElements=new ArrayList<BaseElement>(); // ArrayList<NicElement>
 		
 		Map<String, String> ifDescrResults = null;
 		Map<String, String> sysDescrResults = null;
@@ -258,7 +256,7 @@ public class NetResults implements INetResults{
 
 		Enums.HostType hostType = this.getHostType(sysDescrResults.get(Constants.sysDescr.toString()));
 
-		List<BaseElement> lastScanElements=this.convertNicsWalkToElements(ifDescrResults,hostType);
+		HashMap<String,BaseElement> lastScanElements=this.convertNicsWalkToElements(ifDescrResults,hostType);
 		return lastScanElements;
 		
 		
@@ -275,8 +273,9 @@ public class NetResults implements INetResults{
 //			return discoveryResult;
 //		}
 	}
-	private List<BaseElement> convertNicsWalkToElements(Map<String, String> nicsWalk, HostType hostType) {
-		List<BaseElement> lastElements = new ArrayList<BaseElement>();
+	
+	private HashMap<String,BaseElement> convertNicsWalkToElements(Map<String, String> nicsWalk, HostType hostType) {
+		HashMap<String,BaseElement> lastElements = new HashMap<String,BaseElement>();
 		if (hostType == null)
 			return null;
 		for (Map.Entry<String, String> entry : nicsWalk.entrySet()) {
@@ -302,7 +301,7 @@ public class NetResults implements INetResults{
 				return null;
 			}
 			NicElement nicElement = new NicElement(index,name,hostType,ifSpeed);
-			lastElements.add(nicElement);
+			lastElements.put(name,nicElement);
 		}
 
 		if (lastElements.size() == 0)
@@ -315,4 +314,9 @@ public class NetResults implements INetResults{
 		// TODO NetResults.convertDisksWalkToIndexes
 		return null;
 	}
+	private HashMap<String, BaseElement> convertDisksWalkToIndexes(HashMap<String, String> hashMap, HostType hostType) {
+		// TODO DiscoveryResults.convertDisksWalkToIndexes
+		return null;
+	}
+
 }

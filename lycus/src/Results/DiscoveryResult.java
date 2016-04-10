@@ -4,18 +4,20 @@ import java.util.HashMap;
 import java.util.List;
 
 import Elements.BaseElement;
+import Elements.DiskElement;
 import Elements.NicElement;
 import GlobalConstants.Enums;
+import GlobalConstants.Enums.DiscoveryElementType;
 import Utils.JsonUtil;
 import lycus.Trigger;
 
 public class DiscoveryResult extends BaseResult {
 
-	private List<BaseElement> elements;
+	private HashMap<String,BaseElement> elements;//HashMap<elementName,BaseElement>
 
-	public DiscoveryResult(String runnableProbeId,long timestamp,List<BaseElement> elements) {
+	public DiscoveryResult(String runnableProbeId,long timestamp,HashMap<String,BaseElement> elements) {
 		super(runnableProbeId,timestamp);
-		this.elements=elements;
+		this.setElements(elements);
 	}
 	
 	public DiscoveryResult(String runnableProbeId) {
@@ -49,7 +51,17 @@ public class DiscoveryResult extends BaseResult {
 //	}
 
 
-	
+	public DiscoveryElementType getElementsType()
+	{
+		for(BaseElement element:getElements().values())
+		{
+			if(element instanceof NicElement)
+				return DiscoveryElementType.nics;
+			if(element instanceof DiskElement)
+				return DiscoveryElementType.disks;
+		}
+		return null;
+	}
 
 	@Override
 	public void checkIfTriggerd(HashMap<String,Trigger> triggers) throws Exception {
@@ -57,7 +69,7 @@ public class DiscoveryResult extends BaseResult {
 	}
 	@Override
 	public String getResultString() {
-		return JsonUtil.ToJson(this.elements).toString();
+		return JsonUtil.ToJson(this.getElements()).toString();
 	}
 	// returns true if there is any change made on the host elements
 //	private boolean checkForElementsChanges(HashMap<String, BaseElement> lastScanElements, long timestamp) {
@@ -96,6 +108,14 @@ public class DiscoveryResult extends BaseResult {
 //
 //		return true;
 //	}
+
+	public HashMap<String,BaseElement> getElements() {
+		return elements;
+	}
+
+	public void setElements(HashMap<String,BaseElement> elements) {
+		this.elements = elements;
+	}
 
 //	@Override
 //	public HashMap<String, String> getResults() throws Throwable {

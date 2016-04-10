@@ -12,7 +12,7 @@ public class TemplateUpdate  extends BaseUpdate{
 
 	public TemplateUpdate(UpdateModel update) {
 		super(update);
-		// TODO Auto-generated constructor stub
+		// TODO TemplateUpdate()
 	}
 	
 	@Override

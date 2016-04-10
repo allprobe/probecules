@@ -599,22 +599,6 @@ public class User {
 		return null;
 	}
 
-//	public void addNewDiscoveryElement(BaseElement newElement, Host host) {
-//		if(newElement==null || host==null)
-//			return;
-//			
-//		if (newElement instanceof NicProbe) {
-//			this.addNicRunnableProbes((NicProbe) newElement, host);
-//		} else if (newElement instanceof DiskElement) {
-//			this.addDiskRunnableProbes((NicProbe) newElement);
-//		}
-//	}
-
-	private void addDiskRunnableProbes(NicProbe newElement) {
-		// TODO User.addDiskRunnableProbes
-
-	}
-
 //	private void addNicRunnableProbes(NicProbe newElement, Host host) {
 //		this.templateProbes.put(newElement.getProbe_id(), newElement);
 //		if (newElement == null || host == null) {

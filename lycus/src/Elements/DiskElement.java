@@ -8,7 +8,7 @@ public class DiskElement extends BaseElement {
 
 	public DiskElement(int index, String name) {
 		super(index, name);
-		// TODO Auto-generated constructor stub
+		// TODO DiskElement()
 	}
 
 

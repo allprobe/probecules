@@ -10,7 +10,7 @@ import lycus.SnmpTemplate;
 public class SnmpUpdate  extends BaseUpdate{
 	public SnmpUpdate(UpdateModel update) {
 		super(update);
-		// TODO Auto-generated constructor stub
+		// TODO SnmpUpdate()
 	}
 
 	@Override

@@ -129,7 +129,6 @@ public class PingResult extends BaseResult {
 
 	@Override
 	public String getName() {
-		// TODO Auto-generated method stub
 		return super.getName();
 	}
 	@Override

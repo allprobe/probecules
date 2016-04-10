@@ -40,7 +40,8 @@ public class RollupsDumpTask extends BaseTask {
 			if (RollupsContainer.getInstance().mergeExistingRollupsFromMemDump())
 				this.setRollupsMerged(true);
 			else
-				return;
+				;
+//				return;
 		}
 
 		String rollups = RollupsContainer.getInstance().getAllCurrentLiveRollups();

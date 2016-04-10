@@ -187,35 +187,34 @@ public class RollupsContainer implements IRollupsContainer {
 
 	}
 
-	@Override
-	public boolean mergeRollups(JSONArray jsonArray) {
-		Logit.LogInfo("Retrieving existing rollups from DB...");
-		Object rollupsEncoded = ApiInterface.executeRequest(Enums.ApiAction.GetServerMemoryDump, "GET", null);
-
-		if (rollupsEncoded == null || ((String) rollupsEncoded).equals("0\n")) {
-			Logit.LogWarn("Unable to retrieve existing rollups, trying again in about 30 secs...");
-			return false;
-		}
-
-		String rollups = ((String) rollupsEncoded).substring(1, ((String) rollupsEncoded).length() - 1);
-
-		ArrayList<DataPointsRollup[][]> rollupses = this.deserializeRollups(rollups);
-		for (DataPointsRollup[][] rollupsResult : rollupses) {
-			DataPointsRollup sampleRollup = rollupsResult[0][0];
-			String rpID = sampleRollup.getRunnableProbeId();
-
-			BaseResult rpr = ResultsContainer.getInstance().getResult(rpID);
-
-			// TODO: insertExistingRollups - implement
-			// if (rpr != null)
-			// rpr.insertExistingRollups(rollupsResult);
-			// else {
-			// handle runnable probe without results object
-			// }
-		}
-
-		return false;
-	}
+//	@Override
+//	public boolean mergeRollups(JSONArray jsonArray) {
+//		Logit.LogInfo("Retrieving existing rollups from DB...");
+//		Object rollupsEncoded = ApiInterface.executeRequest(Enums.ApiAction.GetServerMemoryDump, "GET", null);
+//
+//		if (rollupsEncoded == null || ((String) rollupsEncoded).equals("0\n")) {
+//			Logit.LogWarn("Unable to retrieve existing rollups, trying again in about 30 secs...");
+//			return false;
+//		}
+//
+//		String rollups = ((String) rollupsEncoded).substring(1, ((String) rollupsEncoded).length() - 1);
+//
+//		ArrayList<DataPointsRollup[][]> rollupses = this.deserializeRollups(rollups);
+//		for (DataPointsRollup[][] rollupsResult : rollupses) {
+//			DataPointsRollup sampleRollup = rollupsResult[0][0];
+//			String rpID = sampleRollup.getRunnableProbeId();
+//
+//			BaseResult rpr = ResultsContainer.getInstance().getResult(rpID);
+//
+//						// if (rpr != null)
+//			// rpr.insertExistingRollups(rollupsResult);
+//			// else {
+//			// handle runnable probe without results object
+//			// }
+//		}
+//
+//		return false;
+//	}
 
 	public ArrayList<DataPointsRollup[][]> deserializeRollups(String rollups) {
 		ArrayList<DataPointsRollup[][]> allRollupsDeserialized = new ArrayList<DataPointsRollup[][]>();
@@ -317,9 +316,9 @@ public class RollupsContainer implements IRollupsContainer {
 		// rp.getProbe().getUser().getUserId().toString());
 		rollup.put("RESULTS_TIME", dataPointsRollup1.getEndTime());
 		// rollup.put("RESULTS_NAME", resultkey.split("@")[1]);
-		JSONArray resultsStrings = new JSONArray();
-		resultsStrings.add(dataPointsRollup1.getResultString());
-		resultsStrings.add(dataPointsRollup2.getResultString());
+		String[] resultsStrings=new String[2];
+		resultsStrings[0]=dataPointsRollup1.getResultString();
+		resultsStrings[1]=dataPointsRollup2.getResultString();
 		rollup.put("RESULTS", resultsStrings.toString());
 		rollup.put("RUNNABLE_PROBE_ID", dataPointsRollup1.getRunnableProbeId());
 		rollup.put("ROLLUP_SIZE", dataPointsRollup1.getTimePeriod().toString());
@@ -337,8 +336,8 @@ public class RollupsContainer implements IRollupsContainer {
 		// rp.getProbe().getUser().getUserId().toString());
 		rollup.put("RESULTS_TIME", dataPointsRollup.getEndTime());
 		// rollup.put("RESULTS_NAME", resultkey.split("@")[1]);
-		JSONArray resultsStrings = new JSONArray();
-		resultsStrings.add(dataPointsRollup.getResultString());
+		String[] resultsStrings=new String[1];
+		resultsStrings[0]=dataPointsRollup.getResultString();
 		rollup.put("RESULTS", resultsStrings);
 		rollup.put("RUNNABLE_PROBE_ID", dataPointsRollup.getRunnableProbeId());
 		rollup.put("ROLLUP_SIZE", dataPointsRollup.getTimePeriod().toString());
@@ -441,8 +440,11 @@ public class RollupsContainer implements IRollupsContainer {
 		}
 	}
 
+	@Override
 	public boolean mergeExistingRollupsFromMemDump() {
 		Logit.LogInfo("Retrieving existing rollups from DB...");
+
+		// TODO: finish mergeExistingRollupsFromMemDump()
 
 		JSONObject rollupsUnDecoded = DAL.getInstanece().get(Enums.ApiAction.GetServerMemoryDump);
 
@@ -465,7 +467,6 @@ public class RollupsContainer implements IRollupsContainer {
 			DataPointsRollup sampleRollup = rollupsResult[0][0];
 			String rpID = sampleRollup.getRunnableProbeId();
 
-			BaseResult rpr = ResultsContainer.getInstance().getResult(rpID);
 		}
 		return true;
 	}

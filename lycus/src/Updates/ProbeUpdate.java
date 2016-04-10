@@ -111,7 +111,6 @@ public class ProbeUpdate extends BaseUpdate {
 		return true;
 	}
 
-	//TODO: check with ROI
 	private boolean ChangeInterval(long currentInterval) {
 		try {
 			if (currentInterval != getUpdate().update_value.interval) {

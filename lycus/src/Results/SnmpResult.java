@@ -232,7 +232,6 @@ public class SnmpResult extends BaseResult {
 		for (Trigger trigger : triggers.values()) {
 
 			boolean triggered = false;
-			// TODO: Check with Roi
 			switch (((SnmpProbe) trigger.getProbe()).getDataType()) {
 			case Numeric:
 				triggered = checkForNumberTrigger(trigger);

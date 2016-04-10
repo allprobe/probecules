@@ -5,7 +5,6 @@ import Model.UpdateModel;
 public class DiscoveryUpdate  extends BaseUpdate{
 	public DiscoveryUpdate(UpdateModel update) {
 		super(update);
-		// TODO Auto-generated constructor stub
 	}
 
 	@Override

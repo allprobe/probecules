@@ -8,7 +8,7 @@ public class SnmpDeltaResult extends SnmpResult {
 	
 	public SnmpDeltaResult(String runnableProbeId) {
 		super(runnableProbeId);
-		// TODO Auto-generated constructor stub
+		// TODO SnmpDeltaResult()
 	}
 
 	public String getData()

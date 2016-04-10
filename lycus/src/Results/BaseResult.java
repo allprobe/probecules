@@ -73,19 +73,7 @@ public class BaseResult implements IResult {
 //		return -1;
 //	}
 
-//	public void changeNumberRollupTables(DataPointsRollup[][] dprs, int newNumber) {
-//		// TODO Auto-generated method stub
-//	}
 
-//	public void insertExistingRollups(DataPointsRollup[][] existing) {
-//		// TODO Auto-generated method stub
-//
-//	}
-//
-//	public DataPointsRollup[][] retrieveExistingRollups() {
-//		// TODO Auto-generated method stub
-//		return null;
-//	}
 
 //	public DataPointsRollup[] initRollupSeries(DataPointsRollup[] rollups) {
 //		int n = this.getNumberOfRollupTables();
@@ -198,12 +186,10 @@ public class BaseResult implements IResult {
 	}
 	@Override
 	public String getName() {
-		// TODO Auto-generated method stub
 		return null;
 	}
 	@Override
 	public String getResultString() {
-		// TODO Auto-generated method stub
 		return null;
 	}
 

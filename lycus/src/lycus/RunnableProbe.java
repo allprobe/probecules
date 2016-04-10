@@ -89,13 +89,13 @@ public class RunnableProbe implements Runnable {
 	}
 
 	public void run() {
-		//TODO: eliminate this from factory
+		//TODO: eliminate this from factory - check with Oren
 	
 		BaseResult result = null;
 
 		String rpStr = this.getHost().getHostId().toString()+"@"+getProbe().getProbe_id();
 		if (rpStr.contains(
-				"ff00ff2c-0f40-4616-9ac4-a71447b22431@inner_33695a83-654d-4177-b90d-0a89c5f0120d"))
+				"9dc99972-e28a-4e90-aabd-7e8bad61b232@inner_657259e4-b70b-47d2-9e4a-3db904a367e1"))
  			Logit.LogDebug("BREAKPOINT - RunnableProbe");
 		
 		

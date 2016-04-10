@@ -8,6 +8,6 @@ import Results.BaseResult;
 public interface IRollupsContainer {
 	boolean addResult(BaseResult result);
 	String getAllFinsihedRollups();
-	boolean mergeRollups(JSONArray jsonArray);
+	boolean mergeExistingRollupsFromMemDump();
 	String getAllCurrentLiveRollups();
 }

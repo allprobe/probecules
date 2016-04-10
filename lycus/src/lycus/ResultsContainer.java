@@ -17,6 +17,7 @@ import DAL.ApiInterface;
 import GlobalConstants.Enums;
 import Interfaces.IResultsContainer;
 import Results.BaseResult;
+import Results.DiscoveryResult;
 import Rollups.RollupsContainer;
 import SLA.SLAContainer;
 import Utils.GeneralFunctions;
@@ -26,10 +27,10 @@ public class ResultsContainer implements IResultsContainer {
 	private static ResultsContainer instance;
 	private List<BaseResult> results;
 	private ConcurrentHashMap<String, ConcurrentHashMap<String, Event>> events; // HashMap<runnableProbeId,
-															// HashMap<triggerId,
-															// Event>>
+	// HashMap<triggerId,
+	// Event>>
 	private SLAContainer slaContainer;
-	
+
 	private Object lockResults = new Object();
 	private Object lockEvents = new Object();
 
@@ -71,10 +72,10 @@ public class ResultsContainer implements IResultsContainer {
 	}
 
 	public boolean clear() {
-//		synchronized (lockEvents) {
-//			
-//			events.clear();
-//		}
+		// synchronized (lockEvents) {
+		//
+		// events.clear();
+		// }
 		eventsClear();
 		// TODO: Leave 10 last results from each kind on the list
 		results.clear();
@@ -82,8 +83,8 @@ public class ResultsContainer implements IResultsContainer {
 	}
 
 	private void eventsClear() {
-		for (Map.Entry<String,ConcurrentHashMap<String, Event>> runnableProbeEvents : events.entrySet()) {
-			String runnableProbeId=runnableProbeEvents.getKey();
+		for (Map.Entry<String, ConcurrentHashMap<String, Event>> runnableProbeEvents : events.entrySet()) {
+			String runnableProbeId = runnableProbeEvents.getKey();
 			for (Map.Entry<String, Event> triggerEvent : runnableProbeEvents.getValue().entrySet()) {
 				String triggerId = triggerEvent.getKey();
 				Event event = triggerEvent.getValue();
@@ -153,9 +154,6 @@ public class ResultsContainer implements IResultsContainer {
 					UUID triggerId = UUID.fromString(it.split("@")[3]);
 					long timestamp = Long.parseLong((String) events.get(it));
 
-					BaseResult result = getResult(templateId.toString() + "@" + hostId.toString() + "@" + probeId);
-					if (result == null)
-						continue;
 					RunnableProbe runnableProbe = RunnableProbeContainer.getInstanece()
 							.get(GeneralFunctions.getRunnableProbeId(templateId, hostId, probeId));
 
@@ -176,20 +174,28 @@ public class ResultsContainer implements IResultsContainer {
 		}
 	}
 
-	// TODO: has to return List<BaseResult> results
-	public BaseResult getResult(String runnableProbeId) {
+	public List<BaseResult> getResult(String runnableProbeId) {
+
+		List<BaseResult> runnableProbeResults = new ArrayList<BaseResult>();
+
 		for (BaseResult result : results) {
 			if (result.getRunnableProbeId().equals(runnableProbeId)) {
-				return result;
+				runnableProbeResults.add(result);
 			}
 		}
-		return null;
+		if (runnableProbeResults.size() == 0)
+			return null;
+		return runnableProbeResults;
 	}
 
 	@Override
 	public boolean addResult(BaseResult result) {
 		synchronized (lockResults) {
-			results.add(result);
+			if (result instanceof DiscoveryResult) {
+				if (ElementsContainer.getInstance().isElementsChanged((DiscoveryResult) result))
+					results.add(result);
+			} else
+				results.add(result);
 		}
 		return true;
 	}
@@ -303,8 +309,7 @@ public class ResultsContainer implements IResultsContainer {
 		// .registerSubtype(ObixBaseObj.class)
 		// .registerSubtype(ObixOp.class);
 		JSONArray resultsDBFormat = new JSONArray();
-		for(int i=0;i<results.size();i++)
-		{
+		for (int i = 0; i < results.size(); i++) {
 			JSONObject resultDBFormat = rawResultsDBFormat(results.get(i));
 			resultsDBFormat.add(resultDBFormat);
 		}
@@ -335,6 +340,7 @@ public class ResultsContainer implements IResultsContainer {
 		ArrayList<HashMap<String, HashMap<String, String>>> eventsToSend = new ArrayList<HashMap<String, HashMap<String, String>>>();
 		for (Map.Entry<String, ConcurrentHashMap<String, Event>> runnableProbeEventsEntry : events.entrySet()) {
 			String runnableProbeId = runnableProbeEventsEntry.getKey();
+
 			ConcurrentHashMap<String, Event> runnableProbeEvents = runnableProbeEventsEntry.getValue();
 
 			for (Map.Entry<String, Event> triggerEvent : runnableProbeEvents.entrySet()) {
@@ -343,47 +349,17 @@ public class ResultsContainer implements IResultsContainer {
 				RunnableProbe runnableProbe = RunnableProbeContainer.getInstanece().get(runnableProbeId);
 				Trigger trigger = runnableProbe.getProbe().getTrigger(triggerId);
 				try {
-					if (!event.isSent() && event.isStatus()) {
-						HashMap<String, HashMap<String, String>> sendingEvents = new HashMap<String, HashMap<String, String>>();
-						HashMap<String, String> eventValues = new HashMap<String, String>();
-						eventValues.put("trigger_id", triggerId);
-						eventValues.put("host_id", runnableProbe.getHost().getHostId().toString());
-						eventValues.put("host_name", runnableProbe.getHost().getName());
-						eventValues.put("user_id", runnableProbe.getProbe().getUser().getUserId().toString());
-						eventValues.put("trigger_name", trigger.getName());
-						eventValues.put("trigger_severity", trigger.getSvrty().toString());
-						eventValues.put("event_timestamp", String.valueOf(event.getTime()));
-						eventValues.put("event_status", String.valueOf(event.isStatus()));
-						eventValues.put("host_bucket", runnableProbe.getHost().getBucket());
-						if (runnableProbe.getHost().getNotificationGroups() != null)
-							eventValues.put("host_notifs_groups",
-									runnableProbe.getHost().getNotificationGroups().toString());
-						else
-							eventValues.put("host_notifs_groups", null);
-						sendingEvents.put(runnableProbe.getId(), eventValues);
+					if (!event.isSent()) {
+
+						String rpStr = runnableProbeId;
+						if (rpStr.contains(
+								"ff00ff2c-0f40-4616-9ac4-a71447b22431@inner_33695a83-654d-4177-b90d-0a89c5f0120d"))
+							Logit.LogDebug("BREAKPOINT");
+
+						HashMap<String, HashMap<String, String>> sendingEvents = eventDBFormat(triggerId, event,
+								runnableProbe, trigger);
 
 						eventsToSend.add(sendingEvents);
-					} else if (!event.isSent() && !event.isStatus()) {
-						HashMap<String, HashMap<String, String>> sendingEvents = new HashMap<String, HashMap<String, String>>();
-						HashMap<String, String> eventValues = new HashMap<String, String>();
-						eventValues.put("trigger_id", triggerId);
-						eventValues.put("host_id", runnableProbe.getHost().getHostId().toString());
-						eventValues.put("host_name", runnableProbe.getHost().getName());
-						eventValues.put("user_id", runnableProbe.getProbe().getUser().getUserId().toString());
-						eventValues.put("trigger_name", trigger.getName());
-						eventValues.put("trigger_severity", trigger.getSvrty().toString());
-						eventValues.put("event_timestamp", String.valueOf(event.getTime()));
-						eventValues.put("event_status", String.valueOf(event.isStatus()));
-						eventValues.put("host_bucket", runnableProbe.getHost().getBucket());
-						if (runnableProbe.getHost().getNotificationGroups() != null)
-							eventValues.put("host_notifs_groups",
-									runnableProbe.getHost().getNotificationGroups().toString());
-						else
-							eventValues.put("host_notifs_groups", null);
-						sendingEvents.put(runnableProbeId, eventValues);
-
-						eventsToSend.add(sendingEvents);
-
 						event.setSent(true);
 					}
 				} catch (Exception e) {
@@ -397,5 +373,26 @@ public class ResultsContainer implements IResultsContainer {
 
 		Gson gson = new GsonBuilder().setPrettyPrinting().create();
 		return (gson.toJson(eventsToSend));
+	}
+
+	private HashMap<String, HashMap<String, String>> eventDBFormat(String triggerId, Event event,
+			RunnableProbe runnableProbe, Trigger trigger) {
+		HashMap<String, HashMap<String, String>> sendingEvents = new HashMap<String, HashMap<String, String>>();
+		HashMap<String, String> eventValues = new HashMap<String, String>();
+		eventValues.put("trigger_id", triggerId);
+		eventValues.put("host_id", runnableProbe.getHost().getHostId().toString());
+		eventValues.put("host_name", runnableProbe.getHost().getName());
+		eventValues.put("user_id", runnableProbe.getProbe().getUser().getUserId().toString());
+		eventValues.put("trigger_name", trigger.getName());
+		eventValues.put("trigger_severity", trigger.getSvrty().toString());
+		eventValues.put("event_timestamp", String.valueOf(event.getTime()));
+		eventValues.put("event_status", String.valueOf(event.isStatus()));
+		eventValues.put("host_bucket", runnableProbe.getHost().getBucket());
+		if (runnableProbe.getHost().getNotificationGroups() != null)
+			eventValues.put("host_notifs_groups", runnableProbe.getHost().getNotificationGroups().toString());
+		else
+			eventValues.put("host_notifs_groups", null);
+		sendingEvents.put(runnableProbe.getId(), eventValues);
+		return sendingEvents;
 	}
 }
