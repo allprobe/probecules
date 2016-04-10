@@ -25,9 +25,9 @@ public class SnmpUpdate  extends BaseUpdate{
 	public Boolean Update()
 	{
 		super.Update();
-		SnmpTemplate snmpTemplate = getUser().getSnmpTemplates().get(getUpdate().template_id);
+		SnmpTemplate snmpTemplate = getUser().getSnmpTemplates().get(UUID.fromString(getUpdate().object_id));
 		
-		if (!GeneralFunctions.isChanged(snmpTemplate.getSnmpTemplateName(), getUpdate().update_value.name)) 
+		if (GeneralFunctions.isChanged(snmpTemplate.getSnmpTemplateName(), getUpdate().update_value.name)) 
 		{
 			snmpTemplate.setSnmpTemplateName(getUpdate().update_value.name);
 			Logit.LogCheck("Snmp name " + snmpTemplate.getSnmpTemplateName() +  " has changed to " + getUpdate().update_value.name);

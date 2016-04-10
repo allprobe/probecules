@@ -42,35 +42,35 @@ public class HostUpdate extends BaseUpdate {
 
 		Logit.LogCheck("Updating Host: " + getUpdate().host_id);
 
-		if (GeneralFunctions.isChanged(host.getName(), getUpdate().update_value.name)) {
+		if (getUpdate().update_value.name != null && GeneralFunctions.isChanged(host.getName(), getUpdate().update_value.name)) {
 			host.setName(getUpdate().update_value.name);
 			Logit.LogCheck("Host name for " + host.getName() + " has changed to " + getUpdate().update_value.name);
 		}
-		if (GeneralFunctions.isChanged(host.getHostIp(), getUpdate().update_value.ip)) {
+		if (getUpdate().update_value.ip != null && GeneralFunctions.isChanged(host.getHostIp(), getUpdate().update_value.ip)) {
 			host.setHostIp(getUpdate().update_value.ip);
 			Logit.LogCheck("Ip for host " + host.getName() + " has changed to " + getUpdate().update_value.ip);
 		}
 		// TODO: OREN, Check if host.getSnmpTemp().getSnmpTemplateName() is
 		// checged
-		if (GeneralFunctions.isChanged(host.getSnmpTemp().getSnmpTemplateName(),
-				getUpdate().update_value.snmp_template)) {
-			SnmpTemplate snmpTemplate = getUser().getSnmpTemplates()
-					.get(UUID.fromString(getUpdate().update_value.snmp_template));
+		String  snmpTemplateId = host.getSnmpTemp() != null ? host.getSnmpTemp().getSnmpTemplateId().toString() : null;
+		
+		if (getUpdate().update_value.snmp_template != null && GeneralFunctions.isChanged(snmpTemplateId, getUpdate().update_value.snmp_template)) {
+			SnmpTemplate snmpTemplate = getUser().getSnmpTemplates().get(UUID.fromString(getUpdate().update_value.snmp_template));
 			if (snmpTemplate == null) {
 				snmpTemplate = fetchSnmpTemplate();
 			}
 			host.setSnmpTemp(snmpTemplate);
 			if (snmpTemplate != null)
 				Logit.LogCheck("Snmp Template for host " + host.getName() + " has changed");
-
 		}
-		if (GeneralFunctions.isChanged(host.getNotificationGroups().toString(),
-				getUpdate().update_value.notifications_group)) {
+		String notificationGroup = host.getNotificationGroups() != null ? host.getNotificationGroups().toString() : null;
+		
+		if (getUpdate().update_value.notifications_group != null && GeneralFunctions.isChanged(notificationGroup, getUpdate().update_value.notifications_group)) {
 			host.setNotificationGroups(UUID.fromString(getUpdate().update_value.notifications_group));
 			Logit.LogCheck("Notifications group for host " + host.getName() + " has changed to "
 					+ getUpdate().update_value.notifications_group);
 		}
-		if (GeneralFunctions.isChanged(host.getBucket(), getUpdate().update_value.bucket)) {
+		if (getUpdate().update_value.bucket != null && GeneralFunctions.isChanged(host.getBucket(), getUpdate().update_value.bucket)) {
 			host.setBucket(getUpdate().update_value.bucket);
 			Logit.LogCheck("Bucket for host " + host.getName() + " has changed to " + getUpdate().update_value.bucket);
 		}
