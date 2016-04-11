@@ -50,8 +50,7 @@ public class HostUpdate extends BaseUpdate {
 			host.setHostIp(getUpdate().update_value.ip);
 			Logit.LogCheck("Ip for host " + host.getName() + " has changed to " + getUpdate().update_value.ip);
 		}
-		// TODO: OREN, Check if host.getSnmpTemp().getSnmpTemplateName() is
-		// checged
+		
 		String  snmpTemplateId = host.getSnmpTemp() != null ? host.getSnmpTemp().getSnmpTemplateId().toString() : null;
 		
 		if (getUpdate().update_value.snmp_template != null && GeneralFunctions.isChanged(snmpTemplateId, getUpdate().update_value.snmp_template)) {
@@ -65,8 +64,11 @@ public class HostUpdate extends BaseUpdate {
 		}
 		String notificationGroup = host.getNotificationGroups() != null ? host.getNotificationGroups().toString() : null;
 		
-		if (getUpdate().update_value.notifications_group != null && GeneralFunctions.isChanged(notificationGroup, getUpdate().update_value.notifications_group)) {
-			host.setNotificationGroups(UUID.fromString(getUpdate().update_value.notifications_group));
+		if (GeneralFunctions.isChanged(notificationGroup, getUpdate().update_value.notifications_group)) {
+			if (!GeneralFunctions.isNullOrEmpty(getUpdate().update_value.notifications_group))
+				host.setNotificationGroups(UUID.fromString(getUpdate().update_value.notifications_group));
+			else 
+				host.setNotificationGroups(null);
 			Logit.LogCheck("Notifications group for host " + host.getName() + " has changed to "
 					+ getUpdate().update_value.notifications_group);
 		}

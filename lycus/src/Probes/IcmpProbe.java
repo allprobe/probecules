@@ -101,7 +101,7 @@ public class IcmpProbe extends BaseProbe {
 			Logit.LogCheck("Npings count for " + getName() +  " has changed to " + updateValue.key.npings);
 		}
 		
-		if (updateValue.key.bytes != null &&  getBytes() != updateValue.key.npings)
+		if (updateValue.key.bytes != null &&  getBytes() != updateValue.key.bytes)
 		{
 			this.setBytes(updateValue.key.bytes);
 			Logit.LogCheck("Bytes for " + getName() +  " has changed to " + updateValue.key.bytes);

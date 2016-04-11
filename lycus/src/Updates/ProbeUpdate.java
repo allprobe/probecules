@@ -47,15 +47,17 @@ public class ProbeUpdate extends BaseUpdate {
 				UsersManager.addHosts(jsonArray);
 				Logit.LogCheck("New host was created from server");
 			}
+
+			host = getUser().getHost(UUID.fromString(getUpdate().host_id));
+			if (host == null) {
+				Logit.LogError("ProbeUpdate - New()", "Failed update from type NEW PROBE - unknown host");
+				return false;
+			}
 			
 			if (!getUser().isProbeExist(getUpdate().probe_id)) {
-				host = getUser().getHost(UUID.fromString(getUpdate().host_id));
-				if (host == null) {
-					Logit.LogError("ProbeUpdate - New()", "Failed update from type NEW PROBE - unknown host");
-					return false;
-				}
+				
 
-				host = getUser().getHost(UUID.fromString(getUpdate().host_id));
+//				host = getUser().getHost(UUID.fromString(getUpdate().host_id));
 				ProbeParams probeParams = new ProbeParams();
 				probeParams.template_id = getUpdate().template_id;
 				probeParams.bytes = getUpdate().update_value.key.bytes;
@@ -91,30 +93,32 @@ public class ProbeUpdate extends BaseUpdate {
 				probeParams.discovery_trigger_code = getUpdate().update_value.key.discovery_trigger;
 
 				probe = getUser().addTemplateProbe(probeParams);
-				RunnableProbe runnableProbe = new RunnableProbe(host, probe);
-				runnableProbe.start();
-				getUser().addRunnableProbe(runnableProbe);
 				Logit.LogCheck("New probe was created");
 
 			} else {
 				probe = getUser().getProbeFor(getUpdate().probe_id);
 				ChangeInterval(probe.getInterval());
 				probe.updateKeyValues(getUpdate().update_value);
-				Logit.LogCheck("New probe was updated, probe was already exist");
+				Logit.LogCheck("New probe was updated,  probe was already exist");
 			}
+
+			RunnableProbe runnableProbe = new RunnableProbe(host, probe);
+			runnableProbe.start();
+			getUser().addRunnableProbe(runnableProbe);
+			Logit.LogCheck("New Runnable probe was created");
+			
 		} catch (Exception e) {
 			Logit.LogError("ProbeUpdate - New()", "New probe Could not be created");
 			e.printStackTrace();
 		}
-
-		
 		return true;
 	}
 
 	private boolean ChangeInterval(long currentInterval) {
 		try {
 			if (currentInterval != getUpdate().update_value.interval) {
-				HashMap<String, RunnableProbe> runnableProbes = RunnableProbeContainer.getInstanece().getByProbe(getUpdate().probe_id);
+				HashMap<String, RunnableProbe> runnableProbes = RunnableProbeContainer.getInstanece()
+						.getByProbe(getUpdate().probe_id);
 				if (runnableProbes == null)
 					return false;
 				for (RunnableProbe runnableProbe : runnableProbes.values()) {
@@ -132,9 +136,10 @@ public class ProbeUpdate extends BaseUpdate {
 	public Boolean Update() {
 		super.Update();
 
-		HashMap<String, RunnableProbe> runnableProbes = RunnableProbeContainer.getInstanece().getByProbe(getUpdate().probe_id);
+		HashMap<String, RunnableProbe> runnableProbes = RunnableProbeContainer.getInstanece()
+				.getByProbe(getUpdate().probe_id);
 		for (RunnableProbe runnableProbe : runnableProbes.values()) {
-			
+
 			if (getUpdate().update_value.interval != null
 					&& runnableProbe.getProbe().getInterval() != getUpdate().update_value.interval) {
 				runnableProbe.changeRunnableProbeInterval(getUpdate().update_value.interval);
