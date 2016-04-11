@@ -52,7 +52,7 @@ public class RollupsDumpTask extends BaseTask {
 //		JSONObject jsonObject=new JSONObject();
 //		jsonObject.put("last_rollups", rollupsEncoded);
 
-		String sendString="{\"last_rollups\":\""+rollupsEncoded+"\"}";
+		String sendString="{ \"last_rollups\" : \""+rollupsEncoded+"\" }";
 
 		ApiInterface.executeRequest(Enums.ApiAction.FlushServerMemory, "PUT", sendString);
 	}
