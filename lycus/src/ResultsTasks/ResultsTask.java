@@ -39,13 +39,29 @@ public class ResultsTask extends BaseTask {
 			if (rpStr.contains("9dc99972-e28a-4e90-aabd-7e8bad61b232@inner_657259e4-b70b-47d2-9e4a-3db904a367e1"))
 				Logit.LogDebug("BREAKPOINT - ResultsTask");
 
-			String encodedResults = GeneralFunctions.Base64Encode(results);
-			String encodedRollups = GeneralFunctions.Base64Encode(rollups);
-
+			String encodedResults=null;
+			String encodedRollups=null;
+			try
+			{
+			encodedResults = GeneralFunctions.Base64Encode(results);
+			encodedRollups = GeneralFunctions.Base64Encode(rollups);
+			}
+			catch(Exception e)
+			{
+				Logit.LogFatal("ResultsTask - run()", "Error encoding results and rollups to BASE64! E: "+e.getMessage());
+				Logit.LogFatal("ResultsTask - run()", "trace: "+e.getStackTrace().toString());
+			}
+			
 			JSONObject jsonToSend = new JSONObject();
+			try{
 			jsonToSend.put("raw_results", encodedResults);
 			jsonToSend.put("rollups_results", encodedRollups);
-
+			}
+			catch(Exception e)
+			{
+				Logit.LogFatal("ResultsTask - run()", "Error adding encoded results and rollups to JSONObject! E: "+e.getMessage());
+				Logit.LogFatal("ResultsTask - run()", "trace: "+e.getStackTrace().toString());
+			}
 			// String sendString = "{\"results\" : \"" + encodedResults + "\"}";
 			String sendString = jsonToSend.toString();
 

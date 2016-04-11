@@ -76,6 +76,7 @@ public class RollupsContainer implements IRollupsContainer {
 	@Override
 	public synchronized String getAllFinsihedRollups() {
 
+		try{
 		JSONObject rollups = new JSONObject();
 
 		for (int i = 0; i < 6; i++) {
@@ -139,6 +140,13 @@ public class RollupsContainer implements IRollupsContainer {
 		// rollups.put("snmpDataRollups", JsonUtil.ToJson(snmpDataRollups));
 
 		return finishedRollups.toString();
+		}
+		catch(Exception e)
+		{
+			Logit.LogFatal("RollupsContainer - getAllFinsihedRollups()", "Error getting finished rollups from rollupsContainer! E: "+e.getMessage());
+			Logit.LogFatal("RollupsContainer - getAllFinsihedRollups()", "trace: "+e.getStackTrace().toString());
+			return null;
+		}
 	}
 
 	@Override

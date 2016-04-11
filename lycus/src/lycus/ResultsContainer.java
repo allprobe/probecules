@@ -308,13 +308,20 @@ public class ResultsContainer implements IResultsContainer {
 		// .of(ObixBaseObj.class)
 		// .registerSubtype(ObixBaseObj.class)
 		// .registerSubtype(ObixOp.class);
+		try{
 		JSONArray resultsDBFormat = new JSONArray();
 		for (int i = 0; i < results.size(); i++) {
 			JSONObject resultDBFormat = rawResultsDBFormat(results.get(i));
 			resultsDBFormat.add(resultDBFormat);
 		}
 		return resultsDBFormat.toString();
-
+		}
+		catch(Exception e)
+		{
+			Logit.LogFatal("ResultsContainer - getResults()", "Error getting results from resultsContainer! E: "+e.getMessage());
+			Logit.LogFatal("ResultsContainer - getResults()", "trace: "+e.getStackTrace().toString());
+			return null;
+		}
 		// try {
 		// String jsonString = null;
 		// synchronized(lock1) {
