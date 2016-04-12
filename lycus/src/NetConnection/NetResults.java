@@ -11,6 +11,7 @@ import java.util.Set;
 import org.snmp4j.smi.OID;
 
 import Elements.BaseElement;
+import Elements.DiskElement;
 import Elements.NicElement;
 import GlobalConstants.Constants;
 import GlobalConstants.Enums;
@@ -25,8 +26,10 @@ import Probes.NicProbe;
 import Probes.PortProbe;
 import Probes.RBLProbe;
 import Probes.SnmpProbe;
+import Probes.StorageProbe;
 import Results.BaseResult;
 import Results.DiscoveryResult;
+import Results.DiskResult;
 import Results.NicResult;
 import Results.PingResult;
 import Results.PortResult;
@@ -38,7 +41,7 @@ import Utils.Logit;
 import lycus.Host;
 import lycus.SnmpTemplate;
 
-public class NetResults implements INetResults{
+public class NetResults implements INetResults {
 	private static NetResults netResults = null;
 
 	protected NetResults() {
@@ -51,173 +54,204 @@ public class NetResults implements INetResults{
 	}
 
 	@Override
-	public PingResult getPingResult(Host host,IcmpProbe probe) {
-		ArrayList<Object> rawResults = Net.Pinger(host.getHostIp(), probe.getCount(),probe.getBytes(), probe.getTimeout());
-		if(rawResults==null ||rawResults.size()==0)
+	public PingResult getPingResult(Host host, IcmpProbe probe) {
+		ArrayList<Object> rawResults = Net.Pinger(host.getHostIp(), probe.getCount(), probe.getBytes(),
+				probe.getTimeout());
+		if (rawResults == null || rawResults.size() == 0)
 			return null;
-		
-		long timestamp=(long)rawResults.get(0);
-		int packetLoss=(int)rawResults.get(1);
-		double rtt=(double)rawResults.get(2);
-		int ttl=(int)rawResults.get(3);
-		
-		
-		PingResult pingerResult = new PingResult(getRunnableProbeId(probe, host),timestamp,packetLoss,rtt,ttl);
-		
+
+		long timestamp = (long) rawResults.get(0);
+		int packetLoss = (int) rawResults.get(1);
+		double rtt = (double) rawResults.get(2);
+		int ttl = (int) rawResults.get(3);
+
+		PingResult pingerResult = new PingResult(getRunnableProbeId(probe, host), timestamp, packetLoss, rtt, ttl);
+
 		return pingerResult;
 	}
 
 	@Override
-	public PortResult getPortResult(Host host,PortProbe probe) {
-		ArrayList<Object> rawResults=null;
-		switch(probe.getProto())
-		{
-		case "TCP":rawResults = Net.TcpPorter(host.getHostIp(), probe.getPort(), probe.getTimeout());
-		break;
-		case "UDP":rawResults = Net.UdpPorter(host.getHostIp(), probe.getPort(), probe.getTimeout(), probe.getSendString(), probe.getReceiveString());
-		break;
+	public PortResult getPortResult(Host host, PortProbe probe) {
+		ArrayList<Object> rawResults = null;
+		switch (probe.getProto()) {
+		case "TCP":
+			rawResults = Net.TcpPorter(host.getHostIp(), probe.getPort(), probe.getTimeout());
+			break;
+		case "UDP":
+			rawResults = Net.UdpPorter(host.getHostIp(), probe.getPort(), probe.getTimeout(), probe.getSendString(),
+					probe.getReceiveString());
+			break;
 		}
-		if(rawResults==null ||rawResults.size()==0)
+		if (rawResults == null || rawResults.size() == 0)
 			return null;
-		
-		long timestamp=(long)rawResults.get(0);
-		boolean portState=(boolean)rawResults.get(1);
-		long responseTime=(long)rawResults.get(2);
-		
-		PortResult porterResult = new PortResult(getRunnableProbeId(probe, host),timestamp,portState,responseTime);
-		
+
+		long timestamp = (long) rawResults.get(0);
+		boolean portState = (boolean) rawResults.get(1);
+		long responseTime = (long) rawResults.get(2);
+
+		PortResult porterResult = new PortResult(getRunnableProbeId(probe, host), timestamp, portState, responseTime);
+
 		return porterResult;
 	}
 
 	@Override
-	public WebResult getWebResult(Host host,HttpProbe probe) {
-		ArrayList<Object> rawResults = Net.Weber(probe.getUrl(), probe.getHttpRequestType(),probe.getAuthUsername(),probe.getAuthPassword(), probe.getTimeout());
-		if(rawResults==null ||rawResults.size()==0)
+	public WebResult getWebResult(Host host, HttpProbe probe) {
+		ArrayList<Object> rawResults = Net.Weber(probe.getUrl(), probe.getHttpRequestType(), probe.getAuthUsername(),
+				probe.getAuthPassword(), probe.getTimeout());
+		if (rawResults == null || rawResults.size() == 0)
 			return null;
-		
-		long timestamp=(long)rawResults.get(0);
-		int responseCode=(int)rawResults.get(1);
-		long responseTime=(long)rawResults.get(2);
-		long responseSize=(long)rawResults.get(3);
-		
-		WebResult weberResult = new WebResult(getRunnableProbeId(probe, host),timestamp,responseCode,responseTime,responseSize);
-		
+
+		long timestamp = (long) rawResults.get(0);
+		int responseCode = (int) rawResults.get(1);
+		long responseTime = (long) rawResults.get(2);
+		long responseSize = (long) rawResults.get(3);
+
+		WebResult weberResult = new WebResult(getRunnableProbeId(probe, host), timestamp, responseCode, responseTime,
+				responseSize);
+
 		return weberResult;
 	}
 
 	@Override
-	public RblResult getRblResult(Host host,RBLProbe probe) {
+	public RblResult getRblResult(Host host, RBLProbe probe) {
 		ArrayList<Object> rawResults = Net.RBLCheck(host.getHostIp(), probe.getRBL());
-		if(rawResults==null ||rawResults.size()==0)
+		if (rawResults == null || rawResults.size() == 0)
 			return null;
-		
-		long timestamp=(long)rawResults.get(0);
-		boolean isListed=(boolean)rawResults.get(1);
-		
-		RblResult rblResult = new RblResult(getRunnableProbeId(probe, host),timestamp,isListed);
-		
+
+		long timestamp = (long) rawResults.get(0);
+		boolean isListed = (boolean) rawResults.get(1);
+
+		RblResult rblResult = new RblResult(getRunnableProbeId(probe, host), timestamp, isListed);
+
 		return rblResult;
 	}
 
 	@Override
-	public List<SnmpResult> getSnmpResults(Host host,List<SnmpProbe> snmpProbes) {
-		
-		List<SnmpResult> allResults=new ArrayList<SnmpResult>();
-		SnmpTemplate snmpTemplate=host.getSnmpTemp();
-		
-		HashMap<String, OID> probesOids=new HashMap<String,OID>();
-		for(SnmpProbe snmpProbe:snmpProbes)
-			probesOids.put(getRunnableProbeId(snmpProbe, host), snmpProbe.getOid());
-		
-		Map<String,String> rawResults = null;
+	public List<SnmpResult> getSnmpResults(Host host, List<SnmpProbe> snmpProbes) {
 
-		long timestamp=System.currentTimeMillis();
-		switch(snmpTemplate.getVersion())
-		{
-		case 2:rawResults=Net.Snmp2GETBULK(host.getHostIp(), snmpTemplate.getPort(), snmpTemplate.getTimeout(), snmpTemplate.getCommunityName(), probesOids.values());
+		List<SnmpResult> allResults = new ArrayList<SnmpResult>();
+		SnmpTemplate snmpTemplate = host.getSnmpTemp();
+
+		HashMap<String, OID> probesOids = new HashMap<String, OID>();
+		for (SnmpProbe snmpProbe : snmpProbes)
+			probesOids.put(getRunnableProbeId(snmpProbe, host), snmpProbe.getOid());
+
+		Map<String, String> rawResults = null;
+
+		long timestamp = System.currentTimeMillis();
+		switch (snmpTemplate.getVersion()) {
+		case 2:
+			rawResults = Net.Snmp2GETBULK(host.getHostIp(), snmpTemplate.getPort(), snmpTemplate.getTimeout(),
+					snmpTemplate.getCommunityName(), probesOids.values());
 			break;
-		case 3:rawResults=Net.Snmp3GETBULK(host.getHostIp(), snmpTemplate.getPort(),snmpTemplate.getTimeout(),snmpTemplate.getUserName(),snmpTemplate.getAuthPass(),snmpTemplate.getAlgo(),snmpTemplate.getCryptPass(),snmpTemplate.getCryptType(),probesOids.values());
-		break;
+		case 3:
+			rawResults = Net.Snmp3GETBULK(host.getHostIp(), snmpTemplate.getPort(), snmpTemplate.getTimeout(),
+					snmpTemplate.getUserName(), snmpTemplate.getAuthPass(), snmpTemplate.getAlgo(),
+					snmpTemplate.getCryptPass(), snmpTemplate.getCryptType(), probesOids.values());
+			break;
 		}
-		if(rawResults==null ||rawResults.size()==0)
+		if (rawResults == null || rawResults.size() == 0)
 			return null;
-		
-		for(SnmpProbe snmpProbe:snmpProbes)
-		{
-			String stringResult=rawResults.get((snmpProbe).getOid().toString());
+
+		for (SnmpProbe snmpProbe : snmpProbes) {
+			String stringResult = rawResults.get((snmpProbe).getOid().toString());
 			SnmpResult snmpResult;
-			if(stringResult==null)
-				snmpResult = new SnmpResult(getRunnableProbeId(snmpProbe, host),timestamp,Constants.WRONG_OID);
+			if (stringResult == null)
+				snmpResult = new SnmpResult(getRunnableProbeId(snmpProbe, host), timestamp, Constants.WRONG_OID);
 			else
-				snmpResult = new SnmpResult(getRunnableProbeId(snmpProbe, host),timestamp,stringResult);
+				snmpResult = new SnmpResult(getRunnableProbeId(snmpProbe, host), timestamp, stringResult);
 			allResults.add(snmpResult);
 		}
-		
+
 		return allResults;
 	}
-	
+
 	@Override
-	public NicResult getNicResult(Host host,NicProbe probe) {
-		
-		SnmpTemplate snmpTemplate=host.getSnmpTemp();
-		
-		Set<OID> nicOids=new HashSet<OID>();
+	public NicResult getNicResult(Host host, NicProbe probe) {
+
+		SnmpTemplate snmpTemplate = host.getSnmpTemp();
+
+		Set<OID> nicOids = new HashSet<OID>();
 		nicOids.add(probe.getIfinoctetsOID());
 		nicOids.add(probe.getIfoutoctetsOID());
-		
-		Map<String,String> rawResults = null;
 
-		long timestamp=System.currentTimeMillis();
-		switch(snmpTemplate.getVersion())
-		{
-		case 2:rawResults=Net.Snmp2GETBULK(host.getHostIp(), snmpTemplate.getPort(), snmpTemplate.getTimeout(), snmpTemplate.getCommunityName(), nicOids);
+		Map<String, String> rawResults = null;
+
+		long timestamp = System.currentTimeMillis();
+		switch (snmpTemplate.getVersion()) {
+		case 2:
+			rawResults = Net.Snmp2GETBULK(host.getHostIp(), snmpTemplate.getPort(), snmpTemplate.getTimeout(),
+					snmpTemplate.getCommunityName(), nicOids);
 			break;
-		case 3:rawResults=Net.Snmp3GETBULK(host.getHostIp(), snmpTemplate.getPort(),snmpTemplate.getTimeout(),snmpTemplate.getUserName(),snmpTemplate.getAuthPass(),snmpTemplate.getAlgo(),snmpTemplate.getCryptPass(),snmpTemplate.getCryptType(),nicOids);
-		break;
+		case 3:
+			rawResults = Net.Snmp3GETBULK(host.getHostIp(), snmpTemplate.getPort(), snmpTemplate.getTimeout(),
+					snmpTemplate.getUserName(), snmpTemplate.getAuthPass(), snmpTemplate.getAlgo(),
+					snmpTemplate.getCryptPass(), snmpTemplate.getCryptType(), nicOids);
+			break;
 		}
-		
-		if(rawResults==null ||rawResults.size()==0)
+
+		if (rawResults == null || rawResults.size() == 0)
 			return null;
-		
-		long interfaceInOctets=Long.parseLong(rawResults.get(probe.getIfinoctetsOID().toString()));
-		long interfaceOutOctets=Long.parseLong(rawResults.get(probe.getIfoutoctetsOID().toString()));
-		
-		NicResult nicResut=new NicResult(getRunnableProbeId(probe, host),timestamp,interfaceInOctets,interfaceOutOctets);
+
+		long interfaceInOctets = Long.parseLong(rawResults.get(probe.getIfinoctetsOID().toString()));
+		long interfaceOutOctets = Long.parseLong(rawResults.get(probe.getIfoutoctetsOID().toString()));
+
+		NicResult nicResut = new NicResult(getRunnableProbeId(probe, host), timestamp, interfaceInOctets,
+				interfaceOutOctets);
 
 		return nicResut;
 	}
-	private String getRunnableProbeId(BaseProbe probe,Host host)
-	{
-    	return probe.getTemplate_id().toString() + "@" + host.getHostId().toString() + "@" + probe.getProbe_id();
+
+	private String getRunnableProbeId(BaseProbe probe, Host host) {
+		return probe.getTemplate_id().toString() + "@" + host.getHostId().toString() + "@" + probe.getProbe_id();
 	}
 
 	@Override
 	public DiscoveryResult getDiscoveryResult(Host host, DiscoveryProbe probe) {
 
 		DiscoveryResult discoveryResult = null;
-		
+
 		String walkOid;
-		
-		long timestamp=System.currentTimeMillis();
-		HashMap<String,BaseElement> elements=null;
-		switch(probe.getType())
-		{
+
+		long timestamp = System.currentTimeMillis();
+		HashMap<String, BaseElement> elements = null;
+		switch (probe.getType()) {
 		case nics:
-			elements=this.getNicElements(host);
+			elements = this.getNicElements(host);
 			break;
 		case disks:
-			elements=this.getDiskElements(host);
+			elements = this.getDiskElements(host);
 			break;
 		}
-		if(elements==null)
+		if (elements == null)
 			return null;
-		discoveryResult=new DiscoveryResult(getRunnableProbeId(probe, host),timestamp,elements);
+		discoveryResult = new DiscoveryResult(getRunnableProbeId(probe, host), timestamp, elements);
 		return discoveryResult;
 	}
-	private HashMap<String,BaseElement> getDiskElements(Host host) {
-		// TODO NetResults.getDiskElements()
-		return null;
+
+	private HashMap<String, BaseElement> getDiskElements(Host host) {
+		long checkTime;
+
+		Map<String, String> hrStorageResults = null;
+
+		int snmpVersion = host.getSnmpTemp().getVersion();
+		if (snmpVersion == 2) {
+			hrStorageResults = Net.Snmp2Walk(host.getHostIp(), host.getSnmpTemp().getPort(), host.getSnmpTemp().getTimeout(),
+					host.getSnmpTemp().getCommunityName(), Constants.storageAll.toString());
+		} else if (snmpVersion == 3) {
+			hrStorageResults = Net.Snmp3Walk(host.getHostIp(), host.getSnmpTemp().getPort(), host.getSnmpTemp().getTimeout(),
+					host.getSnmpTemp().getUserName(), host.getSnmpTemp().getAuthPass(), host.getSnmpTemp().getAlgo(),
+					host.getSnmpTemp().getCryptPass(), host.getSnmpTemp().getCryptType(), Constants.storageAll.toString());
+		}
+		
+		if (hrStorageResults == null || hrStorageResults.size() == 0)
+			return null;
+
+
+		HashMap<String, BaseElement> lastScanElements = this.convertDisksWalkToElements(hrStorageResults);
+		return lastScanElements;
 	}
+
 	private HostType getHostType(String string) {
 		if (string.contains("Linux"))
 			return Enums.HostType.Linux;
@@ -225,19 +259,20 @@ public class NetResults implements INetResults{
 			return Enums.HostType.Windows;
 		return null;
 	}
-	private HashMap<String,BaseElement> getNicElements(Host h) {
-		
+
+	private HashMap<String, BaseElement> getNicElements(Host h) {
+
 		long checkTime;
-		
+
 		Map<String, String> ifDescrResults = null;
 		Map<String, String> sysDescrResults = null;
-		
+
 		int snmpVersion = h.getSnmpTemp().getVersion();
 		if (snmpVersion == 2) {
 			ifDescrResults = Net.Snmp2Walk(h.getHostIp(), h.getSnmpTemp().getPort(), h.getSnmpTemp().getTimeout(),
 					h.getSnmpTemp().getCommunityName(), Constants.ifAll.toString());
 
-			ArrayList<OID> oids=new ArrayList<OID>();
+			ArrayList<OID> oids = new ArrayList<OID>();
 			oids.add(Constants.sysDescr);
 			sysDescrResults = Net.Snmp2GETBULK(h.getHostIp(), h.getSnmpTemp().getPort(), h.getSnmpTemp().getTimeout(),
 					h.getSnmpTemp().getCommunityName(), oids);
@@ -251,31 +286,34 @@ public class NetResults implements INetResults{
 					h.getSnmpTemp().getUserName(), h.getSnmpTemp().getAuthPass(), h.getSnmpTemp().getAlgo(),
 					h.getSnmpTemp().getCryptPass(), h.getSnmpTemp().getCryptType(), oids);
 		}
-		if (ifDescrResults == null || sysDescrResults==null || ifDescrResults.size()==0 || sysDescrResults.size()==0)
+		if (ifDescrResults == null || sysDescrResults == null || ifDescrResults.size() == 0
+				|| sysDescrResults.size() == 0)
 			return null;
 
 		Enums.HostType hostType = this.getHostType(sysDescrResults.get(Constants.sysDescr.toString()));
 
-		HashMap<String,BaseElement> lastScanElements=this.convertNicsWalkToElements(ifDescrResults,hostType);
+		HashMap<String, BaseElement> lastScanElements = this.convertNicsWalkToElements(ifDescrResults, hostType);
 		return lastScanElements;
-		
-		
-//		HashMap<BaseElement, Enums.ElementChange> elementsChanges = new HashMap<BaseElement, Enums.ElementChange>();
-//		
-//		
-//		if (discoveryResult.getCurrentElements() == null) {
-//			for (Map.Entry<String, BaseElement> lastElement : lastScanElements.entrySet()) {
-//				elementsChanges.put(lastElement.getValue(), ElementChange.addedElement);
-//			}
-//			discoveryResult.setElementsChanges(elementsChanges);
-//			discoveryResult.setCurrentElements(lastScanElements);
-//			discoveryResult.setLastTimestamp(System.currentTimeMillis());
-//			return discoveryResult;
-//		}
+
+		// HashMap<BaseElement, Enums.ElementChange> elementsChanges = new
+		// HashMap<BaseElement, Enums.ElementChange>();
+		//
+		//
+		// if (discoveryResult.getCurrentElements() == null) {
+		// for (Map.Entry<String, BaseElement> lastElement :
+		// lastScanElements.entrySet()) {
+		// elementsChanges.put(lastElement.getValue(),
+		// ElementChange.addedElement);
+		// }
+		// discoveryResult.setElementsChanges(elementsChanges);
+		// discoveryResult.setCurrentElements(lastScanElements);
+		// discoveryResult.setLastTimestamp(System.currentTimeMillis());
+		// return discoveryResult;
+		// }
 	}
-	
-	private HashMap<String,BaseElement> convertNicsWalkToElements(Map<String, String> nicsWalk, HostType hostType) {
-		HashMap<String,BaseElement> lastElements = new HashMap<String,BaseElement>();
+
+	private HashMap<String, BaseElement> convertNicsWalkToElements(Map<String, String> nicsWalk, HostType hostType) {
+		HashMap<String, BaseElement> lastElements = new HashMap<String, BaseElement>();
 		if (hostType == null)
 			return null;
 		for (Map.Entry<String, String> entry : nicsWalk.entrySet()) {
@@ -300,8 +338,8 @@ public class NetResults implements INetResults{
 			default:
 				return null;
 			}
-			NicElement nicElement = new NicElement(index,name,hostType,ifSpeed);
-			lastElements.put(name,nicElement);
+			NicElement nicElement = new NicElement(index, name, hostType, ifSpeed);
+			lastElements.put(name, nicElement);
 		}
 
 		if (lastElements.size() == 0)
@@ -310,13 +348,69 @@ public class NetResults implements INetResults{
 		return lastElements;
 	}
 
-	private HashMap<String, BaseElement> convertDisksWalkToElements(HashMap<String, String> hashMap, HostType hostType) {
-		// TODO NetResults.convertDisksWalkToIndexes
-		return null;
-	}
-	private HashMap<String, BaseElement> convertDisksWalkToIndexes(HashMap<String, String> hashMap, HostType hostType) {
-		// TODO DiscoveryResults.convertDisksWalkToIndexes
-		return null;
+	private HashMap<String, BaseElement> convertDisksWalkToElements(Map<String, String> disksWalk) {
+		HashMap<String, BaseElement> lastElements = new HashMap<String, BaseElement>();
+		for (Map.Entry<String, String> entry : disksWalk.entrySet()) {
+			if (!entry.getKey().toString().contains("1.3.6.1.2.1.25.2.3.1.1."))
+				continue;
+			int index = Integer.parseInt(entry.getValue());
+			if (index == 0) {
+				continue;
+			}
+
+			String name;
+			long hrStorageAllocationUnits;
+			long hrStorageSize;
+			long hrStorageUsed;
+
+			name=disksWalk.get("1.3.6.1.2.1.25.2.3.1.1.3." + index);
+//			hrStorageAllocationUnits = Long.parseLong(disksWalk.get("1.3.6.1.2.1.25.2.3.1.1.4." + index));
+//			hrStorageSize = Long.parseLong(disksWalk.get("1.3.6.1.2.1.25.2.3.1.1.5." + index));
+//			hrStorageUsed = Long.parseLong(disksWalk.get("1.3.6.1.2.1.25.2.3.1.1.6." + index));
+
+			
+			DiskElement nicElement = new DiskElement(index, name);
+			lastElements.put(name, nicElement);
+		}
+
+		if (lastElements.size() == 0)
+			return null;
+
+		return lastElements;
 	}
 
+	public DiskResult getDiskResult(Host host, StorageProbe probe) {
+		SnmpTemplate snmpTemplate = host.getSnmpTemp();
+
+		Set<OID> storageOids = new HashSet<OID>();
+		storageOids.add(probe.getHrstorageallocationunitsoid());
+		storageOids.add(probe.getHrstoragesizeoid());
+		storageOids.add(probe.getHrstorageusedoid());
+
+		Map<String, String> rawResults = null;
+
+		long timestamp = System.currentTimeMillis();
+		switch (snmpTemplate.getVersion()) {
+		case 2:
+			rawResults = Net.Snmp2GETBULK(host.getHostIp(), snmpTemplate.getPort(), snmpTemplate.getTimeout(),
+					snmpTemplate.getCommunityName(), storageOids);
+			break;
+		case 3:
+			rawResults = Net.Snmp3GETBULK(host.getHostIp(), snmpTemplate.getPort(), snmpTemplate.getTimeout(),
+					snmpTemplate.getUserName(), snmpTemplate.getAuthPass(), snmpTemplate.getAlgo(),
+					snmpTemplate.getCryptPass(), snmpTemplate.getCryptType(), storageOids);
+			break;
+		}
+
+		if (rawResults == null || rawResults.size() == 0)
+			return null;
+
+		long hrstorageallocationunitsoid = Long.parseLong(rawResults.get(probe.getHrstorageallocationunitsoid().toString()));
+		long hrstoragesizeoid = Long.parseLong(rawResults.get(probe.getHrstoragesizeoid().toString()));
+		long hrstorageusedoid = Long.parseLong(rawResults.get(probe.getHrstorageusedoid().toString()));
+
+		DiskResult diskResut = new DiskResult(getRunnableProbeId(probe, host), timestamp,hrstorageusedoid,hrstoragesizeoid,hrstorageallocationunitsoid);
+
+		return diskResut;
+	}
 }

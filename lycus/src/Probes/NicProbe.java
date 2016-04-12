@@ -124,12 +124,6 @@ public class NicProbe extends BaseProbe  {
 		return nicResult;
 	}
 
-	public NicProbe() {
-		super();
-		this.setIndex(index);
-		this.ifSpeed = ifSpeed;
-		this.hostType = hostType;
-	}
 	public int getIndex() {
 		return index;
 	}
