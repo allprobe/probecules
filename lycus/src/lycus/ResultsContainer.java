@@ -147,6 +147,9 @@ public class ResultsContainer implements IResultsContainer {
 
 			for (Iterator iterator = events.keySet().iterator(); iterator.hasNext();) {
 				String it = (String) iterator.next();
+				
+				if(it.contains("c3f052eb-d8e3-4672-9bab-cb25fc6e702f@0b05919c-6cc0-42cc-a74b-de3b0dcd4a2a@port_667b9da7-1d9b-46b7-8299-1cc981cb8cc8@07d1af43-1d78-4ddc-9d3b-ee7e3cf8eb50"))
+					Logit.LogDebug("BREAKPOINT");
 				try {
 					UUID hostId = UUID.fromString(it.split("@")[0]);
 					UUID templateId = UUID.fromString(it.split("@")[1]);
@@ -157,6 +160,12 @@ public class ResultsContainer implements IResultsContainer {
 					RunnableProbe runnableProbe = RunnableProbeContainer.getInstanece()
 							.get(GeneralFunctions.getRunnableProbeId(templateId, hostId, probeId));
 
+					if(runnableProbe==null)
+					{
+						Logit.LogError("ResultsContainer - pullCurrentLiveEvents()", "Runnable Probe: "+GeneralFunctions.getRunnableProbeId(templateId, hostId, probeId)+" for existing live event doesnt exists so doesnt added!");
+						continue;
+					}
+					
 					Trigger trigger = runnableProbe.getProbe().getTriggers()
 							.get(templateId.toString() + "@" + probeId + "@" + triggerId.toString());
 
@@ -167,7 +176,8 @@ public class ResultsContainer implements IResultsContainer {
 					addEvent(runnableProbe.getId(), triggerId.toString(), event);
 					// result.getEvents().put(trigger, event);
 				} catch (Exception e) {
-					Logit.LogError("ResultsContainer - pullCurrentLiveEvents()", "Unable to process live event: ");
+					Logit.LogError("ResultsContainer - pullCurrentLiveEvents()", "Unable to process live event: "+it);
+					Logit.LogError("ResultsContainer - pullCurrentLiveEvents()", "E: "+e.getMessage());
 				}
 			}
 			return;
@@ -311,6 +321,12 @@ public class ResultsContainer implements IResultsContainer {
 		try{
 		JSONArray resultsDBFormat = new JSONArray();
 		for (int i = 0; i < results.size(); i++) {
+			
+			String rpStr = results.get(i).getRunnableProbeId();
+			if (rpStr.contains(
+					"788b1b9e-d753-4dfa-ac46-61c4374eeb84@inner_036f81e0-4ec0-468a-8396-77c21dd9ae5a"))
+				Logit.LogDebug("BREAKPOINT");
+			
 			JSONObject resultDBFormat = rawResultsDBFormat(results.get(i));
 			resultsDBFormat.add(resultDBFormat);
 		}

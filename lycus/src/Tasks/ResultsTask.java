@@ -1,4 +1,4 @@
-package ResultsTasks;
+package Tasks;
 
 import java.io.PrintWriter;
 import java.io.StringWriter;

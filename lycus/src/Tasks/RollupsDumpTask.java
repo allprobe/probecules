@@ -1,4 +1,4 @@
-package ResultsTasks;
+package Tasks;
 
 import java.util.ArrayList;
 
@@ -49,11 +49,11 @@ public class RollupsDumpTask extends BaseTask {
 
 		Logit.LogInfo("Sending current live rollups dump to API...");
 
-//		JSONObject jsonObject=new JSONObject();
-//		jsonObject.put("last_rollups", rollupsEncoded);
+		JSONObject jsonObject=new JSONObject();
+		jsonObject.put("last_rollups", rollupsEncoded);
 
-		String sendString="{ \"last_rollups\" : \""+rollupsEncoded+"\" }";
-
+//		String sendString="{ \"last_rollups\" : \""+rollupsEncoded+"\" }";
+		String sendString=jsonObject.toString();
 		ApiInterface.executeRequest(Enums.ApiAction.FlushServerMemory, "PUT", sendString);
 	}
 

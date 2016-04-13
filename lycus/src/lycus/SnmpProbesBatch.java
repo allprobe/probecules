@@ -163,6 +163,9 @@ public class SnmpProbesBatch implements Runnable {
 
 				List<RunnableProbe> snmpProbes = new ArrayList<RunnableProbe>(this.getSnmpProbes().values());
 
+				if(host.getHostId().toString().contains("788b1b9e-d753-4dfa-ac46-61c4374eeb84"))
+					Logit.LogDebug("BREAKPOINT");
+				
 				if (host.getSnmpTemp() == null) {
 					for (RunnableProbe rp : snmpProbes) {
 						Logit.LogInfo("Snmp Probe doesn't run: " + rp.getId() + ", no SNMP template configured!");
@@ -173,6 +176,12 @@ public class SnmpProbesBatch implements Runnable {
 				List<SnmpProbe> _snmpProbes = new ArrayList<SnmpProbe>();
 
 				for (RunnableProbe rp : snmpProbes) {
+
+					String rpStr2 = rp.getId();
+					if (rpStr.contains(
+							"788b1b9e-d753-4dfa-ac46-61c4374eeb84@inner_036f81e0-4ec0-468a-8396-77c21dd9ae5a"))
+						Logit.LogDebug("BREAKPOINT");
+					
 					_snmpProbes.add((SnmpProbe) rp.getProbe());
 				}
 

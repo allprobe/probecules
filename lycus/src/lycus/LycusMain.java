@@ -10,9 +10,9 @@ import java.util.concurrent.TimeUnit;
 
 import DAL.ApiInterface;
 import GlobalConstants.GlobalConfig;
-import ResultsTasks.EventTask;
-import ResultsTasks.ResultsTask;
-import ResultsTasks.RollupsDumpTask;
+import Tasks.EventTask;
+import Tasks.ResultsTask;
+import Tasks.RollupsDumpTask;
 import Updates.Updates;
 import Utils.Logit;;
 

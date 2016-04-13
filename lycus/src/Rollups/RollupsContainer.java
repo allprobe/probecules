@@ -7,6 +7,8 @@ import java.util.Map;
 
 import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
+import org.json.simple.parser.JSONParser;
+import org.json.simple.parser.ParseException;
 
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
@@ -468,15 +470,85 @@ public class RollupsContainer implements IRollupsContainer {
 			return true;
 		}
 		
-		String rollups = (String)rollupsUnDecoded.get("last_rullups");
+		String rollups = (String)rollupsUnDecoded.get("last_rollups");
 
-		ArrayList<DataPointsRollup[][]> rollupses = this.deserializeRollups(rollups);
-		for (DataPointsRollup[][] rollupsResult : rollupses) {
-			DataPointsRollup sampleRollup = rollupsResult[0][0];
-			String rpID = sampleRollup.getRunnableProbeId();
+		String rollupsDecoded=GeneralFunctions.Base64Decode(rollups);
+		
+		JSONParser jsonParser = new JSONParser();
+		JSONObject rollupsJson=null;
+		try {
+			rollupsJson = (JSONObject) jsonParser.parse(rollupsDecoded);
+		} catch (Exception e) {
+			Logit.LogError("RollupsContainer - mergeExistingRollupsFromMemDump", "Unable to parse rollups dump to JSON objects. E: "+e.getMessage());
+			return false;
+		}
+		
+		JSONObject pakcketLossRollupsJson=null;
+		JSONObject rttRollupsJson=null;
+		JSONObject portResponseTimeRollupsJson=null;
+		JSONObject webResponseTimeRollupsJson=null;
+		JSONObject snmpDataRollupsJson=null;
+
+		try{
+		pakcketLossRollupsJson=(JSONObject)jsonParser.parse((String)rollupsJson.get("packetLossRollups"));
+		rttRollupsJson=(JSONObject)jsonParser.parse((String)rollupsJson.get("rttRollups"));
+		portResponseTimeRollupsJson=(JSONObject)jsonParser.parse((String)rollupsJson.get("portResponseTimeRollups"));
+		webResponseTimeRollupsJson=(JSONObject)jsonParser.parse((String)rollupsJson.get("webResponseTimeRollups"));
+		snmpDataRollupsJson=(JSONObject)jsonParser.parse((String)rollupsJson.get("snmpDataRollups"));
+		}
+		catch(Exception e)
+		{
+			Logit.LogError("RollupsContainer - mergeExistingRollupsFromMemDump", "Unable to parse rollups dump to JSON objects. E: "+e.getMessage());
+			return false;
+		}
+		HashMap<String, DataPointsRollup[]> packetLossRollupsFromDump;
+		HashMap<String, DataPointsRollup[]> rttRollupsFromDump;
+		HashMap<String, DataPointsRollup[]> portResponseTimeRollupsFromDump;
+		HashMap<String, DataPointsRollup[]> webResponseTimeRollupsFromDump;
+		HashMap<String, DataPointsRollup[]> snmpDataRollupsFromDump;
+		try {
+			packetLossRollupsFromDump=JsonUtil.ToObject(pakcketLossRollupsJson,(new HashMap<String, DataPointsRollup[]>()).getClass());
+			rttRollupsFromDump=JsonUtil.ToObject(rttRollupsJson,(new HashMap<String, DataPointsRollup[]>()).getClass());
+			portResponseTimeRollupsFromDump=JsonUtil.ToObject(portResponseTimeRollupsJson,(new HashMap<String, DataPointsRollup[]>()).getClass());
+			webResponseTimeRollupsFromDump=JsonUtil.ToObject(webResponseTimeRollupsJson,(new HashMap<String, DataPointsRollup[]>()).getClass());
+			snmpDataRollupsFromDump=JsonUtil.ToObject(snmpDataRollupsJson,(new HashMap<String, DataPointsRollup[]>()).getClass());
+
+		} catch (Exception e) {
+			Logit.LogError("RollupsContainer - mergeExistingRollupsFromMemDump", "Unable to parse rollups dump to JSON objects. E: "+e.getMessage());
+			return false;
 
 		}
+		
+		this.mergeRollups(packetLossRollupsFromDump, packetLossRollups);
+		this.mergeRollups(rttRollupsFromDump, rttRollups);
+		this.mergeRollups(portResponseTimeRollupsFromDump, portResponseTimeRollups);
+		this.mergeRollups(webResponseTimeRollupsFromDump, webResponseTimeRollups);
+		this.mergeRollups(snmpDataRollupsFromDump, snmpDataRollups);
+
 		return true;
+	}
+
+	private void mergeRollups(HashMap<String, DataPointsRollup[]> rollupsFromDump,
+			HashMap<String, DataPointsRollup[]> currentRollups) {
+		for(Map.Entry<String, DataPointsRollup[]> runnableProbeIdRollups:rollupsFromDump.entrySet())
+		{
+			DataPointsRollup[] dumpRollups=runnableProbeIdRollups.getValue();
+			DataPointsRollup[] existingRollups=currentRollups.get(runnableProbeIdRollups.getKey());
+			if(dumpRollups==null||existingRollups==null)
+				continue;
+			else
+			{
+				for(int i=0;i<dumpRollups.length;i++)
+				{
+					if(dumpRollups[i]!=null&&existingRollups[i]==null)
+						existingRollups[i]=dumpRollups[i];
+					else if(dumpRollups[i]==null&&existingRollups[i]!=null)
+						continue;
+					else
+						existingRollups[i].mergeRollup(dumpRollups[i]);
+				}
+			}
+		}
 	}
 
 }

@@ -55,7 +55,6 @@
         <pathelement location="lib/base/slf4j-api-1.7.1.jar"/>
         <pathelement location="lib/base/uuid-3.2.0-sources.jar"/>
         <pathelement location="lib/base/uuid-3.2.jar"/>
-        <pathelement location="lib/json/json-simple-1.1.1.jar"/>
         <pathelement location="lib/network/javadoc_net.sourceforge.jpcap-0.01.18.jar"/>
         <pathelement location="lib/network/net.sourceforge.jpcap-0.01.18.jar"/>
         <pathelement location="lib/base/syslog4j-0.9.46-bin.jar"/>
@@ -98,6 +97,7 @@
         <pathelement location="lib/google/gson-2.6.2-javadoc.jar"/>
         <pathelement location="lib/google/gson-2.6.2-sources.jar"/>
         <pathelement location="lib/google/gson-2.6.2.jar"/>
+        <pathelement location="lib/json/json-simple-1.1.jar"/>
     </path>
     <target name="init">
         <mkdir dir="bin"/>

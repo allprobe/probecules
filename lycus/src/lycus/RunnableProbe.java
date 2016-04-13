@@ -21,7 +21,7 @@ public class RunnableProbe implements Runnable {
 	private BaseProbe probe;
 	private boolean isActive;
 	private boolean isRunning;
-	
+
 	public RunnableProbe(Host host, BaseProbe probe) {
 		this.setHost(host);
 		this.setProbe(probe);
@@ -56,7 +56,6 @@ public class RunnableProbe implements Runnable {
 		this.isActive = isActive;
 	}
 
-
 	private boolean isRunning() {
 		return isRunning;
 	}
@@ -83,37 +82,54 @@ public class RunnableProbe implements Runnable {
 			return ProbeTypes.RBL;
 		if (getProbe() instanceof DiscoveryProbe)
 			return ProbeTypes.DISCOVERY;
-//		if (getProbe() instanceof BaseElement)
-//			return ProbeTypes.DISCOVERYELEMENT;
+		// if (getProbe() instanceof BaseElement)
+		// return ProbeTypes.DISCOVERYELEMENT;
 		return null;
 	}
 
 	public void run() {
-		//TODO: eliminate this from factory - check with Oren
-	
+		// TODO: eliminate this from factory - check with Oren
+
 		BaseResult result = null;
 
-		String rpStr = this.getHost().getHostId().toString()+"@"+getProbe().getProbe_id();
-		if (rpStr.contains(
-				"9dc99972-e28a-4e90-aabd-7e8bad61b232@inner_657259e4-b70b-47d2-9e4a-3db904a367e1"))
- 			Logit.LogDebug("BREAKPOINT - RunnableProbe");
-		
-		
+		String rpStr = this.getHost().getHostId().toString() + "@" + getProbe().getProbe_id();
+		if (rpStr.contains("788b1b9e-d753-4dfa-ac46-61c4374eeb84@inner_036f81e0-4ec0-468a-8396-77c21dd9ae5a"))
+			Logit.LogDebug("BREAKPOINT - RunnableProbe");
+
 		try {
 			result = getProbe().getResult(this.getHost());
-			if(result==null)
-			{
-				Logit.LogError("RunnableProbe - run()", "Error getting runnable probe results!");
-				return;
-			}
+		} catch (Exception e) {
+			Logit.LogError("RunnableProbe - run()", "Error getting runnable probe results!");
+			return;
+		}
+		if (result == null) {
+			Logit.LogError("RunnableProbe - run()", "Error getting runnable probe results!");
+			return;
+		}
+		try {
 			result.checkIfTriggerd(getProbe().getTriggers());
+		} catch (Exception e) {
+			Logit.LogError("RunnableProbe - run()", "Error triggering runnable probe results!");
+			return;
+		}
+		try {
 			ResultsContainer.getInstance().addResult(result);
+		} catch (Exception e) {
+			Logit.LogError("RunnableProbe - run()", "Error processing runnable probe results to results container!");
+			return;
+		}
+		try {
 			RollupsContainer.getInstance().addResult(result);
 		} catch (Exception e) {
-			Logit.LogError("RunnableProbe - run()", "Unable Probing Runnable Probe of: " + this.getId() + "\n" + e.getMessage());
+			Logit.LogError("RunnableProbe - run()", "Error processing runnable probe results to results container!");
+			return;
+//			if (this.getId().split("@")[2].equals("null"))
+//				Logit.LogDebug("BREAKPOINT");
+//			Logit.LogError("RunnableProbe - run()",
+//					"Unable Probing Runnable Probe of: " + this.getId() + "\n" + e.getMessage());
 		}
-		Logit.LogInfo("Running Probe: " + this.getId() + " at Host: " + this.getHost().getHostIp()
-				+ "(" + this.getHost().getName() + ")" + ", Results: " + result + " ...");
+		Logit.LogInfo("Running Probe: " + this.getId() + " at Host: " + this.getHost().getHostIp() + "("
+				+ this.getHost().getName() + ")" + ", Results: " + result + " ...");
 	}
 
 	// returns this.isRunning();
@@ -153,7 +169,8 @@ public class RunnableProbe implements Runnable {
 				rpThread = RunInnerProbesChecks.getRblProbeFutureMap().remove(this.getId());
 			}
 			if (rpThread == null) {
-				Logit.LogError("RunnableProbe - stop()", "RunnableProbe: " + this.getId() + " running, but doesn't exists in thread pool!");
+				Logit.LogError("RunnableProbe - stop()",
+						"RunnableProbe: " + this.getId() + " running, but doesn't exists in thread pool!");
 				return false;
 			} else
 				rpThread.cancel(false);
@@ -177,7 +194,8 @@ public class RunnableProbe implements Runnable {
 			this.stop();
 			this.getProbe().setInterval(interval);
 		} catch (Exception e) {
-			Logit.LogError("RunnableProbe - changeRunnableProbeInterval()", "Could not change interval to " + interval + ", " + this.getId());
+			Logit.LogError("RunnableProbe - changeRunnableProbeInterval()",
+					"Could not change interval to " + interval + ", " + this.getId());
 			return false;
 		}
 		this.start();

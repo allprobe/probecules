@@ -1,4 +1,4 @@
-package ResultsTasks;
+package Tasks;
 
 public abstract class BaseTask implements Runnable {
 	private long interval = 30; 
