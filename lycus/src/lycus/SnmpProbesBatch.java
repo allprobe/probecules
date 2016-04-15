@@ -27,9 +27,12 @@ public class SnmpProbesBatch implements Runnable {
 	private long interval;
 	private boolean snmpError;
 	private boolean isRunning;
-	
-	private Map<String, SnmpResult> snmpPreviousResults;  //Map<runnableProbeId, SnmpResult> for calculating Delta result 
-	
+
+	private Map<String, SnmpResult> snmpPreviousResults; // Map<runnableProbeId,
+															// SnmpResult> for
+															// calculating Delta
+															// result
+
 	// check vars
 	private TransportMapping transport;
 	private Snmp snmp;
@@ -55,7 +58,8 @@ public class SnmpProbesBatch implements Runnable {
 			this.setTransport(new DefaultUdpTransportMapping());
 			this.getTransport().listen();
 		} catch (IOException e) {
-			Logit.LogError("SnmpProbesBatch - startSnmpListener()", "Socket binding for failed for Snmp Batch:" + this.getBatchId() + "\n" + e.getMessage());
+			Logit.LogError("SnmpProbesBatch - startSnmpListener()",
+					"Socket binding for failed for Snmp Batch:" + this.getBatchId() + "\n" + e.getMessage());
 		}
 		this.setSnmp(new Snmp(this.getTransport()));
 	}
@@ -154,18 +158,17 @@ public class SnmpProbesBatch implements Runnable {
 		try {
 
 			String rpStr = this.getBatchId();
-			if (rpStr.contains(
-					"9dc99972-e28a-4e90-aabd-7e8bad61b232@0b05919c-6cc0-42cc-a74b-de3b0dcd4a2a@60"))
+			if (rpStr.contains("9dc99972-e28a-4e90-aabd-7e8bad61b232@0b05919c-6cc0-42cc-a74b-de3b0dcd4a2a@60"))
 				Logit.LogDebug("BREAKPOINT");
-			
+
 			if (this.getHost().isHostStatus() && this.getHost().isSnmpStatus()) {
 				Host host = this.getHost();
 
 				List<RunnableProbe> snmpProbes = new ArrayList<RunnableProbe>(this.getSnmpProbes().values());
 
-				if(host.getHostId().toString().contains("788b1b9e-d753-4dfa-ac46-61c4374eeb84"))
+				if (host.getHostId().toString().contains("788b1b9e-d753-4dfa-ac46-61c4374eeb84"))
 					Logit.LogDebug("BREAKPOINT");
-				
+
 				if (host.getSnmpTemp() == null) {
 					for (RunnableProbe rp : snmpProbes) {
 						Logit.LogInfo("Snmp Probe doesn't run: " + rp.getId() + ", no SNMP template configured!");
@@ -181,7 +184,7 @@ public class SnmpProbesBatch implements Runnable {
 					if (rpStr.contains(
 							"788b1b9e-d753-4dfa-ac46-61c4374eeb84@inner_036f81e0-4ec0-468a-8396-77c21dd9ae5a"))
 						Logit.LogDebug("BREAKPOINT");
-					
+
 					_snmpProbes.add((SnmpProbe) rp.getProbe());
 				}
 
@@ -197,19 +200,20 @@ public class SnmpProbesBatch implements Runnable {
 				} else {
 					long resultsTimestamp = System.currentTimeMillis();
 					for (SnmpResult result : response) {
-						SnmpStoreAs storeAs = ((SnmpProbe)RunnableProbeContainer.getInstanece().get(result.getRunnableProbeId()).getProbe()).getStoreAs();
-						if (storeAs == SnmpStoreAs.asIs)
-						{
+						SnmpStoreAs storeAs = ((SnmpProbe) RunnableProbeContainer.getInstanece()
+								.get(result.getRunnableProbeId()).getProbe()).getStoreAs();
+						if (storeAs == SnmpStoreAs.asIs) {
+							result.setLastTimestamp(resultsTimestamp);
 							ResultsContainer.getInstance().addResult(result);
 							RollupsContainer.getInstance().addResult(result);
-						}
-						else if (storeAs == SnmpStoreAs.delta)
-						{
+						} else if (storeAs == SnmpStoreAs.delta) {
 							SnmpDeltaResult snmpDeltaResult = getSnmpDeltaResult(result, resultsTimestamp);
-							ResultsContainer.getInstance().addResult(snmpDeltaResult);
-							RollupsContainer.getInstance().addResult(snmpDeltaResult);
+							if (!snmpDeltaResult.isFirst()) {
+								ResultsContainer.getInstance().addResult(snmpDeltaResult);
+								RollupsContainer.getInstance().addResult(snmpDeltaResult);
+							}
 						}
-						
+
 					}
 				}
 			}
@@ -218,24 +222,24 @@ public class SnmpProbesBatch implements Runnable {
 		}
 	}
 
-	public SnmpDeltaResult getSnmpDeltaResult(SnmpResult result, long timeStamp)
-	{
+	public SnmpDeltaResult getSnmpDeltaResult(SnmpResult result, long timeStamp) {
 		SnmpDeltaResult snmpDeltaResult = new SnmpDeltaResult(result.getRunnableProbeId());
 		SnmpResult snmpPreviousData = snmpPreviousResults.get(result.getRunnableProbeId());
-		if (snmpPreviousData != null)
-		{
-			snmpPreviousData.setLastTimestamp(timeStamp);
+		if (snmpPreviousData != null) {
+//			snmpPreviousData.setLastTimestamp(timeStamp);
 			snmpDeltaResult.setData(snmpPreviousData.getData(), result.getData());
-		}
-		else
+		} else
 			snmpDeltaResult.setData(null, result.getData());
+		
 		snmpDeltaResult.setData(snmpPreviousData != null ? snmpPreviousData.getData() : null, result.getData());
+		snmpDeltaResult.setLastTimestamp(timeStamp);
+		
 		snmpPreviousResults.put(result.getRunnableProbeId(), result);
-		
+//		snmpPreviousResults.remove(snmpPreviousData);
 		return snmpDeltaResult;
-		
+
 	}
-	
+
 	public void deleteSnmpProbe(RunnableProbe rp) {
 		this.getSnmpProbes().remove(rp.getId());
 	}
