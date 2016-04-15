@@ -2,9 +2,11 @@ package Updates;
 
 import Model.UpdateModel;
 
-public class DiscoveryUpdate  extends BaseUpdate{
-	public DiscoveryUpdate(UpdateModel update) {
+public class ElementUpdate extends BaseUpdate {
+
+	public ElementUpdate(UpdateModel update) {
 		super(update);
+	
 	}
 
 	@Override

@@ -1,11 +1,5 @@
 package Model;
 
-import java.util.HashMap;
-import java.util.UUID;
-
-import lycus.RunnableProbe;
-import lycus.SnmpTemplate;
-
 public class HostParams {
 	public String host_id;
 	public String name;

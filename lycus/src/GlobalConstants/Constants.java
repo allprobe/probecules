@@ -22,9 +22,9 @@ public class Constants {
 	public final static String deleteBucket = "delbucket";
 	public final static String updateSnmp = "updsnmp";
 	public final static String deleteSnmp = "delsnmp";
-	public final static String updateDiscovery = "udisc";
+//	public final static String updateDiscovery = "udisc";
 	public final static String updateElement = "ude";
-	public final static String deleteDiscovery = "rdisc";
+//	public final static String deleteDiscovery = "rdisc";
 	public final static String hosts = "hosts";
 	public final static String snmpTemplates="snmpTemplates";
 

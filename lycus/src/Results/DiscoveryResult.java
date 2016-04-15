@@ -56,9 +56,9 @@ public class DiscoveryResult extends BaseResult {
 		for(BaseElement element:getElements().values())
 		{
 			if(element instanceof NicElement)
-				return DiscoveryElementType.nics;
+				return DiscoveryElementType.bw;
 			if(element instanceof DiskElement)
-				return DiscoveryElementType.disks;
+				return DiscoveryElementType.ds;
 		}
 		return null;
 	}

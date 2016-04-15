@@ -28,9 +28,9 @@ public class ElementsContainer {
 	public boolean isElementsChanged(DiscoveryResult discoveryResult) {
 
 		switch (discoveryResult.getElementsType()) {
-		case nics:
+		case bw:
 			return isNicElementsChanged(discoveryResult);
-		case disks:
+		case ds:
 			break;
 		}
 		return false;

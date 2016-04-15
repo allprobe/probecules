@@ -216,10 +216,10 @@ public class NetResults implements INetResults {
 		long timestamp = System.currentTimeMillis();
 		HashMap<String, BaseElement> elements = null;
 		switch (probe.getType()) {
-		case nics:
+		case bw:
 			elements = this.getNicElements(host);
 			break;
-		case disks:
+		case ds:
 			elements = this.getDiskElements(host);
 			break;
 		}

@@ -1,7 +1,5 @@
 package Model;
 
-import java.util.UUID;
-
 public class ProbeParams {
 	public String user_id;
 	public String probe_id;
@@ -28,12 +26,14 @@ public class ProbeParams {
 	public String http_auth_username;
 	public String http_auth_password;
 	public String url;
-	public Integer discovery_elements_interval;
-	public Integer discovery_trigger_code;
-	public String discovery_trigger_x;
-	public String discovery_trigger_id;
-	public String discovery_trigger_severity;
+	public Integer element_interval;
+	public String trigger_id;;
+	
+	// Discovery
 	public String discovery_type;
+	public DiscoveryTrigger[] discovery_triggers;
+
+	
 
 
 }

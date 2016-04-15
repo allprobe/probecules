@@ -18,6 +18,7 @@ import org.apache.log4j.Logger;
 import org.json.simple.JSONArray;
 import org.json.simple.parser.JSONParser;
 import com.google.gson.Gson;
+import com.google.gson.JsonArray;
 
 import DAL.ApiInterface;
 import Elements.BaseElement;
@@ -30,12 +31,14 @@ import GlobalConstants.TriggerSeverity;
 import GlobalConstants.Enums.HostType;
 import Model.ConditionUpdateModel;
 import Model.DiscoveryElementParams;
+import Model.DiscoveryTrigger;
 import Model.HostParams;
 import Model.ProbeParams;
 import Model.SnmpTemplateParams;
 import Probes.BaseProbe;
 import Probes.NicProbe;
 import Utils.GeneralFunctions;
+import Utils.JsonUtil;
 import Utils.Logit;
 import lycus.DataPointsRollup;
 
@@ -342,15 +345,28 @@ public class UsersManager {
 					break;
 				}
 				case Constants.discovery: {
-					probeParams.discovery_elements_interval = Integer
+					probeParams.element_interval = Integer
 							.parseInt(probeKeyJson.get("element_interval").toString());
-					probeParams.discovery_trigger_code = Integer
-							.parseInt(probeKeyJson.get("discovery_trigger").toString());
-					probeParams.discovery_trigger_x = probeKeyJson.get("discovery_trigger_x_value").toString();
-					probeParams.snmp_unit = (String) probeKeyJson.get("discovery_trigger_unit");
-					probeParams.discovery_trigger_id = (String) probeKeyJson.get("discovery_trigger_id");
-					probeParams.discovery_trigger_severity = (String) probeKeyJson.get("discovery_trigger_severity");
-					probeParams.discovery_type=(String) probeKeyJson.get("discovery_type");
+					JSONParser jsonParser = new JSONParser();
+					JSONArray triggers = (JSONArray) jsonParser.parse(probeKeyJson.get("discovery_triggers").toString());
+					DiscoveryTrigger[] discovery_triggers = new DiscoveryTrigger[triggers.size()];
+					probeParams.discovery_type = probeKeyJson.get("discovery_type").toString();
+					
+					for (int index = 0; index < triggers.size(); index++) {
+						JSONObject trigger = (JSONObject)triggers.get(index);
+						DiscoveryTrigger discoveryTrigger = new DiscoveryTrigger();
+						
+						discoveryTrigger.discovery_trigger_code = Integer.parseInt(trigger.get("discovery_trigger_code").toString());
+						
+						discoveryTrigger.discovery_trigger_x_value = trigger.get("discovery_trigger_x_value").toString();
+						discoveryTrigger.discovery_trigger_severity = trigger.get("discovery_trigger_severity").toString();
+						discoveryTrigger.discovery_trigger_unit =  trigger.get("discovery_trigger_unit").toString();
+						discoveryTrigger.discovery_trigger_id =  trigger.get("discovery_trigger_id").toString();
+						discovery_triggers[index] = discoveryTrigger;
+						
+						}
+					
+					probeParams.discovery_triggers = discovery_triggers;
 					break;
 				}
 				case Constants.rbl: {

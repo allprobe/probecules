@@ -9,7 +9,6 @@ import org.json.simple.JSONObject;
 import DAL.ApiInterface;
 import DAL.DAL;
 import GlobalConstants.Enums;
-import GlobalConstants.Enums.ApiAction;
 import Interfaces.IDAL;
 import Model.ThreadsUpdates;
 import Model.UpdateModel;

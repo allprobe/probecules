@@ -26,7 +26,6 @@ public abstract class BaseUpdate implements IUpdate{
 				action = Action.New;
 				break;
 			case Constants.updateBucket:
-			case Constants.updateDiscovery:
 			case Constants.updateElement:
 			case Constants.updateHost:
 			case Constants.updateProbe:
@@ -36,7 +35,6 @@ public abstract class BaseUpdate implements IUpdate{
 				action = Action.Update;
 				break;
 			case Constants.deleteBucket:
-			case Constants.deleteDiscovery:
 			case Constants.deleteHost:
 			case Constants.deleteProbe:
 			case Constants.deleteSnmp:

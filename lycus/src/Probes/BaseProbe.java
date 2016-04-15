@@ -6,7 +6,6 @@ package Probes;
 
 import java.util.HashMap;
 import java.util.UUID;
-
 import GlobalConstants.Constants;
 import Model.UpdateValueModel;
 import Results.BaseResult;
@@ -21,7 +20,7 @@ import lycus.User;
  * @author Roi
  */
 public class BaseProbe  {
-	private User user;
+	private User user;				
     private String probe_id;
     private UUID template_id;
 	private String name;

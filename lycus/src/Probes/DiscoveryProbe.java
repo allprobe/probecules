@@ -1,27 +1,30 @@
 package Probes;
 
 import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.Map;
+import java.util.List;
 import java.util.UUID;
 
-import Elements.BaseElement;
+import GlobalConstants.Constants;
 import GlobalConstants.Enums;
-import GlobalConstants.Enums.ElementChange;
-import GlobalConstants.Enums.HostType;
+import GlobalConstants.Enums.DiscoveryElementType;
+import Model.DiscoveryTrigger;
+import Model.KeyUpdateModel;
+import Model.UpdateValueModel;
 import NetConnection.NetResults;
 import Results.BaseResult;
 import Results.DiscoveryResult;
-import Results.SnmpResult;
-import Utils.GeneralFunctions;
-import Utils.Logit;
 import lycus.Host;
+import lycus.Trigger;
+import lycus.TriggerCondition;
 import lycus.User;
+import lycus.UsersManager;
 
 public class DiscoveryProbe extends BaseProbe {
 	private Enums.DiscoveryElementType type;
 	private long elementsInterval;
-
+	private List<Trigger> bandWidthTriggers;
+	private List<Trigger> diskSpaceTriggers;
+	
 	public DiscoveryProbe(User user, String probe_id, UUID template_id, String name, long interval, float multiplier,
 			boolean status, Enums.DiscoveryElementType discoveryType, long elementsInterval) {
 		super(user, probe_id, template_id, name, interval, multiplier, status);
@@ -55,9 +58,60 @@ public class DiscoveryProbe extends BaseProbe {
 		return discoveryResult;
 	}
 
-
+	public boolean updateKeyValues(UpdateValueModel updateValue)
+	{
+		super.updateKeyValues(updateValue);
+		setType(DiscoveryElementType.valueOf(updateValue.key.discovery_type));
+		setElementInterval(updateValue.key.element_interval);
+		updateTriggers(updateValue.key);
+			
+		return true;
+	}
 	
-
+	private void updateTriggers(KeyUpdateModel key)
+ 	{
+		if (key.discovery_type.equals("bw"))
+		{
+			bandWidthTriggers = new ArrayList<Trigger>();
+		}
+		else if (key.discovery_type.equals("ds"))
+		{
+			diskSpaceTriggers = new ArrayList<Trigger>();
+		}
+		else if (key.discovery_type.equals("pc"))
+		{
+			//Todo: implement
+		}
+		
+		DiscoveryTrigger[] triggers = key.discovery_triggers;
+		for (int index = 0; index < triggers.length; index++)
+		{  
+			TriggerCondition condition = new TriggerCondition(triggers[index].discovery_trigger_code, 
+					Constants.and, triggers[index].discovery_trigger_x_value, "");
+			ArrayList<TriggerCondition> conditions = new ArrayList<TriggerCondition>();
+			conditions.add(condition);
+			
+			Trigger trigger = new Trigger(triggers[index].discovery_trigger_id, "", this, 
+					UsersManager.getTriggerSev(triggers[index].discovery_trigger_severity), true,
+					key.discovery_type, UsersManager.getSnmpUnit(triggers[index].discovery_trigger_unit), conditions); 
+			
+			if (key.discovery_type.equals("bw"))
+			{
+				bandWidthTriggers.add(trigger);
+			}
+			else if (key.discovery_type.equals("ds"))
+			{
+				diskSpaceTriggers.add(trigger);
+			}
+			else if (key.discovery_type.equals("pc"))
+			{
+				//Todo: implement
+			}
+		
+		}
+	}
+	
+	
 //		for (Map.Entry<String, BaseElement> lastElement : lastScanElements.entrySet()) {
 //			if (discoveryResult.getCurrentElements().get(lastElement.getKey()) == null) {
 //				elementsChanges.put(lastElement.getValue(), ElementChange.addedElement);

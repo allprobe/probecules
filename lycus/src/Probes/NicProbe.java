@@ -1,26 +1,12 @@
 package Probes;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Map;
 import java.util.UUID;
-
 import org.json.simple.JSONObject;
 import org.snmp4j.smi.OID;
-
-import GlobalConstants.Constants;
-import GlobalConstants.Enums;
-import GlobalConstants.SnmpDataType;
-import GlobalConstants.SnmpUnit;
 import GlobalConstants.Enums.HostType;
-import GlobalConstants.Enums.SnmpStoreAs;
 import NetConnection.NetResults;
 import Results.BaseResult;
 import Results.NicResult;
-import Results.PingResult;
-import Results.SnmpResult;
-import Utils.GeneralFunctions;
-import Utils.Logit;
 import lycus.Host;
 import lycus.User;
 

@@ -20,11 +20,13 @@ public class UpdateFactory {
 				case Constants.updateBucket:
 				case Constants.deleteBucket:
 					return new BucketUpdate(update);
+				
+//				case Constants.updateDiscovery:
+//				case Constants.deleteDiscovery:
+//					return new DiscoveryUpdate(update);
 					
 				case Constants.updateElement:
-				case Constants.updateDiscovery:
-				case Constants.deleteDiscovery:
-					return new DiscoveryUpdate(update);
+					return new ElementUpdate(update);
 					
 				case Constants.updateHost:
 				case Constants.deleteHost:

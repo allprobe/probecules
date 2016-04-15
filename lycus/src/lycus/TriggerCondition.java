@@ -1,7 +1,7 @@
 package lycus;
 
 public class TriggerCondition {
-	private int code;//1 bigger, 2 tinier, 3 equal, 4 is not
+	private int code;//0 no trigger, 1 bigger, 2 tinier, 3 equal, 4 is not
 	private String andOr;
 	private String xValue;
 	private String tValue;

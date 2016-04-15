@@ -20,11 +20,7 @@ public class KeyUpdateModel {
 	public String proto;
 	public String port_extra;
 	public String rbl;
-	public String discovery_trigger_unit;
-	public String discovery_type;
-	public Integer element_interval;
-	public Integer discovery_trigger;
-	public String discovery_trigger_x_value;
+
 	
 	public Integer store_value_as;
 	public Integer bytes;
@@ -33,4 +29,19 @@ public class KeyUpdateModel {
 	
 	public String trigger_id;
 	public String trigger_severity;
+	
+	// Element
+	public String active;
+	public String ifSpeed;
+	public String hostType;
+	public Integer element_interval;
+	
+	//Discovery
+//	public String discovery_trigger_unit;
+//	public String discovery_type;
+//	public Integer discovery_trigger_code;
+//	public String discovery_trigger_x_value;
+//	public String discovery_trigger_severity;
+	public String discovery_type;
+	public DiscoveryTrigger[] discovery_triggers;
 }

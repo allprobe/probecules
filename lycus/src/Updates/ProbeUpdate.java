@@ -5,10 +5,8 @@ import java.util.UUID;
 import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
 
-import DAL.ApiInterface;
 import DAL.DAL;
 import GlobalConstants.Constants;
-import GlobalConstants.Enums;
 import GlobalConstants.Enums.ApiAction;
 import Interfaces.IDAL;
 import Model.ProbeParams;
@@ -62,10 +60,7 @@ public class ProbeUpdate extends BaseUpdate {
 				probeParams.template_id = getUpdate().template_id;
 				probeParams.bytes = getUpdate().update_value.key.bytes;
 				probeParams.npings = getUpdate().update_value.key.npings;
-				probeParams.discovery_elements_interval = getUpdate().update_value.key.element_interval;
-				probeParams.discovery_trigger_x = getUpdate().update_value.key.discovery_trigger_x_value;
-				// probeParams.discovery_type =
-				// getUpdate().update_value.key.discovery_type;
+				probeParams.element_interval = getUpdate().update_value.key.element_interval;
 				probeParams.http_auth = getUpdate().update_value.key.http_auth;
 				probeParams.http_auth_password = getUpdate().update_value.key.http_auth_password;
 				probeParams.http_auth_username = getUpdate().update_value.key.http_auth_user;
@@ -88,10 +83,18 @@ public class ProbeUpdate extends BaseUpdate {
 				probeParams.snmp_datatype = getUpdate().update_value.key.value_type;
 				probeParams.snmp_unit = getUpdate().update_value.key.value_unit;
 				probeParams.snmp_store_as = getUpdate().update_value.key.store_value_as;
-				probeParams.discovery_trigger_id = getUpdate().update_value.key.trigger_id;
-				probeParams.discovery_trigger_severity = getUpdate().update_value.key.trigger_severity;
-				probeParams.discovery_trigger_code = getUpdate().update_value.key.discovery_trigger;
-
+				// todo: take care, also update
+				probeParams.trigger_id = getUpdate().update_value.key.trigger_id;
+				
+				// Discovery
+				probeParams.discovery_type = getUpdate().update_value.key.discovery_type;
+				probeParams.discovery_triggers = getUpdate().update_value.key.discovery_triggers;
+//				probeParams.discovery_trigger_severity = getUpdate().update_value.key.trigger_severity;
+//				probeParams.discovery_trigger_code = getUpdate().update_value.key.discovery_trigger_code;
+//				probeParams.discovery_trigger_unit = getUpdate().update_value.key.discovery_trigger_unit;
+//				probeParams.discovery_trigger_x_value = getUpdate().update_value.key.discovery_trigger_x_value;
+				
+				
 				probe = getUser().addTemplateProbe(probeParams);
 				Logit.LogCheck("New probe was created");
 
@@ -103,7 +106,7 @@ public class ProbeUpdate extends BaseUpdate {
 			}
 
 			RunnableProbe runnableProbe = new RunnableProbe(host, probe);
-			runnableProbe.start();
+//			runnableProbe.start();
 			getUser().addRunnableProbe(runnableProbe);
 			Logit.LogCheck("New Runnable probe was created");
 			
