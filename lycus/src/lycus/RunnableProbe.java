@@ -109,7 +109,7 @@ public class RunnableProbe implements Runnable {
 		try {
 			result.checkIfTriggerd(getProbe().getTriggers());
 		} catch (Exception e) {
-			Logit.LogError("RunnableProbe - run()", "Error triggering runnable probe results! "+this.getId());
+			Logit.LogError("RunnableProbe - run()", "Error triggering runnable probe results!  "+this.getId());
 			return;
 		}
 		try {

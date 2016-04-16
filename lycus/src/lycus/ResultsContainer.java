@@ -201,10 +201,6 @@ public class ResultsContainer implements IResultsContainer {
 	@Override
 	public boolean addResult(BaseResult result) {
 		synchronized (lockResults) {
-			if (result instanceof DiscoveryResult) {
-				if (ElementsContainer.getInstance().isElementsChanged((DiscoveryResult) result))
-					results.add(result);
-			} else
 				results.add(result);
 		}
 		return true;

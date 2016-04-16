@@ -1,6 +1,7 @@
 package lycus;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 
@@ -25,16 +26,29 @@ public class ElementsContainer {
 		return instance;
 	}
 
-	public boolean isElementsChanged(DiscoveryResult discoveryResult) {
-
+	public void addResult(DiscoveryResult discoveryResult)
+	{
 		switch (discoveryResult.getElementsType()) {
-		case bw:
-			return isNicElementsChanged(discoveryResult);
-		case ds:
+		case nics:
+			if(isNicElementsChanged(discoveryResult))
+			{
+				applyNicStatusesOnNewResult(discoveryResult);
+				ResultsContainer.getInstance().addResult(discoveryResult);
+			}
+		case disks:
 			break;
 		}
-		return false;
 	}
+	
+	private void applyNicStatusesOnNewResult(DiscoveryResult discoveryResult) {
+		ConcurrentHashMap<String, NicElement> existing=nicElements.get(discoveryResult.getRunnableProbeId());
+		HashMap<String, BaseElement> lastResultElements=discoveryResult.getElements();
+		for(BaseElement baseElement:lastResultElements.values())
+		{
+			baseElement.setActive(existing.get(baseElement.getName()).isActive());
+		}
+	}
+
 
 	private boolean isNicElementsChanged(DiscoveryResult discoveryResult) {
 		Map<String, NicElement> currentElements = nicElements.get(discoveryResult.getRunnableProbeId());
