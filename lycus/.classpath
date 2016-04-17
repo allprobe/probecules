@@ -89,6 +89,7 @@
 	<classpathentry kind="lib" path="lib/google/gson-2.6.2-sources.jar"/>
 	<classpathentry kind="lib" path="lib/google/gson-2.6.2.jar"/>
 	<classpathentry kind="lib" path="lib/json/json-simple-1.1.jar"/>
+	<classpathentry kind="lib" path="lib/json/javax.json-1.0.2.jar"/>
 	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER"/>
 	<classpathentry kind="output" path="bin"/>
 </classpath>

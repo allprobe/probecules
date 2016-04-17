@@ -12,6 +12,8 @@ public class DiscoveryElementParams {
 	public String template_id;
 	public int element_interval;
 	public String elements_type;
+	public String elements;
+	public String hostType;
 	
 	public DiscoveryElementParams() {
 	}

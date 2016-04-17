@@ -1,14 +1,17 @@
 package Elements;
 
+import Probes.DiscoveryProbe;
+
 public class BaseElement {
 
 	private int index;
 	private String name;
 	private boolean active;
-	
-	public BaseElement(int index,String name) {
+	private DiscoveryProbe discoveryProbe;
+	public BaseElement(int index,String name, DiscoveryProbe discoveryProbe) {
 		this.index=index;
 		this.setName(name);
+		this.setDiscoveryProbe(discoveryProbe);
 	}
 
 
@@ -43,6 +46,16 @@ public class BaseElement {
 
 	public void setActive(boolean active) {
 		this.active = active;
+	}
+
+
+	public DiscoveryProbe getDiscoveryProbe() {
+		return discoveryProbe;
+	}
+
+
+	public void setDiscoveryProbe(DiscoveryProbe discoveryProbe) {
+		this.discoveryProbe = discoveryProbe;
 	}
 
 

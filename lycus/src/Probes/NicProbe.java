@@ -1,13 +1,18 @@
 package Probes;
 
+import java.util.HashMap;
 import java.util.UUID;
 import org.json.simple.JSONObject;
 import org.snmp4j.smi.OID;
+
+import Elements.NicElement;
 import GlobalConstants.Enums.HostType;
 import NetConnection.NetResults;
 import Results.BaseResult;
 import Results.NicResult;
+import Utils.GeneralFunctions;
 import lycus.Host;
+import lycus.Trigger;
 import lycus.User;
 
 public class NicProbe extends BaseProbe  {
@@ -18,13 +23,53 @@ public class NicProbe extends BaseProbe  {
 	private int index;
 	private long ifSpeed;
 	HostType hostType;
+	DiscoveryProbe discoveryProbe;
+	NicElement nicElement;
 
-	public NicProbe(User user, String probe_id, UUID template_id, String name, long interval, float multiplier,
-			boolean status,int index, long ifSpeed, HostType hostType) {
-		super(user, probe_id, template_id, name, interval, multiplier, status);
+	public NicProbe(DiscoveryProbe probe,NicElement nicElement) {
+		this.discoveryProbe=probe;
+		this.nicElement=nicElement;
 		this.index=index;
 		this.ifSpeed=ifSpeed;
 		this.hostType=hostType;
+	}
+	
+	@Override
+	public User getUser() {
+		return discoveryProbe.getUser();
+	}
+	
+	@Override
+	public UUID getTemplate_id() {
+		return discoveryProbe.getTemplate_id();}
+	
+	@Override
+	public long getInterval() {
+		return discoveryProbe.getElementInterval();}
+	
+	@Override
+	public String getName() {
+		return nicElement.getName();
+		}
+	
+	@Override
+	public boolean isActive() {
+		return discoveryProbe.isActive();
+	}
+	
+	@Override
+	public float getMultiplier() {
+		return 1F;
+	}
+	
+	@Override
+	public HashMap<String, Trigger> getTriggers() {
+		return discoveryProbe.getTriggers();
+	}
+	
+	@Override
+	public Trigger getTrigger(String triggerId) {
+		return discoveryProbe.getTrigger(triggerId);
 	}
 
 //	public NicProbe(User user,String probe_id, UUID template_id, String name, long interval, float multiplier,

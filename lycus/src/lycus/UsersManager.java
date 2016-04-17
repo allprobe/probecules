@@ -7,10 +7,13 @@ package lycus;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.HashSet;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import java.util.UUID;
+import javax.json.Json;
+import javax.json.JsonReader;
 
 import org.json.simple.JSONObject;
 import org.apache.log4j.BasicConfigurator;
@@ -22,6 +25,7 @@ import com.google.gson.JsonArray;
 
 import DAL.ApiInterface;
 import Elements.BaseElement;
+import Elements.NicElement;
 import GlobalConstants.Constants;
 import GlobalConstants.Enums;
 import GlobalConstants.LogType;
@@ -36,6 +40,7 @@ import Model.HostParams;
 import Model.ProbeParams;
 import Model.SnmpTemplateParams;
 import Probes.BaseProbe;
+import Probes.DiscoveryProbe;
 import Probes.NicProbe;
 import Utils.GeneralFunctions;
 import Utils.JsonUtil;
@@ -50,11 +55,11 @@ public class UsersManager {
 
 	private static HashMap<UUID, User> users;
 	private static boolean initialized;
-//	static Logger log = Logger.getLogger(UsersManager.class);
-	
+	// static Logger log = Logger.getLogger(UsersManager.class);
+
 	public static void Initialize() {
 		BasicConfigurator.configure();
-		
+
 		setUsers(new HashMap<UUID, User>());
 		if (!UsersManager.Build()) {
 			setInitialized(false);
@@ -75,27 +80,24 @@ public class UsersManager {
 	public static User getUser(String userId) {
 		return getUsers().get(UUID.fromString(userId));
 	}
-	
+
 	public static void setUsers(HashMap<UUID, User> users) {
 		UsersManager.users = users;
 	}
 
-	public static boolean removeHost(UUID hostId, UUID userId)
-	{
-		if (!getUser(userId).removeHost(hostId) && getUsers().containsKey(userId))
-		{
-			 getUsers().remove(userId);
+	public static boolean removeHost(UUID hostId, UUID userId) {
+		if (!getUser(userId).removeHost(hostId) && getUsers().containsKey(userId)) {
+			getUsers().remove(userId);
 		}
 		return true;
 	}
-	
-	public static boolean removeUser(UUID userId)
-	{
+
+	public static boolean removeUser(UUID userId) {
 		if (getUsers().containsKey(userId))
 			getUsers().remove(userId);
 		return true;
-	}	
-	
+	}
+
 	public static boolean isInitialized() {
 		return initialized;
 	}
@@ -127,10 +129,9 @@ public class UsersManager {
 
 		JSONArray allTemplateProbesJson = (JSONArray) initServer.get("probes");
 		addTemplates(allTemplateProbesJson, probeByUser);
-		
+
 		JSONArray allDiscoveryElementsJson = (JSONArray) initServer.get("discovery_elements");
 		addDiscoveryElements(allDiscoveryElementsJson);
-
 
 		JSONArray allTemplateTriggersJson = (JSONArray) initServer.get("triggers");
 		addTriggers(allTemplateTriggersJson, probeByUser);
@@ -140,12 +141,12 @@ public class UsersManager {
 		return true;
 	}
 
-//	public static void runAtStart() {
-//		Set<User> allUsers = new HashSet<User>(getUsers().values());
-//		for (User user : allUsers) {
-//			user.runProbesAtStart();
-//		}
-//	}
+	// public static void runAtStart() {
+	// Set<User> allUsers = new HashSet<User>(getUsers().values());
+	// for (User user : allUsers) {
+	// user.runProbesAtStart();
+	// }
+	// }
 
 	private static HashMap<String, UUID> getProbeByUser(HashMap<String, UUID> runnableProbesIds) {
 		HashMap<String, UUID> probeByUser = new HashMap<String, UUID>();
@@ -202,32 +203,40 @@ public class UsersManager {
 					continue;
 				user.addSnmpTemplate(snmpTemplateParams);
 			} catch (Exception e) {
-				Logit.LogWarn("Creation of Snmp Template Failed: " + snmpTempJson.toJSONString() + " , not added! E: "+e.getMessage());
+				Logit.LogWarn("Creation of Snmp Template Failed: " + snmpTempJson.toJSONString() + " , not added! E: "
+						+ e.getMessage());
 				continue;
 			}
 		}
 	}
-	
+
 	public static void addDiscoveryElements(JSONArray allElementsJson) {
 		for (int i = 0; i < allElementsJson.size(); i++) {
 			JSONObject hostElementsJson = (JSONObject) allElementsJson.get(i);
 			try {
-				JSONArray elements=(JSONArray)(new JSONParser()).parse((String)hostElementsJson.get("elements"));
-				for(int j=0;j<elements.size();j++)
+				JSONObject elements=(JSONObject)(new JSONParser()).parse((String)hostElementsJson.get("elements"));
+				for(Object elementName : elements.keySet())
 				{
-				DiscoveryElementParams elementParams = new DiscoveryElementParams();
+					DiscoveryElementParams elementParams = new DiscoveryElementParams();
 				elementParams.user_id=(String)hostElementsJson.get("user_id");
 				elementParams.template_id=(String)hostElementsJson.get("template_id");
 				elementParams.element_interval=Integer.parseInt((String)hostElementsJson.get("element_interval"));
+				elementParams.elements_type=(String)hostElementsJson.get("elements_type");
 
 				elementParams.host_id=(String)hostElementsJson.get("host_id");
 				elementParams.discovery_id=(String)hostElementsJson.get("discovery_id");
+
+				String runnableProbeId=elementParams.template_id+"@"+elementParams.host_id+"@"+elementParams.discovery_id;
 				
-				JSONObject elementN=(JSONObject)elements.get(j);
-				elementParams.index=Integer.parseInt((String)elementN.get("index"));
-				elementParams.name=(String)elementN.get("name");
-				elementParams.status=((String)elementN.get("status")).equals("1")?true:false;
-				elementParams.elements_type=(String)elementN.get("elements_type");
+				//				JSONObject elementN=(JSONObject)elements.get();
+				elementParams.name=(String) elementName;
+				JSONObject elementValues=(JSONObject)elements.get(elementParams.name);
+
+				elementParams.index=Integer.parseInt(elementValues.get("index").toString());
+				elementParams.status=(boolean)elementValues.get("active");
+				elementParams.hostType=(String)elementValues.get("hostType");
+				elementParams.ifSpeed=(long)elementValues.get("ifSpeed");
+
 				
 				User user = getUsers().get(UUID.fromString(elementParams.user_id));
 				if (user == null)
@@ -238,7 +247,9 @@ public class UsersManager {
 				switch(elementParams.elements_type)
 				{
 				case Constants.bw: 
-//					baseElement=new NicProbe(user,elementParams.discovery_id+"@"+elementParams.name, UUID.fromString(elementParams.template_id),elementParams.name, elementParams.element_interval,1, elementParams.status, elementParams.index,100000, HostType.Linux);
+					DiscoveryProbe probe=(DiscoveryProbe)user.getTemplateProbes().get(elementParams.discovery_id);
+					baseElement=new NicElement(probe, elementParams.index, elementParams.name, null,1l);
+					ElementsContainer.getInstance().addElement(runnableProbeId, baseElement);
 					break;
 				case Constants.ds:
 					break;
@@ -253,7 +264,7 @@ public class UsersManager {
 			}
 		}
 	}
-	
+
 	public static void addHosts(JSONArray allHostsJson) {
 		for (int i = 0; i < allHostsJson.size(); i++) {
 			JSONObject hostJson = (JSONObject) allHostsJson.get(i);
@@ -298,19 +309,17 @@ public class UsersManager {
 				probeParams.template_id = (String) probeJson.get("template_id");
 				probeParams.probe_id = (String) probeJson.get("probe_id");
 				String rpStr = probeParams.probe_id;
-				if (rpStr.contains(
-						"inner_657259e4-b70b-47d2-9e4a-3db904a367e1"))
+				if (rpStr.contains("inner_657259e4-b70b-47d2-9e4a-3db904a367e1"))
 					Logit.LogDebug("BREAKPOINT");
 				probeParams.name = (String) probeJson.get("probe_name");
 				probeParams.interval = Long.parseLong(probeJson.get("probe_interval").toString());
-				probeParams.multiplier =GeneralFunctions.isNullOrEmpty(probeJson.get("probe_multiplier").toString())?1:Float.parseFloat(probeJson.get("probe_multiplier").toString());
-				 
+				probeParams.multiplier = GeneralFunctions.isNullOrEmpty(probeJson.get("probe_multiplier").toString())
+						? 1 : Float.parseFloat(probeJson.get("probe_multiplier").toString());
+
 				probeParams.is_active = probeJson.get("probe_status").toString().equals("1") ? true : false;
 				probeParams.type = (String) probeJson.get("probe_type");
 				probeKeyJson = (JSONObject) probeJson.get("probe_key");
 
-				
-				
 				switch (probeParams.type) {
 				case Constants.icmp: {
 					probeParams.npings = Integer.parseInt(probeKeyJson.get("npings").toString());
@@ -319,7 +328,7 @@ public class UsersManager {
 					break;
 				}
 				case Constants.port: {
-					probeParams.protocol=(String) probeKeyJson.get("proto");
+					probeParams.protocol = (String) probeKeyJson.get("proto");
 					probeParams.port = Integer.parseInt(probeKeyJson.get("port").toString());
 					probeParams.timeout = Integer.parseInt(probeKeyJson.get("timeout").toString());
 					probeParams.port_extra = (String) probeKeyJson.get("port_extra");
@@ -345,27 +354,30 @@ public class UsersManager {
 					break;
 				}
 				case Constants.discovery: {
-					probeParams.element_interval = Integer
-							.parseInt(probeKeyJson.get("element_interval").toString());
+					probeParams.element_interval = Integer.parseInt(probeKeyJson.get("element_interval").toString());
 					JSONParser jsonParser = new JSONParser();
-					JSONArray triggers = (JSONArray) jsonParser.parse(probeKeyJson.get("discovery_triggers").toString());
+					JSONArray triggers = (JSONArray) jsonParser
+							.parse(probeKeyJson.get("discovery_triggers").toString());
 					DiscoveryTrigger[] discovery_triggers = new DiscoveryTrigger[triggers.size()];
 					probeParams.discovery_type = probeKeyJson.get("discovery_type").toString();
-					
+
 					for (int index = 0; index < triggers.size(); index++) {
-						JSONObject trigger = (JSONObject)triggers.get(index);
+						JSONObject trigger = (JSONObject) triggers.get(index);
 						DiscoveryTrigger discoveryTrigger = new DiscoveryTrigger();
-						
-						discoveryTrigger.discovery_trigger_code = Integer.parseInt(trigger.get("discovery_trigger_code").toString());
-						
-						discoveryTrigger.discovery_trigger_x_value = trigger.get("discovery_trigger_x_value").toString();
-						discoveryTrigger.discovery_trigger_severity = trigger.get("discovery_trigger_severity").toString();
-						discoveryTrigger.discovery_trigger_unit =  trigger.get("discovery_trigger_unit").toString();
-						discoveryTrigger.discovery_trigger_id =  trigger.get("discovery_trigger_id").toString();
+
+						discoveryTrigger.discovery_trigger_code = Integer
+								.parseInt(trigger.get("discovery_trigger_code").toString());
+
+						discoveryTrigger.discovery_trigger_x_value = trigger.get("discovery_trigger_x_value")
+								.toString();
+						discoveryTrigger.discovery_trigger_severity = trigger.get("discovery_trigger_severity")
+								.toString();
+						discoveryTrigger.discovery_trigger_unit = trigger.get("discovery_trigger_unit").toString();
+						discoveryTrigger.discovery_trigger_id = trigger.get("discovery_trigger_id").toString();
 						discovery_triggers[index] = discoveryTrigger;
-						
-						}
-					
+
+					}
+
 					probeParams.discovery_triggers = discovery_triggers;
 					break;
 				}
@@ -376,7 +388,7 @@ public class UsersManager {
 				}
 				user.addTemplateProbe(probeParams);
 			} catch (Exception e) {
-				Logit.LogWarn("Unable to parse probe params for:" + probeJson+", E:"+e.getMessage());
+				Logit.LogWarn("Unable to parse probe params for:" + probeJson + ", E:" + e.getMessage());
 				continue;
 			}
 		}
@@ -418,8 +430,7 @@ public class UsersManager {
 				if (rpStr.contains(
 						"e8b03d1e-48c8-4bd1-abeb-7e9a96a4cae4@icmp_41468c4c-c7d4-4dae-bd03-a5b2ca0b44d6@2b082834-7c37-4988-a12a-14947b064430"))
 					Logit.LogDebug("BREAKPOINT");
-				
-				
+
 				String name = (String) triggerJson.get("name");
 				TriggerSeverity severity = getTriggerSev((String) triggerJson.get("severity"));
 				if (severity == null)
@@ -448,7 +459,8 @@ public class UsersManager {
 				probe.addTrigger(trigger);
 
 			} catch (Exception e) {
-				Logit.LogWarn("Creation of Trigger Failed: " + triggerJson.toJSONString() + " , not added! E: "+e.getMessage());
+				Logit.LogWarn("Creation of Trigger Failed: " + triggerJson.toJSONString() + " , not added! E: "
+						+ e.getMessage());
 				continue;
 			}
 		}
@@ -550,39 +562,40 @@ public class UsersManager {
 			UUID userID = rp.getValue();
 			String rpID = rp.getKey();
 
-			if (rpID.contains(
-					"788b1b9e-d753-4dfa-ac46-61c4374eeb84@inner_036f81e0-4ec0-468a-8396-77c21dd9ae5a"))
+			if (rpID.contains("788b1b9e-d753-4dfa-ac46-61c4374eeb84@inner_036f81e0-4ec0-468a-8396-77c21dd9ae5a"))
 				Logit.LogDebug("BREAKPOINT");
 
 			User u = getUsers().get(userID);
 			Host host = u.getHosts().get(UUID.fromString(rpID.split("@")[1]));
 			BaseProbe probe = u.getTemplateProbes().get(rpID.split("@")[2]);
-			
-			if(host == null || probe == null)
-			{
-				Logit.LogWarn("Unable to initiate RunnableProbe, one of its elements is missing! ID: "+rpID);
+
+			if (host == null || probe == null) {
+				Logit.LogWarn("Unable to initiate RunnableProbe, one of its elements is missing! ID: " + rpID);
 				continue;
 			}
-			
-			
+
 			RunnableProbe runnableProbe = new RunnableProbe(host, probe);
 			u.addRunnableProbe(runnableProbe);
 		}
 	}
 
-//	public static HashMap<String, RunnableProbe> getAllUsersRunnableProbes() {
-//		HashMap<String, RunnableProbe> allRps = new HashMap<String, RunnableProbe>();
-//		for (User user : getUsers().values()) {
-////			HashMap<String, RunnableProbe> allUserRps = user.getAllRunnableProbes();
-//			HashMap<String, RunnableProbe> allUserRps = RunnableProbeContainer.getInstanece().getByUser(user.getUserId().toString());
-//			allRps.putAll(allUserRps);
-//		}
-//		return allRps;
-//	}
+	// public static HashMap<String, RunnableProbe> getAllUsersRunnableProbes()
+	// {
+	// HashMap<String, RunnableProbe> allRps = new HashMap<String,
+	// RunnableProbe>();
+	// for (User user : getUsers().values()) {
+	//// HashMap<String, RunnableProbe> allUserRps =
+	// user.getAllRunnableProbes();
+	// HashMap<String, RunnableProbe> allUserRps =
+	// RunnableProbeContainer.getInstanece().getByUser(user.getUserId().toString());
+	// allRps.putAll(allUserRps);
+	// }
+	// return allRps;
+	// }
 
 	public static void printUsers() {
 		for (User user : getUsers().values()) {
-			Logit.LogDebug("---User:" + user.getUserId() + "---"+user.toString());
+			Logit.LogDebug("---User:" + user.getUserId() + "---" + user.toString());
 		}
 	}
 
@@ -593,15 +606,17 @@ public class UsersManager {
 
 	private static JSONObject getServerInfoFromApi() {
 		Object initServer;
-	
+
 		while (true) {
 			initServer = ApiInterface.executeRequest(Enums.ApiAction.InitServer, "GET", null);
 			if (initServer == null) {
-				Logit.LogError("UsersManager - getServerInfoFromApi", "Error starting server, no API connectivity! trying again in 1 minutes...");
+				Logit.LogError("UsersManager - getServerInfoFromApi",
+						"Error starting server, no API connectivity! trying again in 1 minutes...");
 				try {
 					Thread.sleep(60000);
 				} catch (InterruptedException e) {
-					Logit.LogError("UsersManager - getServerInfoFromApi", "Main Thread Interrupted! E: "+e.getMessage());	
+					Logit.LogError("UsersManager - getServerInfoFromApi",
+							"Main Thread Interrupted! E: " + e.getMessage());
 				}
 			} else {
 				JSONObject jsonInitServer = (JSONObject) (initServer);
