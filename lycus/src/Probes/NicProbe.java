@@ -173,7 +173,7 @@ public class NicProbe extends BaseProbe  {
 	
 	@Override
 	public String getProbe_id() {
-		return super.getProbe_id()+"@"+GeneralFunctions.Base64Encode(this.getName());
+		return discoveryProbe.getProbe_id()+"@"+GeneralFunctions.Base64Encode(this.getName());
 	}
 
 	public long getIfSpeed() {
