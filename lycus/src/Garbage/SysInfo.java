@@ -9,7 +9,6 @@ import java.util.concurrent.TimeUnit;
 import GlobalConstants.LogType;
 import Utils.GeneralFunctions;
 import Utils.Logit;
-import lycus.Log;
 import lycus.RunInnerProbesChecks;
 import lycus.ResultsContainer;
 

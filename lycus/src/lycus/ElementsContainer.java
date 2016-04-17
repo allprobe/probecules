@@ -1,6 +1,5 @@
 package lycus;
 
-import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.UUID;
@@ -10,7 +9,6 @@ import Elements.BaseElement;
 import Elements.NicElement;
 import Probes.DiscoveryProbe;
 import Probes.NicProbe;
-import Results.BaseResult;
 import Results.DiscoveryResult;
 import Utils.GeneralFunctions;
 

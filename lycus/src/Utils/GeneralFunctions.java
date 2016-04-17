@@ -21,6 +21,9 @@ import org.snmp4j.PDU;
 import org.snmp4j.smi.OID;
 import org.snmp4j.smi.VariableBinding;
 
+import GlobalConstants.Enums;
+import GlobalConstants.Enums.HostType;
+
 /**
  *
  * @author Roi
@@ -222,5 +225,13 @@ public class GeneralFunctions {
 		if (interval >= 21600)
 			return 2;
 		return 0;
+	}
+
+	public static HostType getHostType(String string) {
+		if (string.contains("Linux"))
+			return Enums.HostType.Linux;
+		if (string.contains("Windows"))
+			return Enums.HostType.Windows;
+		return null;
 	}
 }

@@ -7,7 +7,6 @@ import org.snmp4j.smi.OID;
 import NetConnection.NetResults;
 import Results.BaseResult;
 import Results.DiskResult;
-import Results.NicResult;
 import lycus.Host;
 import lycus.User;
 

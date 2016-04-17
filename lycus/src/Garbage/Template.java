@@ -1,4 +1,4 @@
-package lycus;
+package Garbage;
 
 import java.util.HashMap;
 import java.util.Map;

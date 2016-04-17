@@ -13,7 +13,12 @@ public class BaseElement {
 		this.setName(name);
 		this.setDiscoveryProbe(discoveryProbe);
 	}
-
+	public BaseElement(int index,String name, DiscoveryProbe discoveryProbe,boolean active) {
+		this.index=index;
+		this.setName(name);
+		this.setDiscoveryProbe(discoveryProbe);
+		this.setActive(active);
+	}
 
 	public int getIndex() {
 		return index;

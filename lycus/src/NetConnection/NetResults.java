@@ -1,7 +1,6 @@
 package NetConnection;
 
 import java.util.ArrayList;
-import java.util.Collection;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
@@ -15,7 +14,6 @@ import Elements.DiskElement;
 import Elements.NicElement;
 import GlobalConstants.Constants;
 import GlobalConstants.Enums;
-import GlobalConstants.Enums.ElementChange;
 import GlobalConstants.Enums.HostType;
 import Interfaces.INetResults;
 import Probes.BaseProbe;
@@ -27,7 +25,6 @@ import Probes.PortProbe;
 import Probes.RBLProbe;
 import Probes.SnmpProbe;
 import Probes.StorageProbe;
-import Results.BaseResult;
 import Results.DiscoveryResult;
 import Results.DiskResult;
 import Results.NicResult;
@@ -37,7 +34,6 @@ import Results.RblResult;
 import Results.SnmpResult;
 import Results.WebResult;
 import Utils.GeneralFunctions;
-import Utils.Logit;
 import lycus.Host;
 import lycus.SnmpTemplate;
 
@@ -252,14 +248,6 @@ public class NetResults implements INetResults {
 		return lastScanElements;
 	}
 
-	private HostType getHostType(String string) {
-		if (string.contains("Linux"))
-			return Enums.HostType.Linux;
-		if (string.contains("Windows"))
-			return Enums.HostType.Windows;
-		return null;
-	}
-
 	private HashMap<String, BaseElement> getNicElements(Host h, DiscoveryProbe probe) {
 
 		long checkTime;
@@ -290,7 +278,7 @@ public class NetResults implements INetResults {
 				|| sysDescrResults.size() == 0)
 			return null;
 
-		Enums.HostType hostType = this.getHostType(sysDescrResults.get(Constants.sysDescr.toString()));
+		Enums.HostType hostType = Utils.GeneralFunctions.getHostType(sysDescrResults.get(Constants.sysDescr.toString()));
 
 		HashMap<String, BaseElement> lastScanElements = this.convertNicsWalkToElements(probe,ifDescrResults, hostType);
 		return lastScanElements;

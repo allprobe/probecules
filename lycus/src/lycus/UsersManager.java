@@ -7,32 +7,26 @@ package lycus;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.HashSet;
-import java.util.Iterator;
-import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import java.util.UUID;
-import javax.json.Json;
-import javax.json.JsonReader;
+
+import javax.persistence.GenerationType;
 
 import org.json.simple.JSONObject;
 import org.apache.log4j.BasicConfigurator;
-import org.apache.log4j.Logger;
 import org.json.simple.JSONArray;
 import org.json.simple.parser.JSONParser;
 import com.google.gson.Gson;
-import com.google.gson.JsonArray;
 
 import DAL.ApiInterface;
 import Elements.BaseElement;
 import Elements.NicElement;
 import GlobalConstants.Constants;
 import GlobalConstants.Enums;
-import GlobalConstants.LogType;
 import GlobalConstants.SnmpDataType;
 import GlobalConstants.SnmpUnit;
 import GlobalConstants.TriggerSeverity;
-import GlobalConstants.Enums.HostType;
 import Model.ConditionUpdateModel;
 import Model.DiscoveryElementParams;
 import Model.DiscoveryTrigger;
@@ -41,9 +35,7 @@ import Model.ProbeParams;
 import Model.SnmpTemplateParams;
 import Probes.BaseProbe;
 import Probes.DiscoveryProbe;
-import Probes.NicProbe;
 import Utils.GeneralFunctions;
-import Utils.JsonUtil;
 import Utils.Logit;
 import lycus.DataPointsRollup;
 
@@ -214,9 +206,10 @@ public class UsersManager {
 		for (int i = 0; i < allElementsJson.size(); i++) {
 			JSONObject hostElementsJson = (JSONObject) allElementsJson.get(i);
 			try {
-				JSONObject elements=(JSONObject)(new JSONParser()).parse((String)hostElementsJson.get("elements"));
-				for(Object elementName : elements.keySet())
+				JSONArray elementsArray=(JSONArray)(new JSONParser()).parse((String)hostElementsJson.get("elements"));
+				for(Object element : elementsArray)
 				{
+					JSONObject elementJson=(JSONObject)element;
 					DiscoveryElementParams elementParams = new DiscoveryElementParams();
 				elementParams.user_id=(String)hostElementsJson.get("user_id");
 				elementParams.template_id=(String)hostElementsJson.get("template_id");
@@ -229,14 +222,16 @@ public class UsersManager {
 				String runnableProbeId=elementParams.template_id+"@"+elementParams.host_id+"@"+elementParams.discovery_id;
 				
 				//				JSONObject elementN=(JSONObject)elements.get();
-				elementParams.name=(String) elementName;
-				JSONObject elementValues=(JSONObject)elements.get(elementParams.name);
+//				JSONObject elementValues=(JSONObject)elements.get(elementParams.name);
 
-				elementParams.index=Integer.parseInt(elementValues.get("index").toString());
-				elementParams.status=(boolean)elementValues.get("active");
-				elementParams.hostType=(String)elementValues.get("hostType");
-				elementParams.ifSpeed=(long)elementValues.get("ifSpeed");
+				elementParams.name=(String)elementJson.get("name");
+				elementParams.index=Integer.parseInt(elementJson.get("index").toString());
+				elementParams.status=(boolean)elementJson.get("active");
+				elementParams.hostType=(String)elementJson.get("hostType");
+			
+				elementParams.ifSpeed=(long)elementJson.get("ifSpeed");
 
+				
 				
 				User user = getUsers().get(UUID.fromString(elementParams.user_id));
 				if (user == null)
@@ -248,7 +243,7 @@ public class UsersManager {
 				{
 				case Constants.bw: 
 					DiscoveryProbe probe=(DiscoveryProbe)user.getTemplateProbes().get(elementParams.discovery_id);
-					baseElement=new NicElement(probe, elementParams.index, elementParams.name, null,1l);
+					baseElement=new NicElement(elementParams.index, elementParams.name,probe,elementParams.status,  Utils.GeneralFunctions.getHostType(elementParams.hostType),elementParams.ifSpeed);
 					ElementsContainer.getInstance().addElement(runnableProbeId, baseElement);
 					break;
 				case Constants.ds:
