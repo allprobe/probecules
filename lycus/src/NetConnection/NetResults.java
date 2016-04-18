@@ -31,6 +31,7 @@ import Results.NicResult;
 import Results.PingResult;
 import Results.PortResult;
 import Results.RblResult;
+import Results.SnmpDeltaResult;
 import Results.SnmpResult;
 import Results.WebResult;
 import Utils.GeneralFunctions;
@@ -40,7 +41,14 @@ import lycus.SnmpTemplate;
 public class NetResults implements INetResults {
 	private static NetResults netResults = null;
 
+	private Map<String, NicResult> nicPreviousResults; // Map<runnableProbeId,
+
+	// NicResult> for
+	// calculating Delta
+	// result
+
 	protected NetResults() {
+		nicPreviousResults = new HashMap<String, NicResult>();
 	}
 
 	public static NetResults getInstanece() {
@@ -192,10 +200,29 @@ public class NetResults implements INetResults {
 		long interfaceInOctets = Long.parseLong(rawResults.get(probe.getIfinoctetsOID().toString()));
 		long interfaceOutOctets = Long.parseLong(rawResults.get(probe.getIfoutoctetsOID().toString()));
 
-		NicResult nicResut = new NicResult(getRunnableProbeId(probe, host), timestamp, interfaceInOctets,
+		NicResult nicResut = getNicDeltaTimeResult(getRunnableProbeId(probe, host), timestamp, interfaceInOctets,
 				interfaceOutOctets);
 
 		return nicResut;
+	}
+
+	private NicResult getNicDeltaTimeResult(String rpID, long timeStamp, long interfaceInOctets,
+			long interfaceOutOctets) {
+		NicResult nicResult = new NicResult(rpID);
+		NicResult nicPrivResult = nicPreviousResults.get(rpID);
+
+		if (nicPrivResult != null) {
+			nicResult.setPreviousTimestamp(nicPrivResult.getCurrentTimestamp());
+			nicResult.setPreviousInterfaceInOctets(nicPrivResult.getCurrrentInterfaceInOctets());
+			nicResult.setPreviousInterfaceOutOctets(nicPrivResult.getCurrentInterfaceOutOctets());
+		}
+		nicResult.setCurrentTimestamp(timeStamp);
+		nicResult.setCurrrentInterfaceInOctets(interfaceInOctets);
+		nicResult.setCurrentInterfaceOutOctets(interfaceOutOctets);
+
+		nicPreviousResults.put(nicResult.getRunnableProbeId(),nicResult);
+
+		return nicResult;
 	}
 
 	private String getRunnableProbeId(BaseProbe probe, Host host) {
@@ -213,10 +240,10 @@ public class NetResults implements INetResults {
 		HashMap<String, BaseElement> elements = null;
 		switch (probe.getType()) {
 		case bw:
-			elements = this.getNicElements(host,probe);
+			elements = this.getNicElements(host);
 			break;
 		case ds:
-			elements = this.getDiskElements(host,probe);
+			elements = this.getDiskElements(host);
 			break;
 		}
 		if (elements == null)
@@ -225,30 +252,31 @@ public class NetResults implements INetResults {
 		return discoveryResult;
 	}
 
-	private HashMap<String, BaseElement> getDiskElements(Host host, DiscoveryProbe probe) {
+	private HashMap<String, BaseElement> getDiskElements(Host host) {
 		long checkTime;
 
 		Map<String, String> hrStorageResults = null;
 
 		int snmpVersion = host.getSnmpTemp().getVersion();
 		if (snmpVersion == 2) {
-			hrStorageResults = Net.Snmp2Walk(host.getHostIp(), host.getSnmpTemp().getPort(), host.getSnmpTemp().getTimeout(),
-					host.getSnmpTemp().getCommunityName(), Constants.storageAll.toString());
+			hrStorageResults = Net.Snmp2Walk(host.getHostIp(), host.getSnmpTemp().getPort(),
+					host.getSnmpTemp().getTimeout(), host.getSnmpTemp().getCommunityName(),
+					Constants.storageAll.toString());
 		} else if (snmpVersion == 3) {
-			hrStorageResults = Net.Snmp3Walk(host.getHostIp(), host.getSnmpTemp().getPort(), host.getSnmpTemp().getTimeout(),
-					host.getSnmpTemp().getUserName(), host.getSnmpTemp().getAuthPass(), host.getSnmpTemp().getAlgo(),
-					host.getSnmpTemp().getCryptPass(), host.getSnmpTemp().getCryptType(), Constants.storageAll.toString());
+			hrStorageResults = Net.Snmp3Walk(host.getHostIp(), host.getSnmpTemp().getPort(),
+					host.getSnmpTemp().getTimeout(), host.getSnmpTemp().getUserName(), host.getSnmpTemp().getAuthPass(),
+					host.getSnmpTemp().getAlgo(), host.getSnmpTemp().getCryptPass(), host.getSnmpTemp().getCryptType(),
+					Constants.storageAll.toString());
 		}
-		
+
 		if (hrStorageResults == null || hrStorageResults.size() == 0)
 			return null;
 
-
-		HashMap<String, BaseElement> lastScanElements = this.convertDisksWalkToElements(probe,hrStorageResults);
+		HashMap<String, BaseElement> lastScanElements = this.convertDisksWalkToElements( hrStorageResults);
 		return lastScanElements;
 	}
 
-	private HashMap<String, BaseElement> getNicElements(Host h, DiscoveryProbe probe) {
+	private HashMap<String, BaseElement> getNicElements(Host h) {
 
 		long checkTime;
 
@@ -278,9 +306,10 @@ public class NetResults implements INetResults {
 				|| sysDescrResults.size() == 0)
 			return null;
 
-		Enums.HostType hostType = Utils.GeneralFunctions.getHostType(sysDescrResults.get(Constants.sysDescr.toString()));
+		Enums.HostType hostType = Utils.GeneralFunctions
+				.getHostType(sysDescrResults.get(Constants.sysDescr.toString()));
 
-		HashMap<String, BaseElement> lastScanElements = this.convertNicsWalkToElements(probe,ifDescrResults, hostType);
+		HashMap<String, BaseElement> lastScanElements = this.convertNicsWalkToElements( ifDescrResults, hostType);
 		return lastScanElements;
 
 		// HashMap<BaseElement, Enums.ElementChange> elementsChanges = new
@@ -300,7 +329,8 @@ public class NetResults implements INetResults {
 		// }
 	}
 
-	private HashMap<String, BaseElement> convertNicsWalkToElements(DiscoveryProbe probe,Map<String, String> nicsWalk, HostType hostType) {
+	private HashMap<String, BaseElement> convertNicsWalkToElements( Map<String, String> nicsWalk,
+			HostType hostType) {
 		HashMap<String, BaseElement> lastElements = new HashMap<String, BaseElement>();
 		if (hostType == null)
 			return null;
@@ -326,7 +356,7 @@ public class NetResults implements INetResults {
 			default:
 				return null;
 			}
-			NicElement nicElement = new NicElement(probe,index, name, hostType, ifSpeed);
+			NicElement nicElement = new NicElement(index, name, hostType, ifSpeed);
 			lastElements.put(name, nicElement);
 		}
 
@@ -336,7 +366,8 @@ public class NetResults implements INetResults {
 		return lastElements;
 	}
 
-	private HashMap<String, BaseElement> convertDisksWalkToElements(DiscoveryProbe probe, Map<String, String> disksWalk) {
+	private HashMap<String, BaseElement> convertDisksWalkToElements(
+			Map<String, String> disksWalk) {
 		HashMap<String, BaseElement> lastElements = new HashMap<String, BaseElement>();
 		for (Map.Entry<String, String> entry : disksWalk.entrySet()) {
 			if (!entry.getKey().toString().contains("1.3.6.1.2.1.25.2.3.1.1."))
@@ -351,13 +382,18 @@ public class NetResults implements INetResults {
 			long hrStorageSize;
 			long hrStorageUsed;
 
-			name=disksWalk.get("1.3.6.1.2.1.25.2.3.1.1.3." + index);
-//			hrStorageAllocationUnits = Long.parseLong(disksWalk.get("1.3.6.1.2.1.25.2.3.1.1.4." + index));
-//			hrStorageSize = Long.parseLong(disksWalk.get("1.3.6.1.2.1.25.2.3.1.1.5." + index));
-//			hrStorageUsed = Long.parseLong(disksWalk.get("1.3.6.1.2.1.25.2.3.1.1.6." + index));
+			name = disksWalk.get("1.3.6.1.2.1.25.2.3.1.1.3." + index);
+			// hrStorageAllocationUnits =
+			// Long.parseLong(disksWalk.get("1.3.6.1.2.1.25.2.3.1.1.4." +
+			// index));
+			// hrStorageSize =
+			// Long.parseLong(disksWalk.get("1.3.6.1.2.1.25.2.3.1.1.5." +
+			// index));
+			// hrStorageUsed =
+			// Long.parseLong(disksWalk.get("1.3.6.1.2.1.25.2.3.1.1.6." +
+			// index));
 
-			
-			DiskElement nicElement = new DiskElement(index, name,probe);
+			DiskElement nicElement = new DiskElement(index, name);
 			lastElements.put(name, nicElement);
 		}
 
@@ -393,12 +429,15 @@ public class NetResults implements INetResults {
 		if (rawResults == null || rawResults.size() == 0)
 			return null;
 
-		long hrstorageallocationunitsoid = Long.parseLong(rawResults.get(probe.getHrstorageallocationunitsoid().toString()));
+		long hrstorageallocationunitsoid = Long
+				.parseLong(rawResults.get(probe.getHrstorageallocationunitsoid().toString()));
 		long hrstoragesizeoid = Long.parseLong(rawResults.get(probe.getHrstoragesizeoid().toString()));
 		long hrstorageusedoid = Long.parseLong(rawResults.get(probe.getHrstorageusedoid().toString()));
 
-		DiskResult diskResut = new DiskResult(getRunnableProbeId(probe, host), timestamp,hrstorageusedoid,hrstoragesizeoid,hrstorageallocationunitsoid);
+		DiskResult diskResut = new DiskResult(getRunnableProbeId(probe, host), timestamp, hrstorageusedoid,
+				hrstoragesizeoid, hrstorageallocationunitsoid);
 
 		return diskResut;
 	}
+
 }

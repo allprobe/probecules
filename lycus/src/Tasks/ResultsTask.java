@@ -36,14 +36,14 @@ public class ResultsTask extends BaseTask {
 				Logit.LogError("ResultsTask - run()", "BREAKPOINT");
 			}
 			String rpStr = results;
-			if (rpStr.contains("0b05919c-6cc0-42cc-a74b-de3b0dcd4a2a@7352a46f-5189-428c-b4c0-fb98dedd10b1@inner_aecc1485-6849-471d-b446-8e4ba05519da"))
-				Logit.LogDebug("BREAKPOINT - ResultsTask");
-
+			if (rpStr.contains("DISCOVERY"))
+			{	Logit.LogDebug("BREAKPOINT - ResultsTask");
+			System.out.println(results);
+			}
 			String encodedResults=null;
 			String encodedRollups=null;
 			try
 			{
-			encodedResults = GeneralFunctions.Base64Encode(results);
 			encodedRollups = GeneralFunctions.Base64Encode(rollups);
 			}
 			catch(Exception e)
@@ -51,6 +51,7 @@ public class ResultsTask extends BaseTask {
 				Logit.LogFatal("ResultsTask - run()", "Error encoding results and rollups to BASE64! E: "+e.getMessage());
 				Logit.LogFatal("ResultsTask - run()", "trace: "+e.getStackTrace().toString());
 			}
+			encodedResults = GeneralFunctions.Base64Encode(results);
 			
 			JSONObject jsonToSend = new JSONObject();
 			try{

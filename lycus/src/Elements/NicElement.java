@@ -9,15 +9,27 @@ public class NicElement extends BaseElement {
 	private HostType hostType;
 	private long ifSpeed;
 	
-	public NicElement(DiscoveryProbe discoveryProbe,int index,String name, HostType hostType,long ifSpeed) {
-		super(index,name,discoveryProbe);
-		this.hostType=hostType;
-		this.ifSpeed=ifSpeed;
+	public NicElement(int index,String name, HostType hostType,long ifSpeed) {
+		super(index,name);
+		this.setHostType(hostType);
+		this.setIfSpeed(ifSpeed);
 	}
-	public NicElement(int index, String name, DiscoveryProbe discoveryProbe, boolean active, HostType hostType,long ifSpeed) {
-		super(index, name, discoveryProbe, active);
-		this.hostType=hostType;
-		this.ifSpeed=ifSpeed;
+	public NicElement(int index, String name, boolean active, HostType hostType,long ifSpeed) {
+		super(index, name, active);
+		this.setHostType(hostType);
+		this.setIfSpeed(ifSpeed);
+	}
+	public long getIfSpeed() {
+		return ifSpeed;
+	}
+	public void setIfSpeed(long ifSpeed) {
+		this.ifSpeed = ifSpeed;
+	}
+	public HostType getHostType() {
+		return hostType;
+	}
+	public void setHostType(HostType hostType) {
+		this.hostType = hostType;
 	}
 	
 

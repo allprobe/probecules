@@ -20,11 +20,10 @@ public class ResultFactory {
 			return new TraceRouteResult(runnableProbeId);
 		case DISCOVERY:
 			return new DiscoveryResult(runnableProbeId);
-		case SNMPDELTA:
-			return new SnmpDeltaResult(runnableProbeId);
-		// case DISCOVERYELEMENT:
-		// if (probe instanceof NicElement)
-		// return new NicResults(runnableProbe);
+		case BANDWIDTH:
+			return new NicResult(runnableProbeId);
+		case DISK:
+			return new DiskResult(runnableProbeId);
 		}
 		return null;
 

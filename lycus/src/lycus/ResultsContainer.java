@@ -15,6 +15,7 @@ import com.google.gson.GsonBuilder;
 
 import DAL.ApiInterface;
 import GlobalConstants.Enums;
+import GlobalConstants.ProbeTypes;
 import Interfaces.IResultsContainer;
 import Results.BaseResult;
 import Results.DiscoveryResult;
@@ -98,6 +99,11 @@ public class ResultsContainer implements IResultsContainer {
 	private JSONObject rawResultsDBFormat(BaseResult rpr) {
 		JSONObject result = new JSONObject();
 
+		String rpStr = rpr.getRunnableProbeId();
+		if (rpStr.contains(
+				"discovery_777938b0-e4b0-4ec6-b0f2-ea880a0c09ef"))
+			Logit.LogDebug("BREAKPOINT");
+		
 		RunnableProbe rp = RunnableProbeContainer.getInstanece().get(rpr.getRunnableProbeId());
 
 		result.put("USER_ID", rp.getProbe().getUser().getUserId().toString());
@@ -200,7 +206,7 @@ public class ResultsContainer implements IResultsContainer {
 
 	@Override
 	public boolean addResult(BaseResult result) {
-		synchronized (lockResults) {
+			synchronized (lockResults) {
 				results.add(result);
 		}
 		return true;
@@ -320,7 +326,7 @@ public class ResultsContainer implements IResultsContainer {
 			
 			String rpStr = results.get(i).getRunnableProbeId();
 			if (rpStr.contains(
-					"788b1b9e-d753-4dfa-ac46-61c4374eeb84@inner_036f81e0-4ec0-468a-8396-77c21dd9ae5a"))
+					"discovery_777938b0-e4b0-4ec6-b0f2-ea880a0c09ef"))
 				Logit.LogDebug("BREAKPOINT");
 			
 			JSONObject resultDBFormat = rawResultsDBFormat(results.get(i));

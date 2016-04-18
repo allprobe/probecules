@@ -7,16 +7,16 @@ public class BaseElement {
 	private int index;
 	private String name;
 	private boolean active;
-	private DiscoveryProbe discoveryProbe;
-	public BaseElement(int index,String name, DiscoveryProbe discoveryProbe) {
+//	private String discoveryProbeId;
+	public BaseElement(int index,String name) {
 		this.index=index;
 		this.setName(name);
-		this.setDiscoveryProbe(discoveryProbe);
+//		this.setDiscoveryProbeId(discoveryProbe.getProbe_id());
 	}
-	public BaseElement(int index,String name, DiscoveryProbe discoveryProbe,boolean active) {
+	public BaseElement(int index,String name,boolean active) {
 		this.index=index;
 		this.setName(name);
-		this.setDiscoveryProbe(discoveryProbe);
+//		this.setDiscoveryProbeId(discoveryProbe.getProbe_id());
 		this.setActive(active);
 	}
 
@@ -53,15 +53,15 @@ public class BaseElement {
 		this.active = active;
 	}
 
-
-	public DiscoveryProbe getDiscoveryProbe() {
-		return discoveryProbe;
-	}
-
-
-	public void setDiscoveryProbe(DiscoveryProbe discoveryProbe) {
-		this.discoveryProbe = discoveryProbe;
-	}
+//
+//	public String getDiscoveryProbeId() {
+//		return discoveryProbeId;
+//	}
+//
+//
+//	public void setDiscoveryProbeId(String string) {
+//		this.discoveryProbeId = string;
+//	}
 
 
 }

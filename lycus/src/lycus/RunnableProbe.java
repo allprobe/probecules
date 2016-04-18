@@ -9,10 +9,13 @@ import Probes.BaseProbe;
 import Probes.DiscoveryProbe;
 import Probes.HttpProbe;
 import Probes.IcmpProbe;
+import Probes.NicProbe;
 import Probes.PortProbe;
 import Probes.RBLProbe;
 import Probes.SnmpProbe;
+import Probes.StorageProbe;
 import Results.BaseResult;
+import Results.DiscoveryResult;
 import Rollups.RollupsContainer;
 import Utils.Logit;
 
@@ -82,6 +85,10 @@ public class RunnableProbe implements Runnable {
 			return ProbeTypes.RBL;
 		if (getProbe() instanceof DiscoveryProbe)
 			return ProbeTypes.DISCOVERY;
+		if (getProbe() instanceof NicProbe)
+			return ProbeTypes.BANDWIDTH;
+		if (getProbe() instanceof StorageProbe)
+			return ProbeTypes.DISK;
 		// if (getProbe() instanceof BaseElement)
 		// return ProbeTypes.DISCOVERYELEMENT;
 		return null;
@@ -93,7 +100,12 @@ public class RunnableProbe implements Runnable {
 		BaseResult result = null;
 
 		String rpStr = this.getHost().getHostId().toString() + "@" + getProbe().getProbe_id();
-		if (rpStr.contains("d934aa3b-f703-4d4b-99c6-66b470c782f2@http_52c1b1ba-3842-4448-9c85-a1ae6dd52729"))
+		if (rpStr.contains(
+				"74cda666-3d85-4e56-a804-9d53c4e16259@discovery_777938b0-e4b0-4ec6-b0f2-ea880a0c09ef@ZXRoMQ=="))
+			Logit.LogDebug("BREAKPOINT - RunnableProbe");
+
+		String rpStr2 = this.getHost().getHostId().toString() + "@" + getProbe().getProbe_id();
+		if (rpStr.contains("discovery_777938b0-e4b0-4ec6-b0f2-ea880a0c09ef"))
 			Logit.LogDebug("BREAKPOINT - RunnableProbe");
 
 		try {
@@ -109,11 +121,14 @@ public class RunnableProbe implements Runnable {
 		try {
 			result.checkIfTriggerd(getProbe().getTriggers());
 		} catch (Exception e) {
-			Logit.LogError("RunnableProbe - run()", "Error triggering runnable probe results!  "+this.getId());
+			Logit.LogError("RunnableProbe - run()", "Error triggering runnable probe results!  " + this.getId());
 			return;
 		}
 		try {
-			ResultsContainer.getInstance().addResult(result);
+			if (this.getProbeType() == ProbeTypes.DISCOVERY)
+				ElementsContainer.getInstance().addResult((DiscoveryResult) result);
+			else
+				ResultsContainer.getInstance().addResult(result);
 		} catch (Exception e) {
 			Logit.LogError("RunnableProbe - run()", "Error processing runnable probe results to results container!");
 			return;
@@ -123,10 +138,11 @@ public class RunnableProbe implements Runnable {
 		} catch (Exception e) {
 			Logit.LogError("RunnableProbe - run()", "Error processing runnable probe results to results container!");
 			return;
-//			if (this.getId().split("@")[2].equals("null"))
-//				Logit.LogDebug("BREAKPOINT");
-//			Logit.LogError("RunnableProbe - run()",
-//					"Unable Probing Runnable Probe of: " + this.getId() + "\n" + e.getMessage());
+			// if (this.getId().split("@")[2].equals("null"))
+			// Logit.LogDebug("BREAKPOINT");
+			// Logit.LogError("RunnableProbe - run()",
+			// "Unable Probing Runnable Probe of: " + this.getId() + "\n" +
+			// e.getMessage());
 		}
 		Logit.LogInfo("Running Probe: " + this.getId() + " at Host: " + this.getHost().getHostIp() + "("
 				+ this.getHost().getName() + ")" + ", Results: " + result + " ...");
@@ -138,10 +154,10 @@ public class RunnableProbe implements Runnable {
 			this.setRunning(true);
 			return this.getProbe().getUser().getSnmpManager().startProbe(this);
 		}
-		if (this.getProbeType() == ProbeTypes.DISCOVERYELEMENT) {
-			this.setRunning(true);
-			return this.getProbe().getUser().getSnmpManager().startProbe(this);
-		}
+		// if (this.getProbeType() == ProbeTypes.DISCOVERYELEMENT) {
+		// this.setRunning(true);
+		// return this.getProbe().getUser().getSnmpManager().startProbe(this);
+		// }
 		boolean state = RunInnerProbesChecks.addRegularRP(this);
 		if (state)
 			this.setRunning(true);

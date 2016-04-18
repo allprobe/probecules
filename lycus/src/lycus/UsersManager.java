@@ -242,8 +242,8 @@ public class UsersManager {
 				switch(elementParams.elements_type)
 				{
 				case Constants.bw: 
-					DiscoveryProbe probe=(DiscoveryProbe)user.getTemplateProbes().get(elementParams.discovery_id);
-					baseElement=new NicElement(elementParams.index, elementParams.name,probe,elementParams.status,  Utils.GeneralFunctions.getHostType(elementParams.hostType),elementParams.ifSpeed);
+//					DiscoveryProbe probe=(DiscoveryProbe)user.getTemplateProbes().get(elementParams.discovery_id);
+					baseElement=new NicElement(elementParams.index, elementParams.name,elementParams.status,  Utils.GeneralFunctions.getHostType(elementParams.hostType),elementParams.ifSpeed);
 					ElementsContainer.getInstance().addElement(runnableProbeId, baseElement);
 					break;
 				case Constants.ds:

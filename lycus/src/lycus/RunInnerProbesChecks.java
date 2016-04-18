@@ -61,6 +61,16 @@ public class RunInnerProbesChecks extends Thread {
 	private static Integer DiscoveryFutureCounter = 0;
 	private static ScheduledExecutorService DiscoveryExec = Executors
 			.newScheduledThreadPool(GlobalConfig.getSnmpBatchThreadCount());
+	
+	private static ConcurrentHashMap<String, ScheduledFuture<?>> BandwidthFutureMap = new ConcurrentHashMap<>();
+	private static Integer BandwidthFutureCounter = 0;
+	private static ScheduledExecutorService BandwidthProbeExec = Executors
+			.newScheduledThreadPool(10);
+	
+	private static ConcurrentHashMap<String, ScheduledFuture<?>> DiskFutureMap = new ConcurrentHashMap<>();
+	private static Integer DiskFutureCounter = 0;
+	private static ScheduledExecutorService DiskProbeExec = Executors
+			.newScheduledThreadPool(10);
 
 	// Getters/Setters
 	public static ConcurrentHashMap<String, ScheduledFuture<?>> getPingerFutureMap() {
@@ -106,6 +116,16 @@ public class RunInnerProbesChecks extends Thread {
 	public static Integer getWeberFutureCounter() {
 		return WeberFutureCounter;
 	}
+
+	public static ConcurrentHashMap<String, ScheduledFuture<?>> getBandwidthFutureMap() {
+		return BandwidthFutureMap;
+	}
+
+
+	public static ConcurrentHashMap<String, ScheduledFuture<?>> getDiskFutureMap() {
+		return DiskFutureMap;
+	}
+
 
 	public static Integer getSnmpProbeFutureCounter() {
 		return SnmpProbeFutureCounter;
@@ -225,6 +245,12 @@ public class RunInnerProbesChecks extends Thread {
 			case DISCOVERY:
 				RunInnerProbesChecks.RunDiscoveryProbeThreads(rp);
 				return true;
+			case BANDWIDTH:
+				RunInnerProbesChecks.RunBandwidthProbeThreads(rp);
+				return true;
+			case DISK:
+				RunInnerProbesChecks.RunDiskProbeThreads(rp);
+				return true;
 			default:
 				return false;
 			}
@@ -233,6 +259,22 @@ public class RunInnerProbesChecks extends Thread {
 		}
 		return false;
 	}
+	private static void RunDiskProbeThreads(RunnableProbe probe) {
+		ScheduledFuture<?> future;
+		future = DiskProbeExec.scheduleAtFixedRate(probe, 0, probe.getProbe()
+				.getInterval(), TimeUnit.SECONDS);
+		getDiskFutureMap().put(probe.getId(), future);
+		DiskFutureCounter++;
+	}
+
+	private static void RunBandwidthProbeThreads(RunnableProbe probe) {
+		ScheduledFuture<?> future;
+		future = BandwidthProbeExec.scheduleAtFixedRate(probe, 0, probe.getProbe()
+				.getInterval(), TimeUnit.SECONDS);
+		getBandwidthFutureMap().put(probe.getId(), future);
+		BandwidthFutureCounter++;
+	}
+
 	public static boolean deleteRegularRP(RunnableProbe rp) {
 		if(rp==null)
 			return false;

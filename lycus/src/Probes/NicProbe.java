@@ -20,18 +20,18 @@ public class NicProbe extends BaseProbe  {
 
 	private static final String ifOutOctetsOID = "1.3.6.1.2.1.2.2.1.16.";
 	private static final String ifInOctetsOID = "1.3.6.1.2.1.2.2.1.10.";
-	private int index;
-	private long ifSpeed;
-	HostType hostType;
+//	private int index;
+//	private long ifSpeed;
+//	HostType hostType;
 	DiscoveryProbe discoveryProbe;
 	NicElement nicElement;
 
 	public NicProbe(DiscoveryProbe probe,NicElement nicElement) {
 		this.discoveryProbe=probe;
 		this.nicElement=nicElement;
-		this.index=index;
-		this.ifSpeed=ifSpeed;
-		this.hostType=hostType;
+//		this.index=index;
+//		this.ifSpeed=ifSpeed;
+//		this.hostType=hostType;
 	}
 	
 	@Override
@@ -156,13 +156,9 @@ public class NicProbe extends BaseProbe  {
 	}
 
 	public int getIndex() {
-		return index;
+		return nicElement.getIndex();
 	}
 	
-	public void setIndex(int index) {
-		this.index = index;
-	}
-
 	public OID getIfoutoctetsOID() {
 		return new OID(NicProbe.ifOutOctetsOID + this.getIndex());
 	}
@@ -177,11 +173,7 @@ public class NicProbe extends BaseProbe  {
 	}
 
 	public long getIfSpeed() {
-		return ifSpeed;
-	}
-
-	public void setIfSpeed(long ifSpeed) {
-		this.ifSpeed = ifSpeed;
+		return nicElement.getIfSpeed();
 	}
 
 	@Override
