@@ -90,19 +90,19 @@ public class ElementsContainer {
 		}
 	}
 
-	public void addElement(String runnableProbeId, BaseElement element) {
+	public void addElement(String userId, String runnableProbeId, BaseElement element) {
 		if (element instanceof NicElement) {
 			if(runnableProbeId.contains("74cda666-3d85-4e56-a804-9d53c4e16259@discovery_777938b0-e4b0-4ec6-b0f2-ea880a0c09ef"))
 				Logit.LogDebug("BREAKPOINT");
-			addNicElement(runnableProbeId, element);
+			addNicElement(userId,runnableProbeId, element);
 			if (element.isActive())
-				runNicElement(runnableProbeId, element);
+				runNicElement(userId,runnableProbeId, element);
 		}
 
 	}
 
-	private void runNicElement(String runnableProbeId, BaseElement element) {
-		DiscoveryProbe probe = (DiscoveryProbe)RunnableProbeContainer.getInstanece().get(runnableProbeId).getProbe();
+	private void runNicElement(String userId, String runnableProbeId, BaseElement element) {
+		DiscoveryProbe probe = (DiscoveryProbe)UsersManager.getUser(userId).getTemplateProbes().get(runnableProbeId.split("@")[2]);
 		User user = probe.getUser();
 		Host host=user.getHost(UUID.fromString(runnableProbeId.split("@")[1]));
 		NicProbe nicProbe = new NicProbe(probe, (NicElement) element);
@@ -110,7 +110,7 @@ public class ElementsContainer {
 		user.addRunnableProbe(nicRunnableProbe);
 	}
 
-	private void addNicElement(String runnableProbeId, BaseElement element) {
+	private void addNicElement(String userId, String runnableProbeId, BaseElement element) {
 		ConcurrentHashMap<String, BaseElement> elementMap = nicElements.get(runnableProbeId);
 		if (elementMap == null)
 			elementMap = new ConcurrentHashMap<String, BaseElement>();

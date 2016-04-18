@@ -36,7 +36,7 @@ public class ResultsTask extends BaseTask {
 				Logit.LogError("ResultsTask - run()", "BREAKPOINT");
 			}
 			String rpStr = results;
-			if (rpStr.contains("DISCOVERY"))
+			if (rpStr.contains("47d364cf-50e3-4a3e-b3de-f58a0d6c3802@74cda666-3d85-4e56-a804-9d53c4e16259@discovery_777938b0-e4b0-4ec6-b0f2-ea880a0c09ef@ZXRoMQ=="))
 			{	Logit.LogDebug("BREAKPOINT - ResultsTask");
 			System.out.println(results);
 			}

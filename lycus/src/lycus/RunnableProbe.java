@@ -86,9 +86,9 @@ public class RunnableProbe implements Runnable {
 		if (getProbe() instanceof DiscoveryProbe)
 			return ProbeTypes.DISCOVERY;
 		if (getProbe() instanceof NicProbe)
-			return ProbeTypes.BANDWIDTH;
+			return ProbeTypes.DISCBANDWIDTH;
 		if (getProbe() instanceof StorageProbe)
-			return ProbeTypes.DISK;
+			return ProbeTypes.DISCDISK;
 		// if (getProbe() instanceof BaseElement)
 		// return ProbeTypes.DISCOVERYELEMENT;
 		return null;
@@ -125,6 +125,12 @@ public class RunnableProbe implements Runnable {
 			return;
 		}
 		try {
+			if(result.getLastTimestamp()==null)
+			{
+				Logit.LogError("RunnableProbe - run()", "Error getting runnable probe results! last timestamp is null! " + this.getId());
+				return;
+
+			}
 			if (this.getProbeType() == ProbeTypes.DISCOVERY)
 				ElementsContainer.getInstance().addResult((DiscoveryResult) result);
 			else

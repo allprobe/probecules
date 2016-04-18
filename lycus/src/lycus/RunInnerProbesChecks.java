@@ -245,10 +245,10 @@ public class RunInnerProbesChecks extends Thread {
 			case DISCOVERY:
 				RunInnerProbesChecks.RunDiscoveryProbeThreads(rp);
 				return true;
-			case BANDWIDTH:
+			case DISCBANDWIDTH:
 				RunInnerProbesChecks.RunBandwidthProbeThreads(rp);
 				return true;
-			case DISK:
+			case DISCDISK:
 				RunInnerProbesChecks.RunDiskProbeThreads(rp);
 				return true;
 			default:
