@@ -141,6 +141,9 @@ public class RollupsContainer implements IRollupsContainer {
 		// JsonUtil.ToJson(webResponseTimeRollups));
 		// rollups.put("snmpDataRollups", JsonUtil.ToJson(snmpDataRollups));
 
+		if(finishedRollups.contains("0b05919c-6cc0-42cc-a74b-de3b0dcd4a2a@e7ecd619-b7a5-49b7-a849-b2c9b1b64bf3@snmp_18e51b8d-807e-45c0-b5bc-d047da3e0876"))
+			Logit.LogDebug("BREAKPOINT");
+		
 		return finishedRollups.toString();
 		}
 		catch(Exception e)
@@ -330,9 +333,9 @@ public class RollupsContainer implements IRollupsContainer {
 		// rp.getProbe().getUser().getUserId().toString());
 		rollup.put("RESULTS_TIME", dataPointsRollup1.getEndTime());
 		// rollup.put("RESULTS_NAME", resultkey.split("@")[1]);
-		String[] resultsStrings=new String[2];
-		resultsStrings[0]=dataPointsRollup1.getResultString();
-		resultsStrings[1]=dataPointsRollup2.getResultString();
+		JSONArray resultsStrings=new JSONArray();
+		resultsStrings.add(dataPointsRollup1.getResultString());
+		resultsStrings.add(dataPointsRollup2.getResultString());
 		rollup.put("RESULTS", resultsStrings.toString());
 		rollup.put("RUNNABLE_PROBE_ID", dataPointsRollup1.getRunnableProbeId());
 		rollup.put("ROLLUP_SIZE", dataPointsRollup1.getTimePeriod().toString());
@@ -346,13 +349,15 @@ public class RollupsContainer implements IRollupsContainer {
 	private String rollupResultsDBFormat(DataPointsRollup dataPointsRollup) {
 		JSONObject rollup = new JSONObject();
 
+		if(dataPointsRollup.getRunnableProbeId().contains("0b05919c-6cc0-42cc-a74b-de3b0dcd4a2a@7352a46f-5189-428c-b4c0-fb98dedd10b1@snmp_50a71fa7-b794-46c0-b506-6732ac4af944"))
+			Logit.LogDebug("BREAKPOINT");
 		// rollup.put("USER_ID",
 		// rp.getProbe().getUser().getUserId().toString());
 		rollup.put("RESULTS_TIME", dataPointsRollup.getEndTime());
 		// rollup.put("RESULTS_NAME", resultkey.split("@")[1]);
-		String[] resultsStrings=new String[1];
-		resultsStrings[0]=dataPointsRollup.getResultString();
-		rollup.put("RESULTS", resultsStrings);
+		JSONArray resultsStrings=new JSONArray();
+		resultsStrings.add(dataPointsRollup.getResultString());
+		rollup.put("RESULTS", resultsStrings.toString());
 		rollup.put("RUNNABLE_PROBE_ID", dataPointsRollup.getRunnableProbeId());
 		rollup.put("ROLLUP_SIZE", dataPointsRollup.getTimePeriod().toString());
 		rollup.put("USER_ID", RunnableProbeContainer.getInstanece().get(dataPointsRollup.getRunnableProbeId())
