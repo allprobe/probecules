@@ -16,7 +16,10 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.UUID;
+
+import org.apache.commons.codec.DecoderException;
 import org.apache.commons.codec.binary.Base64;
+import org.apache.commons.codec.binary.Hex;
 import org.snmp4j.PDU;
 import org.snmp4j.smi.OID;
 import org.snmp4j.smi.VariableBinding;
@@ -168,26 +171,44 @@ public class GeneralFunctions {
 		return s.hasNext() ? s.next() : "";
 	}
 
+//	public static String convertHexToString(String hex) {
+//
+//		StringBuilder sb = new StringBuilder();
+//		StringBuilder temp = new StringBuilder();
+//
+//		// 49204c6f7665204a617661 split into two characters 49, 20, 4c...
+//		for (int i = 0; i < hex.length() - 1; i += 2) {
+//
+//			// grab the hex in pairs
+//			String output = hex.substring(i, (i + 2));
+//			// convert hex to decimal
+//			int decimal = Integer.parseInt(output, 16);
+//			// convert the decimal to character
+//			sb.append((char) decimal);
+//
+//			temp.append(decimal);
+//		}
+//		return sb.toString();
+//	}
+	
 	public static String convertHexToString(String hex) {
-
-		StringBuilder sb = new StringBuilder();
-		StringBuilder temp = new StringBuilder();
-
-		// 49204c6f7665204a617661 split into two characters 49, 20, 4c...
-		for (int i = 0; i < hex.length() - 1; i += 2) {
-
-			// grab the hex in pairs
-			String output = hex.substring(i, (i + 2));
-			// convert hex to decimal
-			int decimal = Integer.parseInt(output, 16);
-			// convert the decimal to character
-			sb.append((char) decimal);
-
-			temp.append(decimal);
-		}
-		return sb.toString();
+	String hexString = 		hex.replace(":","");
+   
+	byte[] bytes=null;
+	try {
+		bytes = Hex.decodeHex(hexString.toCharArray());
+	} catch (DecoderException e) {
+		Logit.LogError("GeneralFunctions - convertHexToString", "failed to convert hex to string! : "+hex+", E: "+e.getMessage());
+		return null;
 	}
-
+	try {
+		String result=new String(bytes, "UTF-8");
+		return result;
+	} catch (UnsupportedEncodingException e) {
+		Logit.LogError("GeneralFunctions - convertHexToString", "failed to convert hex to string! : "+hex+", E: "+e.getMessage());
+		return null;
+	}
+	}
 	public static boolean isNullOrEmpty(String str) {
 		return str == null || str.isEmpty();
 	}
