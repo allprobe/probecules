@@ -172,6 +172,7 @@ public class RollupsContainer implements IRollupsContainer {
 			return;
 
 		addFinishedRollup(finishedDataRollup);
+		rolups[i]=null;
 
 		// addRollupTo(i, finishedDataRollup);
 		currentDataRollup.setLastFinishedRollup(null);
@@ -190,7 +191,10 @@ public class RollupsContainer implements IRollupsContainer {
 			return;
 
 		addFinishedRollup(finishedDataRollup1, finishedDataRollup2);
-
+		rolups1[i]=null;
+		rolups2[i]=null;
+		
+		
 		// addRollupTo(i, finishedDataRollup);
 		currentDataRollup1.setLastFinishedRollup(null);
 		currentDataRollup2.setLastFinishedRollup(null);
