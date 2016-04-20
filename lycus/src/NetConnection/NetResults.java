@@ -349,6 +349,10 @@ public class NetResults implements INetResults {
 			switch (hostType) {
 			case Windows:
 				name = GeneralFunctions.convertHexToString(nicsWalk.get("1.3.6.1.2.1.2.2.1.2." + index));
+				if(name==null)
+				{
+					continue;
+				}
 				break;
 			case Linux:
 				name = nicsWalk.get("1.3.6.1.2.1.2.2.1.2." + index);
