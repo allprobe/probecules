@@ -55,7 +55,11 @@ public class Enums {
 		Windows,
 		Linux
 	}
-	
+	public static enum SnmpError
+	{
+		NO_COMUNICATION;
+		
+	}
 	public static enum ElementChange
 	{
 		addedElement,removedElement,indexElementChanged

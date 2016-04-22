@@ -22,6 +22,7 @@ import GlobalConstants.DataPointsRollupSize;
 import GlobalConstants.Enums;
 import Interfaces.IRollupsContainer;
 import Results.BaseResult;
+import Results.NicResult;
 import Results.PingResult;
 import Results.PortResult;
 import Results.SnmpResult;
@@ -41,6 +42,8 @@ public class RollupsContainer implements IRollupsContainer {
 	private HashMap<String, DataPointsRollup[]> portResponseTimeRollups = new HashMap<String, DataPointsRollup[]>();
 	private HashMap<String, DataPointsRollup[]> webResponseTimeRollups = new HashMap<String, DataPointsRollup[]>();
 	private HashMap<String, DataPointsRollup[]> snmpDataRollups = new HashMap<String, DataPointsRollup[]>();
+	private HashMap<String, DataPointsRollup[]> nicInDataRollups = new HashMap<String, DataPointsRollup[]>();
+	private HashMap<String, DataPointsRollup[]> nicOutDataRollups = new HashMap<String, DataPointsRollup[]>();
 
 	// Those are finished rollups
 	// private JSONObject finishedRollups4m = new JSONObject(); //
@@ -71,7 +74,9 @@ public class RollupsContainer implements IRollupsContainer {
 		} else if (result instanceof SnmpResult) {
 			addSnmpResult(result);
 		}
-
+		else if (result instanceof NicResult) {
+			addNicResult(result);
+		}
 		return false;
 	}
 
@@ -403,6 +408,34 @@ public class RollupsContainer implements IRollupsContainer {
 		}
 	}
 
+	private void addNicResult(BaseResult result) {
+		NicResult nicResults = (NicResult) result;
+		DataPointsRollup[] nicInRollups = nicInDataRollups.get(result.getRunnableProbeId());
+		DataPointsRollup[] nicOutRollups = nicOutDataRollups.get(result.getRunnableProbeId());
+
+		if (nicInRollups == null||nicOutRollups==null)
+		{
+			nicInDataRollups.put(result.getRunnableProbeId(), new DataPointsRollup[6]);
+			nicOutDataRollups.put(result.getRunnableProbeId(), new DataPointsRollup[6]);
+		}
+		for (int i = 0; i < result.getNumberOfRollupTables(); i++) {
+			DataPointsRollup nicInRollup = nicInDataRollups.get(result.getRunnableProbeId())[i];
+			DataPointsRollup nicOutRollup = nicOutDataRollups.get(result.getRunnableProbeId())[i];
+
+			if (nicInRollup == null || nicOutRollup==null ) {
+				nicInRollup = new DataPointsRollup(result.getRunnableProbeId(), this.getRollupSize(i));
+				nicOutRollup = new DataPointsRollup(result.getRunnableProbeId(), this.getRollupSize(i));
+
+				nicInDataRollups.get(result.getRunnableProbeId())[i] = nicInRollup;
+				nicOutDataRollups.get(result.getRunnableProbeId())[i] = nicOutRollup;
+
+			}
+			nicInRollup.add(nicResults.getLastTimestamp(), nicResults.getInBW());
+			nicOutRollup.add(nicResults.getLastTimestamp(), nicResults.getOutBW());
+
+		}
+	}
+	
 	private void addWeberResult(BaseResult result) {
 		WebResult weberResults = (WebResult) result;
 		DataPointsRollup[] responseTimeRollups = webResponseTimeRollups.get(result.getRunnableProbeId());

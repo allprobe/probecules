@@ -2,6 +2,8 @@ package Results;
 
 import org.json.simple.JSONArray;
 
+import GlobalConstants.Enums;
+import GlobalConstants.Enums.SnmpError;
 import lycus.RunnableProbeContainer;
 
 public class NicResult extends BaseResult {
@@ -14,6 +16,8 @@ public class NicResult extends BaseResult {
 	private long previousTimestamp;
 	private long currentTimestamp;
 
+	private Enums.SnmpError error;
+	
 	public NicResult(String runnableProbeId,long currentTimestamp,long currentInterfaceInOctets,long currentInterfaceOutOctets,long previousTimestamp,long previousInterfaceInOctets,long previousInterfaceOutOctets) {
 		super(runnableProbeId);
 		this.previousInterfaceInOctets=previousInterfaceInOctets;
@@ -29,7 +33,10 @@ public class NicResult extends BaseResult {
 	public NicResult(String runnableProbeId) {
 		super(runnableProbeId);
 	}
-
+	public NicResult(String runnableProbeId,long timestamp) {
+		super(runnableProbeId);
+		super.setLastTimestamp(timestamp);
+	}
 
 	public long getPreviousInterfaceInOctets() {
 		return previousInterfaceInOctets;
@@ -81,13 +88,13 @@ public class NicResult extends BaseResult {
 			super.setLastTimestamp(currentTimestamp);
 	}
 	
-	private Long getInBW()
+	public Long getInBW()
 	{
 		if(getPreviousTimestamp()==0)
 			return null; 
 		return calculateBW(previousInterfaceInOctets, currrentInterfaceInOctets, previousTimestamp, currentTimestamp);
 	}
-	private Long getOutBW()
+	public Long getOutBW()
 	{
 		if(getPreviousTimestamp()==0)
 			return null;
@@ -106,10 +113,26 @@ public class NicResult extends BaseResult {
 	public String getResultString() {
 		if(this.getLastTimestamp()==null)
 			return null;
+			
 		JSONArray result=new JSONArray();
 		result.add(11);
+		if(error==SnmpError.NO_COMUNICATION)
+		{
+			result.add("NO_ROUTE");
+		}
+		else
+		{
 		result.add(getInBW());
 		result.add(getOutBW());
+		}
 		return result.toString();
+	}
+
+	public Enums.SnmpError getError() {
+		return error;
+	}
+
+	public void setError(Enums.SnmpError error) {
+		this.error = error;
 	}
 }

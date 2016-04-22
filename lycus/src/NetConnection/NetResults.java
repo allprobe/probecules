@@ -15,6 +15,7 @@ import Elements.NicElement;
 import GlobalConstants.Constants;
 import GlobalConstants.Enums;
 import GlobalConstants.Enums.HostType;
+import GlobalConstants.Enums.SnmpError;
 import Interfaces.INetResults;
 import Probes.BaseProbe;
 import Probes.DiscoveryProbe;
@@ -194,9 +195,11 @@ public class NetResults implements INetResults {
 			break;
 		}
 
-		if (rawResults == null || rawResults.size() == 0)
-			return null;
-
+		if (rawResults == null || rawResults.size() == 0) {
+			NicResult nicResult = new NicResult(getRunnableProbeId(probe, host),timestamp);
+			nicResult.setError(SnmpError.NO_COMUNICATION);
+			return nicResult;
+		}
 		long interfaceInOctets = Long.parseLong(rawResults.get(probe.getIfinoctetsOID().toString()));
 		long interfaceOutOctets = Long.parseLong(rawResults.get(probe.getIfoutoctetsOID().toString()));
 
@@ -220,7 +223,7 @@ public class NetResults implements INetResults {
 		nicResult.setCurrrentInterfaceInOctets(interfaceInOctets);
 		nicResult.setCurrentInterfaceOutOctets(interfaceOutOctets);
 
-		nicPreviousResults.put(nicResult.getRunnableProbeId(),nicResult);
+		nicPreviousResults.put(nicResult.getRunnableProbeId(), nicResult);
 
 		return nicResult;
 	}
@@ -272,7 +275,7 @@ public class NetResults implements INetResults {
 		if (hrStorageResults == null || hrStorageResults.size() == 0)
 			return null;
 
-		HashMap<String, BaseElement> lastScanElements = this.convertDisksWalkToElements( hrStorageResults);
+		HashMap<String, BaseElement> lastScanElements = this.convertDisksWalkToElements(hrStorageResults);
 		return lastScanElements;
 	}
 
@@ -309,7 +312,7 @@ public class NetResults implements INetResults {
 		Enums.HostType hostType = Utils.GeneralFunctions
 				.getHostType(sysDescrResults.get(Constants.sysDescr.toString()));
 
-		HashMap<String, BaseElement> lastScanElements = this.convertNicsWalkToElements( ifDescrResults, hostType);
+		HashMap<String, BaseElement> lastScanElements = this.convertNicsWalkToElements(ifDescrResults, hostType);
 		return lastScanElements;
 
 		// HashMap<BaseElement, Enums.ElementChange> elementsChanges = new
@@ -329,8 +332,7 @@ public class NetResults implements INetResults {
 		// }
 	}
 
-	private HashMap<String, BaseElement> convertNicsWalkToElements( Map<String, String> nicsWalk,
-			HostType hostType) {
+	private HashMap<String, BaseElement> convertNicsWalkToElements(Map<String, String> nicsWalk, HostType hostType) {
 		HashMap<String, BaseElement> lastElements = new HashMap<String, BaseElement>();
 		if (hostType == null)
 			return null;
@@ -349,8 +351,7 @@ public class NetResults implements INetResults {
 			switch (hostType) {
 			case Windows:
 				name = GeneralFunctions.convertHexToString(nicsWalk.get("1.3.6.1.2.1.2.2.1.2." + index));
-				if(name==null)
-				{
+				if (name == null) {
 					continue;
 				}
 				break;
@@ -370,8 +371,7 @@ public class NetResults implements INetResults {
 		return lastElements;
 	}
 
-	private HashMap<String, BaseElement> convertDisksWalkToElements(
-			Map<String, String> disksWalk) {
+	private HashMap<String, BaseElement> convertDisksWalkToElements(Map<String, String> disksWalk) {
 		HashMap<String, BaseElement> lastElements = new HashMap<String, BaseElement>();
 		for (Map.Entry<String, String> entry : disksWalk.entrySet()) {
 			if (!entry.getKey().toString().contains("1.3.6.1.2.1.25.2.3.1.1."))
