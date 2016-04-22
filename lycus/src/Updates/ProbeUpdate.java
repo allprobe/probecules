@@ -108,7 +108,7 @@ public class ProbeUpdate extends BaseUpdate {
 			RunnableProbe runnableProbe = new RunnableProbe(host, probe);
 //			runnableProbe.start();
 			getUser().addRunnableProbe(runnableProbe);
-			Logit.LogCheck("New Runnable probe was created");
+			Logit.LogCheck("New Runnable probe was created: " + runnableProbe.getId());
 			
 		} catch (Exception e) {
 			Logit.LogError("ProbeUpdate - New()", "New probe Could not be created");

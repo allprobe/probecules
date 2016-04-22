@@ -20,6 +20,7 @@ import org.json.simple.parser.JSONParser;
 import com.google.gson.Gson;
 
 import DAL.ApiInterface;
+import DAL.DAL;
 import Elements.BaseElement;
 import Elements.NicElement;
 import GlobalConstants.Constants;
@@ -27,6 +28,8 @@ import GlobalConstants.Enums;
 import GlobalConstants.SnmpDataType;
 import GlobalConstants.SnmpUnit;
 import GlobalConstants.TriggerSeverity;
+import GlobalConstants.Enums.ApiAction;
+import Interfaces.IDAL;
 import Model.ConditionUpdateModel;
 import Model.DiscoveryElementParams;
 import Model.DiscoveryTrigger;
@@ -265,7 +268,35 @@ public class UsersManager {
 			JSONObject hostJson = (JSONObject) allHostsJson.get(i);
 			UUID user_id = UUID.fromString((String) hostJson.get("user_id"));
 			User user = getUsers().get(user_id);
-
+			if (user == null)
+				user = new User(user_id);
+			
+			
+			String snmpTemplateId = ((JSONObject)allHostsJson.get(0)).get("snmp_template").toString();
+			if (snmpTemplateId != null && !user.isSnmpTemplateExist(snmpTemplateId))
+			{
+				JSONObject templateId = new JSONObject();
+				JSONObject userIdSnmpTemplate = new JSONObject();
+				userIdSnmpTemplate.put(user_id, snmpTemplateId);
+				
+				JSONArray snmpTemplateIds = new JSONArray();
+				snmpTemplateIds.add(userIdSnmpTemplate);
+				templateId.put(Constants.snmpTemplates, snmpTemplateIds);
+				
+				IDAL dal = DAL.getInstanece();
+				JSONObject jsonObject = dal.put(ApiAction.GetSnmpTemplates, templateId);
+				
+				UsersManager.addSnmpTemplates((JSONArray)jsonObject.get("snmp_templates"));
+//				UUID id = jsonObject.get("snmp_user_id");
+//				
+//				
+//				(UUID id,String name, int version,int port, String sec, String userName,
+//						String authPass, String algo,String cryptPass,String cryptType,int timeout,boolean status
+//				SnmpTemplate snmpTemplate = new SnmpTemplate(id, name, version, port, sec, userName, authPass, algo, cryptPass, cryptType, timeout, status)
+			}
+			
+			
+			
 			HostParams hostParams = new HostParams();
 			hostParams.host_id = (String) hostJson.get("host_id");
 			hostParams.name = (String) hostJson.get("host_name");
@@ -278,7 +309,7 @@ public class UsersManager {
 			user.addHost(hostParams);
 		}
 	}
-
+	
 	// private static ArrayList<UUID> convertNotificationGroupsArray(Object
 	// notifs) {
 	// if (notifs == null)

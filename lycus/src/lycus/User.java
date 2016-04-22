@@ -324,6 +324,10 @@ public class User {
 		return getProbeFor(probe_id) != null;
 	}
 
+	public boolean isSnmpTemplateExist(String snmp_template_id) {
+		return snmpTemplates.containsKey(snmp_template_id);
+	}
+	
 	// public boolean removeRunnableProbes(String probe_id) {
 	// List<RunnableProbe> runnableProbes = getRunnableProbesFor(probe_id);
 	// for (RunnableProbe runnableProbe : runnableProbes) {
