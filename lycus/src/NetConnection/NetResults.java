@@ -156,7 +156,16 @@ public class NetResults implements INetResults {
 			break;
 		}
 		if (rawResults == null || rawResults.size() == 0)
-			return null;
+		{
+			for (SnmpProbe snmpProbe : snmpProbes)
+			{
+				SnmpResult snmpResult = new SnmpResult(getRunnableProbeId(snmpProbe, host),timestamp);
+				snmpResult.setError(SnmpError.NO_COMUNICATION);
+				allResults.add(snmpResult);
+			}
+			
+			return allResults;
+		}
 
 		for (SnmpProbe snmpProbe : snmpProbes) {
 			String stringResult = rawResults.get((snmpProbe).getOid().toString());

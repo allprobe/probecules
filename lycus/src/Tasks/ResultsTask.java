@@ -16,7 +16,7 @@ public class ResultsTask extends BaseTask {
 	private long interval = 30;
 
 	public void run() {
-		Logit.LogError("ResultsTask - run()", "thread results executed!");
+//		Logit.LogError("ResultsTask - run()", "thread results executed!");
 
 		try {
 			Logit.LogInfo("Sending collected results to API...");

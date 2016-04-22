@@ -5,6 +5,7 @@ import java.util.HashMap;
 import org.json.simple.JSONArray;
 
 import GlobalConstants.Constants;
+import GlobalConstants.Enums.SnmpError;
 import GlobalConstants.ProbeTypes;
 import Probes.SnmpProbe;
 import lycus.Trigger;
@@ -15,12 +16,19 @@ public class SnmpResult extends BaseResult {
 
 	private String oid;
 	private String data;
+	private SnmpError error;
+	
 	//private DataPointsRollup[] dataRollups;
 //	private String snmpResultError;
 //	private Double tmpDeltaVar;// last results when probe "save results as"
 								// delta
 //	private Long tmpDeltaTimestamp;
 
+	public SnmpResult(String runnableProbeId, long timestamp) {
+		super(runnableProbeId, timestamp);
+		this.probeType = ProbeTypes.SNMP;
+	}
+	
 	public SnmpResult(String runnableProbeId, long timestamp, String data) {
 		super(runnableProbeId, timestamp);
 		this.probeType = ProbeTypes.SNMP;
@@ -426,5 +434,13 @@ public class SnmpResult extends BaseResult {
 		result.add(4);
 		result.add(data);
 		return result.toString();
+	}
+
+	public SnmpError getError() {
+		return error;
+	}
+
+	public void setError(SnmpError error) {
+		this.error = error;
 	}
 }
