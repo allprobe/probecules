@@ -126,7 +126,7 @@ public class PortResult extends BaseResult {
 			}
 			catch(Exception e)
 			{
-				Logit.LogError("PortResult - checkForResponseTimeTrigger", "Unable to parse trigger X value for triggerId: "+trigger.getTriggerId()+", E: "+e.getMessage());
+				Logit.LogInfo("Unable to parse trigger X value for triggerId: "+trigger.getTriggerId()+", E: "+e.getMessage());
 				throw e;
 			}
 			long lastValue = this.getResponseTime();

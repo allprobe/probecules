@@ -168,6 +168,10 @@ public class RollupsContainer implements IRollupsContainer {
 		rollups.put("portResponseTimeRollups", JsonUtil.ToJson(portResponseTimeRollups));
 		rollups.put("webResponseTimeRollups", JsonUtil.ToJson(webResponseTimeRollups));
 		rollups.put("snmpDataRollups", JsonUtil.ToJson(snmpDataRollups));
+		
+		if(rollups.toString().contains("0b05919c-6cc0-42cc-a74b-de3b0dcd4a2a@98437013-a93f-4b27-9963-a4800860b90f@snmp_924430db-e1d7-43ce-ba98-a9b7883a440a"))
+			Logit.LogDebug("BREAKPOINT");
+		
 		return rollups.toString();
 	}
 
@@ -354,7 +358,7 @@ public class RollupsContainer implements IRollupsContainer {
 	private String rollupResultsDBFormat(DataPointsRollup dataPointsRollup) {
 		JSONObject rollup = new JSONObject();
 
-		if(dataPointsRollup.getRunnableProbeId().contains("0b05919c-6cc0-42cc-a74b-de3b0dcd4a2a@7352a46f-5189-428c-b4c0-fb98dedd10b1@snmp_50a71fa7-b794-46c0-b506-6732ac4af944"))
+		if(dataPointsRollup.getRunnableProbeId().contains("0b05919c-6cc0-42cc-a74b-de3b0dcd4a2a@98437013-a93f-4b27-9963-a4800860b90f@snmp_924430db-e1d7-43ce-ba98-a9b7883a440a"))
 			Logit.LogDebug("BREAKPOINT");
 		// rollup.put("USER_ID",
 		// rp.getProbe().getUser().getUserId().toString());
@@ -392,6 +396,10 @@ public class RollupsContainer implements IRollupsContainer {
 
 	private void addSnmpResult(BaseResult result) {
 		SnmpResult snmpResults = (SnmpResult) result;
+		
+		if(result.getRunnableProbeId().contains("0b05919c-6cc0-42cc-a74b-de3b0dcd4a2a@98437013-a93f-4b27-9963-a4800860b90f@snmp_924430db-e1d7-43ce-ba98-a9b7883a440a"))
+			Logit.LogDebug("BREAKPOINT");
+		
 		DataPointsRollup[] snmpRollups = snmpDataRollups.get(result.getRunnableProbeId());
 		if (snmpRollups == null)
 			snmpDataRollups.put(result.getRunnableProbeId(), new DataPointsRollup[6]);
@@ -574,6 +582,12 @@ public class RollupsContainer implements IRollupsContainer {
 			HashMap<String, DataPointsRollup[]> currentRollups) {
 		for(Map.Entry<String, DataPointsRollup[]> runnableProbeIdRollups:rollupsFromDump.entrySet())
 		{
+			
+			if(runnableProbeIdRollups.getKey().contains("0b05919c-6cc0-42cc-a74b-de3b0dcd4a2a@98437013-a93f-4b27-9963-a4800860b90f@snmp_924430db-e1d7-43ce-ba98-a9b7883a440a"))
+			{
+				Logit.LogDebug("BREAKPOINT");
+			}
+			
 			DataPointsRollup[] dumpRollups=runnableProbeIdRollups.getValue();
 			DataPointsRollup[] existingRollups=currentRollups.get(runnableProbeIdRollups.getKey());
 			if(dumpRollups==null||existingRollups==null)
