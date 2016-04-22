@@ -20,6 +20,7 @@ import DAL.ApiInterface;
 import DAL.DAL;
 import GlobalConstants.DataPointsRollupSize;
 import GlobalConstants.Enums;
+import GlobalConstants.Enums.SnmpError;
 import Interfaces.IRollupsContainer;
 import Results.BaseResult;
 import Results.NicResult;
@@ -418,6 +419,10 @@ public class RollupsContainer implements IRollupsContainer {
 
 	private void addNicResult(BaseResult result) {
 		NicResult nicResults = (NicResult) result;
+		
+		if(nicResults.getError()==SnmpError.NO_COMUNICATION)
+			return;
+		
 		DataPointsRollup[] nicInRollups = nicInDataRollups.get(result.getRunnableProbeId());
 		DataPointsRollup[] nicOutRollups = nicOutDataRollups.get(result.getRunnableProbeId());
 
