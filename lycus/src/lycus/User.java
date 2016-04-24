@@ -125,6 +125,7 @@ public class User {
 		if (newHost == null)
 			hosts.put(host.getHostId(), host);
 
+		Host h = getHosts().get(host.getHostId());
 		return true;
 	}
 
@@ -344,9 +345,10 @@ public class User {
 			boolean status = (hostParams.hostStatus).equals("1") ? true : false;
 			String bucket = hostParams.bucket;
 
-			UUID notif_groups;
+			UUID notif_groups = null;
 			try {
-				notif_groups = UUID.fromString(hostParams.notificationGroups);
+				if (!hostParams.notificationGroups.equals("none"))
+					notif_groups = UUID.fromString(hostParams.notificationGroups);
 			} catch (Exception e) {
 				Logit.LogWarn("Unable to parse notifications group: " + hostParams.notificationGroups + ", E: "
 						+ e.getMessage());
@@ -370,7 +372,8 @@ public class User {
 				host = new Host(host_id, name, ip, snmpTemp, status, true, bucket, notif_groups,
 						getUserId().toString());
 			}
-			this.getHosts().put(host_id, host);
+			addHost(host);
+			 
 		} catch (Exception e) {
 			Logit.LogWarn("Creation of Host Failed: " + hostParams + " , not added! E: " + e.getMessage());
 		}

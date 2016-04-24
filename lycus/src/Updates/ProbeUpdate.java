@@ -46,6 +46,9 @@ public class ProbeUpdate extends BaseUpdate {
 				Logit.LogCheck("New host was created from server");
 			}
 
+			if (!UsersManager.getUser(getUpdate().user_id).equals(getUser()))
+				setUser(UsersManager.getUser(getUpdate().user_id));
+				
 			host = getUser().getHost(UUID.fromString(getUpdate().host_id));
 			if (host == null) {
 				Logit.LogError("ProbeUpdate - New()", "Failed update from type NEW PROBE - unknown host");

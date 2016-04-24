@@ -87,6 +87,20 @@ public class UsersManager {
 		return true;
 	}
 
+	public static boolean addUser(UUID userId) {
+		User user = new User(userId);
+		if (!getUsers().containsKey(userId)) {
+			
+			getUsers().put(userId, user);
+			
+
+		}
+		User u = getUsers().get(userId);
+		if (u == null)
+			;
+		return true;
+	}
+
 	public static boolean removeUser(UUID userId) {
 		if (getUsers().containsKey(userId))
 			getUsers().remove(userId);
@@ -209,55 +223,58 @@ public class UsersManager {
 		for (int i = 0; i < allElementsJson.size(); i++) {
 			JSONObject hostElementsJson = (JSONObject) allElementsJson.get(i);
 			try {
-				JSONArray elementsArray=(JSONArray)(new JSONParser()).parse((String)hostElementsJson.get("elements"));
-				for(Object element : elementsArray)
-				{
-					JSONObject elementJson=(JSONObject)element;
+				JSONArray elementsArray = (JSONArray) (new JSONParser())
+						.parse((String) hostElementsJson.get("elements"));
+				for (Object element : elementsArray) {
+					JSONObject elementJson = (JSONObject) element;
 					DiscoveryElementParams elementParams = new DiscoveryElementParams();
-				elementParams.user_id=(String)hostElementsJson.get("user_id");
-				elementParams.template_id=(String)hostElementsJson.get("template_id");
-				elementParams.element_interval=Integer.parseInt((String)hostElementsJson.get("element_interval"));
-				elementParams.elements_type=(String)hostElementsJson.get("elements_type");
+					elementParams.user_id = (String) hostElementsJson.get("user_id");
+					elementParams.template_id = (String) hostElementsJson.get("template_id");
+					elementParams.element_interval = Integer
+							.parseInt((String) hostElementsJson.get("element_interval"));
+					elementParams.elements_type = (String) hostElementsJson.get("elements_type");
 
-				elementParams.host_id=(String)hostElementsJson.get("host_id");
-				elementParams.discovery_id=(String)hostElementsJson.get("discovery_id");
+					elementParams.host_id = (String) hostElementsJson.get("host_id");
+					elementParams.discovery_id = (String) hostElementsJson.get("discovery_id");
 
-				String runnableProbeId=elementParams.template_id+"@"+elementParams.host_id+"@"+elementParams.discovery_id;
-				
-				//				JSONObject elementN=(JSONObject)elements.get();
-//				JSONObject elementValues=(JSONObject)elements.get(elementParams.name);
+					String runnableProbeId = elementParams.template_id + "@" + elementParams.host_id + "@"
+							+ elementParams.discovery_id;
 
-				elementParams.name=(String)elementJson.get("name");
-				elementParams.index=Integer.parseInt(elementJson.get("index").toString());
-				elementParams.status=(boolean)elementJson.get("active");
-				elementParams.hostType=(String)elementJson.get("hostType");
-			
-				elementParams.ifSpeed=(long)elementJson.get("ifSpeed");
+					// JSONObject elementN=(JSONObject)elements.get();
+					// JSONObject
+					// elementValues=(JSONObject)elements.get(elementParams.name);
 
-				
-				
-				User user = getUsers().get(UUID.fromString(elementParams.user_id));
-				if (user == null)
-					continue;
-				Host host=user.getHost(UUID.fromString(elementParams.host_id));
-				// TODO check for element type and add new elements
-				BaseElement baseElement=null;
-				switch(elementParams.elements_type)
-				{
-				case Constants.bw: 
-//					DiscoveryProbe probe=(DiscoveryProbe)user.getTemplateProbes().get(elementParams.discovery_id);
-					baseElement=new NicElement(elementParams.index, elementParams.name,elementParams.status,  Utils.GeneralFunctions.getHostType(elementParams.hostType),elementParams.ifSpeed);
-					ElementsContainer.getInstance().addElement(elementParams.user_id,runnableProbeId, baseElement);
-					break;
-				case Constants.ds:
-					break;
+					elementParams.name = (String) elementJson.get("name");
+					elementParams.index = Integer.parseInt(elementJson.get("index").toString());
+					elementParams.status = (boolean) elementJson.get("active");
+					elementParams.hostType = (String) elementJson.get("hostType");
+
+					elementParams.ifSpeed = (long) elementJson.get("ifSpeed");
+
+					User user = getUsers().get(UUID.fromString(elementParams.user_id));
+					if (user == null)
+						continue;
+					Host host = user.getHost(UUID.fromString(elementParams.host_id));
+					// TODO check for element type and add new elements
+					BaseElement baseElement = null;
+					switch (elementParams.elements_type) {
+					case Constants.bw:
+						// DiscoveryProbe
+						// probe=(DiscoveryProbe)user.getTemplateProbes().get(elementParams.discovery_id);
+						baseElement = new NicElement(elementParams.index, elementParams.name, elementParams.status,
+								Utils.GeneralFunctions.getHostType(elementParams.hostType), elementParams.ifSpeed);
+						ElementsContainer.getInstance().addElement(elementParams.user_id, runnableProbeId, baseElement);
+						break;
+					case Constants.ds:
+						break;
+					}
+					// TODO add exisitng elements
+					// user.addNewDiscoveryElement(baseElement,host);
 				}
-				// TODO add exisitng elements
-//				user.addNewDiscoveryElement(baseElement,host);
-				}
-				
+
 			} catch (Exception e) {
-				Logit.LogWarn("Creation of Discovery Element Failed: " + allElementsJson.toJSONString() + " , not added! E: "+e.getMessage());
+				Logit.LogWarn("Creation of Discovery Element Failed: " + allElementsJson.toJSONString()
+						+ " , not added! E: " + e.getMessage());
 				continue;
 			}
 		}
@@ -269,8 +286,11 @@ public class UsersManager {
 			UUID user_id = UUID.fromString((String) hostJson.get("user_id"));
 			User user = getUsers().get(user_id);
 			if (user == null)
-				user = new User(user_id);
-			
+			{
+				addUser(user_id);
+				user = getUser(user_id);
+//				getUsers().put(user_id, user);
+			}
 			
 			String snmpTemplateId = ((JSONObject)allHostsJson.get(0)).get("snmp_template").toString();
 			if (snmpTemplateId != null && !user.isSnmpTemplateExist(snmpTemplateId))
@@ -309,7 +329,7 @@ public class UsersManager {
 			user.addHost(hostParams);
 		}
 	}
-	
+
 	// private static ArrayList<UUID> convertNotificationGroupsArray(Object
 	// notifs) {
 	// if (notifs == null)

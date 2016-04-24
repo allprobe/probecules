@@ -44,10 +44,10 @@ public abstract class BaseUpdate implements IUpdate{
 				break;
 		}
 		
-		user = UsersManager.getUser(UUID.fromString(getUpdate().user_id));
-		if (user == null)
+		setUser(UsersManager.getUser(UUID.fromString(getUpdate().user_id)));
+		if (getUser() == null)
 		{
-			user = new User(UUID.fromString(getUpdate().user_id));
+			setUser(new User(UUID.fromString(getUpdate().user_id)));
 		}
 	}
 
@@ -84,6 +84,10 @@ public abstract class BaseUpdate implements IUpdate{
 
 	public User getUser() {
 		return user;
+	}
+
+	public void setUser(User user) {
+		this.user = user;
 	}
 
 }
