@@ -74,7 +74,7 @@ public class ProbeUpdate extends BaseUpdate {
 				probeParams.name = getUpdate().update_value.name;
 				probeParams.port = getUpdate().update_value.key.port;
 				probeParams.port_extra = getUpdate().update_value.key.port_extra;
-				// probeParams.probe_id = getUpdate().probe_id;
+				 probeParams.probe_id = getUpdate().probe_id;
 				probeParams.protocol = getUpdate().update_value.key.proto;
 				probeParams.rbl = getUpdate().update_value.key.rbl;
 				probeParams.oid = getUpdate().update_value.key.snmp_oid;
