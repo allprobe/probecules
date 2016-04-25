@@ -111,11 +111,11 @@ public class RunnableProbe implements Runnable {
 		try {
 			result = getProbe().getResult(this.getHost());
 		} catch (Exception e) {
-			Logit.LogError("RunnableProbe - run()", "Error getting runnable probe results!");
+			Logit.LogError("RunnableProbe - run()", "Error getting runnable probe results! "+ this.getId());
 			return;
 		}
 		if (result == null) {
-			Logit.LogError("RunnableProbe - run()", "Error getting runnable probe results!");
+			Logit.LogError("RunnableProbe - run()", "Error getting runnable probe results! "+ this.getId());
 			return;
 		}
 		try {
@@ -136,13 +136,13 @@ public class RunnableProbe implements Runnable {
 			else
 				ResultsContainer.getInstance().addResult(result);
 		} catch (Exception e) {
-			Logit.LogError("RunnableProbe - run()", "Error processing runnable probe results to results container!");
+			Logit.LogError("RunnableProbe - run()", "Error processing runnable probe results to results container! "+ this.getId());
 			return;
 		}
 		try {
 			RollupsContainer.getInstance().addResult(result);
 		} catch (Exception e) {
-			Logit.LogError("RunnableProbe - run()", "Error processing runnable probe results to rollups container!");
+			Logit.LogError("RunnableProbe - run()", "Error processing runnable probe results to rollups container!"+ this.getId());
 			e.printStackTrace();
 			return;
 			// if (this.getId().split("@")[2].equals("null"))
