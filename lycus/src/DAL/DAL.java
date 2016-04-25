@@ -80,25 +80,30 @@ public class DAL implements IDAL {
 		conn.setUseCaches(false);
 		conn.setAllowUserInteraction(false);
 
-		try {
-			String result = executeGetRequest(conn);
-			if (conn.getResponseCode() == HttpURLConnection.HTTP_OK) {
-				JSONParser jsonParser = new JSONParser();
-				JSONObject jsonData;
-				jsonData=(JSONObject) jsonParser.parse(result);
-				return jsonData;
-			}
-		} catch (ParseException pe) {
-			Logit.LogFatal("DAL - get",
-					"Unable to parse json string from URL: " + fullUrl + ", failed to init server!");
-			return null;
+		String response;
 
+		try {
+			response = executeGetRequest(conn);
 		} catch (Exception e) {
-			Logit.LogFatal("DAL - get",
-					"Failed to request URL: " + fullUrl + ", response code is different than 200 OK !");
+			Logit.LogFatal("DAL - get", "Failed to request URL: " + fullUrl + ", E: " + e.getMessage());
 			return null;
 		} finally {
 			conn.disconnect();
+		}
+
+		try {
+			if (conn.getResponseCode() == HttpURLConnection.HTTP_OK)
+				return response.equals("") ? null : (JSONObject) ((new JSONParser()).parse(response));
+		} catch (IOException ioe) {
+			Logit.LogFatal("DAL - get", "Unable to retrieve response code from response for url: " + fullUrl
+					+ ", response is: " + response + ", E: " + ioe.getMessage());
+			return null;
+
+		} catch (ParseException pe) {
+			Logit.LogFatal("DAL - get", "Unable to parse json string from URL: " + fullUrl + ", JSON string is: "
+					+ response + ", E: " + pe.getMessage());
+			return null;
+
 		}
 		return null;
 	}
@@ -141,22 +146,29 @@ public class DAL implements IDAL {
 		conn.setUseCaches(false);
 		conn.setAllowUserInteraction(false);
 
+		String response;
+
 		try {
-			String response = executePutRequest(conn, reqBody.toJSONString());
-			if (conn.getResponseCode() == HttpURLConnection.HTTP_OK)
-				return response.equals("") ? null : (JSONObject) ((new JSONParser()).parse(response.toString()));
-			;
-		} catch (ParseException pe) {
-			Logit.LogError("DAL - put",
-					"Unable to parse json string from URL: " + fullUrl + ", failed to init server!");
+			response = executePutRequest(conn, reqBody.toJSONString());
+		} catch (Exception e) {
+			Logit.LogFatal("DAL - put", "Failed to request URL: " + fullUrl + ", E: " + e.getMessage());
 			return null;
 
-		} catch (Exception e) {
-			Logit.LogError("DAL - put",
-					"Failed to request URL: " + fullUrl + ", response code is different than 200 OK !");
-			return null;
 		} finally {
 			conn.disconnect();
+		}
+		try {
+			if (conn.getResponseCode() == HttpURLConnection.HTTP_OK)
+				return response.equals("") ? null : (JSONObject) ((new JSONParser()).parse(response.toString()));
+		} catch (IOException ioe) {
+			Logit.LogFatal("DAL - put", "Unable to retrieve response code from response for url: " + fullUrl
+					+ ", response is: " + response + ", E: " + ioe.getMessage());
+			return null;
+
+		} catch (ParseException pe) {
+			Logit.LogFatal("DAL - put", "Unable to parse json string from URL: " + fullUrl + ", JSON string is: "
+					+ response + ", E: " + pe.getMessage());
+			return null;
 		}
 		return null;
 	}
