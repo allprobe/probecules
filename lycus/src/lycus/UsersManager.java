@@ -285,6 +285,25 @@ public class UsersManager {
 			JSONObject hostJson = (JSONObject) allHostsJson.get(i);
 			UUID user_id = UUID.fromString((String) hostJson.get("user_id"));
 			User user = getUsers().get(user_id);
+			
+			HostParams hostParams = new HostParams();
+			hostParams.host_id = (String) hostJson.get("host_id");
+			hostParams.name = (String) hostJson.get("host_name");
+			hostParams.hostIp = (String) hostJson.get("ip");
+			hostParams.hostStatus = (String) hostJson.get("status");
+			hostParams.bucket = (String) hostJson.get("bucket");
+			hostParams.notificationGroups = (String) hostJson.get("notifications_group");
+			hostParams.snmpTemp = (String) hostJson.get("snmp_template");
+
+			user.addHost(hostParams);
+		}
+	}
+
+	public static void addHostsForUpdate(JSONArray allHostsJson) {
+		for (int i = 0; i < allHostsJson.size(); i++) {
+			JSONObject hostJson = (JSONObject) allHostsJson.get(i);
+			UUID user_id = UUID.fromString((String) hostJson.get("user_id"));
+			User user = getUsers().get(user_id);
 			if (user == null)
 			{
 				addUser(user_id);
@@ -329,7 +348,7 @@ public class UsersManager {
 			user.addHost(hostParams);
 		}
 	}
-
+	
 	// private static ArrayList<UUID> convertNotificationGroupsArray(Object
 	// notifs) {
 	// if (notifs == null)
