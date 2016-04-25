@@ -1,5 +1,7 @@
 package Tasks;
 
+import org.json.simple.JSONObject;
+
 import DAL.ApiInterface;
 import GlobalConstants.Enums;
 import Utils.GeneralFunctions;
@@ -19,8 +21,11 @@ public class EventTask extends BaseTask {
 				
 				if (!events.equals("[]")) {
 					String eventsEncoded = GeneralFunctions.Base64Encode(events);
-					String sendString = "{\"events\" : \"" + eventsEncoded + "\"}";
-					ApiInterface.executeRequest(Enums.ApiAction.PutEvents, "PUT", sendString);
+//					String sendString = "{\"events\" : \"" + eventsEncoded + "\"}";
+					JSONObject eventsJson=new JSONObject();
+					eventsJson.put("events", eventsEncoded);
+					DAL.DAL.getInstanece().put(Enums.ApiAction.PutEvents, eventsJson);
+//					ApiInterface.executeRequest(Enums.ApiAction.PutEvents, "PUT", sendString);
 				}
 			} else {
 				Logit.LogError("EventHandler - run()", "Unable to process events! events did not sent to API...");

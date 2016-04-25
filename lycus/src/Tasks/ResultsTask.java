@@ -70,7 +70,7 @@ public class ResultsTask extends BaseTask {
 
 			// DAL.getInstanece().put(Enums.ApiAction.InsertDatapointsBatches,
 			// sendString);
-			ApiInterface.executeRequest(Enums.ApiAction.InsertDatapointsBatches, "PUT", sendString);
+			DAL.DAL.getInstanece().get(Enums.ApiAction.InsertDatapointsBatches);
 
 			ResultsContainer.getInstance().clear();
 

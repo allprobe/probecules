@@ -45,6 +45,9 @@ public class RollupsDumpTask extends BaseTask {
 		}
 
 		String rollups = RollupsContainer.getInstance().getAllCurrentLiveRollups();
+		
+		if(rollups.contains("788b1b9e-d753-4dfa-ac46-61c4374eeb84@inner_7be55137-c5d8-438e-bca7-325f56656071"))
+			Logit.LogDebug("BREAKPOINT");
 		String rollupsEncoded = GeneralFunctions.Base64Encode(rollups);
 
 		Logit.LogInfo("Sending current live rollups dump to API...");
@@ -54,7 +57,8 @@ public class RollupsDumpTask extends BaseTask {
 
 //		String sendString="{ \"last_rollups\" : \""+rollupsEncoded+"\" }";
 		String sendString=jsonObject.toString();
-		ApiInterface.executeRequest(Enums.ApiAction.FlushServerMemory, "PUT", sendString);
+		DAL.DAL.getInstanece().put(Enums.ApiAction.FlushServerMemory,jsonObject);
+//		ApiInterface.executeRequest(Enums.ApiAction.FlushServerMemory, "PUT", sendString);
 	}
 
 	public ArrayList<DataPointsRollup[][]> deserializeRollups(String rollups) {

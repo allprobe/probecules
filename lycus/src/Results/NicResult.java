@@ -30,13 +30,19 @@ public class NicResult extends BaseResult {
 		this.currentTimestamp=currentTimestamp;
 	}
 	
+	@Override
+	public Long getLastTimestamp() {
+			return this.currentTimestamp;
+		
+	}
+
 	public NicResult(String runnableProbeId) {
 		super(runnableProbeId);
 	}
-	public NicResult(String runnableProbeId,long timestamp) {
-		super(runnableProbeId);
-		super.setLastTimestamp(timestamp);
-	}
+//	public NicResult(String runnableProbeId,long timestamp) {
+//		super(runnableProbeId);
+//		super.setLastTimestamp(timestamp);
+//	}
 
 	public long getPreviousInterfaceInOctets() {
 		return previousInterfaceInOctets;

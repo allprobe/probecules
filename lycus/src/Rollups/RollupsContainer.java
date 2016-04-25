@@ -74,8 +74,7 @@ public class RollupsContainer implements IRollupsContainer {
 			addWeberResult(result);
 		} else if (result instanceof SnmpResult) {
 			addSnmpResult(result);
-		}
-		else if (result instanceof NicResult) {
+		} else if (result instanceof NicResult) {
 			addNicResult(result);
 		}
 		return false;
@@ -84,78 +83,86 @@ public class RollupsContainer implements IRollupsContainer {
 	@Override
 	public synchronized String getAllFinsihedRollups() {
 
-		try{
-		JSONObject rollups = new JSONObject();
+		try {
+			JSONObject rollups = new JSONObject();
 
-		for (int i = 0; i < 6; i++) {
-			for (Map.Entry<String, DataPointsRollup[]> rolups : packetLossRollups.entrySet()) {
-				DataPointsRollup[] dataPointsRollups = rttRollups.get(rolups.getKey());
-				addFinished(i, rolups.getValue(), dataPointsRollups);
+			for (int i = 0; i < 6; i++) {
+				for (Map.Entry<String, DataPointsRollup[]> rolups : packetLossRollups.entrySet()) {
+					DataPointsRollup[] dataPointsRollups = rttRollups.get(rolups.getKey());
+					addFinished(i, rolups.getValue(), dataPointsRollups);
 
+				}
+				// for (DataPointsRollup[] rolups : packetLossRollups.values())
+				// {
+				//
+				// addFinished(i, rolups);
+				// }
+
+				// finishedRollups.a
+				// for (DataPointsRollup[] rolups : rttRollups.values()) {
+				// addFinished(i, rolups);
+				// }
+
+				// finishedRollups // otef otam
+
+				for (DataPointsRollup[] rolups : webResponseTimeRollups.values()) {
+					addFinished(i, rolups);
+				}
+				for (DataPointsRollup[] rolups : portResponseTimeRollups.values()) {
+					addFinished(i, rolups);
+				}
+				for (DataPointsRollup[] rolups : snmpDataRollups.values()) {
+					addFinished(i, rolups);
+				}
+
+				for (Map.Entry<String, DataPointsRollup[]> rolups : nicInDataRollups.entrySet()) {
+					DataPointsRollup[] dataPointsRollups = nicOutDataRollups.get(rolups.getKey());
+					addFinished(i, rolups.getValue(), dataPointsRollups);
+
+				}
 			}
-			// for (DataPointsRollup[] rolups : packetLossRollups.values()) {
+
+			// finishedRollups // otef hakol
+
+			// if (finishedRollups4m.size() != 0)
+			// rollups.put("rollups4m", JsonUtil.ToJson(finishedRollups4m));
 			//
-			// addFinished(i, rolups);
-			// }
+			// if (finishedRollups20m.size() != 0)
+			// rollups.put("rollups20m", JsonUtil.ToJson(finishedRollups20m));
+			//
+			// if (finishedRollups1h.size() != 0)
+			// rollups.put("rollups1h", JsonUtil.ToJson(finishedRollups1h));
+			//
+			// if (finishedRollups6h.size() != 0)
+			// rollups.put("rollups6h", JsonUtil.ToJson(finishedRollups6h));
+			//
+			// if (finishedRollups36h.size() != 0)
+			// rollups.put("rollups36h", JsonUtil.ToJson(finishedRollups36h));
+			//
+			// if (finishedRollups11d.size() != 0)
+			// rollups.put("rollups11d", JsonUtil.ToJson(finishedRollups11d));
 
-			// finishedRollups.a
-			// for (DataPointsRollup[] rolups : rttRollups.values()) {
-			// addFinished(i, rolups);
-			// }
+			if (finishedRollups.size() == 0)
+				return null;
 
-			// finishedRollups // otef otam
+			// rollups.put("packetLossRollups",
+			// JsonUtil.ToJson(packetLossRollups));
+			// rollups.put("rttRollups", JsonUtil.ToJson(rttRollups));
+			// rollups.put("portResponseTimeRollups",
+			// JsonUtil.ToJson(portResponseTimeRollups));
+			// rollups.put("webResponseTimeRollups",
+			// JsonUtil.ToJson(webResponseTimeRollups));
+			// rollups.put("snmpDataRollups", JsonUtil.ToJson(snmpDataRollups));
 
-			for (DataPointsRollup[] rolups : webResponseTimeRollups.values()) {
-				addFinished(i, rolups);
-			}
-			for (DataPointsRollup[] rolups : portResponseTimeRollups.values()) {
-				addFinished(i, rolups);
-			}
-			for (DataPointsRollup[] rolups : snmpDataRollups.values()) {
-				addFinished(i, rolups);
-			}
-		}
+			if (finishedRollups.contains(
+					"0b05919c-6cc0-42cc-a74b-de3b0dcd4a2a@e7ecd619-b7a5-49b7-a849-b2c9b1b64bf3@snmp_18e51b8d-807e-45c0-b5bc-d047da3e0876"))
+				Logit.LogDebug("BREAKPOINT");
 
-		// finishedRollups // otef hakol
-
-		// if (finishedRollups4m.size() != 0)
-		// rollups.put("rollups4m", JsonUtil.ToJson(finishedRollups4m));
-		//
-		// if (finishedRollups20m.size() != 0)
-		// rollups.put("rollups20m", JsonUtil.ToJson(finishedRollups20m));
-		//
-		// if (finishedRollups1h.size() != 0)
-		// rollups.put("rollups1h", JsonUtil.ToJson(finishedRollups1h));
-		//
-		// if (finishedRollups6h.size() != 0)
-		// rollups.put("rollups6h", JsonUtil.ToJson(finishedRollups6h));
-		//
-		// if (finishedRollups36h.size() != 0)
-		// rollups.put("rollups36h", JsonUtil.ToJson(finishedRollups36h));
-		//
-		// if (finishedRollups11d.size() != 0)
-		// rollups.put("rollups11d", JsonUtil.ToJson(finishedRollups11d));
-
-		if (finishedRollups.size() == 0)
-			return null;
-
-		// rollups.put("packetLossRollups", JsonUtil.ToJson(packetLossRollups));
-		// rollups.put("rttRollups", JsonUtil.ToJson(rttRollups));
-		// rollups.put("portResponseTimeRollups",
-		// JsonUtil.ToJson(portResponseTimeRollups));
-		// rollups.put("webResponseTimeRollups",
-		// JsonUtil.ToJson(webResponseTimeRollups));
-		// rollups.put("snmpDataRollups", JsonUtil.ToJson(snmpDataRollups));
-
-		if(finishedRollups.contains("0b05919c-6cc0-42cc-a74b-de3b0dcd4a2a@e7ecd619-b7a5-49b7-a849-b2c9b1b64bf3@snmp_18e51b8d-807e-45c0-b5bc-d047da3e0876"))
-			Logit.LogDebug("BREAKPOINT");
-		
-		return finishedRollups.toString();
-		}
-		catch(Exception e)
-		{
-			Logit.LogFatal("RollupsContainer - getAllFinsihedRollups()", "Error getting finished rollups from rollupsContainer! E: "+e.getMessage());
-			Logit.LogFatal("RollupsContainer - getAllFinsihedRollups()", "trace: "+e.getStackTrace().toString());
+			return finishedRollups.toString();
+		} catch (Exception e) {
+			Logit.LogFatal("RollupsContainer - getAllFinsihedRollups()",
+					"Error getting finished rollups from rollupsContainer! E: " + e.getMessage());
+			Logit.LogFatal("RollupsContainer - getAllFinsihedRollups()", "trace: " + e.getStackTrace().toString());
 			return null;
 		}
 	}
@@ -169,10 +176,11 @@ public class RollupsContainer implements IRollupsContainer {
 		rollups.put("portResponseTimeRollups", JsonUtil.ToJson(portResponseTimeRollups));
 		rollups.put("webResponseTimeRollups", JsonUtil.ToJson(webResponseTimeRollups));
 		rollups.put("snmpDataRollups", JsonUtil.ToJson(snmpDataRollups));
-		
-		if(rollups.toString().contains("0b05919c-6cc0-42cc-a74b-de3b0dcd4a2a@98437013-a93f-4b27-9963-a4800860b90f@snmp_924430db-e1d7-43ce-ba98-a9b7883a440a"))
+
+		if (rollups.toString().contains(
+				"0b05919c-6cc0-42cc-a74b-de3b0dcd4a2a@98437013-a93f-4b27-9963-a4800860b90f@snmp_924430db-e1d7-43ce-ba98-a9b7883a440a"))
 			Logit.LogDebug("BREAKPOINT");
-		
+
 		return rollups.toString();
 	}
 
@@ -185,7 +193,7 @@ public class RollupsContainer implements IRollupsContainer {
 			return;
 
 		addFinishedRollup(finishedDataRollup);
-		rolups[i]=null;
+		rolups[i] = null;
 
 		// addRollupTo(i, finishedDataRollup);
 		currentDataRollup.setLastFinishedRollup(null);
@@ -204,44 +212,48 @@ public class RollupsContainer implements IRollupsContainer {
 			return;
 
 		addFinishedRollup(finishedDataRollup1, finishedDataRollup2);
-		rolups1[i]=null;
-		rolups2[i]=null;
-		
-		
+		rolups1[i] = null;
+		rolups2[i] = null;
+
 		// addRollupTo(i, finishedDataRollup);
 		currentDataRollup1.setLastFinishedRollup(null);
 		currentDataRollup2.setLastFinishedRollup(null);
 
 	}
 
-//	@Override
-//	public boolean mergeRollups(JSONArray jsonArray) {
-//		Logit.LogInfo("Retrieving existing rollups from DB...");
-//		Object rollupsEncoded = ApiInterface.executeRequest(Enums.ApiAction.GetServerMemoryDump, "GET", null);
-//
-//		if (rollupsEncoded == null || ((String) rollupsEncoded).equals("0\n")) {
-//			Logit.LogWarn("Unable to retrieve existing rollups, trying again in about 30 secs...");
-//			return false;
-//		}
-//
-//		String rollups = ((String) rollupsEncoded).substring(1, ((String) rollupsEncoded).length() - 1);
-//
-//		ArrayList<DataPointsRollup[][]> rollupses = this.deserializeRollups(rollups);
-//		for (DataPointsRollup[][] rollupsResult : rollupses) {
-//			DataPointsRollup sampleRollup = rollupsResult[0][0];
-//			String rpID = sampleRollup.getRunnableProbeId();
-//
-//			BaseResult rpr = ResultsContainer.getInstance().getResult(rpID);
-//
-//						// if (rpr != null)
-//			// rpr.insertExistingRollups(rollupsResult);
-//			// else {
-//			// handle runnable probe without results object
-//			// }
-//		}
-//
-//		return false;
-//	}
+	// @Override
+	// public boolean mergeRollups(JSONArray jsonArray) {
+	// Logit.LogInfo("Retrieving existing rollups from DB...");
+	// Object rollupsEncoded =
+	// ApiInterface.executeRequest(Enums.ApiAction.GetServerMemoryDump, "GET",
+	// null);
+	//
+	// if (rollupsEncoded == null || ((String) rollupsEncoded).equals("0\n")) {
+	// Logit.LogWarn("Unable to retrieve existing rollups, trying again in about
+	// 30 secs...");
+	// return false;
+	// }
+	//
+	// String rollups = ((String) rollupsEncoded).substring(1, ((String)
+	// rollupsEncoded).length() - 1);
+	//
+	// ArrayList<DataPointsRollup[][]> rollupses =
+	// this.deserializeRollups(rollups);
+	// for (DataPointsRollup[][] rollupsResult : rollupses) {
+	// DataPointsRollup sampleRollup = rollupsResult[0][0];
+	// String rpID = sampleRollup.getRunnableProbeId();
+	//
+	// BaseResult rpr = ResultsContainer.getInstance().getResult(rpID);
+	//
+	// // if (rpr != null)
+	// // rpr.insertExistingRollups(rollupsResult);
+	// // else {
+	// // handle runnable probe without results object
+	// // }
+	// }
+	//
+	// return false;
+	// }
 
 	public ArrayList<DataPointsRollup[][]> deserializeRollups(String rollups) {
 		ArrayList<DataPointsRollup[][]> allRollupsDeserialized = new ArrayList<DataPointsRollup[][]>();
@@ -343,7 +355,7 @@ public class RollupsContainer implements IRollupsContainer {
 		// rp.getProbe().getUser().getUserId().toString());
 		rollup.put("RESULTS_TIME", dataPointsRollup1.getEndTime());
 		// rollup.put("RESULTS_NAME", resultkey.split("@")[1]);
-		JSONArray resultsStrings=new JSONArray();
+		JSONArray resultsStrings = new JSONArray();
 		resultsStrings.add(dataPointsRollup1.getResultString());
 		resultsStrings.add(dataPointsRollup2.getResultString());
 		rollup.put("RESULTS", resultsStrings.toString());
@@ -359,13 +371,14 @@ public class RollupsContainer implements IRollupsContainer {
 	private String rollupResultsDBFormat(DataPointsRollup dataPointsRollup) {
 		JSONObject rollup = new JSONObject();
 
-		if(dataPointsRollup.getRunnableProbeId().contains("0b05919c-6cc0-42cc-a74b-de3b0dcd4a2a@98437013-a93f-4b27-9963-a4800860b90f@snmp_924430db-e1d7-43ce-ba98-a9b7883a440a"))
+		if (dataPointsRollup.getRunnableProbeId().contains(
+				"0b05919c-6cc0-42cc-a74b-de3b0dcd4a2a@98437013-a93f-4b27-9963-a4800860b90f@snmp_924430db-e1d7-43ce-ba98-a9b7883a440a"))
 			Logit.LogDebug("BREAKPOINT");
 		// rollup.put("USER_ID",
 		// rp.getProbe().getUser().getUserId().toString());
 		rollup.put("RESULTS_TIME", dataPointsRollup.getEndTime());
 		// rollup.put("RESULTS_NAME", resultkey.split("@")[1]);
-		JSONArray resultsStrings=new JSONArray();
+		JSONArray resultsStrings = new JSONArray();
 		resultsStrings.add(dataPointsRollup.getResultString());
 		rollup.put("RESULTS", resultsStrings.toString());
 		rollup.put("RUNNABLE_PROBE_ID", dataPointsRollup.getRunnableProbeId());
@@ -397,10 +410,11 @@ public class RollupsContainer implements IRollupsContainer {
 
 	private void addSnmpResult(BaseResult result) {
 		SnmpResult snmpResults = (SnmpResult) result;
-		
-		if(result.getRunnableProbeId().contains("0b05919c-6cc0-42cc-a74b-de3b0dcd4a2a@98437013-a93f-4b27-9963-a4800860b90f@snmp_924430db-e1d7-43ce-ba98-a9b7883a440a"))
+
+		if (result.getRunnableProbeId()
+				.contains("788b1b9e-d753-4dfa-ac46-61c4374eeb84@inner_7be55137-c5d8-438e-bca7-325f56656071"))
 			Logit.LogDebug("BREAKPOINT");
-		
+
 		DataPointsRollup[] snmpRollups = snmpDataRollups.get(result.getRunnableProbeId());
 		if (snmpRollups == null)
 			snmpDataRollups.put(result.getRunnableProbeId(), new DataPointsRollup[6]);
@@ -411,7 +425,7 @@ public class RollupsContainer implements IRollupsContainer {
 				snmpDataRollup = new DataPointsRollup(result.getRunnableProbeId(), this.getRollupSize(i));
 				snmpDataRollups.get(result.getRunnableProbeId())[i] = snmpDataRollup;
 			}
-			if(snmpResults.getNumData()==null)
+			if (snmpResults.getNumData() == null)
 				break;
 			snmpDataRollup.add(snmpResults.getLastTimestamp(), snmpResults.getNumData());
 		}
@@ -419,15 +433,14 @@ public class RollupsContainer implements IRollupsContainer {
 
 	private void addNicResult(BaseResult result) {
 		NicResult nicResults = (NicResult) result;
-		
-		if(nicResults.getError()==SnmpError.NO_COMUNICATION)
+
+		if (nicResults.getError() == SnmpError.NO_COMUNICATION)
 			return;
-		
+
 		DataPointsRollup[] nicInRollups = nicInDataRollups.get(result.getRunnableProbeId());
 		DataPointsRollup[] nicOutRollups = nicOutDataRollups.get(result.getRunnableProbeId());
 
-		if (nicInRollups == null||nicOutRollups==null)
-		{
+		if (nicInRollups == null || nicOutRollups == null) {
 			nicInDataRollups.put(result.getRunnableProbeId(), new DataPointsRollup[6]);
 			nicOutDataRollups.put(result.getRunnableProbeId(), new DataPointsRollup[6]);
 		}
@@ -435,7 +448,7 @@ public class RollupsContainer implements IRollupsContainer {
 			DataPointsRollup nicInRollup = nicInDataRollups.get(result.getRunnableProbeId())[i];
 			DataPointsRollup nicOutRollup = nicOutDataRollups.get(result.getRunnableProbeId())[i];
 
-			if (nicInRollup == null || nicOutRollup==null ) {
+			if (nicInRollup == null || nicOutRollup == null) {
 				nicInRollup = new DataPointsRollup(result.getRunnableProbeId(), this.getRollupSize(i));
 				nicOutRollup = new DataPointsRollup(result.getRunnableProbeId(), this.getRollupSize(i));
 
@@ -448,7 +461,7 @@ public class RollupsContainer implements IRollupsContainer {
 
 		}
 	}
-	
+
 	private void addWeberResult(BaseResult result) {
 		WebResult weberResults = (WebResult) result;
 		DataPointsRollup[] responseTimeRollups = webResponseTimeRollups.get(result.getRunnableProbeId());
@@ -513,47 +526,50 @@ public class RollupsContainer implements IRollupsContainer {
 
 		JSONObject rollupsUnDecoded = DAL.getInstanece().get(Enums.ApiAction.GetServerMemoryDump);
 
-//		Object rollupsUnDecoded = ApiInterface.executeRequest(Enums.ApiAction.GetServerMemoryDump, "GET", null);
+		// Object rollupsUnDecoded =
+		// ApiInterface.executeRequest(Enums.ApiAction.GetServerMemoryDump,
+		// "GET", null);
 
 		if (rollupsUnDecoded == null) {
 			Logit.LogWarn("Unable to retrieve existing rollups!");
 			return false;
 		}
 
-		if(rollupsUnDecoded.get("last_rollups")==null)
-		{
+		if (rollupsUnDecoded.get("last_rollups") == null) {
 			return true;
 		}
-		
-		String rollups = (String)rollupsUnDecoded.get("last_rollups");
 
-		String rollupsDecoded=GeneralFunctions.Base64Decode(rollups);
-		
+		String rollups = (String) rollupsUnDecoded.get("last_rollups");
+
+		String rollupsDecoded = GeneralFunctions.Base64Decode(rollups);
+
 		JSONParser jsonParser = new JSONParser();
-		JSONObject rollupsJson=null;
+		JSONObject rollupsJson = null;
 		try {
 			rollupsJson = (JSONObject) jsonParser.parse(rollupsDecoded);
 		} catch (Exception e) {
-			Logit.LogError("RollupsContainer - mergeExistingRollupsFromMemDump", "Unable to parse rollups dump to JSON objects. E: "+e.getMessage());
+			Logit.LogError("RollupsContainer - mergeExistingRollupsFromMemDump",
+					"Unable to parse rollups dump to JSON objects. E: " + e.getMessage());
 			return false;
 		}
-		
-		JSONObject pakcketLossRollupsJson=null;
-		JSONObject rttRollupsJson=null;
-		JSONObject portResponseTimeRollupsJson=null;
-		JSONObject webResponseTimeRollupsJson=null;
-		JSONObject snmpDataRollupsJson=null;
 
-		try{
-		pakcketLossRollupsJson=(JSONObject)jsonParser.parse((String)rollupsJson.get("packetLossRollups"));
-		rttRollupsJson=(JSONObject)jsonParser.parse((String)rollupsJson.get("rttRollups"));
-		portResponseTimeRollupsJson=(JSONObject)jsonParser.parse((String)rollupsJson.get("portResponseTimeRollups"));
-		webResponseTimeRollupsJson=(JSONObject)jsonParser.parse((String)rollupsJson.get("webResponseTimeRollups"));
-		snmpDataRollupsJson=(JSONObject)jsonParser.parse((String)rollupsJson.get("snmpDataRollups"));
-		}
-		catch(Exception e)
-		{
-			Logit.LogError("RollupsContainer - mergeExistingRollupsFromMemDump", "Unable to parse rollups dump to JSON objects. E: "+e.getMessage());
+		JSONObject pakcketLossRollupsJson = null;
+		JSONObject rttRollupsJson = null;
+		JSONObject portResponseTimeRollupsJson = null;
+		JSONObject webResponseTimeRollupsJson = null;
+		JSONObject snmpDataRollupsJson = null;
+
+		try {
+			pakcketLossRollupsJson = (JSONObject) jsonParser.parse((String) rollupsJson.get("packetLossRollups"));
+			rttRollupsJson = (JSONObject) jsonParser.parse((String) rollupsJson.get("rttRollups"));
+			portResponseTimeRollupsJson = (JSONObject) jsonParser
+					.parse((String) rollupsJson.get("portResponseTimeRollups"));
+			webResponseTimeRollupsJson = (JSONObject) jsonParser
+					.parse((String) rollupsJson.get("webResponseTimeRollups"));
+			snmpDataRollupsJson = (JSONObject) jsonParser.parse((String) rollupsJson.get("snmpDataRollups"));
+		} catch (Exception e) {
+			Logit.LogError("RollupsContainer - mergeExistingRollupsFromMemDump",
+					"Unable to parse rollups dump to JSON objects. E: " + e.getMessage());
 			return false;
 		}
 		HashMap<String, DataPointsRollup[]> packetLossRollupsFromDump;
@@ -562,18 +578,24 @@ public class RollupsContainer implements IRollupsContainer {
 		HashMap<String, DataPointsRollup[]> webResponseTimeRollupsFromDump;
 		HashMap<String, DataPointsRollup[]> snmpDataRollupsFromDump;
 		try {
-			packetLossRollupsFromDump=JsonUtil.ToObject(pakcketLossRollupsJson,(new HashMap<String, DataPointsRollup[]>()).getClass());
-			rttRollupsFromDump=JsonUtil.ToObject(rttRollupsJson,(new HashMap<String, DataPointsRollup[]>()).getClass());
-			portResponseTimeRollupsFromDump=JsonUtil.ToObject(portResponseTimeRollupsJson,(new HashMap<String, DataPointsRollup[]>()).getClass());
-			webResponseTimeRollupsFromDump=JsonUtil.ToObject(webResponseTimeRollupsJson,(new HashMap<String, DataPointsRollup[]>()).getClass());
-			snmpDataRollupsFromDump=JsonUtil.ToObject(snmpDataRollupsJson,(new HashMap<String, DataPointsRollup[]>()).getClass());
+			packetLossRollupsFromDump = JsonUtil.ToObject(pakcketLossRollupsJson,
+					(new HashMap<String, DataPointsRollup[]>()).getClass());
+			rttRollupsFromDump = JsonUtil.ToObject(rttRollupsJson,
+					(new HashMap<String, DataPointsRollup[]>()).getClass());
+			portResponseTimeRollupsFromDump = JsonUtil.ToObject(portResponseTimeRollupsJson,
+					(new HashMap<String, DataPointsRollup[]>()).getClass());
+			webResponseTimeRollupsFromDump = JsonUtil.ToObject(webResponseTimeRollupsJson,
+					(new HashMap<String, DataPointsRollup[]>()).getClass());
+			snmpDataRollupsFromDump = JsonUtil.ToObject(snmpDataRollupsJson,
+					(new HashMap<String, DataPointsRollup[]>()).getClass());
 
 		} catch (Exception e) {
-			Logit.LogError("RollupsContainer - mergeExistingRollupsFromMemDump", "Unable to parse rollups dump to JSON objects. E: "+e.getMessage());
+			Logit.LogError("RollupsContainer - mergeExistingRollupsFromMemDump",
+					"Unable to parse rollups dump to JSON objects. E: " + e.getMessage());
 			return false;
 
 		}
-		
+
 		this.mergeRollups(packetLossRollupsFromDump, packetLossRollups);
 		this.mergeRollups(rttRollupsFromDump, rttRollups);
 		this.mergeRollups(portResponseTimeRollupsFromDump, portResponseTimeRollups);
@@ -585,25 +607,22 @@ public class RollupsContainer implements IRollupsContainer {
 
 	private void mergeRollups(HashMap<String, DataPointsRollup[]> rollupsFromDump,
 			HashMap<String, DataPointsRollup[]> currentRollups) {
-		for(Map.Entry<String, DataPointsRollup[]> runnableProbeIdRollups:rollupsFromDump.entrySet())
-		{
-			
-			if(runnableProbeIdRollups.getKey().contains("0b05919c-6cc0-42cc-a74b-de3b0dcd4a2a@98437013-a93f-4b27-9963-a4800860b90f@snmp_924430db-e1d7-43ce-ba98-a9b7883a440a"))
-			{
+		for (Map.Entry<String, DataPointsRollup[]> runnableProbeIdRollups : rollupsFromDump.entrySet()) {
+
+			if (runnableProbeIdRollups.getKey()
+					.contains("788b1b9e-d753-4dfa-ac46-61c4374eeb84@inner_7be55137-c5d8-438e-bca7-325f56656071")) {
 				Logit.LogDebug("BREAKPOINT");
 			}
-			
-			DataPointsRollup[] dumpRollups=runnableProbeIdRollups.getValue();
-			DataPointsRollup[] existingRollups=currentRollups.get(runnableProbeIdRollups.getKey());
-			if(dumpRollups==null||existingRollups==null)
+
+			DataPointsRollup[] dumpRollups = runnableProbeIdRollups.getValue();
+			DataPointsRollup[] existingRollups = currentRollups.get(runnableProbeIdRollups.getKey());
+			if (dumpRollups == null || existingRollups == null)
 				continue;
-			else
-			{
-				for(int i=0;i<dumpRollups.length;i++)
-				{
-					if(dumpRollups[i]!=null&&existingRollups[i]==null)
-						existingRollups[i]=dumpRollups[i];
-					else if(dumpRollups[i]==null&&existingRollups[i]!=null)
+			else {
+				for (int i = 0; i < dumpRollups.length; i++) {
+					if (dumpRollups[i] != null && existingRollups[i] == null)
+						existingRollups[i] = dumpRollups[i];
+					else if (dumpRollups[i] == null && existingRollups[i] != null)
 						continue;
 					else
 						existingRollups[i].mergeRollup(dumpRollups[i]);

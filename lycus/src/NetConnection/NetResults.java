@@ -205,7 +205,7 @@ public class NetResults implements INetResults {
 		}
 
 		if (rawResults == null || rawResults.size() == 0) {
-			NicResult nicResult = new NicResult(getRunnableProbeId(probe, host),timestamp);
+			NicResult nicResult = new NicResult(getRunnableProbeId(probe, host));
 			nicResult.setError(SnmpError.NO_COMUNICATION);
 			return nicResult;
 		}

@@ -101,11 +101,11 @@ public class RunnableProbe implements Runnable {
 
 		String rpStr = this.getHost().getHostId().toString() + "@" + getProbe().getProbe_id();
 		if (rpStr.contains(
-				"74cda666-3d85-4e56-a804-9d53c4e16259@discovery_777938b0-e4b0-4ec6-b0f2-ea880a0c09ef@ZXRoMg=="))
+				"788b1b9e-d753-4dfa-ac46-61c4374eeb84@discovery_777938b0-e4b0-4ec6-b0f2-ea880a0c09ef@bG8="))
 			Logit.LogDebug("BREAKPOINT - RunnableProbe");
 
 		String rpStr2 = this.getHost().getHostId().toString() + "@" + getProbe().getProbe_id();
-		if (rpStr.contains("4ebf9465-4638-4879-969d-33dad30f71f1@discovery_777938b0-e4b0-4ec6-b0f2-ea880a0c09ef"))
+		if (rpStr.contains("ff00ff2c-0f40-4616-9ac4-a71447b22431@http_83b9b614-b210-45ce-942b-cf45114afe01"))
 			Logit.LogDebug("BREAKPOINT - RunnableProbe");
 
 		try {
@@ -142,7 +142,8 @@ public class RunnableProbe implements Runnable {
 		try {
 			RollupsContainer.getInstance().addResult(result);
 		} catch (Exception e) {
-			Logit.LogError("RunnableProbe - run()", "Error processing runnable probe results to results container!");
+			Logit.LogError("RunnableProbe - run()", "Error processing runnable probe results to rollups container!");
+			e.printStackTrace();
 			return;
 			// if (this.getId().split("@")[2].equals("null"))
 			// Logit.LogDebug("BREAKPOINT");

@@ -14,6 +14,7 @@ import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 
 import DAL.ApiInterface;
+import DAL.DAL;
 import GlobalConstants.Enums;
 import GlobalConstants.ProbeTypes;
 import Interfaces.IResultsContainer;
@@ -168,7 +169,7 @@ public class ResultsContainer implements IResultsContainer {
 
 					if(runnableProbe==null)
 					{
-						Logit.LogError("ResultsContainer - pullCurrentLiveEvents()", "Runnable Probe: "+GeneralFunctions.getRunnableProbeId(templateId, hostId, probeId)+" for existing live event doesnt exists so doesnt added!");
+						Logit.LogWarn( "Runnable Probe: "+GeneralFunctions.getRunnableProbeId(templateId, hostId, probeId)+" for existing live event doesnt exists so doesnt added!");
 						continue;
 					}
 					

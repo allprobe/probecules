@@ -654,15 +654,14 @@ public class UsersManager {
 		Object initServer;
 
 		while (true) {
-			initServer = ApiInterface.executeRequest(Enums.ApiAction.InitServer, "GET", null);
+			initServer = DAL.getInstanece().get(Enums.ApiAction.InitServer);
 			if (initServer == null) {
 				Logit.LogError("UsersManager - getServerInfoFromApi",
 						"Error starting server, no API connectivity! trying again in 1 minutes...");
 				try {
 					Thread.sleep(60000);
 				} catch (InterruptedException e) {
-					Logit.LogError("UsersManager - getServerInfoFromApi",
-							"Main Thread Interrupted! E: " + e.getMessage());
+					Logit.LogError("UsersManager - getServerInfoFromApi","Main Thread Interrupted! E: " + e.getMessage());
 				}
 			} else {
 				JSONObject jsonInitServer = (JSONObject) (initServer);
