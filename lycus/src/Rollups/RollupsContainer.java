@@ -1,5 +1,6 @@
 package Rollups;
 
+import java.lang.reflect.Type;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Iterator;
@@ -10,11 +11,13 @@ import org.json.simple.JSONObject;
 import org.json.simple.parser.JSONParser;
 import org.json.simple.parser.ParseException;
 
+import com.google.common.reflect.TypeToken;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.google.gson.JsonArray;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonParser;
+import com.google.gson.internal.LinkedTreeMap;
 
 import DAL.ApiInterface;
 import DAL.DAL;
@@ -581,16 +584,14 @@ public class RollupsContainer implements IRollupsContainer {
 		HashMap<String, DataPointsRollup[]> webResponseTimeRollupsFromDump;
 		HashMap<String, DataPointsRollup[]> snmpDataRollupsFromDump;
 		try {
-			packetLossRollupsFromDump = JsonUtil.ToObject(pakcketLossRollupsJson,
-					(new HashMap<String, DataPointsRollup[]>()).getClass());
-			rttRollupsFromDump = JsonUtil.ToObject(rttRollupsJson,
-					(new HashMap<String, DataPointsRollup[]>()).getClass());
-			portResponseTimeRollupsFromDump = JsonUtil.ToObject(portResponseTimeRollupsJson,
-					(new HashMap<String, DataPointsRollup[]>()).getClass());
-			webResponseTimeRollupsFromDump = JsonUtil.ToObject(webResponseTimeRollupsJson,
-					(new HashMap<String, DataPointsRollup[]>()).getClass());
-			snmpDataRollupsFromDump = JsonUtil.ToObject(snmpDataRollupsJson,
-					(new HashMap<String, DataPointsRollup[]>()).getClass());
+			Type rollupsMapType = new TypeToken<HashMap<String, DataPointsRollup[]>>() {}.getType();
+			
+			packetLossRollupsFromDump =JsonUtil.ToObject(pakcketLossRollupsJson, rollupsMapType);
+			rttRollupsFromDump =JsonUtil.ToObject(rttRollupsJson, rollupsMapType);
+			portResponseTimeRollupsFromDump =JsonUtil.ToObject(portResponseTimeRollupsJson, rollupsMapType);
+			webResponseTimeRollupsFromDump =JsonUtil.ToObject(webResponseTimeRollupsJson, rollupsMapType);
+			snmpDataRollupsFromDump =JsonUtil.ToObject(snmpDataRollupsJson, rollupsMapType);
+
 
 		} catch (Exception e) {
 			Logit.LogError("RollupsContainer - mergeExistingRollupsFromMemDump",
@@ -615,10 +616,16 @@ public class RollupsContainer implements IRollupsContainer {
 			if (runnableProbeIdRollups.getKey()
 					.contains("788b1b9e-d753-4dfa-ac46-61c4374eeb84@inner_7be55137-c5d8-438e-bca7-325f56656071")) {
 				Logit.LogDebug("BREAKPOINT");
+			}DataPointsRollup dumpRollups[]=new DataPointsRollup[6];DataPointsRollup[] existingRollups=new DataPointsRollup[6];
+			try{
+				 dumpRollups = runnableProbeIdRollups.getValue();
+				existingRollups = currentRollups.get(runnableProbeIdRollups.getKey());
 			}
-
-			DataPointsRollup[] dumpRollups = runnableProbeIdRollups.getValue();
-			DataPointsRollup[] existingRollups = currentRollups.get(runnableProbeIdRollups.getKey());
+			catch(Exception e)
+			{
+				Logit.LogDebug("BREAKPOINT");
+				continue;
+			}
 			if (dumpRollups == null || existingRollups == null)
 				continue;
 			else {
