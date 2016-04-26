@@ -24,6 +24,7 @@ public class EventTask extends BaseTask {
 //					String sendString = "{\"events\" : \"" + eventsEncoded + "\"}";
 					JSONObject eventsJson=new JSONObject();
 					eventsJson.put("events", eventsEncoded);
+					
 					DAL.DAL.getInstanece().put(Enums.ApiAction.PutEvents, eventsJson);
 //					ApiInterface.executeRequest(Enums.ApiAction.PutEvents, "PUT", sendString);
 				}

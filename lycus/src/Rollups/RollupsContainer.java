@@ -178,7 +178,7 @@ public class RollupsContainer implements IRollupsContainer {
 		rollups.put("snmpDataRollups", JsonUtil.ToJson(snmpDataRollups));
 
 		if (rollups.toString().contains(
-				"0b05919c-6cc0-42cc-a74b-de3b0dcd4a2a@98437013-a93f-4b27-9963-a4800860b90f@snmp_924430db-e1d7-43ce-ba98-a9b7883a440a"))
+				"788b1b9e-d753-4dfa-ac46-61c4374eeb84@inner_7be55137-c5d8-438e-bca7-325f56656071"))
 			Logit.LogDebug("BREAKPOINT");
 
 		return rollups.toString();
@@ -456,6 +456,9 @@ public class RollupsContainer implements IRollupsContainer {
 				nicOutDataRollups.get(result.getRunnableProbeId())[i] = nicOutRollup;
 
 			}
+			Logit.LogDebug("BREAKPOINT");
+			if(nicResults.getInBW()==null||nicResults.getOutBW()==null)
+				continue;
 			nicInRollup.add(nicResults.getLastTimestamp(), nicResults.getInBW());
 			nicOutRollup.add(nicResults.getLastTimestamp(), nicResults.getOutBW());
 

@@ -10,6 +10,8 @@ import java.net.HttpURLConnection;
 import java.net.MalformedURLException;
 import java.net.ProtocolException;
 import java.net.URL;
+import java.util.concurrent.ConcurrentLinkedQueue;
+
 import org.json.simple.JSONObject;
 import org.json.simple.parser.JSONParser;
 import org.json.simple.parser.ParseException;
@@ -25,6 +27,7 @@ public class DAL implements IDAL {
 
 	private static DAL dal = null;
 	private static String apiUrl;
+	private static ConcurrentLinkedQueue<ApiRequest> failedRequests;
 
 	protected DAL() {
 		apiUrl = "";
@@ -33,6 +36,7 @@ public class DAL implements IDAL {
 		else
 			apiUrl += Constants.http_prefix;
 		apiUrl += GlobalConfig.getApiUrl();
+		failedRequests = new ConcurrentLinkedQueue<ApiRequest>();
 	}
 
 	public static DAL getInstanece() {
@@ -41,8 +45,21 @@ public class DAL implements IDAL {
 		return dal;
 	}
 
+	public JSONObject executeRequest(ApiRequest request)
+	{
+		executeFailedRequests();
+		switch (request.getType()) {
+		case Constants.get:
+			return get(request.getAction());
+		case Constants.put:
+			return put(request.getAction(), request.getRequestBody());
+		}
+		return null;
+	}
+	
 	@Override
 	public JSONObject get(ApiAction action) {
+
 		String fullUrl = getApiUrl();
 		fullUrl += "/" + action.name() + "/";
 		fullUrl += GlobalConfig.getDataCenterID() + "-" + GlobalConfig.getThisHostToken() + "/"
@@ -62,6 +79,7 @@ public class DAL implements IDAL {
 		} catch (IOException e) {
 			Logit.LogFatal("DAL - get",
 					"Unable to open connection with URL: " + fullUrl + ", failed to communicate with API!");
+			addGetFailedRequest(action);
 			return null;
 		}
 
@@ -70,6 +88,8 @@ public class DAL implements IDAL {
 		} catch (ProtocolException e) {
 			Logit.LogFatal("DAL - get",
 					"Unable to set GET request method for URL: " + fullUrl + ", failed to communicate with API!");
+			addGetFailedRequest(action);
+
 			return null;
 		}
 
@@ -86,6 +106,8 @@ public class DAL implements IDAL {
 			response = executeGetRequest(conn);
 		} catch (Exception e) {
 			Logit.LogFatal("DAL - get", "Failed to request URL: " + fullUrl + ", E: " + e.getMessage());
+			addGetFailedRequest(action);
+
 			return null;
 		} finally {
 			conn.disconnect();
@@ -97,14 +119,19 @@ public class DAL implements IDAL {
 		} catch (IOException ioe) {
 			Logit.LogFatal("DAL - get", "Unable to retrieve response code from response for url: " + fullUrl
 					+ ", response is: " + response + ", E: " + ioe.getMessage());
+			addGetFailedRequest(action);
+
 			return null;
 
 		} catch (ParseException pe) {
 			Logit.LogFatal("DAL - get", "Unable to parse json string from URL: " + fullUrl + ", JSON string is: "
 					+ response + ", E: " + pe.getMessage());
+			addGetFailedRequest(action);
+
 			return null;
 
 		}
+		addGetFailedRequest(action);
 		return null;
 	}
 
@@ -121,6 +148,7 @@ public class DAL implements IDAL {
 		} catch (MalformedURLException e) {
 
 			Logit.LogError("DAL - put", "Unable to process URL: " + fullUrl + ", failed to communicate with API!");
+			addPutFailedRequest(action, reqBody);
 			return null;
 		}
 		HttpURLConnection conn;
@@ -129,6 +157,8 @@ public class DAL implements IDAL {
 		} catch (IOException e) {
 			Logit.LogError("DAL - put",
 					"Unable to open connection with URL: " + fullUrl + ", failed to communicate with API!");
+			addPutFailedRequest(action, reqBody);
+
 			return null;
 		}
 
@@ -137,6 +167,8 @@ public class DAL implements IDAL {
 		} catch (ProtocolException e) {
 			Logit.LogError("DAL - put",
 					"Unable to set PUT request method for URL: " + fullUrl + ", failed to communicate with API!");
+			addPutFailedRequest(action, reqBody);
+
 			return null;
 		}
 		String authCredentials = GeneralFunctions
@@ -152,6 +184,8 @@ public class DAL implements IDAL {
 			response = executePutRequest(conn, reqBody.toJSONString());
 		} catch (Exception e) {
 			Logit.LogFatal("DAL - put", "Failed to request URL: " + fullUrl + ", E: " + e.getMessage());
+			addPutFailedRequest(action, reqBody);
+
 			return null;
 
 		} finally {
@@ -163,18 +197,50 @@ public class DAL implements IDAL {
 		} catch (IOException ioe) {
 			Logit.LogFatal("DAL - put", "Unable to retrieve response code from response for url: " + fullUrl
 					+ ", response is: " + response + ", E: " + ioe.getMessage());
+			addPutFailedRequest(action, reqBody);
+
 			return null;
 
 		} catch (ParseException pe) {
 			Logit.LogFatal("DAL - put", "Unable to parse json string from URL: " + fullUrl + ", JSON string is: "
 					+ response + ", E: " + pe.getMessage());
+			addPutFailedRequest(action, reqBody);
+
 			return null;
 		}
+		addPutFailedRequest(action, reqBody);
+
 		return null;
 	}
 
 	private String getApiUrl() {
 		return apiUrl;
+	}
+
+	private void executeFailedRequests() {
+		while (true) {
+			if (failedRequests.isEmpty())
+				return;
+			ApiRequest failedRequest = failedRequests.peek();
+			switch (failedRequest.getType()) {
+			case Constants.get:
+				if (get(failedRequest.getAction()) != null)
+					failedRequests.remove();
+				break;
+			case Constants.put:
+				if (put(failedRequest.getAction(), failedRequest.getRequestBody()) != null)
+					failedRequests.remove();
+			}
+		}
+
+	}
+
+	private void addPutFailedRequest(ApiAction action, JSONObject requestBody) {
+		failedRequests.add(new ApiRequest(action, requestBody));
+	}
+
+	private void addGetFailedRequest(ApiAction action) {
+		failedRequests.add(new ApiRequest(action));
 	}
 
 	private String executeGetRequest(HttpURLConnection conn) throws Exception {
