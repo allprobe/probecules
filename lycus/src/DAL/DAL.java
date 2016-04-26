@@ -236,11 +236,11 @@ public class DAL implements IDAL {
 	}
 
 	private void addPutFailedRequest(ApiAction action, JSONObject requestBody) {
-		failedRequests.add(new ApiRequest(action, requestBody));
+//		failedRequests.add(new ApiRequest(action, requestBody));
 	}
 
 	private void addGetFailedRequest(ApiAction action) {
-		failedRequests.add(new ApiRequest(action));
+//		failedRequests.add(new ApiRequest(action));
 	}
 
 	private String executeGetRequest(HttpURLConnection conn) throws Exception {
