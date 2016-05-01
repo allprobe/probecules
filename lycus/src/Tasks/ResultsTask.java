@@ -46,8 +46,8 @@ public class ResultsTask extends BaseTask {
 				encodedRollups = GeneralFunctions.Base64Encode(rollups);
 			} catch (Exception e) {
 				Logit.LogFatal("ResultsTask - run()",
-						"Error encoding results and rollups to BASE64! E: " + e.getMessage());
-				Logit.LogFatal("ResultsTask - run()", "trace: " + e.getStackTrace().toString());
+						"Error encoding results and rollups to BASE64! E: " + e.getMessage(),e);
+//				Logit.LogFatal("ResultsTask - run()", "trace: " + e.getStackTrace().toString());
 			}
 			encodedResults = GeneralFunctions.Base64Encode(results);
 
@@ -57,8 +57,8 @@ public class ResultsTask extends BaseTask {
 				jsonToSend.put("rollups_results", encodedRollups);
 			} catch (Exception e) {
 				Logit.LogFatal("ResultsTask - run()",
-						"Error adding encoded results and rollups to JSONObject! E: " + e.getMessage());
-				Logit.LogFatal("ResultsTask - run()", "trace: " + e.getStackTrace().toString());
+						"Error adding encoded results and rollups to JSONObject! E: " + e.getMessage(),e);
+//				Logit.LogFatal("ResultsTask - run()", "trace: " + e.getStackTrace().toString());
 			}
 			// String sendString = "{\"results\" : \"" + encodedResults + "\"}";
 			String sendString = jsonToSend.toString();

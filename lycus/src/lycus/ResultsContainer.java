@@ -337,8 +337,8 @@ public class ResultsContainer implements IResultsContainer {
 		}
 		catch(Exception e)
 		{
-			Logit.LogFatal("ResultsContainer - getResults()", "Error getting results from resultsContainer! E: "+e.getMessage());
-			Logit.LogFatal("ResultsContainer - getResults()", "trace: "+e.getStackTrace().toString());
+			Logit.LogFatal("ResultsContainer - getResults()", "Error getting results from resultsContainer! E: "+e.getMessage(),e);
+//			Logit.LogFatal("ResultsContainer - getResults()", "trace: "+e.getStackTrace().toString(),e);
 			return null;
 		}
 		// try {

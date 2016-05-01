@@ -123,7 +123,7 @@ public class UsersManager {
 		HashMap<String, UUID> probeByUser = getProbeByUser(runnableProbesIds);
 
 		if (runnableProbesIds == null) {
-			Logit.LogFatal("UsersManager", "no probes found for this server!");
+			Logit.LogFatal("UsersManager", "no probes found for this server!",null);
 			return false;
 		}
 

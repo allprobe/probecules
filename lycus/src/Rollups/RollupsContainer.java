@@ -164,8 +164,8 @@ public class RollupsContainer implements IRollupsContainer {
 			return finishedRollups.toString();
 		} catch (Exception e) {
 			Logit.LogFatal("RollupsContainer - getAllFinsihedRollups()",
-					"Error getting finished rollups from rollupsContainer! E: " + e.getMessage());
-			Logit.LogFatal("RollupsContainer - getAllFinsihedRollups()", "trace: " + e.getStackTrace().toString());
+					"Error getting finished rollups from rollupsContainer! E: " + e.getMessage(),e);
+//			Logit.LogFatal("RollupsContainer - getAllFinsihedRollups()", "trace: " + e.getStackTrace().toString());
 			return null;
 		}
 	}

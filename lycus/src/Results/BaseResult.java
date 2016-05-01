@@ -8,6 +8,7 @@ import Utils.Logit;
 import lycus.Trigger;
 import lycus.Event;
 import lycus.ResultsContainer;
+import lycus.RunnableProbe;
 import lycus.RunnableProbeContainer;
 
 public class BaseResult implements IResult {
@@ -44,7 +45,13 @@ public class BaseResult implements IResult {
 
 	public int getNumberOfRollupTables()
 	{
-		long interval=RunnableProbeContainer.getInstanece().get(runnableProbeId).getProbe().getInterval();
+		RunnableProbe runnableProbe=RunnableProbeContainer.getInstanece().get(runnableProbeId);
+		if(runnableProbe==null)
+		{
+			Logit.LogError("BaseResult - getNumberOfRollupTables()", "Unable to determine number of rollups tables - "+runnableProbeId);
+			return 0;
+		}
+		long interval=runnableProbe.getProbe().getInterval();
 		if(interval<240)
 			return 6;
 		if(interval>=240&&interval<1200)
