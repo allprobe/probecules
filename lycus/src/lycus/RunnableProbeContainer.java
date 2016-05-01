@@ -156,6 +156,15 @@ public class RunnableProbeContainer implements IRunnableProbeContainer {
 		return true;
 	}
 
+	@Override
+	public boolean removeByRunnableProbeId(String runnabelProbeId)
+	{
+		RunnableProbe runnableProbe = runnableProbes.get(runnabelProbeId);
+		if (runnableProbe != null)
+			remove(runnableProbe);
+		return true;
+	}
+	
 	// No more RunnableProbes in host
 	public boolean isHostEmpty(String hostId)
 	{

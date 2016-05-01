@@ -2,7 +2,6 @@ package Utils;
 import org.apache.log4j.Logger;
 
 import GlobalConstants.GlobalConfig;
-import sun.org.mozilla.javascript.tools.shell.Global;
 
 import org.apache.log4j.LogManager;
 

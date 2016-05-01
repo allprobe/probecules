@@ -16,4 +16,5 @@ public interface IRunnableProbeContainer {
 	boolean remove(RunnableProbe runnableProbe);
 	boolean removeByTemplateId(String teplateId);
 	boolean removeByProbeId(String probeId);
+	boolean removeByRunnableProbeId(String probeId);
 }
