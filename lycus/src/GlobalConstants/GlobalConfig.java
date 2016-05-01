@@ -8,6 +8,10 @@ import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStream;
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
+import java.util.Calendar;
+import java.util.Date;
 import java.util.Properties;
 
 /**
@@ -247,7 +251,9 @@ public class GlobalConfig {
         	System.err.println("Global Initialization Failed!");
         	return false;
         }
-        System.out.println("Global Initialization Succeed!");
+        DateFormat dateFormat = new SimpleDateFormat("yyyy/MM/dd HH:mm:ss");
+        Calendar cal = Calendar.getInstance();
+        System.out.println("Global Initialization Succeed! - "+dateFormat.format(cal.getTime()));
         return true;
     }
 
