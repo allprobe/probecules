@@ -1,5 +1,9 @@
 package Utils;
 import org.apache.log4j.Logger;
+
+import GlobalConstants.GlobalConfig;
+import sun.org.mozilla.javascript.tools.shell.Global;
+
 import org.apache.log4j.LogManager;
 
 
@@ -34,7 +38,7 @@ public class Logit {
 	
 	// extraInfo - Class name + Function name
 	public static void LogError(String extraInfo, String message) {
-		log.error(message);
+		log.error(GlobalConstants.GlobalConfig.getDataCenterID()+"-"+GlobalConfig.getThisHostToken()+" "+message);
 	}
 	
 	// extraInfo - Class name + Function name
