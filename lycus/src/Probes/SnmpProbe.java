@@ -85,7 +85,7 @@ public class SnmpProbe extends BaseProbe {
 			Logit.LogCheck("OID for " + getName() +  " has changed to " + updateValue.key.snmp_oid);
 		}
 			
-		if (!GeneralFunctions.isNullOrEmpty(updateValue.key.value_unit) && !updateValue.key.value_unit.equals(unit.toString()))
+		if ((unit == null &&  updateValue.key.value_unit != null) || !GeneralFunctions.isNullOrEmpty(updateValue.key.value_unit) && !updateValue.key.value_unit.equals(unit.toString()))
 		{
 			unit = UsersManager.getSnmpUnit(updateValue.key.value_unit);
 			Logit.LogCheck("Snmp unit for " + getName() +  " has changed to " + updateValue.key.value_unit);
