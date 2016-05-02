@@ -71,7 +71,7 @@ public class ResultsTask extends BaseTask {
 			DAL.DAL.getInstanece().put(Enums.ApiAction.InsertDatapointsBatches,jsonToSend);
 
 			ResultsContainer.getInstance().clear();
-
+			RollupsContainer.getInstance().clear();
 		} catch (Throwable thrown) {
 			Logit.LogError("ResultsTask - run()", "Sending collected results to API failed!");
 			StringWriter sw = new StringWriter();

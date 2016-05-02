@@ -81,6 +81,7 @@ public class ResultsContainer implements IResultsContainer {
 		eventsClear();
 		// TODO: Leave 10 last results from each kind on the list
 		results.clear();
+		
 		return true;
 	}
 

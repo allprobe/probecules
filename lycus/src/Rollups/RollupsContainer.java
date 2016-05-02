@@ -641,4 +641,9 @@ public class RollupsContainer implements IRollupsContainer {
 		}
 	}
 
+	public void clear() {
+		// TODO Auto-generated method stub
+		finishedRollups.clear();
+	}
+
 }
