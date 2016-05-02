@@ -142,8 +142,7 @@ public class RunnableProbe implements Runnable {
 		try {
 			RollupsContainer.getInstance().addResult(result);
 		} catch (Exception e) {
-			Logit.LogError("RunnableProbe - run()", "Error processing runnable probe results to rollups container!"+ this.getId());
-			e.printStackTrace();
+				Logit.LogError("RunnableProbe - run()", "Error processing runnable probe results to rollups container!"+ this.getId(),e);
 			return;
 			// if (this.getId().split("@")[2].equals("null"))
 			// Logit.LogDebug("BREAKPOINT");

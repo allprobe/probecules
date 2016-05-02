@@ -45,10 +45,27 @@ public class Logit {
 	}
 
 	// extraInfo - Class name + Function name
+	public static void LogError(String extraInfo, String message, Exception e) {
+		if (e == null) {
+			log.error(GlobalConstants.GlobalConfig.getDataCenterID() + "-" + GlobalConfig.getThisHostToken() + " "
+					+ message);
+			return;
+		}
+		StringWriter sw = new StringWriter();
+		PrintWriter pw = new PrintWriter(sw);
+		e.printStackTrace(pw);
+
+		String trace = sw.toString();
+
+		log.error(GlobalConstants.GlobalConfig.getDataCenterID() + "-" + GlobalConfig.getThisHostToken() + " " + message
+				+ " - TRACE: " + trace);
+
+	}
+
+	// extraInfo - Class name + Function name
 	public static void LogFatal(String extraInfo, String message, Exception e) {
-		
-		if(e==null)
-		{
+
+		if (e == null) {
 			log.fatal(message);
 			return;
 		}
@@ -57,8 +74,8 @@ public class Logit {
 		e.printStackTrace(pw);
 
 		String trace = sw.toString();
-		
-		log.fatal(message+" - TRACE: "+trace);
+
+		log.fatal(message + " - TRACE: " + trace);
 	}
 
 	public static void LogWarn(String message) {
