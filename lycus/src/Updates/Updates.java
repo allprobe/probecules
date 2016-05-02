@@ -13,6 +13,7 @@ import Interfaces.IDAL;
 import Model.ThreadsUpdates;
 import Model.UpdateModel;
 import Utils.JsonUtil;
+import Utils.Logit;
 
 /**
  * @author orenharari
@@ -49,11 +50,11 @@ public class Updates implements Runnable {
 				try {
 					baseUpdate.Run();
 				} catch (Exception ex) {
-					System.out.println(ex.getMessage());
+					Logit.LogError("Updates - runUpdates0()", "Failed to retrieve updates ", ex);
 				}
 			}
 		} catch (Exception ex) {
-			System.out.println(ex.getMessage());
+			Logit.LogError("Updates - runUpdates1()", "Failed to retrieve updates ", ex);
 		}
 
 		return true;

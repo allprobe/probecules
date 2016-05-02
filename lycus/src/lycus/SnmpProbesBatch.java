@@ -217,8 +217,8 @@ public class SnmpProbesBatch implements Runnable {
 					}
 				}
 			}
-		} catch (Throwable th) {
-			Logit.LogError("SnmpProbesBatch - run()", "Error running snmp probes batch:" + this.getBatchId());
+		} catch (Exception ex) {
+			Logit.LogError("SnmpProbesBatch - run()", "Error running snmp probes batch:" + this.getBatchId(),ex);
 		}
 	}
 
