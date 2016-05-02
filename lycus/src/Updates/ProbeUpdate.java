@@ -167,11 +167,17 @@ public class ProbeUpdate extends BaseUpdate {
 	public Boolean Delete() {
 		super.Delete();
 		if (!getUpdate().probe_id.contains("@"))
+		{
 			RunnableProbeContainer.getInstanece().removeByProbeId(getUpdate().probe_id);
+			Logit.LogCheck("All runnable probes with ProbeID: " + getUpdate().probe_id + " was removed");
+		}
 		else /// probeId == runnableProbeId
+		{
 			RunnableProbeContainer.getInstanece().removeByRunnableProbeId(getUpdate().probe_id);
+			Logit.LogCheck("Runnable probes with RunnableProbeID: " + getUpdate().probe_id + " was removed");
+		}
 		
-		Logit.LogCheck("All runnable probes with ProbeID: " + getUpdate().probe_id + " was removed");
+		
 		return true;
 	}
 }

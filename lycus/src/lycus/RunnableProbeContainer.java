@@ -112,6 +112,9 @@ public class RunnableProbeContainer implements IRunnableProbeContainer {
 			UsersManager.removeUser(userId);
 		
 		removeFromMap(runnableProbe, probeId, probeRunnableProbes);
+		
+		
+		
 		return true;
 	}
 	
