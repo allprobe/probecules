@@ -2,8 +2,6 @@ package lycus;
 
 import java.util.concurrent.ScheduledFuture;
 
-import Elements.BaseElement;
-import GlobalConstants.LogType;
 import GlobalConstants.ProbeTypes;
 import Probes.BaseProbe;
 import Probes.DiscoveryProbe;
@@ -180,10 +178,13 @@ public class RunnableProbe implements Runnable {
 			switch (this.getProbeType()) {
 			case ICMP:
 				rpThread = RunInnerProbesChecks.getPingerFutureMap().remove(this.getId());
+				break;
 			case PORT:
 				rpThread = RunInnerProbesChecks.getPorterFutureMap().remove(this.getId());
+				break;
 			case HTTP:
 				rpThread = RunInnerProbesChecks.getWeberFutureMap().remove(this.getId());
+				break;
 			case SNMP:
 				this.setRunning(false);
 				return this.getProbe().getUser().getSnmpManager().stopProbe(this);
@@ -195,7 +196,10 @@ public class RunnableProbe implements Runnable {
 						"RunnableProbe: " + this.getId() + " running, but doesn't exists in thread pool!");
 				return false;
 			} else
+			{
 				rpThread.cancel(false);
+			}
+			
 			return true;
 		} catch (Exception e) {
 			return false;

@@ -510,7 +510,7 @@ public class RollupsContainer implements IRollupsContainer {
 
 		}
 		for (int i = 0; i < result.getNumberOfRollupTables(); i++) {
-			DataPointsRollup packetLostRollup = packetLossRollups.get(result.getRunnableProbeId())[i];
+			DataPointsRollup packetLostRollup =  packetLossRollups.get(result.getRunnableProbeId())[i];
 			DataPointsRollup rttRollup = rttRollups.get(result.getRunnableProbeId())[i];
 
 			if (packetLostRollup == null || rttRollup == null) {

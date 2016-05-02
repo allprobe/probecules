@@ -107,7 +107,8 @@ public class ResultsContainer implements IResultsContainer {
 			Logit.LogDebug("BREAKPOINT");
 		
 		RunnableProbe rp = RunnableProbeContainer.getInstanece().get(rpr.getRunnableProbeId());
-
+		if (rp == null)
+			return null;
 		result.put("USER_ID", rp.getProbe().getUser().getUserId().toString());
 		result.put("PROBE_TYPE", rp.getProbeType().name());
 		result.put("RESULTS_TIME", rpr.getLastTimestamp());
@@ -332,6 +333,8 @@ public class ResultsContainer implements IResultsContainer {
 				Logit.LogDebug("BREAKPOINT");
 			
 			JSONObject resultDBFormat = rawResultsDBFormat(results.get(i));
+			if (resultDBFormat == null)
+				continue;
 			resultsDBFormat.add(resultDBFormat);
 		}
 		return resultsDBFormat.toString();
