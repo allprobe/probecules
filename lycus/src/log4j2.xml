@@ -2,13 +2,13 @@
 <Configuration status="WARN">
     <Appenders>
      <Syslog name="syslog" host="62.90.132.124" port="514" protocol="UDP" facility="local3" appName="ROIZ_DEV"/>
-        <Console name="console" target="SYSTEM_OUT">
+     <Console name="console" target="SYSTEM_OUT">
             <PatternLayout pattern="[%-5level] %d{yyyy-MM-dd HH:mm:ss.SSS} [%t] %c{1} - %msg%n"/>
-        </Console>
+     </Console>
     </Appenders>
     <Loggers>
         <Root level="info" additivity="false">
-            <AppenderRef ref="syslog"/>
+            <AppenderRef ref="console"/>
         </Root>
         <logger name="syslogger-production" level="error">
         <AppenderRef ref="syslog"/>
