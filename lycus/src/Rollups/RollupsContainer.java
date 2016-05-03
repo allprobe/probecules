@@ -634,6 +634,8 @@ public class RollupsContainer implements IRollupsContainer {
 						existingRollups[i] = dumpRollups[i];
 					else if (dumpRollups[i] == null && existingRollups[i] != null)
 						continue;
+					else if (dumpRollups[i] == null && existingRollups[i] == null)
+						continue;
 					else
 						existingRollups[i].mergeRollup(dumpRollups[i]);
 				}
