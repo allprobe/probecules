@@ -142,10 +142,9 @@ public class RunnableProbeContainer implements IRunnableProbeContainer {
 	public boolean removeByTemplateId(String teplateId)
 	{
 		for (RunnableProbe runnableProbe : runnableProbes.values()) {
-			if(runnableProbe.getProbe().getTemplate_id().equals(teplateId))
+			if(runnableProbe.getProbe().getTemplate_id().toString().equals(teplateId))
 			{
 				remove(runnableProbe);
-				return true;
 			}
 		}
 		return true;

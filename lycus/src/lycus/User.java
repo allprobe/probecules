@@ -411,6 +411,12 @@ public class User {
 
 	}
 
+	public boolean removeTemplateProbe(String templateId)
+	{
+		templateProbes.remove(templateId);
+		return true;
+	}
+	
 	public BaseProbe addTemplateProbe(ProbeParams probeParams) {
 		try {
 			UUID templateId = UUID.fromString(probeParams.template_id);

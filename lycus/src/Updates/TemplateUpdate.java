@@ -36,7 +36,8 @@ public class TemplateUpdate  extends BaseUpdate{
 	public Boolean Delete()
 	{
 		super.Delete();
-		RunnableProbeContainer.getInstanece().removeByTemplateId(getUpdate().object_id);
+		RunnableProbeContainer.getInstanece().removeByTemplateId(getUpdate().template_id);
+		getUser().removeTemplateProbe(getUpdate().template_id);
 		Logit.LogCheck("Template " + getUpdate().object_id +  " was removed");
 		return true;
 	}
