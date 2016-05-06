@@ -159,11 +159,11 @@ public class BaseProbe  {
 	
 	public boolean updateKeyValues(UpdateValueModel updateValue)
 	{
-		if (updateValue.status != null && isActive() != updateValue.status.equals(Constants._true))
-		{
+//		if (updateValue.status != null && isActive() != updateValue.status.equals(Constants._true))
+//		{
 			setActive(updateValue.status.equals(Constants._true));
-			Logit.LogCheck("Is active for " + getName() +  " has changed to " + isActive);
-		}
+			Logit.LogCheck("Is active for " + getName() +  " Is " + isActive);
+//		}
 		if (GeneralFunctions.isChanged(getMultiplier(), updateValue.multiplier))
 		{
 			setMultiplier(updateValue.multiplier);
