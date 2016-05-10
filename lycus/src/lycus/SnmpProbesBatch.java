@@ -180,6 +180,9 @@ public class SnmpProbesBatch implements Runnable {
 
 				for (RunnableProbe rp : snmpProbes) {
 
+					if(!rp.isActive())
+						continue;
+					
 					String rpStr2 = rp.getId();
 					if (rpStr.contains(
 							"788b1b9e-d753-4dfa-ac46-61c4374eeb84@inner_036f81e0-4ec0-468a-8396-77c21dd9ae5a"))
@@ -218,6 +221,7 @@ public class SnmpProbesBatch implements Runnable {
 				}
 			}
 		} catch (Exception ex) {
+			ex.printStackTrace();
 			Logit.LogError("SnmpProbesBatch - run()", "Error running snmp probes batch:" + this.getBatchId(), ex);
 		}
 	}

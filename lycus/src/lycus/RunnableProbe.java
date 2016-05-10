@@ -93,6 +93,10 @@ public class RunnableProbe implements Runnable {
 	}
 
 	public void run() {
+		
+		if(!this.isActive())
+			return;
+		
 		// TODO: eliminate this from factory - check with Oren
 
 		BaseResult result = null;
