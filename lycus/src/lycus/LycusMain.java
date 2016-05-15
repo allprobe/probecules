@@ -8,7 +8,12 @@ import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.TimeUnit;
 
+import org.json.simple.JSONObject;
+
 import DAL.ApiInterface;
+import DAL.ApiRequest;
+import DAL.FailedRequestsHandler;
+import GlobalConstants.Enums.ApiAction;
 import GlobalConstants.GlobalConfig;
 import Tasks.EventTask;
 import Tasks.ResultsTask;
@@ -36,7 +41,12 @@ public class LycusMain {
 			return;
 		UsersManager.Initialize();// setup initial config (InitServer)
 		
-
+		
+		JSONObject obj=new JSONObject();
+		obj.put("testKey", "testValue");
+		FailedRequestsHandler.getInstance().addRequest(new ApiRequest(ApiAction.InsertDatapointsBatches,obj));
+		FailedRequestsHandler.getInstance().executeRequests();
+		Logit.LogDebug("test");
 
 		// System.err.println("Finished getting messages");
 

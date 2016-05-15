@@ -3,7 +3,10 @@ package Tasks;
 import org.json.simple.JSONObject;
 
 import DAL.ApiInterface;
+import DAL.ApiRequest;
+import DAL.FailedRequestsHandler;
 import GlobalConstants.Enums;
+import GlobalConstants.Enums.ApiAction;
 import Utils.GeneralFunctions;
 import Utils.Logit;
 import lycus.ResultsContainer;
@@ -25,7 +28,11 @@ public class EventTask extends BaseTask {
 					JSONObject eventsJson=new JSONObject();
 					eventsJson.put("events", eventsEncoded);
 					
-					DAL.DAL.getInstanece().put(Enums.ApiAction.PutEvents, eventsJson);
+					
+					if(FailedRequestsHandler.getInstance().getNumberOfFailedRequests()!=0)
+						FailedRequestsHandler.getInstance().executeRequests();
+					if(DAL.DAL.getInstanece().put(Enums.ApiAction.PutEvents, eventsJson)==null)
+						FailedRequestsHandler.getInstance().addRequest(new ApiRequest(ApiAction.PutEvents,eventsJson));
 //					ApiInterface.executeRequest(Enums.ApiAction.PutEvents, "PUT", sendString);
 				}
 			} else {

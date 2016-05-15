@@ -6,7 +6,10 @@ import java.io.StringWriter;
 import org.json.simple.JSONObject;
 
 import DAL.ApiInterface;
+import DAL.ApiRequest;
+import DAL.FailedRequestsHandler;
 import GlobalConstants.Enums;
+import GlobalConstants.Enums.ApiAction;
 import Rollups.RollupsContainer;
 import Utils.GeneralFunctions;
 import Utils.Logit;
@@ -68,7 +71,13 @@ public class ResultsTask extends BaseTask {
 
 			// DAL.getInstanece().put(Enums.ApiAction.InsertDatapointsBatches,
 			// sendString);
-			DAL.DAL.getInstanece().put(Enums.ApiAction.InsertDatapointsBatches,jsonToSend);
+			
+			if(FailedRequestsHandler.getInstance().getNumberOfFailedRequests()!=0)
+				FailedRequestsHandler.getInstance().executeRequests();
+			if(DAL.DAL.getInstanece().put(Enums.ApiAction.InsertDatapointsBatches,jsonToSend)==null)
+				FailedRequestsHandler.getInstance().addRequest(new ApiRequest(Enums.ApiAction.InsertDatapointsBatches,jsonToSend));
+			
+			
 
 			ResultsContainer.getInstance().clear();
 			RollupsContainer.getInstance().clear();
