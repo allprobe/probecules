@@ -53,6 +53,7 @@ public class FailedRequestsHandler implements IFailedRequestsHandler {
 	@Override
 	public void addRequest(ApiRequest request) {
 
+		
 		try {
 
 			String fileContent = request.getRequestBody().toString();

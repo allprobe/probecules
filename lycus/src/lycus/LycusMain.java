@@ -42,13 +42,13 @@ public class LycusMain {
 		UsersManager.Initialize();// setup initial config (InitServer)
 		
 		
-		JSONObject obj=new JSONObject();
-		obj.put("testKey", "testValue");
-		FailedRequestsHandler.getInstance().addRequest(new ApiRequest(ApiAction.InsertDatapointsBatches,obj));
-		FailedRequestsHandler.getInstance().executeRequests();
-		Logit.LogDebug("test");
+//		JSONObject obj=new JSONObject();
+//		obj.put("testKey", "testValue");
+//		FailedRequestsHandler.getInstance().addRequest(new ApiRequest(ApiAction.InsertDatapointsBatches,obj));
+//		FailedRequestsHandler.getInstance().executeRequests();
+//		Logit.LogError("sdfsdf","test");
 
-		// System.err.println("Finished getting messages");
+//		 System.err.println("Finished getting messages");
 
 		// byte[]
 		// tryMe=Encoding.hexStringToByteArray("bc855616fc5b801f020e0cd2080045000028a64e00003a1173e63e5a6626c0a801680035e84e0014a4275c78b0110000000000000000");
