@@ -41,6 +41,10 @@ public class LycusMain {
 			return;
 		UsersManager.Initialize();// setup initial config (InitServer)
 		
+		String workingDir = System.getProperty("user.dir");
+
+		Logit.LogError("TEST",workingDir);
+		
 		
 //		JSONObject obj=new JSONObject();
 //		obj.put("testKey", "testValue");
