@@ -254,8 +254,6 @@ public class GlobalConfig {
         DateFormat dateFormat = new SimpleDateFormat("yyyy/MM/dd HH:mm:ss");
         Calendar cal = Calendar.getInstance();
         System.out.println("Global Initialization Succeed! - "+dateFormat.format(cal.getTime()));
-        String workingDir = System.getProperty("user.dir");
-		System.out.println("Working dir isss - "+workingDir);
         return true;
     }
 

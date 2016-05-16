@@ -41,10 +41,6 @@ public class LycusMain {
 			return;
 		UsersManager.Initialize();// setup initial config (InitServer)
 		
-		String workingDir = System.getProperty("user.dir");
-
-		System.out.println("Working dir isss - "+workingDir);
-		
 //		Logit.LogError("TEST",workingDir);
 		
 		
