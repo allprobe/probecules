@@ -43,7 +43,9 @@ public class LycusMain {
 		
 		String workingDir = System.getProperty("user.dir");
 
-		Logit.LogError("TEST",workingDir);
+		System.out.println("Working dir is - "+workingDir);
+		
+//		Logit.LogError("TEST",workingDir);
 		
 		
 //		JSONObject obj=new JSONObject();
