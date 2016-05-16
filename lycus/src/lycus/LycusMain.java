@@ -43,7 +43,7 @@ public class LycusMain {
 		
 		String workingDir = System.getProperty("user.dir");
 
-		System.out.println("Working dir is - "+workingDir);
+		System.out.println("Working dir isss - "+workingDir);
 		
 //		Logit.LogError("TEST",workingDir);
 		
