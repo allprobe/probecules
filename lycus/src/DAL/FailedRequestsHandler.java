@@ -79,8 +79,9 @@ public class FailedRequestsHandler implements IFailedRequestsHandler {
 
 	@Override
 	public void executeRequests() {
-		while (true) {
 
+		Logit.LogInfo("Executing failed requests.");
+		
 			if (this.getNumberOfFailedRequests() == 0)
 				return;
 			List<File> files = getFilesOrganized();
@@ -96,16 +97,9 @@ public class FailedRequestsHandler implements IFailedRequestsHandler {
 				if (DAL.getInstanece().put(ApiAction.valueOf(FilenameUtils.getExtension(failedRequestFile.getName())),
 						obj) != null)
 					failedRequestFile.delete();
+				else
+					return;
 			}
-
-			try {
-				Thread.sleep(10000);
-			} catch (InterruptedException e) {
-				Logit.LogError("FailedRequestsHandler - executeRequests",
-						"Executing failed requests thread interrupted! E: " + e.getMessage());
-
-			}
-		}
 	}
 
 	private List<File> getFilesOrganized() {
