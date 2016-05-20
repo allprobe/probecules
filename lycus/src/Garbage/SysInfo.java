@@ -9,7 +9,6 @@ import java.util.concurrent.TimeUnit;
 import GlobalConstants.LogType;
 import Utils.GeneralFunctions;
 import Utils.Logit;
-import lycus.RunInnerProbesChecks;
 import lycus.ResultsContainer;
 
 public class SysInfo implements Runnable {

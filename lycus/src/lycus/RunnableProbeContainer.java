@@ -290,23 +290,23 @@ public class RunnableProbeContainer implements IRunnableProbeContainer {
 		RunnableProbe runnableProbe = runnableFuture.getRunnableProbe();
 		if (runnableProbe == null)
 			return false;
-		
+
 		remove(runnableProbe);
 		runnableProbe.getProbe().setInterval(interval);
 		add(runnableProbe);
-		
-//		if (runnableProbe.getProbeType() == ProbeTypes.SNMP) {
-//			remove(runnableProbe);
-//			runnableProbe.getProbe().setInterval(interval);
-//			add(runnableProbe);
-//		}
-//		else
-//		{
-//			runnableFuture.getRunnableProbe().getProbe().setInterval(interval);
-//			runnableFuture.getFuture().cancel(false);
-//			// remove(handle.getRunnableProbe());
-//			startProbe(runnableFuture.getRunnableProbe());
-//		}
+
+		// if (runnableProbe.getProbeType() == ProbeTypes.SNMP) {
+		// remove(runnableProbe);
+		// runnableProbe.getProbe().setInterval(interval);
+		// add(runnableProbe);
+		// }
+		// else
+		// {
+		// runnableFuture.getRunnableProbe().getProbe().setInterval(interval);
+		// runnableFuture.getFuture().cancel(false);
+		// // remove(handle.getRunnableProbe());
+		// startProbe(runnableFuture.getRunnableProbe());
+		// }
 
 		return true;
 	}
@@ -344,27 +344,26 @@ public class RunnableProbeContainer implements IRunnableProbeContainer {
 
 	private boolean stopSnmpProbe(RunnableProbe runnableProbe) {
 		try {
-			ConcurrentHashMap<String, ScheduledFuture<?>> snmpBatchThreads = RunInnerProbesChecks
-					.getSnmpBatchFutureMap();
-			for (Map.Entry<String, ScheduledFuture<?>> batchThread : snmpBatchThreads.entrySet()) {
-				if (batchThread.getKey()
-						.contains(runnableProbe.getHost().getHostId().toString() + "@"
-								+ runnableProbe.getProbe().getTemplate_id().toString() + "@"
-								+ runnableProbe.getProbe().getInterval())) {
-					SnmpProbesBatch batch = batches.get(batchThread.getKey());
-					if (batch.getSnmpProbes().get(runnableProbe.getId()) != null) {
-						batch.deleteSnmpProbe(runnableProbe);
-						if (batch.getSnmpProbes().size() == 0) {
-							RunInnerProbesChecks.getSnmpBatchFutureMap().get(batch.getBatchId()).cancel(true);
-							batches.remove(batch.getBatchId());
-						}
-						return true;
-					} else
-						return false;
-				}
+			RunnableFuture runnableFuture = runnableProbes.get(runnableProbe);
+
+			for (SnmpProbesBatch batch : batches.values()) {
+				String partialId = runnableProbe.getHost().getHostId().toString() + "@"
+						+ runnableProbe.getProbe().getTemplate_id().toString() + "@"
+						+ runnableProbe.getProbe().getInterval();
+				if (batch.isExist(partialId)) {
+					batch.deleteSnmpProbe(runnableProbe);
+					if (batch.getSnmpProbes().size() == 0) {
+						runnableFuture.getFuture().cancel(true);
+						batches.remove(batch.getBatchId());
+					}
+					return true;
+				} else
+					return false;
 			}
 			return false;
-		} catch (Exception e) {
+		} catch (Exception e)
+
+		{
 			Logit.LogWarn("Unable to stop running probe: " + runnableProbe.getId() + ",\n" + e.getMessage());
 			return false;
 		}

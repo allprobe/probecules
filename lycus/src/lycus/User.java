@@ -42,7 +42,6 @@ public class User {
 	private Map<UUID, Host> hosts;
 	private Map<String, BaseProbe> templateProbes;
 	private Map<UUID, SnmpTemplate> snmpTemplates;
-	private SnmpManager snmpManager;
 
 	// public User(UUID userId, Map<UUID, Host> hosts,
 	// Map<UUID, Template> templates, Map<UUID, SnmpTemplate> snmpTemps,
@@ -90,14 +89,6 @@ public class User {
 
 	public void setSnmpTemplates(Map<UUID, SnmpTemplate> snmpTemplates) {
 		this.snmpTemplates = snmpTemplates;
-	}
-
-	public SnmpManager getSnmpManager() {
-		return snmpManager;
-	}
-
-	public void setSnmpManager(SnmpManager snmpManager) {
-		this.snmpManager = snmpManager;
 	}
 
 	public Map<UUID, Host> getHosts() {

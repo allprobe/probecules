@@ -21,7 +21,6 @@ import Utils.Logit;
 
 public class SnmpProbesBatch implements Runnable {
 	private String batchId;// hostId@templateId@interval@batchUUID
-	private SnmpManager snmpManager;
 	private Map<String, RunnableProbe> snmpProbes;
 	private Host host;
 	private long interval;
@@ -105,14 +104,6 @@ public class SnmpProbesBatch implements Runnable {
 
 	public void setInterval(long interval) {
 		this.interval = interval;
-	}
-
-	public SnmpManager getSnmpManager() {
-		return snmpManager;
-	}
-
-	public void setSnmpManager(SnmpManager snmpManager) {
-		this.snmpManager = snmpManager;
 	}
 
 	public TransportMapping getTransport() {
@@ -261,8 +252,14 @@ public class SnmpProbesBatch implements Runnable {
 		return s.toString();
 	}
 
+	public boolean isExist(String partialId)   // hostId@templateId@interval
+	{
+		return snmpProbes.containsKey(partialId);
+	}
+	
 	@Override
 	protected void finalize() throws Throwable {
 		// stopSnmpListener();
 	}
+	
 }
