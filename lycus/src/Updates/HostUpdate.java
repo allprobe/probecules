@@ -118,7 +118,7 @@ public class HostUpdate extends BaseUpdate {
 				.getByHost(host.getHostId().toString());
 		for (RunnableProbe runnableProbe : runnableProbes.values()) {
 			try {
-				runnableProbe.stop();
+//				runnableProbe.stop();
 				RunnableProbeContainer.getInstanece().remove(runnableProbe);
 				Logit.LogCheck("Runnable probe " + runnableProbe.getId() +  " was removed");
 

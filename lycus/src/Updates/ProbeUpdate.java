@@ -110,7 +110,8 @@ public class ProbeUpdate extends BaseUpdate {
 
 			RunnableProbe runnableProbe = new RunnableProbe(host, probe);
 //			runnableProbe.start();
-			getUser().addRunnableProbe(runnableProbe);
+			RunnableProbeContainer.getInstanece().add(runnableProbe);
+//			getUser().addRunnableProbe(runnableProbe);
 			Logit.LogCheck("New Runnable probe was created: " + runnableProbe.getId());
 			
 		} catch (Exception e) {
@@ -128,8 +129,7 @@ public class ProbeUpdate extends BaseUpdate {
 				if (runnableProbes == null)
 					return false;
 				for (RunnableProbe runnableProbe : runnableProbes.values()) {
-					if (runnableProbe.stop())
-						runnableProbe.start();
+					RunnableProbeContainer.getInstanece().changeInterval(runnableProbe.getId(), currentInterval);
 				}
 			}
 			return true;
@@ -148,7 +148,8 @@ public class ProbeUpdate extends BaseUpdate {
 
 			if (getUpdate().update_value.interval != null
 					&& runnableProbe.getProbe().getInterval() != getUpdate().update_value.interval) {
-				runnableProbe.changeRunnableProbeInterval(getUpdate().update_value.interval);
+				RunnableProbeContainer.getInstanece().changeInterval(runnableProbe.getId(), getUpdate().update_value.interval);
+//				runnableProbe.changeRunnableProbeInterval(getUpdate().update_value.interval);
 			}
 
 			// TODO: What to do with them

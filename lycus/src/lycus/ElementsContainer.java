@@ -40,18 +40,21 @@ public class ElementsContainer {
 		}
 	}
 
-//	private void applyNicStatusesOnNewResult(DiscoveryResult discoveryResult) {
-//		ConcurrentHashMap<String, NicElement> existing = nicElements.get(discoveryResult.getRunnableProbeId());
-//		HashMap<String, BaseElement> lastResultElements = discoveryResult.getElements();
-//		for (BaseElement baseElement : lastResultElements.values()) {
-//			baseElement.setActive(existing.get(baseElement.getName()).isActive());
-//		}
-//	}
+	// private void applyNicStatusesOnNewResult(DiscoveryResult discoveryResult)
+	// {
+	// ConcurrentHashMap<String, NicElement> existing =
+	// nicElements.get(discoveryResult.getRunnableProbeId());
+	// HashMap<String, BaseElement> lastResultElements =
+	// discoveryResult.getElements();
+	// for (BaseElement baseElement : lastResultElements.values()) {
+	// baseElement.setActive(existing.get(baseElement.getName()).isActive());
+	// }
+	// }
 
 	private boolean isNicElementsChanged(DiscoveryResult discoveryResult) {
 		Map<String, BaseElement> currentElements = nicElements.get(discoveryResult.getRunnableProbeId());
-//	    discoveryResult.getElements().size() != 0
-		if(discoveryResult==null)
+		// discoveryResult.getElements().size() != 0
+		if (discoveryResult == null)
 			return false;
 		if (currentElements == null) {
 			ConcurrentHashMap<String, BaseElement> map = new ConcurrentHashMap<String, BaseElement>(
@@ -64,7 +67,7 @@ public class ElementsContainer {
 		if (currentElements.size() != newElements.size()) {
 			ConcurrentHashMap<String, BaseElement> newMap = new ConcurrentHashMap<String, BaseElement>(
 					(Map) discoveryResult.getElements());
-			updateStatuses(currentElements,newMap);
+			updateStatuses(currentElements, newMap);
 			nicElements.put(discoveryResult.getRunnableProbeId(), newMap);
 			return true;
 		}
@@ -83,31 +86,34 @@ public class ElementsContainer {
 
 	private void updateStatuses(Map<String, BaseElement> currentElements,
 			ConcurrentHashMap<String, BaseElement> newMap) {
-		for(Map.Entry<String, BaseElement> element:newMap.entrySet())
-		{
-			boolean oldStatus=currentElements.get(element.getKey())==null?false:currentElements.get(element.getKey()).isActive();
+		for (Map.Entry<String, BaseElement> element : newMap.entrySet()) {
+			boolean oldStatus = currentElements.get(element.getKey()) == null ? false
+					: currentElements.get(element.getKey()).isActive();
 			element.getValue().setActive(oldStatus);
 		}
 	}
 
 	public void addElement(String userId, String runnableProbeId, BaseElement element) {
 		if (element instanceof NicElement) {
-			if(runnableProbeId.contains("74cda666-3d85-4e56-a804-9d53c4e16259@discovery_777938b0-e4b0-4ec6-b0f2-ea880a0c09ef"))
+			if (runnableProbeId
+					.contains("74cda666-3d85-4e56-a804-9d53c4e16259@discovery_777938b0-e4b0-4ec6-b0f2-ea880a0c09ef"))
 				Logit.LogDebug("BREAKPOINT");
-			addNicElement(userId,runnableProbeId, element);
+			addNicElement(userId, runnableProbeId, element);
 			if (element.isActive())
-				runNicElement(userId,runnableProbeId, element);
+				runNicElement(userId, runnableProbeId, element);
 		}
 
 	}
 
 	private void runNicElement(String userId, String runnableProbeId, BaseElement element) {
-		DiscoveryProbe probe = (DiscoveryProbe)UsersManager.getUser(userId).getTemplateProbes().get(runnableProbeId.split("@")[2]);
+		DiscoveryProbe probe = (DiscoveryProbe) UsersManager.getUser(userId).getTemplateProbes()
+				.get(runnableProbeId.split("@")[2]);
 		User user = probe.getUser();
-		Host host=user.getHost(UUID.fromString(runnableProbeId.split("@")[1]));
+		Host host = user.getHost(UUID.fromString(runnableProbeId.split("@")[1]));
 		NicProbe nicProbe = new NicProbe(probe, (NicElement) element);
-		RunnableProbe nicRunnableProbe=new RunnableProbe(host, nicProbe);
-		user.addRunnableProbe(nicRunnableProbe);
+		RunnableProbe nicRunnableProbe = new RunnableProbe(host, nicProbe);
+		RunnableProbeContainer.getInstanece().add(nicRunnableProbe);
+		// user.addRunnableProbe(nicRunnableProbe);
 	}
 
 	private void addNicElement(String userId, String runnableProbeId, BaseElement element) {

@@ -60,7 +60,7 @@ public class User {
 		this.setHosts(new HashMap<UUID, Host>());
 		this.setTemplateProbes(new HashMap<String, BaseProbe>());
 		this.setSnmpTemplates(new HashMap<UUID, SnmpTemplate>());
-		this.setSnmpManager(new SnmpManager(this));
+//		this.setSnmpManager(new SnmpManager(this));
 	}
 
 	// Getters/Setters
@@ -189,14 +189,14 @@ public class User {
 	// return null;
 	// }
 
-	private void runProbes(List<RunnableProbe> rps) {
-		for (RunnableProbe rp : rps) {
-			if (rp.getId().contains(
-					"0b05919c-6cc0-42cc-a74b-de3b0dcd4a2a@6aadf750-e887-43ee-b872-326c94fbab7c@discovery_6b54463e-fe1c-4e2c-a090-452dbbf2d510"))
-				Logit.LogDebug("BREAKPOINT");
-			this.startRunnableProbe(rp);
-		}
-	}
+//	private void runProbes(List<RunnableProbe> rps) {
+//		for (RunnableProbe rp : rps) {
+//			if (rp.getId().contains(
+//					"0b05919c-6cc0-42cc-a74b-de3b0dcd4a2a@6aadf750-e887-43ee-b872-326c94fbab7c@discovery_6b54463e-fe1c-4e2c-a090-452dbbf2d510"))
+//				Logit.LogDebug("BREAKPOINT");
+//			this.startRunnableProbe(rp);
+//		}
+//	}
 
 	// public void runProbesAtStart() {
 	//// this.runProbes(new
@@ -267,39 +267,39 @@ public class User {
 	// return matchedRps;
 	// }
 
-	public boolean startRunnableProbe(RunnableProbe rp) {
-		// if (rp.getProbe() instanceof SnmpProbe) {
-		// this.getSnmpManager().startProbe(rp);
-		// return true;
-		// }
+//	public boolean startRunnableProbe(RunnableProbe rp) {
+//		// if (rp.getProbe() instanceof SnmpProbe) {
+//		// this.getSnmpManager().startProbe(rp);
+//		// return true;
+//		// }
+//
+//		return rp.start();
+//	}
 
-		return rp.start();
-	}
+//	public boolean stopRunnableProbe(RunnableProbe rp) {
+//		if (rp == null)
+//			return false;
+//		if (rp.getProbe() instanceof SnmpProbe && rp.getHost().getSnmpTemp().getVersion() > 1) {
+//			this.getSnmpManager().stopProbe(rp);
+//			return true;
+//		}
+//		try {
+//			rp.stop();
+//			return true;
+//		} catch (Exception e) {
+//			Logit.LogError("User - stopRunnableProbe", "Unable To stop RunnableProbe: " + rp.getId());
+//			return false;
+//		}
+//	}
 
-	public boolean stopRunnableProbe(RunnableProbe rp) {
-		if (rp == null)
-			return false;
-		if (rp.getProbe() instanceof SnmpProbe && rp.getHost().getSnmpTemp().getVersion() > 1) {
-			this.getSnmpManager().stopProbe(rp);
-			return true;
-		}
-		try {
-			rp.stop();
-			return true;
-		} catch (Exception e) {
-			Logit.LogError("User - stopRunnableProbe", "Unable To stop RunnableProbe: " + rp.getId());
-			return false;
-		}
-	}
-
-	public boolean addRunnableProbe(RunnableProbe runnableProbe) {
-		String rpStr = runnableProbe.getId();
-		if (rpStr.contains("inner_996a80bf-913e-4ba4-ad46-a28c30f9fe36"))
-			Logit.LogDebug("BREAKPOINT");
-
-		RunnableProbeContainer.getInstanece().add(runnableProbe);
-		return this.startRunnableProbe(runnableProbe);
-	}
+//	public boolean addRunnableProbe(RunnableProbe runnableProbe) {
+//		String rpStr = runnableProbe.getId();
+//		if (rpStr.contains("inner_996a80bf-913e-4ba4-ad46-a28c30f9fe36"))
+//			Logit.LogDebug("BREAKPOINT");
+//
+//		return RunnableProbeContainer.getInstanece().add(runnableProbe);
+////		this.startRunnableProbe(runnableProbe);
+//	}
 
 	// public boolean removeRunnableProbe(RunnableProbe runnableProbe) {
 	// UUID hostId = runnableProbe.getHost().getHostId();

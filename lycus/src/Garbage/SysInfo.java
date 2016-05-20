@@ -133,33 +133,33 @@ public class SysInfo implements Runnable {
     	info.append("--------------------------------------------------");
     	info.append("\n");
     	
-    	int pingers = RunInnerProbesChecks.getPingerFutureMap().size();
-		int porters = RunInnerProbesChecks.getPorterFutureMap().size();
-		int webers = RunInnerProbesChecks.getWeberFutureMap().size();
-		int rbls = RunInnerProbesChecks.getRblProbeFutureMap().size();
-		int bsnmps = RunInnerProbesChecks.getSnmpBatchFutureMap().size();
-		int snmpbs = RunInnerProbesChecks.getSnmpBatchFutureCounter();
+//    	int pingers = RunInnerProbesChecks.getPingerFutureMap().size();
+//		int porters = RunInnerProbesChecks.getPorterFutureMap().size();
+//		int webers = RunInnerProbesChecks.getWeberFutureMap().size();
+//		int rbls = RunInnerProbesChecks.getRblProbeFutureMap().size();
+//		int bsnmps = RunInnerProbesChecks.getSnmpBatchFutureMap().size();
+//		int snmpbs = RunInnerProbesChecks.getSnmpBatchFutureCounter();
 		
 		
-		info.append("---------------------System Info---------------------");
-    	info.append("\n");
-    	info.append("pingers:" + pingers);
-    	info.append("\n");
-    	info.append("porters:" + porters);
-    	info.append("\n");
-    	info.append("webers:" + webers);
-    	info.append("\n");
-    	info.append("rbls:" + rbls);
-    	info.append("\n");	
-    	info.append("bsnmp:" + bsnmps);
-    	info.append("\n");
-    	info.append("batchsnmp:" + snmpbs);
-    	info.append("\n");
-    	info.append("Total RPS Threads:"+(pingers + porters + webers + rbls 
-				+ bsnmps));
-    	info.append("\n");
-    	info.append("--------------------------------------------------");
-    	info.append("\n");	
+//		info.append("---------------------System Info---------------------");
+//    	info.append("\n");
+//    	info.append("pingers:" + pingers);
+//    	info.append("\n");
+//    	info.append("porters:" + porters);
+//    	info.append("\n");
+//    	info.append("webers:" + webers);
+//    	info.append("\n");
+//    	info.append("rbls:" + rbls);
+//    	info.append("\n");	
+//    	info.append("bsnmp:" + bsnmps);
+//    	info.append("\n");
+//    	info.append("batchsnmp:" + snmpbs);
+//    	info.append("\n");
+//    	info.append("Total RPS Threads:"+(pingers + porters + webers + rbls 
+//				+ bsnmps));
+//    	info.append("\n");
+//    	info.append("--------------------------------------------------");
+//    	info.append("\n");	
     	
     	Logit.LogInfo("!Probecules Information!\n");
 		}

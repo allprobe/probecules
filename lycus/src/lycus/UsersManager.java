@@ -640,7 +640,8 @@ public class UsersManager {
 			}
 
 			RunnableProbe runnableProbe = new RunnableProbe(host, probe);
-			u.addRunnableProbe(runnableProbe);
+			RunnableProbeContainer.getInstanece().add(runnableProbe);
+//			u.addRunnableProbe(runnableProbe);
 		}
 	}
 

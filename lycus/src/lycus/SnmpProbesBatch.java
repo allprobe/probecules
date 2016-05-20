@@ -37,7 +37,7 @@ public class SnmpProbesBatch implements Runnable {
 	private TransportMapping transport;
 	private Snmp snmp;
 
-	public SnmpProbesBatch(SnmpManager SM, RunnableProbe rp) {
+	public SnmpProbesBatch(RunnableProbe rp) {
 		snmpPreviousResults = new HashMap<String, SnmpResult>();
 		this.setHost(rp.getHost());
 		this.setInterval(rp.getProbe().getInterval());

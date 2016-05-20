@@ -93,43 +93,41 @@ public class RunnableProbe implements Runnable {
 	}
 
 	public void run() {
-		
-		if(!this.isActive())
+
+		if (!this.isActive())
 			return;
-		
+
 		// TODO: eliminate this from factory - check with Oren
 
 		BaseResult result = null;
 
 		String rpStr = this.getHost().getHostId().toString() + "@" + getProbe().getProbe_id();
-		if (rpStr.contains(
-				"788b1b9e-d753-4dfa-ac46-61c4374eeb84@discovery_777938b0-e4b0-4ec6-b0f2-ea880a0c09ef@bG8="))
-			Logit.LogDebug("BREAKPOINT - RunnableProbe");
-
-		String rpStr2 = this.getHost().getHostId().toString() + "@" + getProbe().getProbe_id();
-		if (rpStr.contains("ff00ff2c-0f40-4616-9ac4-a71447b22431@http_83b9b614-b210-45ce-942b-cf45114afe01"))
+		if (rpStr.contains("788b1b9e-d753-4dfa-ac46-61c4374eeb84@discovery_777938b0-e4b0-4ec6-b0f2-ea880a0c09ef@bG8="))
 			Logit.LogDebug("BREAKPOINT - RunnableProbe");
 
 		try {
 			result = getProbe().getResult(this.getHost());
 		} catch (Exception e) {
-			Logit.LogError("RunnableProbe - run()", "Error getting runnable probe results! "+ this.getId());
+			Logit.LogError("RunnableProbe - run()", "Error getting runnable probe results! " + this.getId());
 			return;
 		}
+		
 		if (result == null) {
-			Logit.LogError("RunnableProbe - run()", "Error getting runnable probe results! "+ this.getId());
+			Logit.LogError("RunnableProbe - run()", "Error getting runnable probe results! " + this.getId());
 			return;
 		}
+		
 		try {
 			result.checkIfTriggerd(getProbe().getTriggers());
 		} catch (Exception e) {
 			Logit.LogError("RunnableProbe - run()", "Error triggering runnable probe results!  " + this.getId());
 			return;
 		}
+		
 		try {
-			if(result.getLastTimestamp()==null)
-			{
-				Logit.LogError("RunnableProbe - run()", "Error getting runnable probe results! last timestamp is null! " + this.getId());
+			if (result.getLastTimestamp() == null) {
+				Logit.LogError("RunnableProbe - run()",
+						"Error getting runnable probe results! last timestamp is null! " + this.getId());
 				return;
 
 			}
@@ -138,99 +136,97 @@ public class RunnableProbe implements Runnable {
 			else
 				ResultsContainer.getInstance().addResult(result);
 		} catch (Exception e) {
-			Logit.LogError("RunnableProbe - run()", "Error processing runnable probe results to results container! "+ this.getId());
+			Logit.LogError("RunnableProbe - run()",
+					"Error processing runnable probe results to results container! " + this.getId());
 			return;
 		}
+		
 		try {
 			RollupsContainer.getInstance().addResult(result);
 		} catch (Exception e) {
-				Logit.LogError("RunnableProbe - run()", "Error processing runnable probe results to rollups container!"+ this.getId(),e);
+			Logit.LogError("RunnableProbe - run()",
+					"Error processing runnable probe results to rollups container!" + this.getId(), e);
 			return;
-			// if (this.getId().split("@")[2].equals("null"))
-			// Logit.LogDebug("BREAKPOINT");
-			// Logit.LogError("RunnableProbe - run()",
-			// "Unable Probing Runnable Probe of: " + this.getId() + "\n" +
-			// e.getMessage());
 		}
 		Logit.LogInfo("Running Probe: " + this.getId() + " at Host: " + this.getHost().getHostIp() + "("
 				+ this.getHost().getName() + ")" + ", Results: " + result + " ...");
 	}
 
 	// returns this.isRunning();
-	public boolean start() {
-		if (this.getProbeType() == ProbeTypes.SNMP) {
-			this.setRunning(true);
-			return this.getProbe().getUser().getSnmpManager().startProbe(this);
-		}
-		// if (this.getProbeType() == ProbeTypes.DISCOVERYELEMENT) {
-		// this.setRunning(true);
-		// return this.getProbe().getUser().getSnmpManager().startProbe(this);
-		// }
-		boolean state = RunInnerProbesChecks.addRegularRP(this);
-		if (state)
-			this.setRunning(true);
-		return state;
-	}
+	// public boolean start() {
+	// if (this.getProbeType() == ProbeTypes.SNMP) {
+	// this.setRunning(true);
+	// return this.getProbe().getUser().getSnmpManager().startProbe(this);
+	// }
+	// // if (this.getProbeType() == ProbeTypes.DISCOVERYELEMENT) {
+	// // this.setRunning(true);
+	// // return this.getProbe().getUser().getSnmpManager().startProbe(this);
+	// // }
+	// boolean state = RunInnerProbesChecks.addRegularRP(this);
+	// if (state)
+	// this.setRunning(true);
+	// return state;
+	// }
 
 	// returns false if any issue during stop process;
-	public boolean stop() {
-		try {
-			if (!this.isRunning)
-				return true;
+//	public boolean stop() {
+//		try {
+//			if (!this.isRunning)
+//				return true;
+//
+//			ScheduledFuture<?> rpThread = null;
+//			switch (this.getProbeType()) {
+//			// case ICMP:
+//			// rpThread =
+//			// RunInnerProbesChecks.getPingerFutureMap().remove(this.getId());
+//			// break;
+//			// case PORT:
+//			// rpThread =
+//			// RunInnerProbesChecks.getPorterFutureMap().remove(this.getId());
+//			// break;
+//			// case HTTP:
+//			// rpThread =
+//			// RunInnerProbesChecks.getWeberFutureMap().remove(this.getId());
+//			// break;
+//			case SNMP:
+//				this.setRunning(false);
+//				return this.getProbe().getUser().getSnmpManager().stopProbe(this);
+//			// case RBL:
+//			// rpThread =
+//			// RunInnerProbesChecks.getRblProbeFutureMap().remove(this.getId());
+//			}
+//			if (rpThread == null) {
+//				Logit.LogError("RunnableProbe - stop()",
+//						"RunnableProbe: " + this.getId() + " running, but doesn't exists in thread pool!");
+//				return false;
+//			} else {
+//				rpThread.cancel(false);
+//			}
+//
+//			return true;
+//		} catch (Exception e) {
+//			return false;
+//		}
+//	}
 
-			ScheduledFuture<?> rpThread = null;
-			switch (this.getProbeType()) {
-			case ICMP:
-				rpThread = RunInnerProbesChecks.getPingerFutureMap().remove(this.getId());
-				break;
-			case PORT:
-				rpThread = RunInnerProbesChecks.getPorterFutureMap().remove(this.getId());
-				break;
-			case HTTP:
-				rpThread = RunInnerProbesChecks.getWeberFutureMap().remove(this.getId());
-				break;
-			case SNMP:
-				this.setRunning(false);
-				return this.getProbe().getUser().getSnmpManager().stopProbe(this);
-			case RBL:
-				rpThread = RunInnerProbesChecks.getRblProbeFutureMap().remove(this.getId());
-			}
-			if (rpThread == null) {
-				Logit.LogError("RunnableProbe - stop()",
-						"RunnableProbe: " + this.getId() + " running, but doesn't exists in thread pool!");
-				return false;
-			} else
-			{
-				rpThread.cancel(false);
-			}
-			
-			return true;
-		} catch (Exception e) {
-			return false;
-		}
-	}
+	// public String toString() {
+	// return getId();
+	// }
 
-	public String toString() {
-		StringBuilder s = new StringBuilder();
-		s.append(this.getProbe().getTemplate_id().toString()).append("@");
-		s.append(this.getHost().getHostId().toString()).append("@");
-		s.append(this.getProbe().getProbe_id());
-		return s.toString();
-	}
-
-	// Roi handle roleups
-	public boolean changeRunnableProbeInterval(Long interval) {
-		try {
-			this.stop();
-			this.getProbe().setInterval(interval);
-		} catch (Exception e) {
-			Logit.LogError("RunnableProbe - changeRunnableProbeInterval()",
-					"Could not change interval to " + interval + ", " + this.getId());
-			return false;
-		}
-		this.start();
-		Logit.LogCheck("Interval for " + this.getId() + " was changed to " + interval);
-		return true;
-	}
+	// // Roi handle roleups
+	// public boolean changeRunnableProbeInterval(Long interval) {
+	// try {
+	// this.stop();
+	// this.getProbe().setInterval(interval);
+	// } catch (Exception e) {
+	// Logit.LogError("RunnableProbe - changeRunnableProbeInterval()",
+	// "Could not change interval to " + interval + ", " + this.getId());
+	// return false;
+	// }
+	// this.start();
+	// Logit.LogCheck("Interval for " + this.getId() + " was changed to " +
+	// interval);
+	// return true;
+	// }
 
 }

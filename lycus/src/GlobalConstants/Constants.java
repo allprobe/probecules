@@ -76,5 +76,7 @@ public class Constants {
 
 	public static final OID sysDescr = new OID("1.3.6.1.2.1.1.1.0");
 
-
+	public static int getBatchesSize() {
+		return 1400 / GlobalConfig.getMaxSnmpResponseInBytes();
+	}
 }

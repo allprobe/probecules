@@ -7,7 +7,7 @@ import lycus.RunnableProbe;
 
 public interface IRunnableProbeContainer {
 	RunnableProbe get(String runnableProbeId);
-	HashMap<String,RunnableProbe> get();
+//	HashMap<String,RunnableProbe> get();
 	HashMap<String,RunnableProbe> getByUser(String userId);
 	HashMap<String,RunnableProbe> getByHost(String hostId);
 	HashMap<String,RunnableProbe> getByProbe(String probeId);
@@ -17,4 +17,5 @@ public interface IRunnableProbeContainer {
 	boolean removeByTemplateId(String teplateId);
 	boolean removeByProbeId(String probeId);
 	boolean removeByRunnableProbeId(String probeId);
+	boolean changeInterval(String runnableProbeId, Long interval);
 }
