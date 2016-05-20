@@ -2,6 +2,7 @@ package lycus;
 
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -155,7 +156,7 @@ public class SnmpProbesBatch implements Runnable {
 			if (this.getHost().isHostStatus() && this.getHost().isSnmpStatus()) {
 				Host host = this.getHost();
 
-				List<RunnableProbe> snmpProbes = new ArrayList<RunnableProbe>(this.getSnmpProbes().values());
+				Collection<RunnableProbe> snmpProbes = this.getSnmpProbes().values();
 
 				if (host.getHostId().toString().contains("788b1b9e-d753-4dfa-ac46-61c4374eeb84"))
 					Logit.LogDebug("BREAKPOINT");
@@ -171,15 +172,14 @@ public class SnmpProbesBatch implements Runnable {
 
 				for (RunnableProbe rp : snmpProbes) {
 
-					if(!rp.isActive())
-						continue;
-					
-					String rpStr2 = rp.getId();
-					if (rpStr.contains(
-							"788b1b9e-d753-4dfa-ac46-61c4374eeb84@inner_036f81e0-4ec0-468a-8396-77c21dd9ae5a"))
-						Logit.LogDebug("BREAKPOINT");
+					if(rp.isActive())
+					{
+						if (rpStr.contains(
+								"788b1b9e-d753-4dfa-ac46-61c4374eeb84@inner_036f81e0-4ec0-468a-8396-77c21dd9ae5a"))
+							Logit.LogDebug("BREAKPOINT");
 
-					_snmpProbes.add((SnmpProbe) rp.getProbe());
+						_snmpProbes.add((SnmpProbe) rp.getProbe());
+					}
 				}
 
 				List<SnmpResult> response = NetResults.getInstanece().getSnmpResults(this.getHost(), _snmpProbes);
