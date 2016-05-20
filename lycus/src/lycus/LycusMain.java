@@ -35,7 +35,7 @@ public class LycusMain {
 			GlobalConfig.setConfPath(args[0]);
 		if (!GlobalConfig.Initialize())
 			return;
-		Logit.LogInfo("Probecules Version: 0.7.3");
+		Logit.LogInfo("Probecules Version: 0.7.4");
 		boolean apiInit = ApiInterface.Initialize();
 		if (!apiInit)
 			return;
