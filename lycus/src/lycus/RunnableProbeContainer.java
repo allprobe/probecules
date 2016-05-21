@@ -295,19 +295,6 @@ public class RunnableProbeContainer implements IRunnableProbeContainer {
 		runnableProbe.getProbe().setInterval(interval);
 		add(runnableProbe);
 
-		// if (runnableProbe.getProbeType() == ProbeTypes.SNMP) {
-		// remove(runnableProbe);
-		// runnableProbe.getProbe().setInterval(interval);
-		// add(runnableProbe);
-		// }
-		// else
-		// {
-		// runnableFuture.getRunnableProbe().getProbe().setInterval(interval);
-		// runnableFuture.getFuture().cancel(false);
-		// // remove(handle.getRunnableProbe());
-		// startProbe(runnableFuture.getRunnableProbe());
-		// }
-
 		return true;
 	}
 
