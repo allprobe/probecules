@@ -25,7 +25,7 @@ import Probes.NicProbe;
 import Probes.PortProbe;
 import Probes.RBLProbe;
 import Probes.SnmpProbe;
-import Probes.StorageProbe;
+import Probes.DiskProbe;
 import Results.DiscoveryResult;
 import Results.DiskResult;
 import Results.NicResult;
@@ -412,8 +412,8 @@ public class NetResults implements INetResults {
 			// Long.parseLong(disksWalk.get("1.3.6.1.2.1.25.2.3.1.1.6." +
 			// index));
 
-			DiskElement nicElement = new DiskElement(index, name);
-			lastElements.put(name, nicElement);
+			DiskElement diskElement = new DiskElement(index, name,false);
+			lastElements.put(name, diskElement);
 		}
 
 		if (lastElements.size() == 0)
@@ -422,7 +422,7 @@ public class NetResults implements INetResults {
 		return lastElements;
 	}
 
-	public DiskResult getDiskResult(Host host, StorageProbe probe) {
+	public DiskResult getDiskResult(Host host, DiskProbe probe) {
 		SnmpTemplate snmpTemplate = host.getSnmpTemp();
 
 		Set<OID> storageOids = new HashSet<OID>();

@@ -22,6 +22,7 @@ import com.google.gson.Gson;
 import DAL.ApiInterface;
 import DAL.DAL;
 import Elements.BaseElement;
+import Elements.DiskElement;
 import Elements.NicElement;
 import GlobalConstants.Constants;
 import GlobalConstants.Enums;
@@ -263,11 +264,12 @@ public class UsersManager {
 						// probe=(DiscoveryProbe)user.getTemplateProbes().get(elementParams.discovery_id);
 						baseElement = new NicElement(elementParams.index, elementParams.name, elementParams.status,
 								Utils.GeneralFunctions.getHostType(elementParams.hostType), elementParams.ifSpeed);
-						ElementsContainer.getInstance().addElement(elementParams.user_id, runnableProbeId, baseElement);
 						break;
 					case Constants.ds:
+						baseElement = new DiskElement(elementParams.index, elementParams.name, elementParams.status);
 						break;
 					}
+					ElementsContainer.getInstance().addElement(elementParams.user_id, runnableProbeId, baseElement);
 					// TODO add exisitng elements
 					// user.addNewDiscoveryElement(baseElement,host);
 				}

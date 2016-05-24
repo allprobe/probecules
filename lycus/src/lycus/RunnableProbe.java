@@ -11,7 +11,7 @@ import Probes.NicProbe;
 import Probes.PortProbe;
 import Probes.RBLProbe;
 import Probes.SnmpProbe;
-import Probes.StorageProbe;
+import Probes.DiskProbe;
 import Results.BaseResult;
 import Results.DiscoveryResult;
 import Rollups.RollupsContainer;
@@ -85,7 +85,7 @@ public class RunnableProbe implements Runnable {
 			return ProbeTypes.DISCOVERY;
 		if (getProbe() instanceof NicProbe)
 			return ProbeTypes.DISCBANDWIDTH;
-		if (getProbe() instanceof StorageProbe)
+		if (getProbe() instanceof DiskProbe)
 			return ProbeTypes.DISCDISK;
 		// if (getProbe() instanceof BaseElement)
 		// return ProbeTypes.DISCOVERYELEMENT;

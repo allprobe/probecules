@@ -6,9 +6,11 @@ import java.util.UUID;
 import java.util.concurrent.ConcurrentHashMap;
 
 import Elements.BaseElement;
+import Elements.DiskElement;
 import Elements.NicElement;
 import Probes.DiscoveryProbe;
 import Probes.NicProbe;
+import Probes.DiskProbe;
 import Results.DiscoveryResult;
 import Utils.GeneralFunctions;
 import Utils.Logit;
@@ -139,7 +141,31 @@ public class ElementsContainer {
 			if (element.isActive())
 				runNicElement(userId, runnableProbeId, element);
 		}
+		if (element instanceof DiskElement) {
+			addDiskElement(userId, runnableProbeId, element);
+			if (element.isActive())
+				runDiskElement(userId, runnableProbeId, element);
+		}
+	}
 
+	private void runDiskElement(String userId, String runnableProbeId, BaseElement element) {
+		DiscoveryProbe probe = (DiscoveryProbe) UsersManager.getUser(userId).getTemplateProbes()
+				.get(runnableProbeId.split("@")[2]);
+		User user = probe.getUser();
+		Host host = user.getHost(UUID.fromString(runnableProbeId.split("@")[1]));
+		DiskProbe diskProbe = new DiskProbe(probe,(DiskElement)element);
+		RunnableProbe diskRunnableProbe = new RunnableProbe(host, diskProbe);
+		RunnableProbeContainer.getInstanece().add(diskRunnableProbe);
+		// user.addRunnableProbe(nicRunnableProbe);
+	}
+
+	private void addDiskElement(String userId, String runnableProbeId, BaseElement element) {
+	
+		ConcurrentHashMap<String, BaseElement> elementMap = diskElements.get(runnableProbeId);
+		if (elementMap == null)
+			elementMap = new ConcurrentHashMap<String, BaseElement>();
+		elementMap.put(element.getName(), (DiskElement) element);
+		diskElements.put(runnableProbeId, elementMap);
 	}
 
 	private void runNicElement(String userId, String runnableProbeId, BaseElement element) {
