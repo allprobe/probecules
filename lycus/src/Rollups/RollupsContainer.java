@@ -26,6 +26,7 @@ import GlobalConstants.Enums;
 import GlobalConstants.Enums.SnmpError;
 import Interfaces.IRollupsContainer;
 import Results.BaseResult;
+import Results.DiskResult;
 import Results.NicResult;
 import Results.PingResult;
 import Results.PortResult;
@@ -48,6 +49,8 @@ public class RollupsContainer implements IRollupsContainer {
 	private HashMap<String, DataPointsRollup[]> snmpDataRollups = new HashMap<String, DataPointsRollup[]>();
 	private HashMap<String, DataPointsRollup[]> nicInDataRollups = new HashMap<String, DataPointsRollup[]>();
 	private HashMap<String, DataPointsRollup[]> nicOutDataRollups = new HashMap<String, DataPointsRollup[]>();
+	private HashMap<String, DataPointsRollup[]> diskSizeDataRollups = new HashMap<String, DataPointsRollup[]>();
+	private HashMap<String, DataPointsRollup[]> diskUsedDataRollups = new HashMap<String, DataPointsRollup[]>();
 
 	// Those are finished rollups
 	// private JSONObject finishedRollups4m = new JSONObject(); //
@@ -80,8 +83,13 @@ public class RollupsContainer implements IRollupsContainer {
 		} else if (result instanceof NicResult) {
 			addNicResult(result);
 		}
+		 else if (result instanceof DiskResult) {
+				addDiskResult(result);
+			}
 		return false;
 	}
+
+
 
 	@Override
 	public synchronized String getAllFinsihedRollups() {
@@ -468,6 +476,40 @@ public class RollupsContainer implements IRollupsContainer {
 		}
 	}
 
+	private void addDiskResult(BaseResult result) {
+		DiskResult diskResults = (DiskResult) result;
+
+		if (diskResults.getError() == SnmpError.NO_COMUNICATION)
+			return;
+
+		DataPointsRollup[] diskSizeRollups = diskSizeDataRollups.get(result.getRunnableProbeId());
+		DataPointsRollup[] diskUsedRollups = diskUsedDataRollups.get(result.getRunnableProbeId());
+
+		if (diskSizeRollups == null || diskUsedRollups == null) {
+			diskSizeDataRollups.put(result.getRunnableProbeId(), new DataPointsRollup[6]);
+			diskUsedDataRollups.put(result.getRunnableProbeId(), new DataPointsRollup[6]);
+		}
+		for (int i = 0; i < result.getNumberOfRollupTables(); i++) {
+			DataPointsRollup diskSizeRollup = diskSizeDataRollups.get(result.getRunnableProbeId())[i];
+			DataPointsRollup diskUsedRollup = diskUsedDataRollups.get(result.getRunnableProbeId())[i];
+
+			if (diskSizeRollup == null || diskUsedRollup == null) {
+				diskSizeRollup = new DataPointsRollup(result.getRunnableProbeId(), this.getRollupSize(i));
+				diskUsedRollup = new DataPointsRollup(result.getRunnableProbeId(), this.getRollupSize(i));
+
+				diskSizeDataRollups.get(result.getRunnableProbeId())[i] = diskSizeRollup;
+				diskUsedDataRollups.get(result.getRunnableProbeId())[i] = diskUsedRollup;
+
+			}
+			Logit.LogDebug("BREAKPOINT");
+			if(diskResults.getHrStorageSize()==null||diskResults.getHrStorageUsed()==null)
+				continue;
+			diskSizeRollup.add(diskResults.getLastTimestamp(), diskResults.getHrStorageSize());
+			diskUsedRollup.add(diskResults.getLastTimestamp(), diskResults.getHrStorageUsed());
+
+		}
+	}
+	
 	private void addWeberResult(BaseResult result) {
 		WebResult weberResults = (WebResult) result;
 		DataPointsRollup[] responseTimeRollups = webResponseTimeRollups.get(result.getRunnableProbeId());
