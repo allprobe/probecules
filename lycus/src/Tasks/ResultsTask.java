@@ -27,11 +27,11 @@ public class ResultsTask extends BaseTask {
 			ResultsContainer resultsContainer = ResultsContainer.getInstance();
 			String results = resultsContainer.getResults();
 
-			if (results.contains("rtt") || results.contains("packetLost"))
+			if (results.contains("01179751-b842-4dbb-a72e-30082c677249@discovery_777938b0-e4b0-4ec6-b0f2-ea880a0c09ef") || results.contains("1464038570055"))
 				Logit.LogDebug("BREAKPOINT - ResultsTask");
 			RollupsContainer rollupsContainer = RollupsContainer.getInstance();
 			String rollups = rollupsContainer.getAllFinsihedRollups();
-
+			System.out.println(results);
 			if (rollups != null)
 				Logit.LogDebug("BREAKPOINT - ResultsTask");
 
@@ -40,7 +40,7 @@ public class ResultsTask extends BaseTask {
 			}
 			String rpStr = rollups;
 			if (rollups !=null && rpStr.contains(
-					"0b05919c-6cc0-42cc-a74b-de3b0dcd4a2a@7352a46f-5189-428c-b4c0-fb98dedd10b1@snmp_50a71fa7-b794-46c0-b506-6732ac4af944")) {
+					"discovery_45035c45-2679-4af6-84ca-e924e78dd7bc")) {
 				Logit.LogDebug("BREAKPOINT - ResultsTask");
 			}
 			String encodedResults = null;

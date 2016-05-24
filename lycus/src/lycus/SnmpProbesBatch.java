@@ -252,9 +252,9 @@ public class SnmpProbesBatch implements Runnable {
 		return s.toString();
 	}
 
-	public boolean isExist(String partialId)   // hostId@templateId@interval
+	public boolean isExist(String runnableProbeId)   // hostId@templateId@interval
 	{
-		return snmpProbes.containsKey(partialId);
+		return snmpProbes.containsKey(runnableProbeId);
 	}
 	
 	@Override

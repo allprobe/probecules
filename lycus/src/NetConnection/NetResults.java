@@ -36,6 +36,7 @@ import Results.SnmpDeltaResult;
 import Results.SnmpResult;
 import Results.WebResult;
 import Utils.GeneralFunctions;
+import Utils.Logit;
 import lycus.Host;
 import lycus.SnmpTemplate;
 
@@ -248,6 +249,11 @@ public class NetResults implements INetResults {
 
 		String walkOid;
 
+		if(host.getHostIp().contains("192.168.0.121"))
+		{
+			Logit.LogDebug("test");
+		}
+		
 		long timestamp = System.currentTimeMillis();
 		HashMap<String, BaseElement> elements = null;
 		switch (probe.getType()) {
@@ -395,7 +401,7 @@ public class NetResults implements INetResults {
 			long hrStorageSize;
 			long hrStorageUsed;
 
-			name = disksWalk.get("1.3.6.1.2.1.25.2.3.1.1.3." + index);
+			name = disksWalk.get("1.3.6.1.2.1.25.2.3.1.3." + index);
 			// hrStorageAllocationUnits =
 			// Long.parseLong(disksWalk.get("1.3.6.1.2.1.25.2.3.1.1.4." +
 			// index));

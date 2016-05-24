@@ -15,12 +15,13 @@ import Utils.Logit;
 
 public class ElementsContainer {
 	private ConcurrentHashMap<String, ConcurrentHashMap<String, BaseElement>> nicElements;// ConcurrentHashMap<runnableProbeId,ConcurrentHashMap<elementName,NicElement>>
-	// private ConcurrentHashMap<String,NicElement> DiskElements;
+	private ConcurrentHashMap<String, ConcurrentHashMap<String, BaseElement>> diskElements;// ConcurrentHashMap<runnableProbeId,ConcurrentHashMap<elementName,DiskElement>>
 	// private ConcurrentHashMap<String,NicElement> ProcessElements;
 	private static ElementsContainer instance;
 
 	private ElementsContainer() {
 		nicElements = new ConcurrentHashMap<String, ConcurrentHashMap<String, BaseElement>>();
+		diskElements = new ConcurrentHashMap<String, ConcurrentHashMap<String, BaseElement>>();
 	}
 
 	public static ElementsContainer getInstance() {
@@ -36,8 +37,44 @@ public class ElementsContainer {
 				ResultsContainer.getInstance().addResult(discoveryResult);
 			}
 		case ds:
+			if (isDiskElementsChanged(discoveryResult)) {
+				ResultsContainer.getInstance().addResult(discoveryResult);
+			}
 			break;
 		}
+	}
+
+	private boolean isDiskElementsChanged(DiscoveryResult discoveryResult) {
+		Map<String, BaseElement> currentElements = diskElements.get(discoveryResult.getRunnableProbeId());
+		// discoveryResult.getElements().size() != 0
+		if (discoveryResult == null)
+			return false;
+		if (currentElements == null) {
+			ConcurrentHashMap<String, BaseElement> map = new ConcurrentHashMap<String, BaseElement>(
+					(Map) discoveryResult.getElements());
+			diskElements.put(discoveryResult.getRunnableProbeId(), map);
+			return true;
+		}
+		Map<String, BaseElement> newElements = discoveryResult.getElements();
+
+		if (currentElements.size() != newElements.size()) {
+			ConcurrentHashMap<String, BaseElement> newMap = new ConcurrentHashMap<String, BaseElement>(
+					(Map) discoveryResult.getElements());
+			updateStatuses(currentElements, newMap);
+			diskElements.put(discoveryResult.getRunnableProbeId(), newMap);
+			return true;
+		}
+		for (BaseElement newElement : newElements.values()) {
+			if (currentElements.get(newElement.getName()) == null
+					|| !currentElements.get(newElement.getName()).isIdentical(newElement)) {
+				ConcurrentHashMap<String, BaseElement> newMap = new ConcurrentHashMap<String, BaseElement>(
+						(Map) discoveryResult.getElements());
+				updateStatuses(currentElements, newMap);
+				diskElements.put(discoveryResult.getRunnableProbeId(), newMap);
+				return true;
+			}
+		}
+		return false;
 	}
 
 	// private void applyNicStatusesOnNewResult(DiscoveryResult discoveryResult)

@@ -309,7 +309,6 @@ public class RunnableProbeContainer implements IRunnableProbeContainer {
 								+ "@" + probe.getInterval())
 						&& batch.getSnmpProbes().size() < Constants.getBatchesSize()) {
 					batch.getSnmpProbes().put(runnableProbe.getId(), runnableProbe);
-					return batch;
 				}
 			} catch (Exception e) {
 				Logit.LogWarn("Unable to add Runnable Probe to existing batch: " + runnableProbe.getId() + " \n"
@@ -334,10 +333,10 @@ public class RunnableProbeContainer implements IRunnableProbeContainer {
 			RunnableFuture runnableFuture = runnableProbes.get(runnableProbe);
 
 			for (SnmpProbesBatch batch : batches.values()) {
-				String partialId = runnableProbe.getHost().getHostId().toString() + "@"
-						+ runnableProbe.getProbe().getTemplate_id().toString() + "@"
-						+ runnableProbe.getProbe().getInterval();
-				if (batch.isExist(partialId)) {
+//				String partialId = runnableProbe.getHost().getHostId().toString() + "@"
+//						+ runnableProbe.getProbe().getTemplate_id().toString() + "@"
+//						+ runnableProbe.getProbe().getInterval();
+				if (batch.isExist(runnableProbe.getId())) {
 					batch.deleteSnmpProbe(runnableProbe);
 					if (batch.getSnmpProbes().size() == 0) {
 						runnableFuture.getFuture().cancel(true);

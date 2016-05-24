@@ -103,7 +103,7 @@ public class ResultsContainer implements IResultsContainer {
 
 		String rpStr = rpr.getRunnableProbeId();
 		if (rpStr.contains(
-				"discovery_777938b0-e4b0-4ec6-b0f2-ea880a0c09ef"))
+				"discovery_45035c45-2679-4af6-84ca-e924e78dd7bc"))
 			Logit.LogDebug("BREAKPOINT");
 		
 		RunnableProbe rp = RunnableProbeContainer.getInstanece().get(rpr.getRunnableProbeId());
@@ -209,6 +209,9 @@ public class ResultsContainer implements IResultsContainer {
 
 	@Override
 	public boolean addResult(BaseResult result) {
+		
+		if(result.getRunnableProbeId().contains("discovery_45035c45-2679-4af6-84ca-e924e78dd7bc"))
+			Logit.LogDebug("BREAKPOINT");
 			synchronized (lockResults) {
 				results.add(result);
 		}
