@@ -107,6 +107,10 @@ public class ResultsContainer implements IResultsContainer {
 			Logit.LogDebug("BREAKPOINT");
 		
 		RunnableProbe rp = RunnableProbeContainer.getInstanece().get(rpr.getRunnableProbeId());
+		
+		if(rp.getProbeType().equals(ProbeTypes.DISCDISK))
+			Logit.LogDebug("BREAKPOINT");
+		
 		if (rp == null)
 			return null;
 		result.put("USER_ID", rp.getProbe().getUser().getUserId().toString());

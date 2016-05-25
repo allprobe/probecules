@@ -10,6 +10,7 @@ import Elements.NicElement;
 import NetConnection.NetResults;
 import Results.BaseResult;
 import Results.DiskResult;
+import Utils.GeneralFunctions;
 import lycus.Host;
 import lycus.Trigger;
 import lycus.User;
@@ -86,7 +87,10 @@ public class DiskProbe extends BaseProbe {
 	public OID getHrstorageusedoid() {
 		return new OID(DiskProbe.hrStorageUsedOID+this.getIndex());
 	}
-
+	@Override
+	public String getProbe_id() {
+		return discoveryProbe.getProbe_id()+"@"+GeneralFunctions.Base64Encode(this.getName());
+	}
 
 	@Override
 	public BaseResult getResult(Host h) {
