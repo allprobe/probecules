@@ -248,10 +248,12 @@ public class UsersManager {
 					elementParams.name = (String) elementJson.get("name");
 					elementParams.index = Integer.parseInt(elementJson.get("index").toString());
 					elementParams.status = (boolean) elementJson.get("active");
+					
+					if(((String)hostElementsJson.get("elements_type")).contains("bw")){
 					elementParams.hostType = (String) elementJson.get("hostType");
-
-					elementParams.ifSpeed = (long) elementJson.get("ifSpeed");
-
+					elementParams.ifSpeed = (long) elementJson.get("ifSpeed");}
+					else if(((String)hostElementsJson.get("elements_type")).contains("ds"))
+						elementParams.hrStorageAllocationUnits=(long) elementJson.get("hrStorageAllocationUnits");
 					User user = getUsers().get(UUID.fromString(elementParams.user_id));
 					if (user == null)
 						continue;

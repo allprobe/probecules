@@ -14,6 +14,7 @@ public class DiscoveryElementParams {
 	public String elements_type;
 	public String elements;
 	public String hostType;
+	public long hrStorageAllocationUnits;
 	
 	public DiscoveryElementParams() {
 	}
