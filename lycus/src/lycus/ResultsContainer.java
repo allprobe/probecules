@@ -108,8 +108,8 @@ public class ResultsContainer implements IResultsContainer {
 		
 		RunnableProbe rp = RunnableProbeContainer.getInstanece().get(rpr.getRunnableProbeId());
 		
-		if(rp.getProbeType().equals(ProbeTypes.DISCDISK))
-			Logit.LogDebug("BREAKPOINT");
+		if(rpr.getResultString()==null)
+			return null;
 		
 		if (rp == null)
 			return null;
@@ -336,7 +336,7 @@ public class ResultsContainer implements IResultsContainer {
 			
 			String rpStr = results.get(i).getRunnableProbeId();
 			if (rpStr.contains(
-					"discovery_777938b0-e4b0-4ec6-b0f2-ea880a0c09ef"))
+					"discovery_c7629ed7-d0ec-4eca-8742-06344954434e@dmVuZXQw"))
 				Logit.LogDebug("BREAKPOINT");
 			
 			JSONObject resultDBFormat = rawResultsDBFormat(results.get(i));

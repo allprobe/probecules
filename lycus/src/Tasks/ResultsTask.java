@@ -27,7 +27,7 @@ public class ResultsTask extends BaseTask {
 			ResultsContainer resultsContainer = ResultsContainer.getInstance();
 			String results = resultsContainer.getResults();
 
-			if (results.contains("01179751-b842-4dbb-a72e-30082c677249@discovery_777938b0-e4b0-4ec6-b0f2-ea880a0c09ef") || results.contains("DISCDISK"))
+			if (results.contains("discovery_c7629ed7-d0ec-4eca-8742-06344954434e@dmVuZXQw") || results.contains("DISCDISK"))
 				Logit.LogDebug("BREAKPOINT - ResultsTask");
 			RollupsContainer rollupsContainer = RollupsContainer.getInstance();
 			String rollups = rollupsContainer.getAllFinsihedRollups();

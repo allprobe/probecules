@@ -110,7 +110,7 @@ public class RunnableProbe implements Runnable {
 		if (rpStr.contains("ff00ff2c-0f40-4616-9ac4-a71447b22431@http_83b9b614-b210-45ce-942b-cf45114afe01"))
 			Logit.LogDebug("BREAKPOINT - RunnableProbe");
 
-		if(this.getProbeType().equals(ProbeTypes.DISCDISK))
+		if(this.getProbeType().equals(ProbeTypes.DISCBANDWIDTH))
 			Logit.LogDebug("BREAKPOINT");
 		
 		try {
