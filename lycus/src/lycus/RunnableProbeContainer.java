@@ -14,6 +14,7 @@ import GlobalConstants.Constants;
 import GlobalConstants.GlobalConfig;
 import GlobalConstants.ProbeTypes;
 import Interfaces.IRunnableProbeContainer;
+import Model.BatchFuture;
 import Model.RunnableFuture;
 import Probes.BaseProbe;
 import Utils.Logit;
@@ -43,8 +44,8 @@ public class RunnableProbeContainer implements IRunnableProbeContainer {
 	private ScheduledExecutorService diskProbeExec = Executors.newScheduledThreadPool(10);
 	private ScheduledExecutorService snmpProbeExec = Executors
 			.newScheduledThreadPool(GlobalConfig.getSnmpThreadCount());
-
-	private HashMap<String, SnmpProbesBatch> batches = new HashMap<String, SnmpProbesBatch>(); // batchId:hostId@templateId@interval@batchUUID
+	
+	private HashMap<String, BatchFuture> batches = new HashMap<String, BatchFuture>(); // batchId:hostId@templateId@interval@batchUUID
 	private final Object lock = new Lock();
 
 	protected RunnableProbeContainer() {
@@ -271,23 +272,24 @@ public class RunnableProbeContainer implements IRunnableProbeContainer {
 			ScheduledFuture<?> future;
 			switch (runnableProbe.getProbeType()) {
 			case SNMP:
-				String rpStr = runnableProbe.getId();
-				if (runnableProbe == null)
-					return null;
+//				String rpStr = runnableProbe.getId();
+//				if (runnableProbe == null)
+//					return null;
 
-				SnmpProbesBatch batch = addSnmpRunnableProbeToBatches(runnableProbe);
-				if (batch == null)
-					return null;
-				if (batch.isRunning()) {
-					RunnableFuture runnableFuture = runnableProbes.get(runnableProbe.getId());
-					if (runnableFuture != null) {
-						runnableProbe.setRunning(true);
-						return runnableFuture.getFuture();
-					} else
-						return null;
-				}
-
-				future = snmpBatchExec.scheduleAtFixedRate(batch, 0, batch.getInterval(), TimeUnit.SECONDS);
+//				SnmpProbesBatch batch = addSnmpRunnableProbeToBatches(runnableProbe);
+//				if (batch == null)
+//					return null;
+//				if (batch.isRunning()) {
+//					RunnableFuture runnableFuture = runnableProbes.get(runnableProbe.getId());
+//					if (runnableFuture != null) {
+//						runnableProbe.setRunning(true);
+//						return runnableFuture.getFuture();
+//					} else
+//						return null;
+//				}
+//
+//				future = snmpBatchExec.scheduleAtFixedRate(batch, 0, batch.getInterval(), TimeUnit.SECONDS);
+				future = addSnmpRunnableProbeToBatches(runnableProbe);
 				break;
 			case ICMP:
 				future = pingerExec.scheduleAtFixedRate(runnableProbe, 0, runnableProbe.getProbe().getInterval(),
@@ -353,10 +355,11 @@ public class RunnableProbeContainer implements IRunnableProbeContainer {
 		return true;
 	}
 
-	private SnmpProbesBatch addSnmpRunnableProbeToBatches(RunnableProbe runnableProbe) {
-		for (Map.Entry<String, SnmpProbesBatch> _batch : batches.entrySet()) {
+	private ScheduledFuture<?> addSnmpRunnableProbeToBatches(RunnableProbe runnableProbe) {
+		SnmpProbesBatch batch = null;
+		for (Map.Entry<String, BatchFuture> _batch : batches.entrySet()) {
 			try {
-				SnmpProbesBatch batch = _batch.getValue();
+				batch = _batch.getValue().getBatch();
 				Host host = runnableProbe.getHost();
 				BaseProbe probe = runnableProbe.getProbe();
 				if (batch
@@ -364,6 +367,13 @@ public class RunnableProbeContainer implements IRunnableProbeContainer {
 								+ "@" + probe.getInterval())
 						&& batch.getSnmpProbes().size() < Constants.getBatchesSize()) {
 					batch.getSnmpProbes().put(runnableProbe.getId(), runnableProbe);
+					
+					BatchFuture batchFuture = batches.get(batch.getBatchId());
+					if (batchFuture != null) {
+						batchFuture.getBatch().setRunning(true);
+						return batchFuture.getFuture();
+					} else
+						return null;
 				}
 			} catch (Exception e) {
 				Logit.LogWarn("Unable to add Runnable Probe to existing batch: " + runnableProbe.getId() + " \n"
@@ -374,8 +384,10 @@ public class RunnableProbeContainer implements IRunnableProbeContainer {
 
 		try {
 			SnmpProbesBatch newBatch = new SnmpProbesBatch(runnableProbe);
-			batches.put(newBatch.getBatchId(), newBatch);
-			return newBatch;
+			ScheduledFuture<?> future = snmpBatchExec.scheduleAtFixedRate(newBatch, 0, runnableProbe.getProbe().getInterval(), TimeUnit.SECONDS);
+			
+			BatchFuture batchFuture = new BatchFuture(future,newBatch);
+			return future;
 		} catch (Exception e) {
 			Logit.LogWarn(
 					"Unable to add Runnable Probe to new batch: " + runnableProbe.getId() + "\n" + e.getMessage());
@@ -387,16 +399,16 @@ public class RunnableProbeContainer implements IRunnableProbeContainer {
 		try {
 			RunnableFuture runnableFuture = runnableProbes.get(runnableProbe.getId());
 
-			for (SnmpProbesBatch batch : batches.values()) {
+			for (BatchFuture batch : batches.values()) {
 				// String partialId =
 				// runnableProbe.getHost().getHostId().toString() + "@"
 				// + runnableProbe.getProbe().getTemplate_id().toString() + "@"
 				// + runnableProbe.getProbe().getInterval();
-				if (batch.isExist(runnableProbe.getId())) {
-					batch.deleteSnmpProbe(runnableProbe);
-					if (batch.getSnmpProbes().size() == 0) {
+				if (batch.getBatch().isExist(runnableProbe.getId())) {
+					batch.getBatch().deleteSnmpProbe(runnableProbe);
+					if (batch.getBatch().getSnmpProbes().size() == 0) {
 						runnableFuture.getFuture().cancel(true);
-						batches.remove(batch.getBatchId());
+						batches.remove(batch.getBatch().getBatchId());
 					}
 					return true;
 				} else
