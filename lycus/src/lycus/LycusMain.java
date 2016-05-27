@@ -28,6 +28,7 @@ import Utils.Logit;;
 public class LycusMain {
 
 	public static void main(String[] args) {
+		Logit.LogCheck("Starting Probecules Version: 0.109");
 		System.setProperty("log4j.debug","true");
 		if (args.length == 0 || args[0] == "")
 			GlobalConfig.setConfPath(null);
