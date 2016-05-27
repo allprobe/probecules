@@ -6,6 +6,7 @@ package Probes;
 
 import java.util.UUID;
 
+import Model.UpdateModel;
 import Model.UpdateValueModel;
 import lycus.Host;
 import NetConnection.NetResults;
@@ -93,8 +94,9 @@ public class IcmpProbe extends BaseProbe {
 		return s.toString();
 	}
 
-	public boolean updateKeyValues(UpdateValueModel updateValue) {
-		super.updateKeyValues(updateValue);
+	public boolean updateKeyValues(UpdateModel updateModel) {
+		super.updateKeyValues(updateModel);
+		UpdateValueModel updateValue = updateModel.update_value;
 		if (updateValue.key.npings != null && getCount() != updateValue.key.npings)
 		{
 			this.setCount(updateValue.key.npings);

@@ -9,6 +9,7 @@ import GlobalConstants.Enums;
 import GlobalConstants.Enums.DiscoveryElementType;
 import Model.DiscoveryTrigger;
 import Model.KeyUpdateModel;
+import Model.UpdateModel;
 import Model.UpdateValueModel;
 import NetConnection.NetResults;
 import Results.BaseResult;
@@ -58,9 +59,10 @@ public class DiscoveryProbe extends BaseProbe {
 		return discoveryResult;
 	}
 
-	public boolean updateKeyValues(UpdateValueModel updateValue)
+	public boolean updateKeyValues(UpdateModel updateModel)
 	{
-		super.updateKeyValues(updateValue);
+		UpdateValueModel updateValue = updateModel.update_value;
+		super.updateKeyValues(updateModel);
 		setType(DiscoveryElementType.valueOf(updateValue.key.discovery_type));
 		setElementInterval(updateValue.key.element_interval);
 		updateTriggers(updateValue.key);

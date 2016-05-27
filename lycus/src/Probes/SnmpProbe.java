@@ -6,6 +6,7 @@ import org.snmp4j.smi.OID;
 import GlobalConstants.SnmpDataType;
 import GlobalConstants.SnmpUnit;
 import GlobalConstants.Enums.SnmpStoreAs;
+import Model.UpdateModel;
 import Model.UpdateValueModel;
 import Results.BaseResult;
 import Utils.GeneralFunctions;
@@ -76,9 +77,10 @@ public class SnmpProbe extends BaseProbe {
 		return s.toString();
 	}
 	
-	public boolean updateKeyValues(UpdateValueModel updateValue)
+	public boolean updateKeyValues(UpdateModel updateModel)
 	{
-		super.updateKeyValues(updateValue);
+		super.updateKeyValues(updateModel);
+		UpdateValueModel updateValue = updateModel.update_value;
 		if (!GeneralFunctions.isNullOrEmpty(updateValue.key.snmp_oid) && !getOid().equals(updateValue.key.snmp_oid))
 		{
 			oid = new OID(updateValue.key.snmp_oid);

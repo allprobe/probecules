@@ -234,6 +234,10 @@ public class GeneralFunctions {
 		return templateId.toString() + "@" + hostId.toString() + "@" + probeId;
 	}
 
+	public static String getRunnableProbeId(String templateId, String hostId, String probeId) {
+		return templateId + "@" + hostId + "@" + probeId;
+	}
+	
 	public int getNumberOfRollupTables(long interval) {
 		if (interval < 240)
 			return 6;

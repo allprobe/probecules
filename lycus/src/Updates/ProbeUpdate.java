@@ -104,7 +104,7 @@ public class ProbeUpdate extends BaseUpdate {
 			} else {
 				probe = getUser().getProbeFor(getUpdate().probe_id);
 				ChangeInterval(probe.getInterval());
-				probe.updateKeyValues(getUpdate().update_value);
+				probe.updateKeyValues(getUpdate());
 				Logit.LogCheck("New probe was updated,  probe was already exist");
 			}
 
@@ -157,7 +157,7 @@ public class ProbeUpdate extends BaseUpdate {
 			// probeParams.type = update.update_value.type;
 
 			if (getUpdate().update_value != null)
-				runnableProbe.getProbe().updateKeyValues(getUpdate().update_value);
+				runnableProbe.getProbe().updateKeyValues(getUpdate());
 			// SnmpProbe Probe (SnmpProbe)runnableProbe.getProbe();
 		}
 

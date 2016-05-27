@@ -14,6 +14,7 @@ public interface IRunnableProbeContainer {
 	HashMap<String,RunnableProbe> getByHostTemplate(String templateId, String hostId);
 	boolean add(RunnableProbe runnableProbe);
 	boolean remove(RunnableProbe runnableProbe);
+	boolean pause(String runnableProbeId, boolean isActive);
 	boolean removeByTemplateId(String teplateId);
 	boolean removeByProbeId(String probeId);
 	boolean removeByRunnableProbeId(String probeId);

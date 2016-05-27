@@ -1,6 +1,7 @@
 package lycus;
 
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import java.util.UUID;
@@ -16,6 +17,7 @@ import Interfaces.IRunnableProbeContainer;
 import Model.RunnableFuture;
 import Probes.BaseProbe;
 import Utils.Logit;
+import sun.misc.Lock;
 
 public class RunnableProbeContainer implements IRunnableProbeContainer {
 
@@ -43,6 +45,7 @@ public class RunnableProbeContainer implements IRunnableProbeContainer {
 			.newScheduledThreadPool(GlobalConfig.getSnmpThreadCount());
 
 	private HashMap<String, SnmpProbesBatch> batches = new HashMap<String, SnmpProbesBatch>(); // batchId:hostId@templateId@interval@batchUUID
+	private final Object lock = new Lock();
 
 	protected RunnableProbeContainer() {
 		runnableProbes = new HashMap<String, RunnableFuture>();
@@ -157,6 +160,59 @@ public class RunnableProbeContainer implements IRunnableProbeContainer {
 			return true;
 		}
 
+		return true;
+	}
+
+	@Override
+	public boolean pause(String runnableProbeId, boolean isActive) {
+		if (!runnableProbeId.contains("@@")) {
+			RunnableFuture runnableFuture = runnableProbes.get(runnableProbeId);
+			if (runnableFuture == null)
+				return true;
+
+			pause(runnableFuture, isActive);
+		} else {
+			String templateId = runnableProbeId.split("@@")[0];
+			String probeId = runnableProbeId.split("@@")[1];
+			HashMap<String, RunnableProbe> runnableProbesHash = probeRunnableProbes.get(probeId);
+			for (String rpId : runnableProbesHash.keySet()) {
+				if (rpId.contains(templateId))
+				{
+					RunnableFuture runnableFuture = runnableProbes.get(rpId);
+					pause(runnableFuture, isActive);
+				}
+					
+			}
+		}
+		return true;
+	}
+
+	private boolean pause(RunnableFuture runnableFuture, boolean isActive) {
+		if (runnableFuture.getRunnableProbe().getProbeType() == ProbeTypes.SNMP) {
+
+		} else {
+			ScheduledFuture<?> scheduledFuture = runnableFuture.getFuture();
+			try {
+				if (!isActive) {
+					synchronized (lock) {
+						scheduledFuture.wait();
+					}
+				} else {
+					synchronized (lock) {
+						scheduledFuture.notify();
+					}
+				}
+			} catch (Exception ex) {
+				if (!isActive) {
+					Logit.LogError("RunnableProbeContainer - pause()", "The runnable probe did not pause due to error");
+				} else {
+					Logit.LogError("RunnableProbeContainer - pause()",
+							"The runnable probe did not restart due to error");
+				}
+
+				return false;
+			}
+		}
 		return true;
 	}
 
@@ -330,12 +386,13 @@ public class RunnableProbeContainer implements IRunnableProbeContainer {
 
 	private boolean stopSnmpProbe(RunnableProbe runnableProbe) {
 		try {
-			RunnableFuture runnableFuture = runnableProbes.get(runnableProbe);
+			RunnableFuture runnableFuture = runnableProbes.get(runnableProbe.getId());
 
 			for (SnmpProbesBatch batch : batches.values()) {
-//				String partialId = runnableProbe.getHost().getHostId().toString() + "@"
-//						+ runnableProbe.getProbe().getTemplate_id().toString() + "@"
-//						+ runnableProbe.getProbe().getInterval();
+				// String partialId =
+				// runnableProbe.getHost().getHostId().toString() + "@"
+				// + runnableProbe.getProbe().getTemplate_id().toString() + "@"
+				// + runnableProbe.getProbe().getInterval();
 				if (batch.isExist(runnableProbe.getId())) {
 					batch.deleteSnmpProbe(runnableProbe);
 					if (batch.getSnmpProbes().size() == 0) {
@@ -355,4 +412,10 @@ public class RunnableProbeContainer implements IRunnableProbeContainer {
 		}
 	}
 
+	// private List<RunnableFuture> getRunnableFutures(String runnableProbeId)
+	// // Without HostId
+	// {
+	//
+	//
+	// }
 }

@@ -7,11 +7,13 @@ package Probes;
 import java.util.HashMap;
 import java.util.UUID;
 import GlobalConstants.Constants;
+import Model.UpdateModel;
 import Model.UpdateValueModel;
 import Results.BaseResult;
 import Utils.GeneralFunctions;
 import Utils.Logit;
 import lycus.Host;
+import lycus.RunnableProbeContainer;
 import lycus.Trigger;
 import lycus.User;
 
@@ -157,13 +159,16 @@ public class BaseProbe  {
         return s.toString();
     }
 	
-	public boolean updateKeyValues(UpdateValueModel updateValue)
+	public boolean updateKeyValues(UpdateModel updateModel)
 	{
-//		if (updateValue.status != null && isActive() != updateValue.status.equals(Constants._true))
-//		{
-			setActive(updateValue.status.equals(Constants._true));
+		UpdateValueModel updateValue = updateModel.update_value;
+		if (updateValue.status != null && isActive() != updateValue.status.equals(Constants._true))
+		{
+			boolean isActive = updateValue.status.equals(Constants._true);
+			setActive(isActive);
+			RunnableProbeContainer.getInstanece().pause(Utils.GeneralFunctions.getRunnableProbeId(updateModel.template_id, updateModel.host_id, updateModel.probe_id), isActive);
 			Logit.LogCheck("Is active for " + getName() +  " Is " + isActive);
-//		}
+		}
 		if (GeneralFunctions.isChanged(getMultiplier(), updateValue.multiplier))
 		{
 			setMultiplier(updateValue.multiplier);

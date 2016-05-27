@@ -2,6 +2,7 @@ package Probes;
 
 import java.util.UUID;
 
+import Model.UpdateModel;
 import Model.UpdateValueModel;
 import lycus.Host;
 import NetConnection.NetResults;
@@ -46,9 +47,10 @@ public class RBLProbe extends BaseProbe {
 		return s.toString();
 	}
 	
-	 public boolean updateKeyValues(UpdateValueModel updateValue)
+	 public boolean updateKeyValues(UpdateModel updateModel)
 		{
-			super.updateKeyValues(updateValue);
+			super.updateKeyValues(updateModel);
+			UpdateValueModel updateValue = updateModel.update_value;
 			if (!GeneralFunctions.isNullOrEmpty(updateValue.key.rbl) && !getRBL().equals(updateValue.key.rbl))
 			{
 				this.setRBL(updateValue.key.rbl);

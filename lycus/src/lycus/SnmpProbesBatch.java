@@ -170,15 +170,15 @@ public class SnmpProbesBatch implements Runnable {
 
 				List<SnmpProbe> _snmpProbes = new ArrayList<SnmpProbe>();
 
-				for (RunnableProbe rp : snmpProbes) {
+				for (RunnableProbe runnableProbe : snmpProbes) {
 
-					if(rp.isActive())
+					if(runnableProbe.isActive())
 					{
 						if (rpStr.contains(
 								"788b1b9e-d753-4dfa-ac46-61c4374eeb84@inner_036f81e0-4ec0-468a-8396-77c21dd9ae5a"))
 							Logit.LogDebug("BREAKPOINT");
 
-						_snmpProbes.add((SnmpProbe) rp.getProbe());
+						_snmpProbes.add((SnmpProbe) runnableProbe.getProbe());
 					}
 				}
 
