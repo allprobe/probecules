@@ -14,6 +14,8 @@ import java.util.Calendar;
 import java.util.Date;
 import java.util.Properties;
 
+import Utils.Logit;
+
 /**
  *
  * @author ran
@@ -254,6 +256,8 @@ public class GlobalConfig {
         DateFormat dateFormat = new SimpleDateFormat("yyyy/MM/dd HH:mm:ss");
         Calendar cal = Calendar.getInstance();
         System.out.println("Global Initialization Succeed! - "+dateFormat.format(cal.getTime()));
+        Logit.LogCheck("Global Initialization Succeed! - V0.109  " + dateFormat.format(cal.getTime()));
+        
         return true;
     }
 

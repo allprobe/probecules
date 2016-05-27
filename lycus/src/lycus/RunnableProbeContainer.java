@@ -181,7 +181,6 @@ public class RunnableProbeContainer implements IRunnableProbeContainer {
 					RunnableFuture runnableFuture = runnableProbes.get(rpId);
 					pause(runnableFuture, isActive);
 				}
-					
 			}
 		}
 		return true;
