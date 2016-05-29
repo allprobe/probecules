@@ -172,7 +172,7 @@ public class RunnableProbeContainer implements IRunnableProbeContainer {
 		} else {
 			String templateId = runnableProbeId.split("@@")[0];
 			String probeId = runnableProbeId.split("@@")[1];
-			HashMap<String, RunnableProbe> runnableProbesHash = probeRunnableProbes.get(probeId);
+			HashMap<String, RunnableProbe> runnableProbesHash = getByProbe(probeId);
 			for (String rpId : runnableProbesHash.keySet()) {
 				if (rpId.contains(templateId))
 				{
@@ -192,11 +192,11 @@ public class RunnableProbeContainer implements IRunnableProbeContainer {
 			try {
 				if (!isActive) {
 					synchronized (lock) {
-						scheduledFuture.wait();
+						runnableFuture.getRunnableProbe().wait();
 					}
 				} else {
 					synchronized (lock) {
-						scheduledFuture.notify();
+						runnableFuture.getRunnableProbe().notify();
 					}
 				}
 			} catch (Exception ex) {
