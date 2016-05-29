@@ -36,6 +36,7 @@ public class SnmpProbesBatch implements Runnable {
 	// check vars
 	private TransportMapping transport;
 	private Snmp snmp;
+	private Object lockSnmpProbe = new Object();
 
 	public SnmpProbesBatch(RunnableProbe rp) {
 		snmpPreviousResults = new HashMap<String, SnmpResult>();
@@ -172,8 +173,7 @@ public class SnmpProbesBatch implements Runnable {
 
 				for (RunnableProbe runnableProbe : snmpProbes) {
 
-					if(runnableProbe.isActive())
-					{
+					if (runnableProbe.isActive()) {
 						if (rpStr.contains(
 								"788b1b9e-d753-4dfa-ac46-61c4374eeb84@inner_036f81e0-4ec0-468a-8396-77c21dd9ae5a"))
 							Logit.LogDebug("BREAKPOINT");
@@ -221,26 +221,30 @@ public class SnmpProbesBatch implements Runnable {
 		SnmpDeltaResult snmpDeltaResult = new SnmpDeltaResult(result.getRunnableProbeId());
 		SnmpResult snmpPreviousData = snmpPreviousResults.get(result.getRunnableProbeId());
 		if (snmpPreviousData != null) {
-//			snmpPreviousData.setLastTimestamp(timeStamp);
+			// snmpPreviousData.setLastTimestamp(timeStamp);
 			snmpDeltaResult.setData(snmpPreviousData.getData(), result.getData());
 		} else
 			snmpDeltaResult.setData(null, result.getData());
-		
+
 		snmpDeltaResult.setData(snmpPreviousData != null ? snmpPreviousData.getData() : null, result.getData());
 		snmpDeltaResult.setLastTimestamp(timeStamp);
-		
+
 		snmpPreviousResults.put(result.getRunnableProbeId(), result);
-//		snmpPreviousResults.remove(snmpPreviousData);
+		// snmpPreviousResults.remove(snmpPreviousData);
 		return snmpDeltaResult;
 
 	}
 
 	public void deleteSnmpProbe(RunnableProbe rp) {
-		this.getSnmpProbes().remove(rp.getId());
+		synchronized (lockSnmpProbe) {
+			this.getSnmpProbes().remove(rp.getId());
+		}
 	}
 
 	public void addSnmpProbe(RunnableProbe rp) {
-		this.getSnmpProbes().put(rp.getId(), rp);
+		synchronized (lockSnmpProbe) {
+			this.getSnmpProbes().put(rp.getId(), rp);
+		}
 	}
 
 	@Override
@@ -252,14 +256,14 @@ public class SnmpProbesBatch implements Runnable {
 		return s.toString();
 	}
 
-	public boolean isExist(String runnableProbeId)   // hostId@templateId@interval
+	public boolean isExist(String runnableProbeId) // hostId@templateId@interval
 	{
 		return snmpProbes.containsKey(runnableProbeId);
 	}
-	
+
 	@Override
 	protected void finalize() throws Throwable {
 		// stopSnmpListener();
 	}
-	
+
 }

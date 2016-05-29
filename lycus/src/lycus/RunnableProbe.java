@@ -2,6 +2,7 @@ package lycus;
 
 import java.util.concurrent.ScheduledFuture;
 
+import GlobalConstants.Enums.DiscoveryElementType;
 import GlobalConstants.ProbeTypes;
 import Probes.BaseProbe;
 import Probes.DiscoveryProbe;
@@ -101,9 +102,9 @@ public class RunnableProbe implements Runnable {
 
 		BaseResult result = null;
 
-		String rpStr = this.getHost().getHostId().toString() + "@" + getProbe().getProbe_id();
+		String rpStr = this.getId();
 		if (rpStr.contains(
-				"discovery_312c1f48-8550-415d-a19c-9c2ecbda605e"))
+				"eb62f236-4b53-4014-88fb-cbb72a77745d@7352a46f-5189-428c-b4c0-fb98dedd10b1@discovery_c7629ed7-d0ec-4eca-8742-06344954434e")&& ((DiscoveryProbe)this.getProbe()).getType()==DiscoveryElementType.bw)
 			Logit.LogDebug("BREAKPOINT - RunnableProbe");
 
 		String rpStr2 = this.getHost().getHostId().toString() + "@" + getProbe().getProbe_id();

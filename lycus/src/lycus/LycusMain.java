@@ -4,11 +4,16 @@
  */
 package lycus;
 
+import java.io.IOException;
 import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.TimeUnit;
 
 import org.json.simple.JSONObject;
+import org.jsoup.Jsoup;
+import org.jsoup.nodes.Document;
+import org.jsoup.nodes.Element;
+import org.jsoup.select.Elements;
 
 import DAL.ApiInterface;
 import DAL.ApiRequest;
@@ -43,6 +48,30 @@ public class LycusMain {
 		UsersManager.Initialize();// setup initial config (InitServer)
 		
 //		Logit.LogError("TEST",workingDir);
+		
+		
+		
+		
+		try {
+		      // fetch the document over HTTP
+		      Document doc = Jsoup.connect("http://www.adcd.co.il/").get();
+		      
+		      // get the page title
+		      String title = doc.title();
+		      System.out.println("title: " + title);
+		      
+		      // get all links in page
+		      Elements links = doc.select("a[href]");
+		      for (Element link : links) {
+		        // get the value from the href attribute
+		        System.out.println("\nlink: " + link.attr("href"));
+		        System.out.println("text: " + link.text());
+		      }
+		    } catch (IOException e) {
+		    e.printStackTrace();
+		    }
+		
+		
 		
 		
 //		JSONObject obj=new JSONObject();

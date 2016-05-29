@@ -38,6 +38,7 @@ public class ElementsContainer {
 			if (isNicElementsChanged(discoveryResult)) {
 				ResultsContainer.getInstance().addResult(discoveryResult);
 			}
+			break;
 		case ds:
 			if (isDiskElementsChanged(discoveryResult)) {
 				ResultsContainer.getInstance().addResult(discoveryResult);
