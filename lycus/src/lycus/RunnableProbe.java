@@ -95,7 +95,7 @@ public class RunnableProbe implements Runnable {
 
 	public void run() {
 
-		if(!this.isActive())
+		if(!this.getProbe().isActive())
 			return;
 
 		// TODO: eliminate this from factory - check with Oren

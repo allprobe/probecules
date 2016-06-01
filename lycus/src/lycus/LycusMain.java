@@ -15,6 +15,9 @@ import org.jsoup.nodes.Document;
 import org.jsoup.nodes.Element;
 import org.jsoup.select.Elements;
 
+import com.gargoylesoftware.htmlunit.html.DomElement;
+import com.gargoylesoftware.htmlunit.html.HtmlPage;
+
 import DAL.ApiInterface;
 import DAL.ApiRequest;
 import DAL.FailedRequestsHandler;
@@ -24,7 +27,10 @@ import Tasks.EventTask;
 import Tasks.ResultsTask;
 import Tasks.RollupsDumpTask;
 import Updates.Updates;
-import Utils.Logit;;
+import Utils.Logit;
+
+import com.gargoylesoftware.htmlunit.BrowserVersion;
+import com.gargoylesoftware.htmlunit.WebClient;;
 
 /**
  * 
@@ -53,6 +59,13 @@ public class LycusMain {
 		
 		
 		try {
+			WebClient webClient=new WebClient(BrowserVersion.CHROME);
+			HtmlPage htmlPage=webClient.getPage("http://www.adcd.co.il/");
+			System.out.println(htmlPage.asText());
+			System.out.println(htmlPage.getDocumentElement());
+			for(DomElement element:htmlPage.getDomElementDescendants())
+			{System.out.println(element.toString());
+			}
 		      // fetch the document over HTTP
 		      Document doc = Jsoup.connect("http://www.adcd.co.il/").get();
 		      
@@ -67,7 +80,7 @@ public class LycusMain {
 		        System.out.println("\nlink: " + link.attr("href"));
 		        System.out.println("text: " + link.text());
 		      }
-		    } catch (IOException e) {
+		    } catch (Exception e) {
 		    e.printStackTrace();
 		    }
 		

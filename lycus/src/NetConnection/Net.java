@@ -53,7 +53,6 @@ import org.snmp4j.util.DefaultPDUFactory;
 import org.snmp4j.util.TreeEvent;
 import org.snmp4j.util.TreeListener;
 import org.snmp4j.util.TreeUtils;
-
 import GlobalConstants.GlobalConfig;
 import GlobalConstants.LogType;
 import Utils.GeneralFunctions;
