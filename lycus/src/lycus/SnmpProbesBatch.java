@@ -1,6 +1,5 @@
 package lycus;
 
-import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
@@ -8,10 +7,6 @@ import java.util.List;
 import java.util.Map;
 import java.util.UUID;
 import org.snmp4j.Snmp;
-import org.snmp4j.TransportMapping;
-import org.snmp4j.transport.DefaultUdpTransportMapping;
-
-import GlobalConstants.LogType;
 import GlobalConstants.Enums.SnmpStoreAs;
 import NetConnection.NetResults;
 import Probes.SnmpProbe;
@@ -27,6 +22,7 @@ public class SnmpProbesBatch implements Runnable {
 	private long interval;
 	private boolean snmpError;
 	private boolean isRunning;
+	private boolean isActive;
 
 	private Map<String, SnmpResult> snmpPreviousResults; // Map<runnableProbeId,
 															// SnmpResult> for
@@ -34,7 +30,7 @@ public class SnmpProbesBatch implements Runnable {
 															// result
 
 	// check vars
-	private TransportMapping transport;
+	// private TransportMapping transport;
 	private Snmp snmp;
 	private Object lockSnmpProbe = new Object();
 
@@ -47,42 +43,12 @@ public class SnmpProbesBatch implements Runnable {
 		this.batchId = this.getHost().getHostId().toString() + "@" + rp.getProbe().getTemplate_id().toString() + "@"
 				+ rp.getProbe().getInterval() + "@" + UUID.randomUUID().toString();
 		this.setRunning(false);
-
-		setTransport(null);
+		this.setActive(true);
+		// setTransport(null);
 		setSnmp(null);
 		// this.startSnmpListener();
 
 	}
-
-	private void startSnmpListener() throws Throwable {
-		try {
-			this.setTransport(new DefaultUdpTransportMapping());
-			this.getTransport().listen();
-		} catch (IOException e) {
-			Logit.LogError("SnmpProbesBatch - startSnmpListener()",
-					"Socket binding for failed for Snmp Batch:" + this.getBatchId() + "\n" + e.getMessage());
-		}
-		this.setSnmp(new Snmp(this.getTransport()));
-	}
-
-	private void stopSnmpListener() throws Throwable {
-		try {
-			if (this.getSnmp() != null) {
-				this.getSnmp().close();
-			}
-			if (this.getTransport() != null) {
-				this.getTransport().close();
-			}
-		} catch (Throwable t) {
-			Logit.LogError("SnmpProbesBatch - startSnmpListener()", "Memory leak, unable to close network connection!");
-			throw t;
-		} finally {
-			super.finalize();
-		}
-
-	}
-
-	// #region Getters/Setters
 
 	public Host getHost() {
 		return host;
@@ -106,14 +72,6 @@ public class SnmpProbesBatch implements Runnable {
 
 	public void setInterval(long interval) {
 		this.interval = interval;
-	}
-
-	public TransportMapping getTransport() {
-		return transport;
-	}
-
-	public void setTransport(TransportMapping transport) {
-		this.transport = transport;
 	}
 
 	public Snmp getSnmp() {
@@ -144,76 +102,93 @@ public class SnmpProbesBatch implements Runnable {
 		return batchId;
 	}
 
+	public boolean isActive() {
+		return isActive;
+	}
+
+	public void setActive(boolean isActive) {
+		this.isActive = isActive;
+	}
+
 	// #endregion
 
 	public void run() {
-
-		try {
-
-			String rpStr = this.getBatchId();
-			if (rpStr.contains("9dc99972-e28a-4e90-aabd-7e8bad61b232@0b05919c-6cc0-42cc-a74b-de3b0dcd4a2a@60"))
-				Logit.LogDebug("BREAKPOINT");
-
-			if (this.getHost().isHostStatus() && this.getHost().isSnmpStatus()) {
-				Host host = this.getHost();
-
-				Collection<RunnableProbe> snmpProbes = this.getSnmpProbes().values();
-
-				if (host.getHostId().toString().contains("788b1b9e-d753-4dfa-ac46-61c4374eeb84"))
+		while (isActive()) {
+			try {
+				String rpStr = this.getBatchId();
+				if (rpStr.contains("9dc99972-e28a-4e90-aabd-7e8bad61b232@0b05919c-6cc0-42cc-a74b-de3b0dcd4a2a@60"))
 					Logit.LogDebug("BREAKPOINT");
 
-				if (host.getSnmpTemp() == null) {
-					for (RunnableProbe rp : snmpProbes) {
-						Logit.LogInfo("Snmp Probe doesn't run: " + rp.getId() + ", no SNMP template configured!");
-					}
-					return;
-				}
+				if (this.getHost().isHostStatus() && this.getHost().isSnmpStatus()) {
+					Host host = this.getHost();
 
-				List<SnmpProbe> _snmpProbes = new ArrayList<SnmpProbe>();
+					Collection<RunnableProbe> snmpProbes = this.getSnmpProbes().values();
 
-				for (RunnableProbe runnableProbe : snmpProbes) {
+					if (host.getHostId().toString().contains("788b1b9e-d753-4dfa-ac46-61c4374eeb84"))
+						Logit.LogDebug("BREAKPOINT");
 
-					if (runnableProbe.getProbe().isActive()) {
-						if (rpStr.contains(
-								"788b1b9e-d753-4dfa-ac46-61c4374eeb84@inner_036f81e0-4ec0-468a-8396-77c21dd9ae5a"))
-							Logit.LogDebug("BREAKPOINT");
-
-						_snmpProbes.add((SnmpProbe) runnableProbe.getProbe());
-					}
-				}
-
-				List<SnmpResult> response = NetResults.getInstanece().getSnmpResults(this.getHost(), _snmpProbes);
-
-				if (response == null) {
-					for (RunnableProbe runnableProbe : snmpProbes) {
-						Logit.LogWarn("Unable Probing Runnable Probe of: " + runnableProbe.getId());
-					}
-					Logit.LogInfo("Failed running  snmp batch - host: " + this.getHost().getHostIp()
-							+ ", snmp template:" + this.getHost().getSnmpTemp().toString());
-					return;
-				} else {
-					long resultsTimestamp = System.currentTimeMillis();
-					for (SnmpResult result : response) {
-						SnmpStoreAs storeAs = ((SnmpProbe) RunnableProbeContainer.getInstanece()
-								.get(result.getRunnableProbeId()).getProbe()).getStoreAs();
-						if (storeAs == SnmpStoreAs.asIs) {
-							result.setLastTimestamp(resultsTimestamp);
-							ResultsContainer.getInstance().addResult(result);
-							RollupsContainer.getInstance().addResult(result);
-						} else if (storeAs == SnmpStoreAs.delta) {
-							SnmpDeltaResult snmpDeltaResult = getSnmpDeltaResult(result, resultsTimestamp);
-							if (!snmpDeltaResult.isFirst()) {
-								ResultsContainer.getInstance().addResult(snmpDeltaResult);
-								RollupsContainer.getInstance().addResult(snmpDeltaResult);
-							}
+					if (host.getSnmpTemp() == null) {
+						for (RunnableProbe rp : snmpProbes) {
+							Logit.LogInfo("Snmp Probe doesn't run: " + rp.getId() + ", no SNMP template configured!");
 						}
-
+						continue;
 					}
+
+					List<SnmpProbe> _snmpProbes = new ArrayList<SnmpProbe>();
+
+					for (RunnableProbe runnableProbe : snmpProbes) {
+
+						if (runnableProbe.getProbe().isActive()) {
+							if (rpStr.contains(
+									"788b1b9e-d753-4dfa-ac46-61c4374eeb84@inner_036f81e0-4ec0-468a-8396-77c21dd9ae5a"))
+								Logit.LogDebug("BREAKPOINT");
+
+							_snmpProbes.add((SnmpProbe) runnableProbe.getProbe());
+						}
+					}
+
+					List<SnmpResult> response = NetResults.getInstanece().getSnmpResults(this.getHost(), _snmpProbes);
+
+					if (response == null) {
+						for (RunnableProbe runnableProbe : snmpProbes) {
+							Logit.LogWarn("Unable Probing Runnable Probe of: " + runnableProbe.getId());
+						}
+						Logit.LogInfo("Failed running  snmp batch - host: " + this.getHost().getHostIp()
+								+ ", snmp template:" + this.getHost().getSnmpTemp().toString());
+						continue;
+					} else {
+						long resultsTimestamp = System.currentTimeMillis();
+						for (SnmpResult result : response) {
+							SnmpStoreAs storeAs = ((SnmpProbe) RunnableProbeContainer.getInstanece()
+									.get(result.getRunnableProbeId()).getProbe()).getStoreAs();
+							if (storeAs == SnmpStoreAs.asIs) {
+								result.setLastTimestamp(resultsTimestamp);
+								ResultsContainer.getInstance().addResult(result);
+								RollupsContainer.getInstance().addResult(result);
+							} else if (storeAs == SnmpStoreAs.delta) {
+								SnmpDeltaResult snmpDeltaResult = getSnmpDeltaResult(result, resultsTimestamp);
+								if (!snmpDeltaResult.isFirst()) {
+									ResultsContainer.getInstance().addResult(snmpDeltaResult);
+									RollupsContainer.getInstance().addResult(snmpDeltaResult);
+								}
+							}
+
+						}
+					}
+				}
+			} catch (Exception ex) {
+				ex.printStackTrace();
+				Logit.LogError("SnmpProbesBatch - run()", "Error running snmp probes batch:" + this.getBatchId(), ex);
+			}
+			finally {
+				try {
+					synchronized (this) {
+						wait(this.getInterval() * 1000);
+					}
+				} catch (InterruptedException e) {
+					Logit.LogError("SnmpProbesBatch - run()", "Error waiting interval. ", e);
 				}
 			}
-		} catch (Exception ex) {
-			ex.printStackTrace();
-			Logit.LogError("SnmpProbesBatch - run()", "Error running snmp probes batch:" + this.getBatchId(), ex);
 		}
 	}
 

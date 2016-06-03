@@ -103,13 +103,12 @@ public class ProbeUpdate extends BaseUpdate {
 
 			} else {
 				probe = getUser().getProbeFor(getUpdate().probe_id);
-				ChangeInterval(probe.getInterval());
+//				ChangeInterval(probe.getInterval());
 				probe.updateKeyValues(getUpdate());
 				Logit.LogCheck("New probe was updated,  probe was already exist");
 			}
 
 			RunnableProbe runnableProbe = new RunnableProbe(host, probe);
-//			runnableProbe.start();
 			RunnableProbeContainer.getInstanece().add(runnableProbe);
 //			getUser().addRunnableProbe(runnableProbe);
 			Logit.LogCheck("New Runnable probe was created: " + runnableProbe.getId());
@@ -121,22 +120,22 @@ public class ProbeUpdate extends BaseUpdate {
 		return true;
 	}
 
-	private boolean ChangeInterval(long currentInterval) {
-		try {
-			if (currentInterval != getUpdate().update_value.interval) {
-				HashMap<String, RunnableProbe> runnableProbes = RunnableProbeContainer.getInstanece()
-						.getByProbe(getUpdate().probe_id);
-				if (runnableProbes == null)
-					return false;
-				for (RunnableProbe runnableProbe : runnableProbes.values()) {
-					RunnableProbeContainer.getInstanece().changeInterval(runnableProbe.getId(), currentInterval);
-				}
-			}
-			return true;
-		} catch (Exception e) {
-			return false;
-		}
-	}
+//	private boolean ChangeInterval(long currentInterval) {
+//		try {
+//			if (currentInterval != getUpdate().update_value.interval) {
+//				HashMap<String, RunnableProbe> runnableProbes = RunnableProbeContainer.getInstanece()
+//						.getByProbe(getUpdate().probe_id);
+//				if (runnableProbes == null)
+//					return false;
+//				for (RunnableProbe runnableProbe : runnableProbes.values()) {
+//					RunnableProbeContainer.getInstanece().changeInterval(runnableProbe.getId(), currentInterval);
+//				}
+//			}
+//			return true;
+//		} catch (Exception e) {
+//			return false;
+//		}
+//	}
 
 	@Override
 	public Boolean Update() {
@@ -145,20 +144,17 @@ public class ProbeUpdate extends BaseUpdate {
 		HashMap<String, RunnableProbe> runnableProbes = RunnableProbeContainer.getInstanece()
 				.getByProbe(getUpdate().probe_id);
 		for (RunnableProbe runnableProbe : runnableProbes.values()) {
-
-			if (getUpdate().update_value.interval != null
-					&& runnableProbe.getProbe().getInterval() != getUpdate().update_value.interval) {
-				RunnableProbeContainer.getInstanece().changeInterval(runnableProbe.getId(), getUpdate().update_value.interval);
-//				runnableProbe.changeRunnableProbeInterval(getUpdate().update_value.interval);
-			}
-
 			// TODO: What to do with them
 			// probeParams.template_id = update.template_id;
 			// probeParams.type = update.update_value.type;
 
-			if (getUpdate().update_value != null)
+			if (getUpdate().update_value != null) 
 				runnableProbe.getProbe().updateKeyValues(getUpdate());
-			// SnmpProbe Probe (SnmpProbe)runnableProbe.getProbe();
+
+			if (getUpdate().update_value.interval != null
+					&& runnableProbe.getProbe().getInterval() != getUpdate().update_value.interval) {
+				RunnableProbeContainer.getInstanece().changeInterval(runnableProbe, getUpdate().update_value.interval);
+			}
 		}
 
 		return true;

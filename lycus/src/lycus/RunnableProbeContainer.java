@@ -3,6 +3,7 @@ package lycus;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.UUID;
+import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.ScheduledFuture;
@@ -11,8 +12,6 @@ import GlobalConstants.Constants;
 import GlobalConstants.GlobalConfig;
 import GlobalConstants.ProbeTypes;
 import Interfaces.IRunnableProbeContainer;
-import Model.BatchFuture;
-import Model.RunnableFuture;
 import Probes.BaseProbe;
 import Utils.Logit;
 import sun.misc.Lock;
@@ -21,7 +20,7 @@ public class RunnableProbeContainer implements IRunnableProbeContainer {
 
 	private static RunnableProbeContainer runnableProbeContainer = null;
 
-	private HashMap<String, RunnableFuture> runnableProbes; // HashMap<runnableProbeId,RunnableProbe>
+	private HashMap<String, RunnableProbe> runnableProbes; // HashMap<runnableProbeId,RunnableProbe>
 	private HashMap<String, HashMap<String, RunnableProbe>> hostRunnableProbes; // HashMap<hostId,
 																				// HashMap<runnableProbeId,RunnableProbe>>
 	private HashMap<String, HashMap<String, RunnableProbe>> userRunnableProbes; // HashMap<userId,
@@ -29,24 +28,22 @@ public class RunnableProbeContainer implements IRunnableProbeContainer {
 	private HashMap<String, HashMap<String, RunnableProbe>> probeRunnableProbes; // HashMap<probeId,
 																					// HashMap<runnableProbeId,RunnableProbe>>
 
-	private ScheduledExecutorService pingerExec = Executors.newScheduledThreadPool(GlobalConfig.getPingerThreadCount());
-	private ScheduledExecutorService porterExec = Executors.newScheduledThreadPool(GlobalConfig.getPorterThreadCount());
-	private ScheduledExecutorService weberExec = Executors.newScheduledThreadPool(GlobalConfig.getWeberThreadCount());
-	private ScheduledExecutorService rblProbeExec = Executors.newScheduledThreadPool(GlobalConfig.getRblThreadCount());
-	private ScheduledExecutorService snmpBatchExec = Executors
-			.newScheduledThreadPool(GlobalConfig.getSnmpBatchThreadCount());
-	private ScheduledExecutorService discoveryExec = Executors
-			.newScheduledThreadPool(GlobalConfig.getSnmpBatchThreadCount());
-	private ScheduledExecutorService bandwidthProbeExec = Executors.newScheduledThreadPool(10);
-	private ScheduledExecutorService diskProbeExec = Executors.newScheduledThreadPool(10);
-	private ScheduledExecutorService snmpProbeExec = Executors
-			.newScheduledThreadPool(GlobalConfig.getSnmpThreadCount());
-	
-	private HashMap<String, BatchFuture> batches = new HashMap<String, BatchFuture>(); // batchId:hostId@templateId@interval@batchUUID
-	private final Object lock = new Lock();
+	private ExecutorService pingerExec = Executors.newFixedThreadPool(GlobalConfig.getPingerThreadCount());
+	private ExecutorService porterExec = Executors.newFixedThreadPool(GlobalConfig.getPorterThreadCount());
+	private ExecutorService weberExec = Executors.newFixedThreadPool(GlobalConfig.getWeberThreadCount());
+	private ExecutorService rblProbeExec = Executors.newFixedThreadPool(GlobalConfig.getRblThreadCount());
+	private ExecutorService snmpBatchExec = Executors.newFixedThreadPool(GlobalConfig.getSnmpBatchThreadCount());
+	private ExecutorService discoveryExec = Executors.newFixedThreadPool(GlobalConfig.getSnmpBatchThreadCount());
+	private ExecutorService bandwidthProbeExec = Executors.newFixedThreadPool(GlobalConfig.getBandwidthThreadCount());
+	private ExecutorService diskProbeExec = Executors.newFixedThreadPool(GlobalConfig.getDiskhreadCount());
+
+	private HashMap<String, SnmpProbesBatch> batches = new HashMap<String, SnmpProbesBatch>(); // HashMap<runnableProbeId,
+																								// SnmpProbesBatch>
+
+	// private final Object lock = new Lock();
 
 	protected RunnableProbeContainer() {
-		runnableProbes = new HashMap<String, RunnableFuture>();
+		runnableProbes = new HashMap<String, RunnableProbe>();
 		hostRunnableProbes = new HashMap<String, HashMap<String, RunnableProbe>>();
 		userRunnableProbes = new HashMap<String, HashMap<String, RunnableProbe>>();
 		probeRunnableProbes = new HashMap<String, HashMap<String, RunnableProbe>>();
@@ -60,7 +57,7 @@ public class RunnableProbeContainer implements IRunnableProbeContainer {
 
 	@Override
 	public RunnableProbe get(String runnableProbeId) {
-		return runnableProbes.get(runnableProbeId).getRunnableProbe();
+		return runnableProbes.get(runnableProbeId);
 	}
 
 	// @Override
@@ -100,12 +97,11 @@ public class RunnableProbeContainer implements IRunnableProbeContainer {
 
 	@Override
 	public boolean add(RunnableProbe runnableProbe) {
-		ScheduledFuture<?> future = startProbe(runnableProbe);
-		if (future == null)
+		Boolean isStarted = startProbe(runnableProbe);
+		if (!isStarted)
 			return false;
 
-		RunnableFuture runnableFuture = new RunnableFuture(future, runnableProbe);
-		runnableProbes.put(runnableProbe.getId(), runnableFuture);
+		runnableProbes.put(runnableProbe.getId(), runnableProbe);
 
 		String hostId = runnableProbe.getHost().getHostId().toString();
 		addToMap(runnableProbe, hostId, hostRunnableProbes);
@@ -132,7 +128,7 @@ public class RunnableProbeContainer implements IRunnableProbeContainer {
 	public boolean remove(RunnableProbe runnableProbe) { // Stop the probe and
 															// removes it from
 															// the system
-		runnableProbes.get(runnableProbe.getId()).getFuture().cancel(false);
+		runnableProbes.get(runnableProbe.getId()).setActive(false);
 		runnableProbe.setRunning(false);
 		runnableProbes.remove(runnableProbe.getId());
 
@@ -161,58 +157,6 @@ public class RunnableProbeContainer implements IRunnableProbeContainer {
 		return true;
 	}
 
-	@Override
-	public boolean pause(String runnableProbeId, boolean isActive) {
-		if (!runnableProbeId.contains("@@")) {
-			RunnableFuture runnableFuture = runnableProbes.get(runnableProbeId);
-			if (runnableFuture == null)
-				return true;
-
-			pause(runnableFuture, isActive);
-		} else {
-			String templateId = runnableProbeId.split("@@")[0];
-			String probeId = runnableProbeId.split("@@")[1];
-			HashMap<String, RunnableProbe> runnableProbesHash = getByProbe(probeId);
-			for (String rpId : runnableProbesHash.keySet()) {
-				if (rpId.contains(templateId))
-				{
-					RunnableFuture runnableFuture = runnableProbes.get(rpId);
-					pause(runnableFuture, isActive);
-				}
-			}
-		}
-		return true;
-	}
-
-	private boolean pause(RunnableFuture runnableFuture, boolean isActive) {
-		if (runnableFuture.getRunnableProbe().getProbeType() == ProbeTypes.SNMP) {
-
-		} else {
-			ScheduledFuture<?> scheduledFuture = runnableFuture.getFuture();
-			try {
-				if (!isActive) {
-					synchronized (lock) {
-						runnableFuture.getRunnableProbe().wait();
-					}
-				} else {
-					synchronized (lock) {
-						runnableFuture.getRunnableProbe().notify();
-					}
-				}
-			} catch (Exception ex) {
-				if (!isActive) {
-					Logit.LogError("RunnableProbeContainer - pause()", "The runnable probe did not pause due to error");
-				} else {
-					Logit.LogError("RunnableProbeContainer - pause()",
-							"The runnable probe did not restart due to error");
-				}
-
-				return false;
-			}
-		}
-		return true;
-	}
-
 	private boolean removeFromMap(RunnableProbe runnableProbe, String id,
 			HashMap<String, HashMap<String, RunnableProbe>> runnableProbes) {
 		HashMap<String, RunnableProbe> runnableProbeSet = runnableProbes.get(id);
@@ -233,9 +177,9 @@ public class RunnableProbeContainer implements IRunnableProbeContainer {
 
 	@Override
 	public boolean removeByTemplateId(String teplateId) {
-		for (RunnableFuture runnableFuture : runnableProbes.values()) {
-			if (runnableFuture.getRunnableProbe().getProbe().getTemplate_id().toString().equals(teplateId)) {
-				remove(runnableFuture.getRunnableProbe());
+		for (RunnableProbe runnableProbe : runnableProbes.values()) {
+			if (runnableProbe.getProbe().getTemplate_id().toString().equals(teplateId)) {
+				remove(runnableProbe);
 			}
 		}
 		return true;
@@ -250,7 +194,7 @@ public class RunnableProbeContainer implements IRunnableProbeContainer {
 
 	@Override
 	public boolean removeByRunnableProbeId(String runnabelProbeId) {
-		RunnableProbe runnableProbe = runnableProbes.get(runnabelProbeId).getRunnableProbe();
+		RunnableProbe runnableProbe = runnableProbes.get(runnabelProbeId);
 		if (runnableProbe != null)
 			remove(runnableProbe);
 		return true;
@@ -262,154 +206,122 @@ public class RunnableProbeContainer implements IRunnableProbeContainer {
 		return runnableProbes == null || runnableProbes.size() == 0;
 	}
 
-	private ScheduledFuture<?> startProbe(RunnableProbe runnableProbe) {
+	private Boolean startProbe(RunnableProbe runnableProbe) {
 		if (runnableProbe == null)
-			return null;
+			return false;
 		try {
-			ScheduledFuture<?> future;
 			switch (runnableProbe.getProbeType()) {
 			case SNMP:
-//				String rpStr = runnableProbe.getId();
-//				if (runnableProbe == null)
-//					return null;
-
-//				SnmpProbesBatch batch = addSnmpRunnableProbeToBatches(runnableProbe);
-//				if (batch == null)
-//					return null;
-//				if (batch.isRunning()) {
-//					RunnableFuture runnableFuture = runnableProbes.get(runnableProbe.getId());
-//					if (runnableFuture != null) {
-//						runnableProbe.setRunning(true);
-//						return runnableFuture.getFuture();
-//					} else
-//						return null;
-//				}
-//
-//				future = snmpBatchExec.scheduleAtFixedRate(batch, 0, batch.getInterval(), TimeUnit.SECONDS);
-				future = addSnmpRunnableProbeToBatches(runnableProbe);
+				addSnmpRunnableProbeToBatches(runnableProbe);
 				break;
 			case ICMP:
-				future = pingerExec.scheduleAtFixedRate(runnableProbe, 0, runnableProbe.getProbe().getInterval(),
-						TimeUnit.SECONDS);
+				pingerExec.execute(runnableProbe);
 				break;
 			case PORT:
-				future = porterExec.scheduleAtFixedRate(runnableProbe, 0, runnableProbe.getProbe().getInterval(),
-						TimeUnit.SECONDS);
+				porterExec.execute(runnableProbe);
 				break;
 			case HTTP:
-				future = weberExec.scheduleAtFixedRate(runnableProbe, 0, runnableProbe.getProbe().getInterval(),
-						TimeUnit.SECONDS);
+				weberExec.execute(runnableProbe);
 				break;
 			case RBL:
-				future = rblProbeExec.scheduleAtFixedRate(runnableProbe, 0, runnableProbe.getProbe().getInterval(),
-						TimeUnit.SECONDS);
+				rblProbeExec.execute(runnableProbe);
 				break;
 			case DISCOVERY:
-				future = discoveryExec.scheduleAtFixedRate(runnableProbe, 0, runnableProbe.getProbe().getInterval(),
-						TimeUnit.SECONDS);
+				discoveryExec.execute(runnableProbe);
 				break;
 			case DISCBANDWIDTH:
-				future = bandwidthProbeExec.scheduleAtFixedRate(runnableProbe, 0,
-						runnableProbe.getProbe().getInterval(), TimeUnit.SECONDS);
+				bandwidthProbeExec.execute(runnableProbe);
 				break;
 			case DISCDISK:
-				future = diskProbeExec.scheduleAtFixedRate(runnableProbe, 0, runnableProbe.getProbe().getInterval(),
-						TimeUnit.SECONDS);
+				diskProbeExec.execute(runnableProbe);
 				break;
 			case TRACEROUTE:
-				return null;
+				return true;
 			default:
-				return null;
+				return true;
 			}
-			if (future != null) {
-				runnableProbe.setRunning(true);
-				return future;
-			}
+			runnableProbe.setRunning(true);
+			return true;
 		} catch (Exception e) {
 			Logit.LogWarn("Unable to start Runnable Probe Thread of: " + runnableProbe.getId() + ", check probe type!\n"
 					+ e.getMessage());
 
-			return null;
+			return false;
 		}
-
-		return null;
 	}
 
 	@Override
-	public boolean changeInterval(String runnableProbeId, Long interval) {
-		RunnableFuture runnableFuture = runnableProbes.get(runnableProbeId);
-		if (runnableFuture == null)
-			return false;
-
-		RunnableProbe runnableProbe = runnableFuture.getRunnableProbe();
+	public boolean changeInterval(RunnableProbe runnableProbe, Long interval) {
 		if (runnableProbe == null)
 			return false;
 
-		remove(runnableProbe);
 		runnableProbe.getProbe().setInterval(interval);
-		add(runnableProbe);
+		if (runnableProbe.getProbeType() == ProbeTypes.SNMP) {
+			changeSnmpProbeInterval(runnableProbe, interval);
+		}
 
 		return true;
 	}
 
-	private ScheduledFuture<?> addSnmpRunnableProbeToBatches(RunnableProbe runnableProbe) {
+	private Boolean changeSnmpProbeInterval(RunnableProbe runnableProbe, Long interval) {
+		stopSnmpProbe(runnableProbe);
+		addSnmpRunnableProbeToBatches(runnableProbe);
+		return true;
+	}
+
+	private Boolean addSnmpRunnableProbeToBatches(RunnableProbe runnableProbe) {
 		SnmpProbesBatch batch = null;
-		for (Map.Entry<String, BatchFuture> _batch : batches.entrySet()) {
-			try {
-				batch = _batch.getValue().getBatch();
-				Host host = runnableProbe.getHost();
-				BaseProbe probe = runnableProbe.getProbe();
-				if (batch
-						.getBatchId().contains(host.getHostId().toString() + "@" + probe.getTemplate_id().toString()
-								+ "@" + probe.getInterval())
-						&& batch.getSnmpProbes().size() < Constants.getBatchesSize()) {
-					batch.getSnmpProbes().put(runnableProbe.getId(), runnableProbe);
-					
-					BatchFuture batchFuture = batches.get(batch.getBatchId());
-					if (batchFuture != null) {
-						batchFuture.getBatch().setRunning(true);
-						return batchFuture.getFuture();
-					} else
-						return null;
+		try{
+			for (Map.Entry<String, SnmpProbesBatch> _batch : batches.entrySet()) {
+				try {
+					batch = _batch.getValue();
+					Host host = runnableProbe.getHost();
+					BaseProbe probe = runnableProbe.getProbe();
+					if (batch.getBatchId().contains(host.getHostId().toString() + "@" + probe.getTemplate_id().toString() + "@" + probe.getInterval())
+							&& batch.getSnmpProbes().size() < Constants.getBatchesSize()) {
+						batch.getSnmpProbes().put(runnableProbe.getId(), runnableProbe);
+						batches.put(runnableProbe.getId(), batch);
+						batch.setRunning(true);
+						return true;
+					}
+				} catch (Exception e) {
+					Logit.LogWarn("Unable to add Runnable Probe to existing batch: " + runnableProbe.getId() + " \n"
+							+ e.getMessage());
+					return null;
 				}
-			} catch (Exception e) {
-				Logit.LogWarn("Unable to add Runnable Probe to existing batch: " + runnableProbe.getId() + " \n"
-						+ e.getMessage());
-				return null;
 			}
+		}
+		catch (Exception e) {
+			Logit.LogWarn(
+					"Unable to add Runnable Probe to existing batch: " + runnableProbe.getId() + "\n" + e.getMessage());
+			return false;
 		}
 
 		try {
 			SnmpProbesBatch newBatch = new SnmpProbesBatch(runnableProbe);
-			ScheduledFuture<?> future = snmpBatchExec.scheduleAtFixedRate(newBatch, 0, runnableProbe.getProbe().getInterval(), TimeUnit.SECONDS);
-			
-			BatchFuture batchFuture = new BatchFuture(future,newBatch);
-			return future;
+			snmpBatchExec.execute(newBatch);
+			batches.put(runnableProbe.getId(), newBatch);
+			newBatch.setRunning(true);
+			return true;
 		} catch (Exception e) {
 			Logit.LogWarn(
 					"Unable to add Runnable Probe to new batch: " + runnableProbe.getId() + "\n" + e.getMessage());
-			return null;
+			return false;
 		}
 	}
 
 	private boolean stopSnmpProbe(RunnableProbe runnableProbe) {
 		try {
-			RunnableFuture runnableFuture = runnableProbes.get(runnableProbe.getId());
+			SnmpProbesBatch batch = batches.get(runnableProbe.getId());
+			if (batch.isExist(runnableProbe.getId())) {
+				batch.deleteSnmpProbe(runnableProbe);
+				batches.remove(runnableProbe.getId());
 
-			for (BatchFuture batch : batches.values()) {
-				// String partialId =
-				// runnableProbe.getHost().getHostId().toString() + "@"
-				// + runnableProbe.getProbe().getTemplate_id().toString() + "@"
-				// + runnableProbe.getProbe().getInterval();
-				if (batch.getBatch().isExist(runnableProbe.getId())) {
-					batch.getBatch().deleteSnmpProbe(runnableProbe);
-					if (batch.getBatch().getSnmpProbes().size() == 0) {
-						runnableFuture.getFuture().cancel(true);
-						batches.remove(batch.getBatch().getBatchId());
-					}
-					return true;
-				} else
-					return false;
+				if (batch.getSnmpProbes().size() == 0) {
+					batch.setActive(false);
+					batch = null;
+				}
+				return true;
 			}
 			return false;
 		} catch (Exception e)
@@ -419,11 +331,56 @@ public class RunnableProbeContainer implements IRunnableProbeContainer {
 			return false;
 		}
 	}
-
-	// private List<RunnableFuture> getRunnableFutures(String runnableProbeId)
-	// // Without HostId
+	
+	// @Override
+	// public boolean pause(String runnableProbeId, boolean isActive) {
+	// if (!runnableProbeId.contains("@@")) {
+	// RunnableProbe runnableProbe = runnableProbes.get(runnableProbeId);
+	// if (runnableProbe == null)
+	// return false;
+	//
+	// pause(runnableProbe, isActive);
+	// } else {
+	// String templateId = runnableProbeId.split("@@")[0];
+	// String probeId = runnableProbeId.split("@@")[1];
+	// HashMap<String, RunnableProbe> runnableProbesHash = getByProbe(probeId);
+	// for (String rpId : runnableProbesHash.keySet()) {
+	// if (rpId.contains(templateId))
 	// {
+	// RunnableProbe runnableProbe = runnableProbes.get(rpId);
+	// pause(runnableProbe, isActive);
+	// }
+	// }
+	// }
+	// return true;
+	// }
+
+	// private boolean pause(RunnableProbe runnableProbe, boolean isActive) {
+	// if (runnableProbe.getProbeType() == ProbeTypes.SNMP) {
 	//
+	// } else {
+	// try {
+	// if (!isActive) {
+	// synchronized (lock) {
+	// runnableProbe.wait();
+	// }
+	// } else {
+	// synchronized (lock) {
+	// runnableProbe.notify();
+	// }
+	// }
+	// } catch (Exception ex) {
+	// if (!isActive) {
+	// Logit.LogError("RunnableProbeContainer - pause()", "The runnable probe
+	// did not pause due to error");
+	// } else {
+	// Logit.LogError("RunnableProbeContainer - pause()",
+	// "The runnable probe did not restart due to error");
+	// }
 	//
+	// return false;
+	// }
+	// }
+	// return true;
 	// }
 }

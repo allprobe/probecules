@@ -34,12 +34,14 @@ public class GlobalConfig {
 	private static String apiUrl = null;
 	private static Boolean apiSSL = null;
 	private static String apiAuthToken = null;
-	private static int PingerThreadCount = -1;
-	private static int PorterThreadCount = -1;
-	private static int WeberThreadCount = -1;
-	private static int RblThreadCount = -1;
-	private static int SnmpThreadCount = -1;
-	private static int SnmpBatchThreadCount = -1;
+	private static int PingerThreadCount = 50;
+	private static int PorterThreadCount = 50;
+	private static int WeberThreadCount = 50;
+	private static int RblThreadCount = 50;
+	private static int SnmpThreadCount = 50;
+	private static int SnmpBatchThreadCount = 50;
+	private static int BandwidthThreadCount = 50;
+	private static int DiskhreadCount = 50;
 	private static Boolean Debug = null;
 	private static Boolean Development = null;
 	private static String syslogHost = null;
@@ -287,6 +289,22 @@ public class GlobalConfig {
 		// return false;
 		return true;
 
+	}
+
+	public static int getBandwidthThreadCount() {
+		return BandwidthThreadCount;
+	}
+
+	public static void setBandwidthThreadCount(int bandwidthThreadCount) {
+		BandwidthThreadCount = bandwidthThreadCount;
+	}
+
+	public static int getDiskhreadCount() {
+		return DiskhreadCount;
+	}
+
+	public static void setDiskhreadCount(int diskhreadCount) {
+		DiskhreadCount = diskhreadCount;
 	}
 
 }

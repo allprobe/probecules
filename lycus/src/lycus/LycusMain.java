@@ -39,7 +39,7 @@ import com.gargoylesoftware.htmlunit.WebClient;;
 public class LycusMain {
 
 	public static void main(String[] args) {
-		Logit.LogCheck("Starting Probecules Version: 0.109");
+		Logit.LogCheck("Starting Probecules Version: 0.110");
 		System.setProperty("log4j.debug","true");
 		if (args.length == 0 || args[0] == "")
 			GlobalConfig.setConfPath(null);
