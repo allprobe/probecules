@@ -195,11 +195,11 @@ public class SnmpProbesBatch implements Runnable {
 	public SnmpDeltaResult getSnmpDeltaResult(SnmpResult result, long timeStamp) {
 		SnmpDeltaResult snmpDeltaResult = new SnmpDeltaResult(result.getRunnableProbeId());
 		SnmpResult snmpPreviousData = snmpPreviousResults.get(result.getRunnableProbeId());
-		if (snmpDeltaResult.isFirst()) {
-			// snmpPreviousData.setLastTimestamp(timeStamp);
-			snmpDeltaResult.setData(snmpPreviousData.getData(), result.getData());
-		} else
-			snmpDeltaResult.setData(null, result.getData());
+//		if (snmpPreviousResults != null) {
+//			// snmpPreviousData.setLastTimestamp(timeStamp);
+//			snmpDeltaResult.setData(snmpPreviousData.getData(), result.getData());
+//		} else
+//			snmpDeltaResult.setData(null, result.getData());
 
 		snmpDeltaResult.setData(snmpPreviousData != null ? snmpPreviousData.getData() : null, result.getData());
 		snmpDeltaResult.setLastTimestamp(timeStamp);
