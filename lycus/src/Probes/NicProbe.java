@@ -20,9 +20,9 @@ public class NicProbe extends BaseProbe  {
 
 	private static final String ifOutOctetsOID = "1.3.6.1.2.1.2.2.1.16.";
 	private static final String ifInOctetsOID = "1.3.6.1.2.1.2.2.1.10.";
-//	private int index;
-//	private long ifSpeed;
-//	HostType hostType;
+	private int index;
+	private long ifSpeed;
+	HostType hostType;
 	DiscoveryProbe discoveryProbe;
 	NicElement nicElement;
 

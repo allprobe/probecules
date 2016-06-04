@@ -5,10 +5,11 @@ import org.json.simple.JSONArray;
 public class SnmpDeltaResult extends SnmpResult {
 	private String previosData;
 	private String currentData;
+	private boolean isFirst;
 	
 	public SnmpDeltaResult(String runnableProbeId) {
 		super(runnableProbeId);
-		// TODO SnmpDeltaResult()
+		isFirst = true;
 	}
 
 //	public String getData()
@@ -28,15 +29,19 @@ public class SnmpDeltaResult extends SnmpResult {
 		this.previosData = data1;
 		this.currentData = data2;
 		
-		if (data1 != null)
+		if (data1 == null || data2 == null)
+			super.setData(null);
+		else 
 			super.setData(((Double)(Double.parseDouble(data2) -  Double.parseDouble(data1))).toString());
-		else
-			super.setData(data2);
+//		else
+//			super.setData(data2);
+		
+		isFirst = false;
 	}
 	
 	public boolean isFirst()
 	{
-		return previosData == null;
+		return isFirst;
 	}
 	
 	@Override
