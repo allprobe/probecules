@@ -1,10 +1,8 @@
 package lycus;
 
-import java.util.HashMap;
 import java.util.Map;
 import java.util.UUID;
 import java.util.concurrent.ConcurrentHashMap;
-
 import Elements.BaseElement;
 import Elements.DiskElement;
 import Elements.NicElement;
@@ -12,7 +10,6 @@ import Probes.DiscoveryProbe;
 import Probes.NicProbe;
 import Probes.DiskProbe;
 import Results.DiscoveryResult;
-import Utils.GeneralFunctions;
 import Utils.Logit;
 
 public class ElementsContainer {

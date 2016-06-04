@@ -1,6 +1,8 @@
 package Updates;
 
 import Model.UpdateModel;
+import lycus.ElementsContainer;
+import lycus.RunnableProbeContainer;
 
 public class ElementUpdate extends BaseUpdate {
 
@@ -13,7 +15,6 @@ public class ElementUpdate extends BaseUpdate {
 	public Boolean New()
 	{
 		super.New();
-	
 		return true;
 	}
 	
@@ -22,7 +23,8 @@ public class ElementUpdate extends BaseUpdate {
 	{
 		super.Update();
 		
-		
+//		RunnableProbeContainer.getInstanece().get(getUpdate().elements)
+//		ElementsContainer.getInstance()
 		return true;
 	}
 	

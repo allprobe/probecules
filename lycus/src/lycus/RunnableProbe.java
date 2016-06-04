@@ -102,6 +102,8 @@ public class RunnableProbe implements Runnable {
 				if (!this.getProbe().isActive())
 					continue;
 
+//				Long timeStamp = result.getLastTimestamp(); 
+				
 				String rpStr = this.getId();
 				if (rpStr.contains(
 						"3cfbc5dc-15b4-4cf5-86b8-d12008c00ffc@ae1981c3-c157-4ce2-9086-11e869d4a344@http_d536b359-e496-40dc-b02c-b6cf8ff2a593"))
