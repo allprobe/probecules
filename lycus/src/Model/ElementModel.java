@@ -1,8 +1,8 @@
 package Model;
 
-public class ElementsModel {
+public class ElementModel {
 	public String name;
-	public String active;
+	public Boolean active;
 	public String hostType;
 	public String ifSpeed;
 	public String index;

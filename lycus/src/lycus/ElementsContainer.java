@@ -6,6 +6,7 @@ import java.util.concurrent.ConcurrentHashMap;
 import Elements.BaseElement;
 import Elements.DiskElement;
 import Elements.NicElement;
+import GlobalConstants.Enums.DiscoveryElementType;
 import Probes.DiscoveryProbe;
 import Probes.NicProbe;
 import Probes.DiskProbe;
@@ -151,14 +152,14 @@ public class ElementsContainer {
 				.get(runnableProbeId.split("@")[2]);
 		User user = probe.getUser();
 		Host host = user.getHost(UUID.fromString(runnableProbeId.split("@")[1]));
-		DiskProbe diskProbe = new DiskProbe(probe,(DiskElement)element);
+		DiskProbe diskProbe = new DiskProbe(probe, (DiskElement) element);
 		RunnableProbe diskRunnableProbe = new RunnableProbe(host, diskProbe);
 		RunnableProbeContainer.getInstanece().add(diskRunnableProbe);
 		// user.addRunnableProbe(nicRunnableProbe);
 	}
 
 	private void addDiskElement(String userId, String runnableProbeId, BaseElement element) {
-	
+
 		ConcurrentHashMap<String, BaseElement> elementMap = diskElements.get(runnableProbeId);
 		if (elementMap == null)
 			elementMap = new ConcurrentHashMap<String, BaseElement>();
@@ -183,6 +184,21 @@ public class ElementsContainer {
 			elementMap = new ConcurrentHashMap<String, BaseElement>();
 		elementMap.put(element.getName(), (NicElement) element);
 		nicElements.put(runnableProbeId, elementMap);
+	}
+	
+	public BaseElement getElement(String runnableProbeId, String elementName, DiscoveryElementType elementType ) {
+		ConcurrentHashMap<String, BaseElement> elementMap = null;
+		if (elementType == elementType.ds)
+		{
+			elementMap = diskElements.get(runnableProbeId);
+		}
+		else if (elementType == elementType.bw)
+		{
+			elementMap = nicElements.get(runnableProbeId);
+		}
+		
+		return elementMap.get(elementName);
+			
 	}
 
 }

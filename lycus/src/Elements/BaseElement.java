@@ -1,7 +1,5 @@
 package Elements;
 
-import Probes.DiscoveryProbe;
-
 public class BaseElement {
 
 	private int index;
