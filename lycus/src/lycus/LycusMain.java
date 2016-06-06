@@ -58,31 +58,31 @@ public class LycusMain {
 		
 		
 		
-		try {
-			WebClient webClient=new WebClient(BrowserVersion.CHROME);
-			HtmlPage htmlPage=webClient.getPage("http://www.adcd.co.il/");
-			System.out.println(htmlPage.asText());
-			System.out.println(htmlPage.getDocumentElement());
-			for(DomElement element:htmlPage.getDomElementDescendants())
-			{System.out.println(element.toString());
-			}
-		      // fetch the document over HTTP
-		      Document doc = Jsoup.connect("http://www.adcd.co.il/").get();
-		      
-		      // get the page title
-		      String title = doc.title();
-		      System.out.println("title: " + title);
-		      
-		      // get all links in page
-		      Elements links = doc.select("a[href]");
-		      for (Element link : links) {
-		        // get the value from the href attribute
-		        System.out.println("\nlink: " + link.attr("href"));
-		        System.out.println("text: " + link.text());
-		      }
-		    } catch (Exception e) {
-		    e.printStackTrace();
-		    }
+//		try {
+//			WebClient webClient=new WebClient(BrowserVersion.CHROME);
+//			HtmlPage htmlPage=webClient.getPage("http://www.adcd.co.il/");
+//			System.out.println(htmlPage.asText());
+//			System.out.println(htmlPage.getDocumentElement());
+//			for(DomElement element:htmlPage.getDomElementDescendants())
+//			{System.out.println(element.toString());
+//			}
+//		      // fetch the document over HTTP
+//		      Document doc = Jsoup.connect("http://www.adcd.co.il/").get();
+//		      
+//		      // get the page title
+//		      String title = doc.title();
+//		      System.out.println("title: " + title);
+//		      
+//		      // get all links in page
+//		      Elements links = doc.select("a[href]");
+//		      for (Element link : links) {
+//		        // get the value from the href attribute
+//		        System.out.println("\nlink: " + link.attr("href"));
+//		        System.out.println("text: " + link.text());
+//		      }
+//		    } catch (Exception e) {
+//		    e.printStackTrace();
+//		    }
 		
 		
 		

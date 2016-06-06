@@ -182,6 +182,8 @@ public class GlobalConfig {
 
 	public static boolean Initialize() {
 
+		setEnvironmentProperties();
+		
 		Properties prop = new Properties();
 		InputStream input = null;
 		try {
@@ -232,6 +234,11 @@ public class GlobalConfig {
 		Logit.LogCheck("Global Initialization Succeed!" + dateFormat.format(cal.getTime()));
 
 		return true;
+	}
+
+	private static void setEnvironmentProperties() {
+		java.security.Security.setProperty("networkaddress.cache.ttl" , "0");
+		java.security.Security.setProperty("networkaddress.cache.negative.ttl","0");
 	}
 
 	public static String ToString() {

@@ -1396,6 +1396,19 @@ public class Net {
 		return inverted;
 	}
 
+	
+	public static long getDnsResolutionTime(String hostname)
+	{
+		long start=System.currentTimeMillis();
+		try {
+			InetAddress.getByName(hostname);
+		} catch (UnknownHostException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		long end=System.currentTimeMillis();
+		return end-start;
+	}
 }
 
 class SnmpWalkCounts {
