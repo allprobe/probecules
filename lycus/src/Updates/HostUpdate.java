@@ -2,6 +2,7 @@ package Updates;
 
 import java.util.HashMap;
 import java.util.UUID;
+import java.util.concurrent.ConcurrentHashMap;
 
 import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
@@ -114,7 +115,7 @@ public class HostUpdate extends BaseUpdate {
 		if (host == null)
 			return false;
 
-		HashMap<String, RunnableProbe> runnableProbes = RunnableProbeContainer.getInstanece()
+		ConcurrentHashMap<String, RunnableProbe> runnableProbes = RunnableProbeContainer.getInstanece()
 				.getByHost(host.getHostId().toString());
 		for (RunnableProbe runnableProbe : runnableProbes.values()) {
 			try {

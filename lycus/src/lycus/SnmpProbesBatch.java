@@ -6,6 +6,8 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.UUID;
+import java.util.concurrent.ConcurrentHashMap;
+
 import org.snmp4j.Snmp;
 import GlobalConstants.Enums.SnmpStoreAs;
 import NetConnection.NetResults;
@@ -17,7 +19,7 @@ import Utils.Logit;
 
 public class SnmpProbesBatch implements Runnable {
 	private String batchId;// hostId@templateId@interval@batchUUID
-	private Map<String, RunnableProbe> snmpProbes;
+	private ConcurrentHashMap<String, RunnableProbe> snmpProbes;
 	private Host host;
 	private long interval;
 	private boolean snmpError;
@@ -38,7 +40,7 @@ public class SnmpProbesBatch implements Runnable {
 		snmpPreviousResults = new HashMap<String, SnmpResult>();
 		this.setHost(rp.getHost());
 		this.setInterval(rp.getProbe().getInterval());
-		this.setSnmpProbes(new HashMap<String, RunnableProbe>());
+		this.setSnmpProbes(new ConcurrentHashMap<String, RunnableProbe>());
 		this.getSnmpProbes().put(rp.getId(), rp);
 		this.batchId = this.getHost().getHostId().toString() + "@" + rp.getProbe().getTemplate_id().toString() + "@"
 				+ rp.getProbe().getInterval() + "@" + UUID.randomUUID().toString();
@@ -62,7 +64,7 @@ public class SnmpProbesBatch implements Runnable {
 		return snmpProbes;
 	}
 
-	public void setSnmpProbes(Map<String, RunnableProbe> snmpProbes) {
+	public void setSnmpProbes(ConcurrentHashMap<String, RunnableProbe> snmpProbes) {
 		this.snmpProbes = snmpProbes;
 	}
 

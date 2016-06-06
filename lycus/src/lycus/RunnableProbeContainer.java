@@ -3,6 +3,7 @@ package lycus;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.UUID;
+import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
@@ -20,12 +21,12 @@ public class RunnableProbeContainer implements IRunnableProbeContainer {
 
 	private static RunnableProbeContainer runnableProbeContainer = null;
 
-	private HashMap<String, RunnableProbe> runnableProbes; // HashMap<runnableProbeId,RunnableProbe>
-	private HashMap<String, HashMap<String, RunnableProbe>> hostRunnableProbes; // HashMap<hostId,
+	private ConcurrentHashMap<String, RunnableProbe> runnableProbes; // HashMap<runnableProbeId,RunnableProbe>
+	private ConcurrentHashMap<String, ConcurrentHashMap<String, RunnableProbe>> hostRunnableProbes; // HashMap<hostId,
 																				// HashMap<runnableProbeId,RunnableProbe>>
-	private HashMap<String, HashMap<String, RunnableProbe>> userRunnableProbes; // HashMap<userId,
+	private ConcurrentHashMap<String, ConcurrentHashMap<String, RunnableProbe>> userRunnableProbes; // HashMap<userId,
 																				// HashMap<runnableProbeId,RunnableProbe>>
-	private HashMap<String, HashMap<String, RunnableProbe>> probeRunnableProbes; // HashMap<probeId,
+	private ConcurrentHashMap<String, ConcurrentHashMap<String, RunnableProbe>> probeRunnableProbes; // HashMap<probeId,
 																					// HashMap<runnableProbeId,RunnableProbe>>
 
 	private ExecutorService pingerExec = Executors.newFixedThreadPool(GlobalConfig.getPingerThreadCount());
@@ -43,10 +44,10 @@ public class RunnableProbeContainer implements IRunnableProbeContainer {
 	// private final Object lock = new Lock();
 
 	protected RunnableProbeContainer() {
-		runnableProbes = new HashMap<String, RunnableProbe>();
-		hostRunnableProbes = new HashMap<String, HashMap<String, RunnableProbe>>();
-		userRunnableProbes = new HashMap<String, HashMap<String, RunnableProbe>>();
-		probeRunnableProbes = new HashMap<String, HashMap<String, RunnableProbe>>();
+		runnableProbes = new ConcurrentHashMap<String, RunnableProbe>();
+		hostRunnableProbes = new ConcurrentHashMap<String, ConcurrentHashMap<String, RunnableProbe>>();
+		userRunnableProbes = new ConcurrentHashMap<String, ConcurrentHashMap<String, RunnableProbe>>();
+		probeRunnableProbes = new ConcurrentHashMap<String, ConcurrentHashMap<String, RunnableProbe>>();
 	}
 
 	public static RunnableProbeContainer getInstanece() {
@@ -66,28 +67,28 @@ public class RunnableProbeContainer implements IRunnableProbeContainer {
 	// }
 
 	@Override
-	public HashMap<String, RunnableProbe> getByUser(String userId) {
+	public ConcurrentHashMap<String, RunnableProbe> getByUser(String userId) {
 		return userRunnableProbes.get(userId);
 	}
 
 	@Override
-	public HashMap<String, RunnableProbe> getByHost(String hostId) {
+	public ConcurrentHashMap<String, RunnableProbe> getByHost(String hostId) {
 		return hostRunnableProbes.get(hostId);
 	}
 
 	@Override
-	public HashMap<String, RunnableProbe> getByProbe(String probeId) {
+	public ConcurrentHashMap<String, RunnableProbe> getByProbe(String probeId) {
 		return probeRunnableProbes.get(probeId);
 	}
 
 	@Override
-	public HashMap<String, RunnableProbe> getByHostTemplate(String templateId, String hostId) {
-		HashMap<String, RunnableProbe> runnableProbes = getByHost(hostId);
-		HashMap<String, RunnableProbe> runnableProbesByTemplate = null;
+	public ConcurrentHashMap<String, RunnableProbe> getByHostTemplate(String templateId, String hostId) {
+		ConcurrentHashMap<String, RunnableProbe> runnableProbes = getByHost(hostId);
+		ConcurrentHashMap<String, RunnableProbe> runnableProbesByTemplate = null;
 		for (RunnableProbe runnableProbe : runnableProbes.values()) {
 			if (runnableProbe.getProbe().getTemplate_id().equals(templateId)) {
 				if (runnableProbesByTemplate == null)
-					runnableProbesByTemplate = new HashMap<String, RunnableProbe>();
+					runnableProbesByTemplate = new ConcurrentHashMap<String, RunnableProbe>();
 				runnableProbesByTemplate.put(runnableProbe.getId(), runnableProbe);
 			}
 		}
@@ -116,10 +117,10 @@ public class RunnableProbeContainer implements IRunnableProbeContainer {
 	}
 
 	private void addToMap(RunnableProbe runnableProbe, String id,
-			HashMap<String, HashMap<String, RunnableProbe>> runnableProbes) {
-		HashMap<String, RunnableProbe> newRunnableProbes = runnableProbes.get(id);
+			ConcurrentHashMap<String, ConcurrentHashMap<String, RunnableProbe>> runnableProbes) {
+		ConcurrentHashMap<String, RunnableProbe> newRunnableProbes = runnableProbes.get(id);
 		if (newRunnableProbes == null)
-			newRunnableProbes = new HashMap<String, RunnableProbe>();
+			newRunnableProbes = new ConcurrentHashMap<String, RunnableProbe>();
 		newRunnableProbes.put(runnableProbe.getId(), runnableProbe);
 		runnableProbes.put(id, newRunnableProbes);
 	}
@@ -158,8 +159,8 @@ public class RunnableProbeContainer implements IRunnableProbeContainer {
 	}
 
 	private boolean removeFromMap(RunnableProbe runnableProbe, String id,
-			HashMap<String, HashMap<String, RunnableProbe>> runnableProbes) {
-		HashMap<String, RunnableProbe> runnableProbeSet = runnableProbes.get(id);
+			ConcurrentHashMap<String, ConcurrentHashMap<String, RunnableProbe>> runnableProbes) {
+		ConcurrentHashMap<String, RunnableProbe> runnableProbeSet = runnableProbes.get(id);
 		if (runnableProbeSet == null)
 			return true;
 		for (String runnableProbeId : runnableProbeSet.keySet()) {
@@ -202,7 +203,7 @@ public class RunnableProbeContainer implements IRunnableProbeContainer {
 
 	// No more RunnableProbes in host
 	public boolean isHostEmpty(String hostId) {
-		HashMap<String, RunnableProbe> runnableProbes = hostRunnableProbes.get(hostId);
+		ConcurrentHashMap<String, RunnableProbe> runnableProbes = hostRunnableProbes.get(hostId);
 		return runnableProbes == null || runnableProbes.size() == 0;
 	}
 

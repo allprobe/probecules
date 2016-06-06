@@ -2,6 +2,8 @@ package Updates;
 
 import java.util.HashMap;
 import java.util.UUID;
+import java.util.concurrent.ConcurrentHashMap;
+
 import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
 
@@ -48,17 +50,17 @@ public class ProbeUpdate extends BaseUpdate {
 
 			if (!UsersManager.getUser(getUpdate().user_id).equals(getUser()))
 				setUser(UsersManager.getUser(getUpdate().user_id));
-				
+
 			host = getUser().getHost(UUID.fromString(getUpdate().host_id));
 			if (host == null) {
 				Logit.LogError("ProbeUpdate - New()", "Failed update from type NEW PROBE - unknown host");
 				return false;
 			}
-			
-			if (!getUser().isProbeExist(getUpdate().probe_id)) {
-				
 
-//				host = getUser().getHost(UUID.fromString(getUpdate().host_id));
+			if (!getUser().isProbeExist(getUpdate().probe_id)) {
+
+				// host =
+				// getUser().getHost(UUID.fromString(getUpdate().host_id));
 				ProbeParams probeParams = new ProbeParams();
 				probeParams.template_id = getUpdate().template_id;
 				probeParams.bytes = getUpdate().update_value.key.bytes;
@@ -74,7 +76,7 @@ public class ProbeUpdate extends BaseUpdate {
 				probeParams.name = getUpdate().update_value.name;
 				probeParams.port = getUpdate().update_value.key.port;
 				probeParams.port_extra = getUpdate().update_value.key.port_extra;
-				 probeParams.probe_id = getUpdate().probe_id;
+				probeParams.probe_id = getUpdate().probe_id;
 				probeParams.protocol = getUpdate().update_value.key.proto;
 				probeParams.rbl = getUpdate().update_value.key.rbl;
 				probeParams.oid = getUpdate().update_value.key.snmp_oid;
@@ -88,67 +90,73 @@ public class ProbeUpdate extends BaseUpdate {
 				probeParams.snmp_store_as = getUpdate().update_value.key.store_value_as;
 				// todo: take care, also update
 				probeParams.trigger_id = getUpdate().update_value.key.trigger_id;
-				
+
 				// Discovery
 				probeParams.discovery_type = getUpdate().update_value.key.discovery_type;
 				probeParams.discovery_triggers = getUpdate().update_value.key.discovery_triggers;
-//				probeParams.discovery_trigger_severity = getUpdate().update_value.key.trigger_severity;
-//				probeParams.discovery_trigger_code = getUpdate().update_value.key.discovery_trigger_code;
-//				probeParams.discovery_trigger_unit = getUpdate().update_value.key.discovery_trigger_unit;
-//				probeParams.discovery_trigger_x_value = getUpdate().update_value.key.discovery_trigger_x_value;
-				
-				
+				// probeParams.discovery_trigger_severity =
+				// getUpdate().update_value.key.trigger_severity;
+				// probeParams.discovery_trigger_code =
+				// getUpdate().update_value.key.discovery_trigger_code;
+				// probeParams.discovery_trigger_unit =
+				// getUpdate().update_value.key.discovery_trigger_unit;
+				// probeParams.discovery_trigger_x_value =
+				// getUpdate().update_value.key.discovery_trigger_x_value;
+
 				probe = getUser().addTemplateProbe(probeParams);
 				Logit.LogCheck("New probe was created");
 
 			} else {
 				probe = getUser().getProbeFor(getUpdate().probe_id);
-//				ChangeInterval(probe.getInterval());
+				// ChangeInterval(probe.getInterval());
 				probe.updateKeyValues(getUpdate());
 				Logit.LogCheck("New probe was updated,  probe was already exist");
 			}
 
 			RunnableProbe runnableProbe = new RunnableProbe(host, probe);
 			RunnableProbeContainer.getInstanece().add(runnableProbe);
-//			getUser().addRunnableProbe(runnableProbe);
+			// getUser().addRunnableProbe(runnableProbe);
 			Logit.LogCheck("New Runnable probe was created: " + runnableProbe.getId());
-			
+
 		} catch (Exception e) {
-			Logit.LogError("ProbeUpdate - New()", "New probe Could not be created");
+			Logit.LogError("ProbeUpdate - New()", "New probe Could not be created\n" + getUpdate().template_id + "@"
+					+ getUpdate().host_id + "@" + getUpdate().probe_id);
 			e.printStackTrace();
 		}
 		return true;
 	}
 
-//	private boolean ChangeInterval(long currentInterval) {
-//		try {
-//			if (currentInterval != getUpdate().update_value.interval) {
-//				HashMap<String, RunnableProbe> runnableProbes = RunnableProbeContainer.getInstanece()
-//						.getByProbe(getUpdate().probe_id);
-//				if (runnableProbes == null)
-//					return false;
-//				for (RunnableProbe runnableProbe : runnableProbes.values()) {
-//					RunnableProbeContainer.getInstanece().changeInterval(runnableProbe.getId(), currentInterval);
-//				}
-//			}
-//			return true;
-//		} catch (Exception e) {
-//			return false;
-//		}
-//	}
+	// private boolean ChangeInterval(long currentInterval) {
+	// try {
+	// if (currentInterval != getUpdate().update_value.interval) {
+	// HashMap<String, RunnableProbe> runnableProbes =
+	// RunnableProbeContainer.getInstanece()
+	// .getByProbe(getUpdate().probe_id);
+	// if (runnableProbes == null)
+	// return false;
+	// for (RunnableProbe runnableProbe : runnableProbes.values()) {
+	// RunnableProbeContainer.getInstanece().changeInterval(runnableProbe.getId(),
+	// currentInterval);
+	// }
+	// }
+	// return true;
+	// } catch (Exception e) {
+	// return false;
+	// }
+	// }
 
 	@Override
 	public Boolean Update() {
 		super.Update();
 
-		HashMap<String, RunnableProbe> runnableProbes = RunnableProbeContainer.getInstanece()
+		ConcurrentHashMap<String, RunnableProbe> runnableProbes = RunnableProbeContainer.getInstanece()
 				.getByProbe(getUpdate().probe_id);
 		for (RunnableProbe runnableProbe : runnableProbes.values()) {
 			// TODO: What to do with them
 			// probeParams.template_id = update.template_id;
 			// probeParams.type = update.update_value.type;
 
-			if (getUpdate().update_value != null) 
+			if (getUpdate().update_value != null)
 				runnableProbe.getProbe().updateKeyValues(getUpdate());
 
 			if (getUpdate().update_value.interval != null
@@ -163,18 +171,15 @@ public class ProbeUpdate extends BaseUpdate {
 	@Override
 	public Boolean Delete() {
 		super.Delete();
-		if (!getUpdate().probe_id.contains("@"))
-		{
+		if (!getUpdate().probe_id.contains("@")) {
 			RunnableProbeContainer.getInstanece().removeByProbeId(getUpdate().probe_id);
 			Logit.LogCheck("All runnable probes with ProbeID: " + getUpdate().probe_id + " was removed");
-		}
-		else /// probeId == runnableProbeId
+		} else /// probeId == runnableProbeId
 		{
 			RunnableProbeContainer.getInstanece().removeByRunnableProbeId(getUpdate().probe_id);
 			Logit.LogCheck("Runnable probes with RunnableProbeID: " + getUpdate().probe_id + " was removed");
 		}
-		
-		
+
 		return true;
 	}
 }
