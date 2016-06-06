@@ -99,7 +99,6 @@ public class DiskProbe extends BaseProbe {
 			return null;
 
 		DiskResult diskResult = NetResults.getInstanece().getDiskResult(h, this);
-		
 
 		return diskResult;
 	}

@@ -167,10 +167,10 @@ public class SnmpProbesBatch implements Runnable {
 								RollupsContainer.getInstance().addResult(result);
 							} else if (storeAs == SnmpStoreAs.delta) {
 								SnmpDeltaResult snmpDeltaResult = getSnmpDeltaResult(result, resultsTimestamp);
-								if (!snmpDeltaResult.isFirst()) {
-									ResultsContainer.getInstance().addResult(snmpDeltaResult);
-									RollupsContainer.getInstance().addResult(snmpDeltaResult);
-								}
+//								if (!snmpDeltaResult.isFirst()) {
+								ResultsContainer.getInstance().addResult(snmpDeltaResult);
+								RollupsContainer.getInstance().addResult(snmpDeltaResult);
+//								}
 							}
 
 						}
