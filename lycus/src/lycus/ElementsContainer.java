@@ -217,7 +217,7 @@ public class ElementsContainer {
 			baseElement.setActive(element.active);
 			}
 			catch (SecurityException se) {
-				Logit.LogError("ElementsContainer - updateElements()", "Unable to create or retrieve element");
+				Logit.LogError("ElementsContainer - updateElements()", "Unable to create or retrieve element " + element.name);
 			}
 		}
 		return true;
