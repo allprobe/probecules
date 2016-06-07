@@ -118,7 +118,7 @@ public class SnmpProbesBatch implements Runnable {
 		while (isActive()) {
 			try {
 				String rpStr = this.getBatchId();
-				if (rpStr.contains("9dc99972-e28a-4e90-aabd-7e8bad61b232@0b05919c-6cc0-42cc-a74b-de3b0dcd4a2a@60"))
+				if (rpStr.contains("6fe5d726-38c1-41f8-a8bc-3eead09af775@6b999cd6-fcbb-4ca8-9936-5529b4c66976@snmp_803fe540-874b-4f79-8aff-049c01d35f39"))
 					Logit.LogDebug("BREAKPOINT");
 
 				if (this.getHost().isHostStatus() && this.getHost().isSnmpStatus()) {
