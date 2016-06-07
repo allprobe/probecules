@@ -216,6 +216,26 @@ public class ResultsContainer implements IResultsContainer {
 		
 		if(result.getRunnableProbeId().contains("discovery_45035c45-2679-4af6-84ca-e924e78dd7bc"))
 			Logit.LogDebug("BREAKPOINT");
+
+		if(result instanceof DiscoveryResult)
+		{
+			DiscoveryResult discoveryResult=(DiscoveryResult)result;
+			switch (discoveryResult.getElementsType()) {
+			case bw:
+				if (ElementsContainer.getInstance().isNicElementsChanged(discoveryResult)) {
+					addResult(discoveryResult);
+				}
+				break;
+			case ds:
+				if (ElementsContainer.getInstance().isDiskElementsChanged(discoveryResult)) {
+					addResult(discoveryResult);
+				}
+				break;
+			}
+	
+			
+		}
+		
 			synchronized (lockResults) {
 				results.add(result);
 		}

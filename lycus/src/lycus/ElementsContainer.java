@@ -30,22 +30,8 @@ public class ElementsContainer {
 		return instance;
 	}
 
-	public void addResult(DiscoveryResult discoveryResult) {
-		switch (discoveryResult.getElementsType()) {
-		case bw:
-			if (isNicElementsChanged(discoveryResult)) {
-				ResultsContainer.getInstance().addResult(discoveryResult);
-			}
-			break;
-		case ds:
-			if (isDiskElementsChanged(discoveryResult)) {
-				ResultsContainer.getInstance().addResult(discoveryResult);
-			}
-			break;
-		}
-	}
 
-	private boolean isDiskElementsChanged(DiscoveryResult discoveryResult) {
+	public boolean isDiskElementsChanged(DiscoveryResult discoveryResult) {
 		Map<String, BaseElement> currentElements = diskElements.get(discoveryResult.getRunnableProbeId());
 		// discoveryResult.getElements().size() != 0
 		if (discoveryResult == null)
@@ -89,7 +75,7 @@ public class ElementsContainer {
 	// }
 	// }
 
-	private boolean isNicElementsChanged(DiscoveryResult discoveryResult) {
+	public boolean isNicElementsChanged(DiscoveryResult discoveryResult) {
 		Map<String, BaseElement> currentElements = nicElements.get(discoveryResult.getRunnableProbeId());
 		// discoveryResult.getElements().size() != 0
 		if (discoveryResult == null)
@@ -159,7 +145,6 @@ public class ElementsContainer {
 	}
 
 	private void addDiskElement(String userId, String runnableProbeId, BaseElement element) {
-
 		ConcurrentHashMap<String, BaseElement> elementMap = diskElements.get(runnableProbeId);
 		if (elementMap == null)
 			elementMap = new ConcurrentHashMap<String, BaseElement>();

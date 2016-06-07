@@ -215,12 +215,15 @@ public class GlobalConfig {
 			KeySeperator = prop.getProperty("Key_seperator").charAt(0);
 		} catch (FileNotFoundException e) {
 			Logit.LogError("No Config Found!", "");
+			System.err.println("No Config Found!");
 			return false;
 		} catch (IOException e) {
 			Logit.LogError("Error Loading Config File!(IO)", "");
+			System.err.println("Error Loading Config File!(IO)");
 			return false;
 		} catch (Exception e) {
 			Logit.LogError("Error Loading Config File!(config is not valid)", "");
+			System.err.println("Error Loading Config File!(config is not valid)");
 			return false;
 		}
 		if (!validateGlobalVars()) {
