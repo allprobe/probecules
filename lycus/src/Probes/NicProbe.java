@@ -23,11 +23,11 @@ public class NicProbe extends BaseProbe {
 	private long ifSpeed;
 	HostType hostType;
 	DiscoveryProbe discoveryProbe;
-	NicElement nicElement;
+	private NicElement nicElement;
 
 	public NicProbe(DiscoveryProbe probe, NicElement nicElement) {
 		this.discoveryProbe = probe;
-		this.nicElement = nicElement;
+		this.setNicElement(nicElement);
 		// this.index=index;
 		// this.ifSpeed=ifSpeed;
 		// this.hostType=hostType;
@@ -50,7 +50,7 @@ public class NicProbe extends BaseProbe {
 
 	@Override
 	public String getName() {
-		return nicElement.getName();
+		return getNicElement().getName();
 	}
 
 	@Override
@@ -170,7 +170,7 @@ public class NicProbe extends BaseProbe {
 	}
 
 	public int getIndex() {
-		return nicElement.getIndex();
+		return getNicElement().getIndex();
 	}
 
 	public OID getIfoutoctetsOID() {
@@ -187,7 +187,7 @@ public class NicProbe extends BaseProbe {
 	}
 
 	public long getIfSpeed() {
-		return nicElement.getIfSpeed();
+		return getNicElement().getIfSpeed();
 	}
 
 	@Override
@@ -198,6 +198,14 @@ public class NicProbe extends BaseProbe {
 		jsonObject.put("if_speed", this.getIfSpeed());
 		jsonObject.put("if_index", this.getIndex());
 		return jsonObject.toJSONString();
+	}
+
+	public NicElement getNicElement() {
+		return nicElement;
+	}
+
+	public void setNicElement(NicElement nicElement) {
+		this.nicElement = nicElement;
 	}
 
 }

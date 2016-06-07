@@ -2,11 +2,8 @@ package Probes;
 
 import java.util.HashMap;
 import java.util.UUID;
-
 import org.snmp4j.smi.OID;
-
 import Elements.DiskElement;
-import Elements.NicElement;
 import NetConnection.NetResults;
 import Results.BaseResult;
 import Results.DiskResult;
@@ -21,7 +18,7 @@ public class DiskProbe extends BaseProbe {
 	private static final String hrStorageUsedOID = 			  "1.3.6.1.2.1.25.2.3.1.6.";
 
 	DiscoveryProbe discoveryProbe;
-	DiskElement diskElement;
+	private DiskElement diskElement;
 	
 //	public DiskProbe(User user, String probe_id, UUID template_id, String name, long interval, float multiplier,
 //			boolean status,int index) {
@@ -30,7 +27,7 @@ public class DiskProbe extends BaseProbe {
 
 	public DiskProbe(DiscoveryProbe probe,DiskElement diskElement) {
 		this.discoveryProbe=probe;
-		this.diskElement=diskElement;
+		this.setDiskElement(diskElement);
 //		this.index=index;
 //		this.ifSpeed=ifSpeed;
 //		this.hostType=hostType;
@@ -50,7 +47,7 @@ public class DiskProbe extends BaseProbe {
 	
 	@Override
 	public String getName() {
-		return diskElement.getName();
+		return getDiskElement().getName();
 		}
 	
 	@Override
@@ -73,7 +70,7 @@ public class DiskProbe extends BaseProbe {
 		return discoveryProbe.getTrigger(triggerId);
 	}
 	public int getIndex() {
-		return diskElement.getIndex();
+		return getDiskElement().getIndex();
 	}
 	
 	public OID getHrstorageallocationunitsoid() {
@@ -101,5 +98,11 @@ public class DiskProbe extends BaseProbe {
 		DiskResult diskResult = NetResults.getInstanece().getDiskResult(h, this);
 
 		return diskResult;
+	}
+	public DiskElement getDiskElement() {
+		return diskElement;
+	}
+	public void setDiskElement(DiskElement diskElement) {
+		this.diskElement = diskElement;
 	}
 }

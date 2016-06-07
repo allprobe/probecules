@@ -85,7 +85,7 @@ public class RunnableProbe implements Runnable {
 		if (getProbe() instanceof NicProbe)
 			return ProbeTypes.DISCBANDWIDTH;
 		if (getProbe() instanceof DiskProbe)
-			return ProbeTypes.DISCDISK;
+			return ProbeTypes.DISK_ELEMENT;
 		// if (getProbe() instanceof BaseElement)
 		// return ProbeTypes.DISCOVERYELEMENT;
 		return null;
@@ -99,18 +99,26 @@ public class RunnableProbe implements Runnable {
 				if (rpStr1.contains(
 						"761b1106-7d62-43b6-8f16-b559a806d366@74cda666-3d85-4e56-a804-9d53c4e16259@icmp_c4953148-bd68-4463-b655-049aabeec22f"))
 					Logit.LogDebug("BREAKPOINT - RunnableProbe");
-				if (!this.getProbe().isActive())
+				
+				if (this.getProbeType().equals(ProbeTypes.BANDWIDTH_ELEMENT)
+						&& !((NicProbe) this.getProbe()).getNicElement().isActive())
+					continue;
+				if (this.getProbeType().equals(ProbeTypes.DISK_ELEMENT)
+						&& !((DiskProbe) this.getProbe()).getDiskElement().isActive())
 					continue;
 
 				// Long timeStamp = result.getLastTimestamp();
-
+				
 				String rpStr = this.getId();
 				if (rpStr.contains(
 						"3cfbc5dc-15b4-4cf5-86b8-d12008c00ffc@ae1981c3-c157-4ce2-9086-11e869d4a344@http_d536b359-e496-40dc-b02c-b6cf8ff2a593"))
 					Logit.LogDebug("BREAKPOINT - RunnableProbe");
 
-				if (this.getProbeType().equals(ProbeTypes.DISCBANDWIDTH))
+				if (this.getProbeType().equals(ProbeTypes.BANDWIDTH_ELEMENT))
 					Logit.LogDebug("BREAKPOINT");
+				
+				if (!this.getProbe().isActive())
+					continue;
 
 				try {
 					result = getProbe().getResult(this.getHost());
@@ -142,6 +150,9 @@ public class RunnableProbe implements Runnable {
 						continue;
 
 					}
+					if (this.getProbeType() == ProbeTypes.DISCOVERY)
+						ElementsContainer.getInstance().addResult((DiscoveryResult) result);
+					else
 					ResultsContainer.getInstance().addResult(result);
 				} catch (Exception e) {
 					Logit.LogError("RunnableProbe - run()",

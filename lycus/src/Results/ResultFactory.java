@@ -20,9 +20,9 @@ public class ResultFactory {
 			return new TraceRouteResult(runnableProbeId);
 		case DISCOVERY:
 			return new DiscoveryResult(runnableProbeId);
-		case DISCBANDWIDTH:
+		case BANDWIDTH_ELEMENT:
 			return new NicResult(runnableProbeId);
-		case DISCDISK:
+		case DISK_ELEMENT:
 			return new DiskResult(runnableProbeId);
 		}
 		return null;

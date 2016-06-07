@@ -230,10 +230,10 @@ public class RunnableProbeContainer implements IRunnableProbeContainer {
 			case DISCOVERY:
 				discoveryExec.execute(runnableProbe);
 				break;
-			case DISCBANDWIDTH:
+			case BANDWIDTH_ELEMENT:
 				bandwidthProbeExec.execute(runnableProbe);
 				break;
-			case DISCDISK:
+			case DISK_ELEMENT:
 				diskProbeExec.execute(runnableProbe);
 				break;
 			case TRACEROUTE:
