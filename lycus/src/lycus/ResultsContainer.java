@@ -223,15 +223,20 @@ public class ResultsContainer implements IResultsContainer {
 			switch (discoveryResult.getElementsType()) {
 			case bw:
 				if (ElementsContainer.getInstance().isNicElementsChanged(discoveryResult)) {
-					addResult(discoveryResult);
+					synchronized (lockResults) {
+						results.add(discoveryResult);
+					}
 				}
 				break;
 			case ds:
 				if (ElementsContainer.getInstance().isDiskElementsChanged(discoveryResult)) {
-					addResult(discoveryResult);
+					synchronized (lockResults) {
+						results.add(discoveryResult);
+					}
 				}
 				break;
 			}
+			return true;
 		}
 
 		synchronized (lockResults) {
