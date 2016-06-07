@@ -7,11 +7,14 @@ import Elements.BaseElement;
 import Elements.DiskElement;
 import Elements.NicElement;
 import GlobalConstants.Enums.DiscoveryElementType;
+import Model.ElementModel;
+import Model.UpdateModel;
 import Probes.DiscoveryProbe;
 import Probes.NicProbe;
 import Probes.DiskProbe;
 import Results.DiscoveryResult;
 import Utils.Logit;
+import GlobalConstants.Enums.HostType;
 
 public class ElementsContainer {
 	private ConcurrentHashMap<String, ConcurrentHashMap<String, BaseElement>> nicElements;// ConcurrentHashMap<runnableProbeId,ConcurrentHashMap<elementName,NicElement>>
@@ -29,7 +32,6 @@ public class ElementsContainer {
 			instance = new ElementsContainer();
 		return instance;
 	}
-
 
 	public boolean isDiskElementsChanged(DiscoveryResult discoveryResult) {
 		Map<String, BaseElement> currentElements = diskElements.get(discoveryResult.getRunnableProbeId());
@@ -100,7 +102,7 @@ public class ElementsContainer {
 					|| !currentElements.get(newElement.getName()).isIdentical(newElement)) {
 				ConcurrentHashMap<String, BaseElement> newMap = new ConcurrentHashMap<String, BaseElement>(
 						(Map) discoveryResult.getElements());
-				updateStatuses(currentElements, newMap); 
+				updateStatuses(currentElements, newMap);
 				nicElements.put(discoveryResult.getRunnableProbeId(), newMap);
 				return true;
 			}
@@ -170,20 +172,54 @@ public class ElementsContainer {
 		elementMap.put(element.getName(), (NicElement) element);
 		nicElements.put(runnableProbeId, elementMap);
 	}
-	
-	public BaseElement getElement(String runnableProbeId, String elementName, DiscoveryElementType elementType ) {
+
+	public BaseElement getElement(String runnableProbeId, String elementName, DiscoveryElementType elementType) {
 		ConcurrentHashMap<String, BaseElement> elementMap = null;
-		if (elementType == elementType.ds)
-		{
+		if (elementType == elementType.ds) {
 			elementMap = diskElements.get(runnableProbeId);
-		}
-		else if (elementType == elementType.bw)
-		{
+		} else if (elementType == elementType.bw) {
 			elementMap = nicElements.get(runnableProbeId);
 		}
-		
+
+		if (elementMap == null)
+			return null;
 		return elementMap.get(elementName);
-			
+
 	}
 
+	public boolean updateElements(UpdateModel update) {
+		String runnableProbeId = Utils.GeneralFunctions.getRunnableProbeId(update.template_id, update.host_id,
+				update.probe_id);
+		ConcurrentHashMap<String, BaseElement> elementMap = null;
+		DiscoveryElementType elementType = null;
+		BaseElement baseElement = null;
+		
+		if (update.elements == null)
+			return true;
+		for (ElementModel element : update.elements) {
+			try
+			{
+			if (element.ifSpeed != null) {
+				baseElement = getElement(runnableProbeId, element.name, elementType.bw);
+				if (baseElement == null) {
+					baseElement = new NicElement(element.index, element.name,
+							HostType.valueOf(element.hostType), element.ifSpeed);
+					addElement(update.user_id, runnableProbeId, baseElement);
+				}
+			} else if (element.hrStorageAllocationUnits != null) {
+				baseElement = getElement(runnableProbeId, element.name, elementType.ds);
+				if (elementMap == null) {
+					baseElement = new DiskElement(element.index, element.name, false);
+					addElement(update.user_id, runnableProbeId, baseElement);
+				}
+			}
+
+			baseElement.setActive(element.active);
+			}
+			catch (SecurityException se) {
+				Logit.LogError("ElementsContainer - updateElements()", "Unable to create or retrieve element");
+			}
+		}
+		return true;
+	}
 }

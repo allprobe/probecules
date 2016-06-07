@@ -28,21 +28,7 @@ public class ElementUpdate extends BaseUpdate {
 	public Boolean Update()
 	{
 		super.Update();
-		String runnableProbeId = Utils.GeneralFunctions.getRunnableProbeId(getUpdate().template_id, getUpdate().host_id, getUpdate().probe_id);
-	    RunnableProbe runnableProbe = RunnableProbeContainer.getInstanece().get(runnableProbeId);
-	    DiscoveryElementType elementType = null;
-	    
-	    for (ElementModel element : getUpdate().elements)
-	    {
-	    	if (element.ifSpeed != null)
-	    		elementType = elementType.bw;
-	    	else if(element.hrStorageAllocationUnits != null)
-	    		elementType = elementType.ds;
-	    			
-	    	BaseElement element1 = ElementsContainer.getInstance().getElement(runnableProbeId, element.name, elementType);
-	    	element1.setActive(element.active);
-	    }
-	
+	    ElementsContainer.getInstance().updateElements(getUpdate());
 	    
 		
 //		RunnableProbeContainer.getInstanece().get(getUpdate().elements)

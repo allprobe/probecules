@@ -4,7 +4,7 @@ public class ElementModel {
 	public String name;
 	public Boolean active;
 	public String hostType;
-	public String ifSpeed;
-	public String index;
+	public Long ifSpeed;
+	public Integer index;
 	public String hrStorageAllocationUnits;
 }
