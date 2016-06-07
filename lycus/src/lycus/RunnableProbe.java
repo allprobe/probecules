@@ -83,7 +83,7 @@ public class RunnableProbe implements Runnable {
 		if (getProbe() instanceof DiscoveryProbe)
 			return ProbeTypes.DISCOVERY;
 		if (getProbe() instanceof NicProbe)
-			return ProbeTypes.DISCBANDWIDTH;
+			return ProbeTypes.BANDWIDTH_ELEMENT;
 		if (getProbe() instanceof DiskProbe)
 			return ProbeTypes.DISK_ELEMENT;
 		// if (getProbe() instanceof BaseElement)
@@ -150,9 +150,9 @@ public class RunnableProbe implements Runnable {
 						continue;
 
 					}
-					if (this.getProbeType() == ProbeTypes.DISCOVERY)
-						ElementsContainer.getInstance().addResult((DiscoveryResult) result);
-					else
+//					if (this.getProbeType() == ProbeTypes.DISCOVERY)
+//						ElementsContainer.getInstance().addResult((DiscoveryResult) result);
+//					else
 					ResultsContainer.getInstance().addResult(result);
 				} catch (Exception e) {
 					Logit.LogError("RunnableProbe - run()",

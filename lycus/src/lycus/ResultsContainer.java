@@ -81,7 +81,7 @@ public class ResultsContainer implements IResultsContainer {
 		eventsClear();
 		// TODO: Leave 10 last results from each kind on the list
 		results.clear();
-		
+
 		return true;
 	}
 
@@ -102,15 +102,14 @@ public class ResultsContainer implements IResultsContainer {
 		JSONObject result = new JSONObject();
 
 		String rpStr = rpr.getRunnableProbeId();
-		if (rpStr.contains(
-				"discovery_45035c45-2679-4af6-84ca-e924e78dd7bc"))
+		if (rpStr.contains("discovery_45035c45-2679-4af6-84ca-e924e78dd7bc"))
 			Logit.LogDebug("BREAKPOINT");
-		
+
 		RunnableProbe rp = RunnableProbeContainer.getInstanece().get(rpr.getRunnableProbeId());
-		
-		if(rpr.getResultString()==null)
+
+		if (rpr.getResultString() == null)
 			return null;
-		
+
 		if (rp == null)
 			return null;
 		result.put("USER_ID", rp.getProbe().getUser().getUserId().toString());
@@ -160,8 +159,9 @@ public class ResultsContainer implements IResultsContainer {
 
 			for (Iterator iterator = events.keySet().iterator(); iterator.hasNext();) {
 				String it = (String) iterator.next();
-				
-				if(it.contains("c3f052eb-d8e3-4672-9bab-cb25fc6e702f@0b05919c-6cc0-42cc-a74b-de3b0dcd4a2a@port_667b9da7-1d9b-46b7-8299-1cc981cb8cc8@07d1af43-1d78-4ddc-9d3b-ee7e3cf8eb50"))
+
+				if (it.contains(
+						"c3f052eb-d8e3-4672-9bab-cb25fc6e702f@0b05919c-6cc0-42cc-a74b-de3b0dcd4a2a@port_667b9da7-1d9b-46b7-8299-1cc981cb8cc8@07d1af43-1d78-4ddc-9d3b-ee7e3cf8eb50"))
 					Logit.LogDebug("BREAKPOINT");
 				try {
 					UUID hostId = UUID.fromString(it.split("@")[0]);
@@ -173,12 +173,13 @@ public class ResultsContainer implements IResultsContainer {
 					RunnableProbe runnableProbe = RunnableProbeContainer.getInstanece()
 							.get(GeneralFunctions.getRunnableProbeId(templateId, hostId, probeId));
 
-					if(runnableProbe==null)
-					{
-						Logit.LogWarn( "Runnable Probe: "+GeneralFunctions.getRunnableProbeId(templateId, hostId, probeId)+" for existing live event doesnt exists so doesnt added!");
+					if (runnableProbe == null) {
+						Logit.LogWarn(
+								"Runnable Probe: " + GeneralFunctions.getRunnableProbeId(templateId, hostId, probeId)
+										+ " for existing live event doesnt exists so doesnt added!");
 						continue;
 					}
-					
+
 					Trigger trigger = runnableProbe.getProbe().getTriggers()
 							.get(templateId.toString() + "@" + probeId + "@" + triggerId.toString());
 
@@ -189,8 +190,8 @@ public class ResultsContainer implements IResultsContainer {
 					addEvent(runnableProbe.getId(), triggerId.toString(), event);
 					// result.getEvents().put(trigger, event);
 				} catch (Exception e) {
-					Logit.LogError("ResultsContainer - pullCurrentLiveEvents()", "Unable to process live event: "+it);
-					Logit.LogError("ResultsContainer - pullCurrentLiveEvents()", "E: "+e.getMessage());
+					Logit.LogError("ResultsContainer - pullCurrentLiveEvents()", "Unable to process live event: " + it);
+					Logit.LogError("ResultsContainer - pullCurrentLiveEvents()", "E: " + e.getMessage());
 				}
 			}
 			return;
@@ -213,13 +214,12 @@ public class ResultsContainer implements IResultsContainer {
 
 	@Override
 	public boolean addResult(BaseResult result) {
-		
-		if(result.getRunnableProbeId().contains("discovery_45035c45-2679-4af6-84ca-e924e78dd7bc"))
+
+		if (result.getRunnableProbeId().contains("discovery_45035c45-2679-4af6-84ca-e924e78dd7bc"))
 			Logit.LogDebug("BREAKPOINT");
 
-		if(result instanceof DiscoveryResult)
-		{
-			DiscoveryResult discoveryResult=(DiscoveryResult)result;
+		if (result instanceof DiscoveryResult) {
+			DiscoveryResult discoveryResult = (DiscoveryResult) result;
 			switch (discoveryResult.getElementsType()) {
 			case bw:
 				if (ElementsContainer.getInstance().isNicElementsChanged(discoveryResult)) {
@@ -232,12 +232,10 @@ public class ResultsContainer implements IResultsContainer {
 				}
 				break;
 			}
-	
-			
 		}
-		
-			synchronized (lockResults) {
-				results.add(result);
+
+		synchronized (lockResults) {
+			results.add(result);
 		}
 		return true;
 	}
@@ -350,26 +348,25 @@ public class ResultsContainer implements IResultsContainer {
 		// .of(ObixBaseObj.class)
 		// .registerSubtype(ObixBaseObj.class)
 		// .registerSubtype(ObixOp.class);
-		try{
-		JSONArray resultsDBFormat = new JSONArray();
-		for (int i = 0; i < results.size(); i++) {
-			
-			String rpStr = results.get(i).getRunnableProbeId();
-			if (rpStr.contains(
-					"discovery_c7629ed7-d0ec-4eca-8742-06344954434e@dmVuZXQw"))
-				Logit.LogDebug("BREAKPOINT");
-			
-			JSONObject resultDBFormat = rawResultsDBFormat(results.get(i));
-			if (resultDBFormat == null)
-				continue;
-			resultsDBFormat.add(resultDBFormat);
-		}
-		return resultsDBFormat.toString();
-		}
-		catch(Exception e)
-		{
-			Logit.LogFatal("ResultsContainer - getResults()", "Error getting results from resultsContainer! E: "+e.getMessage(),e);
-//			Logit.LogFatal("ResultsContainer - getResults()", "trace: "+e.getStackTrace().toString(),e);
+		try {
+			JSONArray resultsDBFormat = new JSONArray();
+			for (int i = 0; i < results.size(); i++) {
+
+				String rpStr = results.get(i).getRunnableProbeId();
+				if (rpStr.contains("discovery_c7629ed7-d0ec-4eca-8742-06344954434e@dmVuZXQw"))
+					Logit.LogDebug("BREAKPOINT");
+
+				JSONObject resultDBFormat = rawResultsDBFormat(results.get(i));
+				if (resultDBFormat == null)
+					continue;
+				resultsDBFormat.add(resultDBFormat);
+			}
+			return resultsDBFormat.toString();
+		} catch (Exception e) {
+			Logit.LogFatal("ResultsContainer - getResults()",
+					"Error getting results from resultsContainer! E: " + e.getMessage(), e);
+			// Logit.LogFatal("ResultsContainer - getResults()", "trace:
+			// "+e.getStackTrace().toString(),e);
 			return null;
 		}
 		// try {

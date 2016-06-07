@@ -100,7 +100,7 @@ public class ElementsContainer {
 					|| !currentElements.get(newElement.getName()).isIdentical(newElement)) {
 				ConcurrentHashMap<String, BaseElement> newMap = new ConcurrentHashMap<String, BaseElement>(
 						(Map) discoveryResult.getElements());
-				updateStatuses(currentElements, newMap);
+				updateStatuses(currentElements, newMap); 
 				nicElements.put(discoveryResult.getRunnableProbeId(), newMap);
 				return true;
 			}
