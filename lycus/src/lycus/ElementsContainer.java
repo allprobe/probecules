@@ -209,7 +209,7 @@ public class ElementsContainer {
 			} else if (element.hrStorageAllocationUnits != null) {
 				baseElement = getElement(runnableProbeId, element.name, elementType.ds);
 				if (elementMap == null) {
-					baseElement = new DiskElement(element.index, element.name, false);
+					baseElement = new DiskElement(element.index, element.name, element.active);
 					addElement(update.user_id, runnableProbeId, baseElement);
 				}
 			}
