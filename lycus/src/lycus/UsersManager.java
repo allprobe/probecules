@@ -10,15 +10,11 @@ import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
 import java.util.UUID;
-
-import javax.persistence.GenerationType;
-
 import org.json.simple.JSONObject;
 import org.apache.log4j.BasicConfigurator;
 import org.json.simple.JSONArray;
 import org.json.simple.parser.JSONParser;
 import com.google.gson.Gson;
-
 import DAL.ApiInterface;
 import DAL.DAL;
 import Elements.BaseElement;
@@ -38,7 +34,6 @@ import Model.HostParams;
 import Model.ProbeParams;
 import Model.SnmpTemplateParams;
 import Probes.BaseProbe;
-import Probes.DiscoveryProbe;
 import Utils.GeneralFunctions;
 import Utils.Logit;
 import lycus.DataPointsRollup;
