@@ -86,7 +86,7 @@ public class RunnableProbeContainer implements IRunnableProbeContainer {
 		ConcurrentHashMap<String, RunnableProbe> runnableProbes = getByHost(hostId);
 		ConcurrentHashMap<String, RunnableProbe> runnableProbesByTemplate = null;
 		for (RunnableProbe runnableProbe : runnableProbes.values()) {
-			if (runnableProbe.getProbe().getTemplate_id().equals(templateId)) {
+			if (runnableProbe.getProbe().getTemplate_id().toString().equals(templateId)) {
 				if (runnableProbesByTemplate == null)
 					runnableProbesByTemplate = new ConcurrentHashMap<String, RunnableProbe>();
 				runnableProbesByTemplate.put(runnableProbe.getId(), runnableProbe);
