@@ -104,6 +104,8 @@
 	<classpathentry kind="lib" path="lib/http/htmlunit-2.22/lib/httpcore-4.4.4.jar"/>
 	<classpathentry kind="lib" path="lib/http/htmlunit-2.22/lib/httpmime-4.5.2.jar"/>
 	<classpathentry kind="lib" path="lib/http/htmlunit-2.22/lib/xercesImpl-2.11.0.jar"/>
+	<classpathentry kind="lib" path="lib/http/selenium-2.53.0/selenium-java-2.53.0-srcs.jar"/>
+	<classpathentry kind="lib" path="lib/http/selenium-2.53.0/selenium-java-2.53.0.jar"/>
 	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER"/>
 	<classpathentry kind="output" path="bin"/>
 </classpath>

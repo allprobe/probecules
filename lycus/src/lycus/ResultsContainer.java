@@ -16,6 +16,7 @@ import com.google.gson.GsonBuilder;
 import DAL.ApiInterface;
 import DAL.DAL;
 import GlobalConstants.Enums;
+import GlobalConstants.Enums.ApiAction;
 import GlobalConstants.ProbeTypes;
 import Interfaces.IResultsContainer;
 import Results.BaseResult;
@@ -138,7 +139,7 @@ public class ResultsContainer implements IResultsContainer {
 	public void pullCurrentLiveEvents() {
 		while (true) {
 			Logit.LogInfo("Retrieving existing live eventsHandler from REDIS...");
-			Object eventsObject = ApiInterface.executeRequest(Enums.ApiAction.GetServerLiveEvents, "GET", null);
+			Object eventsObject = DAL.getInstanece().get(ApiAction.GetServerLiveEvents);
 
 			if (eventsObject == null) {
 				Logit.LogWarn("Unable to retrieve existing live eventsHandler, trying again in about 30 secs...");

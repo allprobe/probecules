@@ -13,6 +13,7 @@ import Probes.DiscoveryProbe;
 import Probes.NicProbe;
 import Probes.DiskProbe;
 import Results.DiscoveryResult;
+import Utils.GeneralFunctions;
 import Utils.Logit;
 import GlobalConstants.Enums.HostType;
 
@@ -135,6 +136,44 @@ public class ElementsContainer {
 		}
 	}
 
+	public void removeElement(String userId, String runnableProbeId, BaseElement element) {
+		if (element instanceof NicElement) {
+			if (runnableProbeId
+					.contains("74cda666-3d85-4e56-a804-9d53c4e16259@discovery_777938b0-e4b0-4ec6-b0f2-ea880a0c09ef"))
+				Logit.LogDebug("BREAKPOINT");
+			removeNicElement(userId, runnableProbeId, element);
+			stopElement(userId, runnableProbeId, element);
+		}
+		if (element instanceof DiskElement) {
+			removeDiskElement(userId, runnableProbeId, element);
+			stopElement(userId, runnableProbeId, element);
+		}
+	}
+
+	private void removeDiskElement(String userId, String runnableProbeId, BaseElement element) {
+		ConcurrentHashMap<String, BaseElement> elementMap = diskElements.get(runnableProbeId);
+		if (elementMap == null)
+			return;
+		elementMap.remove(element.getName());
+	}
+
+	private void stopElement(String userId, String runnableProbeId, BaseElement element) {
+		DiscoveryProbe probe = (DiscoveryProbe) UsersManager.getUser(userId).getTemplateProbes()
+				.get(runnableProbeId.split("@")[2]);
+		User user = probe.getUser();
+		Host host = user.getHost(UUID.fromString(runnableProbeId.split("@")[1]));
+		String elementRunnableProbeId = runnableProbeId + "@" + GeneralFunctions.Base64Encode(element.getName());
+		RunnableProbe nicRunnableProbe = RunnableProbeContainer.getInstanece().get(elementRunnableProbeId);
+		RunnableProbeContainer.getInstanece().remove(nicRunnableProbe);
+	}
+
+	private void removeNicElement(String userId, String runnableProbeId, BaseElement element) {
+		ConcurrentHashMap<String, BaseElement> elementMap = nicElements.get(runnableProbeId);
+		if (elementMap == null)
+			return;
+		elementMap.remove(element.getName());
+	}
+
 	private void runDiskElement(String userId, String runnableProbeId, BaseElement element) {
 		DiscoveryProbe probe = (DiscoveryProbe) UsersManager.getUser(userId).getTemplateProbes()
 				.get(runnableProbeId.split("@")[2]);
@@ -193,31 +232,35 @@ public class ElementsContainer {
 		ConcurrentHashMap<String, BaseElement> elementMap = null;
 		DiscoveryElementType elementType = null;
 		BaseElement baseElement = null;
-		
+
 		if (update.elements == null)
 			return true;
 		for (ElementModel element : update.elements) {
-			try
-			{
-			if (element.ifSpeed != null) {
-				baseElement = getElement(runnableProbeId, element.name, elementType.bw);
-				if (baseElement == null) {
-					baseElement = new NicElement(element.index, element.name,
-							HostType.valueOf(element.hostType), element.ifSpeed);
-					addElement(update.user_id, runnableProbeId, baseElement);
+			try {
+				if (element.ifSpeed != null) {
+					baseElement = getElement(runnableProbeId, element.name, elementType.bw);
+					if (baseElement == null) {
+						baseElement = new NicElement(element.index, element.name, HostType.valueOf(element.hostType),
+								element.ifSpeed);
+						addElement(update.user_id, runnableProbeId, baseElement);
+					}
+				} else if (element.hrStorageAllocationUnits != null) {
+					baseElement = getElement(runnableProbeId, element.name, elementType.ds);
+					if (baseElement == null) {
+						baseElement = new DiskElement(element.index, element.name, element.active);
+						addElement(update.user_id, runnableProbeId, baseElement);
+					}
 				}
-			} else if (element.hrStorageAllocationUnits != null) {
-				baseElement = getElement(runnableProbeId, element.name, elementType.ds);
-				if (elementMap == null) {
-					baseElement = new DiskElement(element.index, element.name, element.active);
+				if (!baseElement.isActive() && element.active) {
+					baseElement.setActive(element.active);
 					addElement(update.user_id, runnableProbeId, baseElement);
+				} else if (baseElement.isActive() && !element.active) {
+					baseElement.setActive(element.active);
+					removeElement(update.user_id, runnableProbeId, baseElement);
 				}
-			}
-
-			baseElement.setActive(element.active);
-			}
-			catch (SecurityException se) {
-				Logit.LogError("ElementsContainer - updateElements()", "Unable to create or retrieve element " + element.name);
+			} catch (SecurityException se) {
+				Logit.LogError("ElementsContainer - updateElements()",
+						"Unable to create or retrieve element " + element.name);
 			}
 		}
 		return true;

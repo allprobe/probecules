@@ -24,6 +24,10 @@ import java.util.List;
 import java.util.Map;
 import java.util.StringTokenizer;
 import org.apache.commons.io.IOUtils;
+import org.jsoup.Jsoup;
+import org.jsoup.nodes.Document;
+import org.jsoup.nodes.Element;
+import org.jsoup.select.Elements;
 import org.snmp4j.CommunityTarget;
 import org.snmp4j.PDU;
 import org.snmp4j.ScopedPDU;
@@ -53,11 +57,22 @@ import org.snmp4j.util.DefaultPDUFactory;
 import org.snmp4j.util.TreeEvent;
 import org.snmp4j.util.TreeListener;
 import org.snmp4j.util.TreeUtils;
+
+import com.gargoylesoftware.htmlunit.BrowserVersion;
+import com.gargoylesoftware.htmlunit.History;
+import com.gargoylesoftware.htmlunit.Page;
+import com.gargoylesoftware.htmlunit.WebClient;
+import com.gargoylesoftware.htmlunit.WebWindow;
+import com.gargoylesoftware.htmlunit.html.DomElement;
+import com.gargoylesoftware.htmlunit.html.HtmlPage;
+import com.gargoylesoftware.htmlunit.javascript.background.JavaScriptJobManager;
+
 import GlobalConstants.GlobalConfig;
 import GlobalConstants.LogType;
 import Utils.GeneralFunctions;
 import Utils.Logit;
 import lycus.Host;
+import net.sourceforge.htmlunit.corejs.javascript.ScriptableObject;
 
 /**
  * 
@@ -120,11 +135,11 @@ public class Net {
 					while ((s = stdInput.readLine()) != null) {
 						lines.add(s);
 						if (hasPingResult(s)) {
-								ttl = checkLineTTL(s);
+							ttl = checkLineTTL(s);
 						} else {
-							if (checkLinePacketLoss(s)!=null) {
+							if (checkLinePacketLoss(s) != null) {
 								PacketLoss = checkLinePacketLoss(s);
-							} else if (checkLineRTT(s)!=null) {
+							} else if (checkLineRTT(s) != null) {
 								rtt_avg = checkLineRTT(s);
 							}
 						}
@@ -165,35 +180,33 @@ public class Net {
 
 	// #region pinger sub functions
 	private static String checkLinePacketLoss(String line) {
-		if(!line.contains("packet loss"))
+		if (!line.contains("packet loss"))
 			return null;
 		String split[] = line.split(" ");
-		for(String s:split)
-		{
-			if(s.contains("%"))
+		for (String s : split) {
+			if (s.contains("%"))
 				return s.split("%")[0];
 		}
 		return null;
 	}
 
 	private static String checkLineTTL(String line) {
-		if(!line.contains("ttl"))
+		if (!line.contains("ttl"))
 			return null;
 		String split[] = line.split(" ");
-		for(String s:split)
-		{
-			if(s.contains("ttl"))
+		for (String s : split) {
+			if (s.contains("ttl"))
 				return s.split("=")[1];
 		}
 		return null;
 	}
 
 	private static String checkLineRTT(String line) {
-		if(!line.contains("rtt min"))
+		if (!line.contains("rtt min"))
 			return null;
 		String rtt_avg = line.split(" ")[3].split("/")[1];
-//		String rtt_min = line.split(" ")[3].split("/")[0];
-//		String rtt_max = line.split(" ")[3].split("/")[2];
+		// String rtt_min = line.split(" ")[3].split("/")[0];
+		// String rtt_max = line.split(" ")[3].split("/")[2];
 		return rtt_avg;
 	}
 
@@ -359,6 +372,55 @@ public class Net {
 
 		}
 
+	}
+
+	public static ArrayList<Object> ExtendedWeber(String url, String requestType, String user, String pass,
+			int timeout) {
+		try {
+			WebClient webClient = new WebClient(BrowserVersion.CHROME);
+			HtmlPage htmlPage = webClient.getPage("http://www.walla.co.il/");
+			long timeStart=System.currentTimeMillis();
+			Document doc = Jsoup.connect("http://www.walla.co.il/").get();
+			long endTime=System.currentTimeMillis();
+			
+						
+			Elements allElements=doc.getAllElements();
+			// get all links in page
+		      Elements links = doc.select("a[href]");//a links
+		      Elements cssLinks = doc.select("link[href]");//links
+		      Elements scripts = doc.select("script[src]"); //scripts
+		      Elements images = doc.select("img[src]"); //images
+		      
+		      for (Element link : allElements) {
+		    	  System.out.println(link.text());
+		    	  System.out.println(link.toString());
+		    	  
+		        // get the value from the href attribute
+//		        System.out.println("\nimage: " + link.attr("src"));
+//		        System.out.println("language: " + link.attr("type"));
+		      }
+//			System.out.println(htmlPage.asText());
+//			System.out.println(htmlPage.getDocumentElement());
+//			for (DomElement element : htmlPage.getDomElementDescendants()) {
+//				System.out.println(element.toString());
+//			}
+			// fetch the document over HTTP
+
+			// get the page title
+			String title = doc.title();
+			System.out.println("title: " + title);
+
+			// get all links in page
+//			Elements links = doc.select("a[href]");
+//			for (Element link : links) {
+//				// get the value from the href attribute
+//				System.out.println("\nlink: " + link.attr("href"));
+//				System.out.println("text: " + link.text());
+//			}
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		return null;
 	}
 
 	public static ArrayList<Object> builtInWeber(String _url, String requestType, String authType, String user,
@@ -880,14 +942,16 @@ public class Net {
 		// try {
 		// transport.close();
 		// } catch (IOException e) {
-//		Logit.LogError("Net - Snmp2GET", "Unable to close TransportMapping! may cause memory leak!");
+		// Logit.LogError("Net - Snmp2GET", "Unable to close TransportMapping!
+		// may cause memory leak!");
 		// }
 		// }
 		// if (snmp != null) {
 		// try {
 		// snmp.close();
 		// } catch (IOException e) {
-//		Logit.LogError("Net - Snmp2GET", "Unable to close TransportMapping! may cause memory leak!");
+		// Logit.LogError("Net - Snmp2GET", "Unable to close TransportMapping!
+		// may cause memory leak!");
 
 		//
 		// }
@@ -974,7 +1038,8 @@ public class Net {
 		// try {
 		// transport.close();
 		// } catch (IOException e) {
-//		Logit.LogError("Net - Snmp2GET", "Unable to close TransportMapping! may cause memory leak!");
+		// Logit.LogError("Net - Snmp2GET", "Unable to close TransportMapping!
+		// may cause memory leak!");
 
 		// }
 		// }
@@ -982,7 +1047,8 @@ public class Net {
 		// try {
 		// snmp.close();
 		// } catch (IOException e) {
-//		Logit.LogError("Net - Snmp2GET", "Unable to close TransportMapping! may cause memory leak!");
+		// Logit.LogError("Net - Snmp2GET", "Unable to close TransportMapping!
+		// may cause memory leak!");
 
 		//
 		// }
@@ -1055,8 +1121,8 @@ public class Net {
 					// (System.nanoTime()-startTime)/SnmpConstants.MILLISECOND_TO_NANOSECOND+"
 					// milliseconds");
 					if (e.isError()) {
-						Logit.LogWarn("The following error occurred during walk:"
-								+ e.getErrorMessage() + ", for host: " + ip);
+						Logit.LogWarn("The following error occurred during walk:" + e.getErrorMessage() + ", for host: "
+								+ ip);
 						return;
 					}
 					finished = true;
@@ -1206,7 +1272,7 @@ public class Net {
 					// (System.nanoTime()-startTime)/SnmpConstants.MILLISECOND_TO_NANOSECOND+"
 					// milliseconds");
 					if (e.isError()) {
-						Logit.LogWarn("The following error occurred during walk:"+e.getErrorMessage());
+						Logit.LogWarn("The following error occurred during walk:" + e.getErrorMessage());
 						return;
 					}
 					finished = true;
@@ -1238,14 +1304,16 @@ public class Net {
 				try {
 					transport.close();
 				} catch (IOException e) {
-					Logit.LogError("Net = Snmp3Walk()", "Unable to close TransportMapping! may cause memory leak!" + e.getMessage());
+					Logit.LogError("Net = Snmp3Walk()",
+							"Unable to close TransportMapping! may cause memory leak!" + e.getMessage());
 				}
 			}
 			if (snmp != null) {
 				try {
 					snmp.close();
 				} catch (IOException e) {
-					Logit.LogError("Net = Snmp3Walk()", "Unable to close SNMP! may cause memory leak!" + e.getMessage());
+					Logit.LogError("Net = Snmp3Walk()",
+							"Unable to close SNMP! may cause memory leak!" + e.getMessage());
 
 				}
 			}
@@ -1396,18 +1464,16 @@ public class Net {
 		return inverted;
 	}
 
-	
-	public static long getDnsResolutionTime(String hostname)
-	{
-		long start=System.currentTimeMillis();
+	public static long getDnsResolutionTime(String hostname) {
+		long start = System.currentTimeMillis();
 		try {
 			InetAddress.getByName(hostname);
 		} catch (UnknownHostException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
-		long end=System.currentTimeMillis();
-		return end-start;
+		long end = System.currentTimeMillis();
+		return end - start;
 	}
 }
 

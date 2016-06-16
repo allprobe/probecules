@@ -97,7 +97,7 @@ public class RunnableProbe implements Runnable {
 			try {
 				String rpStr1 = this.getId();
 				if (rpStr1.contains(
-						"761b1106-7d62-43b6-8f16-b559a806d366@74cda666-3d85-4e56-a804-9d53c4e16259@icmp_c4953148-bd68-4463-b655-049aabeec22f"))
+						"7352a46f-5189-428c-b4c0-fb98dedd10b1@discovery_d3c95875-4947-4388-989f-64ffd863c704"))
 					Logit.LogDebug("BREAKPOINT - RunnableProbe");
 				
 				if (this.getProbeType().equals(ProbeTypes.BANDWIDTH_ELEMENT)
