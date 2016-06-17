@@ -54,14 +54,29 @@ public class HostUpdate extends BaseUpdate {
 		
 		String  snmpTemplateId = host.getSnmpTemp() != null ? host.getSnmpTemp().getSnmpTemplateId().toString() : null;
 		
-		if (getUpdate().update_value.snmp_template != null && GeneralFunctions.isChanged(snmpTemplateId, getUpdate().update_value.snmp_template)) {
-			SnmpTemplate snmpTemplate = getUser().getSnmpTemplates().get(UUID.fromString(getUpdate().update_value.snmp_template));
-			if (snmpTemplate == null) {
-				snmpTemplate = fetchSnmpTemplate();
+		if (getUpdate().update_value.snmp_template != null && snmpTemplateId != getUpdate().update_value.snmp_template) {
+			UUID uuid = null;
+			try{
+			    uuid = UUID.fromString(getUpdate().update_value.snmp_template);
+			} catch (Exception exception){
+			    //handle the case where string is not valid UUID 
 			}
-			host.setSnmpTemp(snmpTemplate);
-			if (snmpTemplate != null)
+			
+			if (uuid == null)
+			{
+				host.setSnmpTemp(null);
 				Logit.LogCheck("Snmp Template for host " + host.getName() + " has changed");
+			}
+			else
+			{
+				SnmpTemplate snmpTemplate = getUser().getSnmpTemplates().get(uuid);
+				if (snmpTemplate == null) {
+					snmpTemplate = fetchSnmpTemplate();
+				}
+				host.setSnmpTemp(snmpTemplate);
+				if (snmpTemplate != null)
+					Logit.LogCheck("Snmp Template for host " + host.getName() + " has changed");
+			}
 		}
 		String notificationGroup = host.getNotificationGroups() != null ? host.getNotificationGroups().toString() : null;
 		
@@ -80,9 +95,16 @@ public class HostUpdate extends BaseUpdate {
 
 		if (getUpdate().update_value.status != null
 				&& host.getHostStatus() != getUpdate().update_value.status.equals(Constants._true)) {
-			host.setHostStatus(getUpdate().update_value.status.equals(Constants._true));
+			boolean isActive = getUpdate().update_value.status.equals(Constants._true);
+			host.setHostStatus(isActive);
+			ConcurrentHashMap<String, RunnableProbe>  runnableProbes = RunnableProbeContainer.getInstanece().getByHost(getUpdate().host_id);
+			for (RunnableProbe runnableProbe : runnableProbes.values()) {
+				runnableProbe.getProbe().setActive(isActive);
+				Logit.LogCheck("Status for " + runnableProbe.getProbe().getName() + " Is " + isActive);
+			}
+			
 			Logit.LogCheck("Status for host " + host.getName() + " has changed to "
-					+ getUpdate().update_value.status.equals(Constants._true));
+					+ isActive);
 		}
 		return true;
 	}
