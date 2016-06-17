@@ -118,7 +118,7 @@ public class SnmpProbesBatch implements Runnable {
 		while (isActive()) {
 			try {
 				String rpStr = this.getBatchId();
-				if (rpStr.contains("6fe5d726-38c1-41f8-a8bc-3eead09af775@6b999cd6-fcbb-4ca8-9936-5529b4c66976@snmp_803fe540-874b-4f79-8aff-049c01d35f39"))
+				if (rpStr.contains("8b0104e7-5902-4419-933f-668582fc3acd@6975cb58-8aa4-4ecd-b9fc-47b78c0d7af8@snmp_5d937636-eb75-4165-b339-38a729aa2b7d"))
 					Logit.LogDebug("BREAKPOINT");
 
 				if (this.getHost().isHostStatus() && this.getHost().isSnmpStatus()) {
@@ -137,14 +137,16 @@ public class SnmpProbesBatch implements Runnable {
 					}
 
 					List<SnmpProbe> _snmpProbes = new ArrayList<SnmpProbe>();
-
+					List<RunnableProbe> _runnableProbes = new ArrayList<RunnableProbe>();
+					
 					for (RunnableProbe runnableProbe : snmpProbes) {
 
 						if (runnableProbe.getProbe().isActive()) {
 							if (rpStr.contains(
 									"9f2929aa-b0fe-4c85-a563-1d40178ba34f@74cda666-3d85-4e56-a804-9d53c4e16259@snmp_3d2224a8-2500-4ea5-8d37-f631204ffb18"))
 								Logit.LogDebug("BREAKPOINT");
-
+							
+							_runnableProbes.add(runnableProbe);
 							_snmpProbes.add((SnmpProbe) runnableProbe.getProbe());
 						}
 					}
@@ -152,7 +154,7 @@ public class SnmpProbesBatch implements Runnable {
 					List<SnmpResult> response = NetResults.getInstanece().getSnmpResults(this.getHost(), _snmpProbes);
 
 					if (response == null) {
-						for (RunnableProbe runnableProbe : snmpProbes) {
+						for (RunnableProbe runnableProbe : _runnableProbes) {
 							Logit.LogWarn("Unable Probing Runnable Probe of: " + runnableProbe.getId());
 						}
 						Logit.LogInfo("Failed running  snmp batch - host: " + this.getHost().getHostIp()
