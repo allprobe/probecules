@@ -50,10 +50,10 @@ public class DiskProbe extends BaseProbe {
 		return getDiskElement().getName();
 		}
 	
-	@Override
-	public boolean isActive() {
-		return discoveryProbe.isActive();
-	}
+//	@Override
+//	public boolean isActive() {
+//		return discoveryProbe.isActive();
+//	}
 	
 	@Override
 	public float getMultiplier() {

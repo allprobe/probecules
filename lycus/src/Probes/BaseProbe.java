@@ -92,21 +92,17 @@ public class BaseProbe  {
 		return name;
 	}
 
-
 	public void setName(String name) {
 		this.name = name;
 	}
 
+  	public boolean isActive() {
+  		return isActive;
+  	}
 
-	public boolean isActive() {
-		return isActive;
-	}
-
-
-	public void setActive(boolean isActive) {
-		this.isActive = isActive;
-	
-	}
+  	public void setActive(boolean isActive) {
+  		this.isActive = isActive;
+  	}
 
 	public float getMultiplier() {
 		return multiplier;

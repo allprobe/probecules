@@ -129,7 +129,7 @@ public class RunnableProbeContainer implements IRunnableProbeContainer {
 	public boolean remove(RunnableProbe runnableProbe) { // Stop the probe and
 															// removes it from
 															// the system
-		runnableProbes.get(runnableProbe.getId()).setActive(false);
+		runnableProbes.get(runnableProbe.getId()).setRunning(false);
 		runnableProbe.setRunning(false);
 		runnableProbes.remove(runnableProbe.getId());
 
@@ -319,7 +319,7 @@ public class RunnableProbeContainer implements IRunnableProbeContainer {
 				batches.remove(runnableProbe.getId());
 
 				if (batch.getSnmpProbes().size() == 0) {
-					batch.setActive(false);
+					batch.setRunning(false);
 					batch = null;
 				}
 				return true;

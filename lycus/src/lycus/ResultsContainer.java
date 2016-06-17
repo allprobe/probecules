@@ -216,7 +216,7 @@ public class ResultsContainer implements IResultsContainer {
 	@Override
 	public boolean addResult(BaseResult result) {
 
-		if (result.getRunnableProbeId().contains("discovery_45035c45-2679-4af6-84ca-e924e78dd7bc"))
+		if (result.getRunnableProbeId().equals("8b0104e7-5902-4419-933f-668582fc3acd@6975cb58-8aa4-4ecd-b9fc-47b78c0d7af8@snmp_5d937636-eb75-4165-b339-38a729aa2b7d"))
 			Logit.LogDebug("BREAKPOINT");
 
 		if (result instanceof DiscoveryResult) {
@@ -354,7 +354,7 @@ public class ResultsContainer implements IResultsContainer {
 			for (int i = 0; i < results.size(); i++) {
 
 				String rpStr = results.get(i).getRunnableProbeId();
-				if (rpStr.contains("discovery_c7629ed7-d0ec-4eca-8742-06344954434e@dmVuZXQw"))
+				if (rpStr.contains("8b0104e7-5902-4419-933f-668582fc3acd@6975cb58-8aa4-4ecd-b9fc-47b78c0d7af8@snmp_5d937636-eb75-4165-b339-38a729aa2b7d"))
 					Logit.LogDebug("BREAKPOINT");
 
 				JSONObject resultDBFormat = rawResultsDBFormat(results.get(i));

@@ -24,7 +24,7 @@ public class SnmpProbesBatch implements Runnable {
 	private long interval;
 	private boolean snmpError;
 	private boolean isRunning;
-	private boolean isActive;
+//	private boolean isActive;
 
 	private Map<String, SnmpResult> snmpPreviousResults; // Map<runnableProbeId,
 															// SnmpResult> for
@@ -45,7 +45,7 @@ public class SnmpProbesBatch implements Runnable {
 		this.batchId = this.getHost().getHostId().toString() + "@" + rp.getProbe().getTemplate_id().toString() + "@"
 				+ rp.getProbe().getInterval() + "@" + UUID.randomUUID().toString();
 		this.setRunning(false);
-		this.setActive(true);
+//		this.setActive(true);
 		// setTransport(null);
 		setSnmp(null);
 		// this.startSnmpListener();
@@ -104,18 +104,18 @@ public class SnmpProbesBatch implements Runnable {
 		return batchId;
 	}
 
-	public boolean isActive() {
-		return isActive;
-	}
+//	public boolean isActive() {
+//		return isActive;
+//	}
 
-	public void setActive(boolean isActive) {
-		this.isActive = isActive;
-	}
+//	public void setActive(boolean isActive) {
+//		this.isActive = isActive;
+//	}
 
 	// #endregion
 
 	public void run() {
-		while (isActive()) {
+		while (isRunning()) {
 			try {
 				String rpStr = this.getBatchId();
 				if (rpStr.contains("8b0104e7-5902-4419-933f-668582fc3acd@6975cb58-8aa4-4ecd-b9fc-47b78c0d7af8@snmp_5d937636-eb75-4165-b339-38a729aa2b7d"))
@@ -141,7 +141,7 @@ public class SnmpProbesBatch implements Runnable {
 					
 					for (RunnableProbe runnableProbe : snmpProbes) {
 
-						if (runnableProbe.getProbe().isActive()) {
+						if (runnableProbe.isActive() && runnableProbe.getProbe().isActive()) {
 							if (rpStr.contains(
 									"9f2929aa-b0fe-4c85-a563-1d40178ba34f@74cda666-3d85-4e56-a804-9d53c4e16259@snmp_3d2224a8-2500-4ea5-8d37-f631204ffb18"))
 								Logit.LogDebug("BREAKPOINT");

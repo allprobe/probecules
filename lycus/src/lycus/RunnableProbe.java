@@ -1,6 +1,5 @@
 package lycus;
 
-import GlobalConstants.Enums.DiscoveryElementType;
 import GlobalConstants.ProbeTypes;
 import Probes.BaseProbe;
 import Probes.DiscoveryProbe;
@@ -12,7 +11,6 @@ import Probes.RBLProbe;
 import Probes.SnmpProbe;
 import Probes.DiskProbe;
 import Results.BaseResult;
-import Results.DiscoveryResult;
 import Rollups.RollupsContainer;
 import Utils.Logit;
 
@@ -25,6 +23,7 @@ public class RunnableProbe implements Runnable {
 	public RunnableProbe(Host host, BaseProbe probe) {
 		this.setHost(host);
 		this.setProbe(probe);
+		this.setRunning(true);
 		this.setActive(true);
 		if (this.getProbeType() == null) {
 			// Must be handled by Roi
@@ -61,6 +60,11 @@ public class RunnableProbe implements Runnable {
 	}
 
 	public void setRunning(boolean isRunning) {
+		String rpStr3 = this.getId();
+		if (rpStr3.contains(
+				"8b0104e7-5902-4419-933f-668582fc3acd@6975cb58-8aa4-4ecd-b9fc-47b78c0d7af8@snmp_5d937636-eb75-4165-b339-38a729aa2b7d"))
+			Logit.LogDebug("BREAKPOINT - RunnableProbe");
+
 		this.isRunning = isRunning;
 	}
 
@@ -92,13 +96,16 @@ public class RunnableProbe implements Runnable {
 	}
 
 	public void run() {
-		while (isActive()) {
+		while (isRunning()) {
 			BaseResult result = null;
 			try {
 				String rpStr1 = this.getId();
 				if (rpStr1.contains(
-						"7352a46f-5189-428c-b4c0-fb98dedd10b1@discovery_d3c95875-4947-4388-989f-64ffd863c704"))
+						"8b0104e7-5902-4419-933f-668582fc3acd@6975cb58-8aa4-4ecd-b9fc-47b78c0d7af8@snmp_5d937636-eb75-4165-b339-38a729aa2b7d"))
 					Logit.LogDebug("BREAKPOINT - RunnableProbe");
+				
+				if (!isActive() || !getProbe().isActive())
+					continue;
 				
 				if (this.getProbeType().equals(ProbeTypes.BANDWIDTH_ELEMENT)
 						&& !((NicProbe) this.getProbe()).getNicElement().isActive())
@@ -117,7 +124,7 @@ public class RunnableProbe implements Runnable {
 				if (this.getProbeType().equals(ProbeTypes.BANDWIDTH_ELEMENT))
 					Logit.LogDebug("BREAKPOINT");
 				
-				if (!this.getProbe().isActive())
+				if (!this.isActive())
 					continue;
 
 				try {

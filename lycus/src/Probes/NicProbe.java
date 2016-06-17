@@ -53,10 +53,10 @@ public class NicProbe extends BaseProbe {
 		return getNicElement().getName();
 	}
 
-	@Override
-	public boolean isActive() {
-		return discoveryProbe.isActive();
-	}
+//	@Override
+//	public boolean isActive() {
+//		return discoveryProbe.isActive();
+//	}
 
 	@Override
 	public float getMultiplier() {
