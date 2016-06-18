@@ -45,7 +45,7 @@ public class TemplateUpdate extends BaseUpdate {
 				return true;
 			for (RunnableProbe runnableProbe : runnableProbes.values()) {
 				runnableProbe.getProbe().setActive(isActive);
-				Logit.LogCheck("Is active for " + runnableProbe.getProbe().getName() + " Is " + isActive);
+				Logit.LogCheck("Is active for " + runnableProbe.getProbe().getName() + " Is " + isActive + ".\n" + getUpdate().update_id);
 			}
 		}
 
