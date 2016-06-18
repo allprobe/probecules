@@ -108,10 +108,10 @@ public class RunnableProbe implements Runnable {
 					continue;
 				
 				if (this.getProbeType().equals(ProbeTypes.BANDWIDTH_ELEMENT)
-						&& !((NicProbe) this.getProbe()).getNicElement().isActive())
+						&& (!((NicProbe)getProbe()).getNicElement().isActive() || !getProbe().isActive()))
 					continue;
 				if (this.getProbeType().equals(ProbeTypes.DISK_ELEMENT)
-						&& !((DiskProbe) this.getProbe()).getDiskElement().isActive())
+						&& (!((DiskProbe)getProbe()).getDiskElement().isActive() || !getProbe().isActive()))
 					continue;
 
 				// Long timeStamp = result.getLastTimestamp();
