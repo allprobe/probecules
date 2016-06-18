@@ -163,7 +163,7 @@ public class BaseProbe  {
 			boolean isActive = updateValue.status.equals(Constants._true);
 			setActive(isActive);
 //			RunnableProbeContainer.getInstanece().pause(Utils.GeneralFunctions.getRunnableProbeId(updateModel.template_id, updateModel.host_id, updateModel.probe_id), isActive);
-			Logit.LogCheck("Is active for " + getName() +  " Is " + isActive + ".\n" + updateModel.update_id);
+			Logit.LogCheck("Is active for " + getName() +  " Is " + isActive + "Update_id: " + updateModel.update_id + ", probe_id: " + updateModel.probe_id);
 		}
 		if (GeneralFunctions.isChanged(getMultiplier(), updateValue.multiplier))
 		{
