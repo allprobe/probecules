@@ -40,8 +40,8 @@ import com.gargoylesoftware.htmlunit.WebClient;;
 public class LycusMain {
 
 	public static void main(String[] args) {
-		System.out.println("Starting Probecules Version: 0.214");
-		Logit.LogCheck("Starting Probecules Version: 0.214");
+		System.out.println("Starting Probecules Version: 0.215");
+		Logit.LogCheck("Starting Probecules Version: 0.215");
 		
 		System.setProperty("log4j.debug","true");
 		if (args.length == 0 || args[0] == "")
