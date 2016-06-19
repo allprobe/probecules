@@ -115,7 +115,7 @@ public class UsersManager {
 		HashMap<UUID, User> user_s = UsersManager.getUsers();
 		JSONObject initServer = UsersManager.getServerInfoFromApi();
 
-		HashMap<String, UUID> runnableProbesIds = getInitRPs(initServer.get("long_ids"));
+		HashMap<String, UUID> runnableProbesIds = getInitRPs(initServer.get("runnable_ids"));
 		HashMap<String, UUID> probeByUser = getProbeByUser(runnableProbesIds);
 
 		if (runnableProbesIds == null) {
