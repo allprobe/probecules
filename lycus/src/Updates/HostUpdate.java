@@ -1,6 +1,10 @@
 package Updates;
 
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.Iterator;
+import java.util.List;
+import java.util.Map;
 import java.util.UUID;
 import java.util.concurrent.ConcurrentHashMap;
 
@@ -139,9 +143,20 @@ public class HostUpdate extends BaseUpdate {
 
 		ConcurrentHashMap<String, RunnableProbe> runnableProbes = RunnableProbeContainer.getInstanece()
 				.getByHost(host.getHostId().toString());
+		
+		List<RunnableProbe> rps = new ArrayList<RunnableProbe>();
+		
 		for (RunnableProbe runnableProbe : runnableProbes.values()) {
 			try {
-//				runnableProbe.stop();
+				rps.add(runnableProbe);
+
+			} catch (Exception e) {
+				Logit.LogError("HostUpdate - Delete()", "Runnable probe " + runnableProbe.getId() +  " Could did not accumulate");
+			}
+		}
+
+		for (RunnableProbe runnableProbe : rps) {
+			try {
 				RunnableProbeContainer.getInstanece().remove(runnableProbe);
 				Logit.LogCheck("Runnable probe " + runnableProbe.getId() +  " was removed");
 
@@ -149,7 +164,7 @@ public class HostUpdate extends BaseUpdate {
 				Logit.LogError("HostUpdate - Delete()", "Runnable probe " + runnableProbe.getId() +  " Could did not remove");
 			}
 		}
-
+		
 		getUser().getHosts().remove(UUID.fromString(getUpdate().host_id));
 		Logit.LogCheck("Host " + getUpdate().host_id +  " has removed");
 		return true;
