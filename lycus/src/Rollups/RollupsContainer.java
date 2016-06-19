@@ -72,6 +72,10 @@ public class RollupsContainer implements IRollupsContainer {
 
 	@Override
 	public boolean addResult(BaseResult result) {
+		
+		if(result.getRunnableProbeId().contains("discovery_d3c95875-4947-4388-989f-64ffd863c704@dmVuZXQw"))
+			Logit.LogDebug("BREAKPOINT");
+		
 		if (result instanceof PingResult) {
 			addPingerResult(result);
 		} else if (result instanceof PortResult) {
@@ -131,6 +135,11 @@ public class RollupsContainer implements IRollupsContainer {
 					addFinished(i, rolups.getValue(), dataPointsRollups);
 
 				}
+				for (Map.Entry<String, DataPointsRollup[]> rolups : diskSizeDataRollups.entrySet()) {
+					DataPointsRollup[] dataPointsRollups = diskUsedDataRollups.get(rolups.getKey());
+					addFinished(i, rolups.getValue(), dataPointsRollups);
+
+				}
 			}
 
 			// finishedRollups // otef hakol
@@ -187,6 +196,10 @@ public class RollupsContainer implements IRollupsContainer {
 		rollups.put("portResponseTimeRollups", JsonUtil.ToJson(portResponseTimeRollups));
 		rollups.put("webResponseTimeRollups", JsonUtil.ToJson(webResponseTimeRollups));
 		rollups.put("snmpDataRollups", JsonUtil.ToJson(snmpDataRollups));
+		rollups.put("nicInDataRollups", JsonUtil.ToJson(nicInDataRollups));
+		rollups.put("nicOutDataRollups", JsonUtil.ToJson(nicOutDataRollups));
+		rollups.put("diskSizeDataRollups", JsonUtil.ToJson(diskSizeDataRollups));
+		rollups.put("diskUsedDataRollups", JsonUtil.ToJson(diskUsedDataRollups));
 
 		if (rollups.toString().contains(
 				"788b1b9e-d753-4dfa-ac46-61c4374eeb84@inner_7be55137-c5d8-438e-bca7-325f56656071"))
@@ -222,6 +235,11 @@ public class RollupsContainer implements IRollupsContainer {
 		if (finishedDataRollup1 == null || finishedDataRollup2 == null)
 			return;
 
+		String rpStr = finishedDataRollup1.getRunnableProbeId();
+		if (rpStr.contains(
+				"discovery_d3c95875-4947-4388-989f-64ffd863c704"))
+			Logit.LogDebug("BREAKPOINT");
+		
 		addFinishedRollup(finishedDataRollup1, finishedDataRollup2);
 		rolups1[i] = null;
 		rolups2[i] = null;

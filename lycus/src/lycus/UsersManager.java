@@ -115,7 +115,7 @@ public class UsersManager {
 		HashMap<UUID, User> user_s = UsersManager.getUsers();
 		JSONObject initServer = UsersManager.getServerInfoFromApi();
 
-		HashMap<String, UUID> runnableProbesIds = ApiInterface.getInitRPs(initServer.get("long_ids"));
+		HashMap<String, UUID> runnableProbesIds = getInitRPs(initServer.get("long_ids"));
 		HashMap<String, UUID> probeByUser = getProbeByUser(runnableProbesIds);
 
 		if (runnableProbesIds == null) {
@@ -153,6 +153,20 @@ public class UsersManager {
 	// }
 	// }
 
+	public static HashMap<String, UUID> getInitRPs(Object longIds) {
+		// key:templateId@hostId@probeId , value:userId
+		HashMap<String, UUID> ExtendedProbeID_UserID = new HashMap<String, UUID>();
+		JSONArray allRps = (JSONArray) longIds;
+
+		for (int i = 0; i < allRps.size(); i++) {
+			JSONObject rp = (JSONObject) allRps.get(i);
+			ExtendedProbeID_UserID.put((String) rp.get("long_id"), UUID.fromString((String) rp.get("user_id")));
+		}
+
+		return ExtendedProbeID_UserID;
+
+	}
+	
 	private static HashMap<String, UUID> getProbeByUser(HashMap<String, UUID> runnableProbesIds) {
 		HashMap<String, UUID> probeByUser = new HashMap<String, UUID>();
 		for (Map.Entry<String, UUID> rp : runnableProbesIds.entrySet()) {
