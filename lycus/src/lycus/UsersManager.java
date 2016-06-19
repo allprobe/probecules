@@ -250,6 +250,11 @@ public class UsersManager {
 					String runnableProbeId = elementParams.template_id + "@" + elementParams.host_id + "@"
 							+ elementParams.discovery_id;
 
+					String rpStr = runnableProbeId;
+					if (rpStr.contains(
+							"a165b6b6-9be1-4673-a16a-d4401e20a870@7352a46f-5189-428c-b4c0-fb98dedd10b1@discovery_e15f47f5-a38f-40e7-b8ba-278ba5dcc150"))
+						Logit.LogDebug("BREAKPOINT");
+					
 					// JSONObject elementN=(JSONObject)elements.get();
 					// JSONObject
 					// elementValues=(JSONObject)elements.get(elementParams.name);
@@ -636,11 +641,12 @@ public class UsersManager {
 	}
 
 	private static void addRunnableProbes(HashMap<String, UUID> runnableProbesIds) {
+		System.out.println(runnableProbesIds.toString());
 		for (Map.Entry<String, UUID> rp : runnableProbesIds.entrySet()) {
 			UUID userID = rp.getValue();
 			String rpID = rp.getKey();
 
-			if (rpID.contains("8b0104e7-5902-4419-933f-668582fc3acd@6975cb58-8aa4-4ecd-b9fc-47b78c0d7af8@snmp_5d937636-eb75-4165-b339-38a729aa2b7d"))
+			if (rpID.contains("a165b6b6-9be1-4673-a16a-d4401e20a870@7352a46f-5189-428c-b4c0-fb98dedd10b1@discovery_e15f47f5-a38f-40e7-b8ba-278ba5dcc150"))
 				Logit.LogDebug("BREAKPOINT");
 
 			User u = getUsers().get(userID);

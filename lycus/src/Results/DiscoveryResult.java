@@ -1,7 +1,10 @@
 package Results;
 
 import java.util.HashMap;
+import java.util.Iterator;
 import java.util.List;
+
+import org.json.simple.JSONArray;
 
 import Elements.BaseElement;
 import Elements.DiskElement;
@@ -69,7 +72,12 @@ public class DiscoveryResult extends BaseResult {
 	}
 	@Override
 	public String getResultString() {
-		return JsonUtil.ToJson(this.getElements()).toString();
+		JSONArray results=new JSONArray();
+		for(BaseElement element:elements.values())
+		{
+			results.add(JsonUtil.ToJson(element).toString());
+		}
+		return results.toString();
 	}
 	// returns true if there is any change made on the host elements
 //	private boolean checkForElementsChanges(HashMap<String, BaseElement> lastScanElements, long timestamp) {
