@@ -2,6 +2,7 @@ package lycus;
 
 import java.util.ArrayList;
 
+import GlobalConstants.Enums.XValueUnit;
 import GlobalConstants.SnmpUnit;
 import GlobalConstants.TriggerSeverity;
 import Probes.BaseProbe;
@@ -13,12 +14,12 @@ public class Trigger implements Cloneable {
 	private TriggerSeverity svrty;
 	private boolean status;
 	private String elementType;
-	private SnmpUnit unit;
+	private XValueUnit unit;
 	private ArrayList<TriggerCondition> condtions;
 	private boolean isTriggered;
 
 	public Trigger(String triggerId, String name, BaseProbe probe, TriggerSeverity svrty, boolean status,
-			String elementType, SnmpUnit unit, ArrayList<TriggerCondition> condtions) {
+			String elementType, XValueUnit unit, ArrayList<TriggerCondition> condtions) {
 		this.triggerId = triggerId;
 		this.name = name;
 		this.probe = probe;
@@ -86,11 +87,11 @@ public class Trigger implements Cloneable {
 		this.elementType = elementType;
 	}
 
-	public SnmpUnit getUnit() {
+	public XValueUnit getUnit() {
 		return unit;
 	}
 
-	public void setUnit(SnmpUnit unit) {
+	public void setUnit(XValueUnit unit) {
 		this.unit = unit;
 	}
 

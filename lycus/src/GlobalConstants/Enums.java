@@ -55,16 +55,29 @@ public class Enums {
 		Windows,
 		Linux
 	}
+	
 	public static enum SnmpError
 	{
 		NO_COMUNICATION;
-		
 	}
+	
 	public static enum ElementChange
 	{
 		addedElement,removedElement,indexElementChanged
 		
 	}
 
+	public static enum XValueUnit {
+		as_is,
+		b,
+		B,
+		kb, 
+		KB,
+		mb,
+		MB,
+		gb,
+		GB
+	}
+	
 	public static final String Action = null;
 }

@@ -536,7 +536,7 @@ public class User {
 			conditions.add(triggerCondition);
 			
 			TriggerSeverity sev=UsersManager.getTriggerSev(trigger.discovery_trigger_severity);
-			SnmpUnit un = UsersManager.getSnmpUnit(trigger.discovery_trigger_unit);
+			Enums.XValueUnit un = Enums.XValueUnit.valueOf(trigger.discovery_trigger_unit);
 			
 			Trigger discoveryTrigger = new Trigger(triggerId, name, probe, sev, true, "",un,
 					conditions);

@@ -95,8 +95,8 @@ public class DiscoveryProbe extends BaseProbe {
 			
 			Trigger trigger = new Trigger(triggers[index].discovery_trigger_id, "", this, 
 					UsersManager.getTriggerSev(triggers[index].discovery_trigger_severity), true,
-					key.discovery_type, UsersManager.getSnmpUnit(triggers[index].discovery_trigger_unit), conditions); 
-			
+					key.discovery_type, Enums.XValueUnit.valueOf(triggers[index].discovery_trigger_unit), conditions); 
+			 
 			if (key.discovery_type.equals("bw"))
 			{
 				bandWidthTriggers.add(trigger);

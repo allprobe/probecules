@@ -26,6 +26,7 @@ import GlobalConstants.SnmpDataType;
 import GlobalConstants.SnmpUnit;
 import GlobalConstants.TriggerSeverity;
 import GlobalConstants.Enums.ApiAction;
+import GlobalConstants.Enums.XValueUnit;
 import Interfaces.IDAL;
 import Model.ConditionUpdateModel;
 import Model.DiscoveryElementParams;
@@ -521,7 +522,7 @@ public class UsersManager {
 				boolean status = ((String) triggerJson.get("status")).equals("1") ? true : false;
 				String elementType = (String) triggerJson.get("trigger_type");
 				String unitType = (String) triggerJson.get("xvalue_unit");
-				SnmpUnit trigValueUnit = getSnmpUnit(unitType);
+				XValueUnit trigValueUnit = XValueUnit.valueOf(unitType);
 
 				ArrayList<TriggerCondition> conditions = getTriggerConds((JSONArray) triggerJson.get("conditions"));
 

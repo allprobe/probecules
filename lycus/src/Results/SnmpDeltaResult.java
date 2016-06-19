@@ -2,6 +2,8 @@ package Results;
 
 import org.json.simple.JSONArray;
 
+import GlobalConstants.Constants;
+
 public class SnmpDeltaResult extends SnmpResult {
 	private String previosData;
 	private String currentData;
@@ -31,7 +33,8 @@ public class SnmpDeltaResult extends SnmpResult {
 		
 		if (data1 == null || data2 == null)
 			super.setData(null);
-		else 
+		else if (!data2.equals(Constants.WRONG_OID) && !data1.equals(Constants.WRONG_OID) && 
+				 !data2.equals(Constants.WRONG_VALUE_FORMAT) && !data1.equals(Constants.WRONG_VALUE_FORMAT)) 
 			super.setData(((Double)(Double.parseDouble(data2) -  Double.parseDouble(data1))).toString());
 //		else
 //			super.setData(data2);

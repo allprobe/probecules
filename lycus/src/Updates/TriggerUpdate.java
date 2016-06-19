@@ -12,6 +12,7 @@ import Utils.Logit;
 import lycus.Trigger;
 import lycus.TriggerCondition;
 import lycus.UsersManager;
+import GlobalConstants.Enums;
 
 public class TriggerUpdate extends BaseUpdate {
 
@@ -30,7 +31,7 @@ public class TriggerUpdate extends BaseUpdate {
 		// From SsmpUnit swap integer and string to none - Roi
 		Trigger trigger = new Trigger(getUpdate().update_value.key.trigger_id, getUpdate().update_value.name, 
 				probe, UsersManager.getTriggerSev(getUpdate().update_value.severity), getUpdate().update_value.status.equals(Constants._true),
-				getUpdate().update_value.type, SnmpUnit.valueOf(getUpdate().update_value.xvalue_unit), conditions); 
+				getUpdate().update_value.type, Enums.XValueUnit.valueOf(getUpdate().update_value.xvalue_unit), conditions); 
 		
 		probe.addTrigger(trigger);
 		return true;
@@ -66,14 +67,15 @@ public class TriggerUpdate extends BaseUpdate {
 			trigger.setStatus(getUpdate().update_value.status.equals(Constants._true));
 			Logit.LogCheck("Status for trigger " + getUpdate().object_id +  " has changed to " + getUpdate().update_value.status);
 		}
-		if (GeneralFunctions.isChanged(trigger.getName(), getUpdate().update_value.severity))
+		if (GeneralFunctions.isChanged(trigger.getSvrty().toString(), getUpdate().update_value.severity))
 		{
 			trigger.setSvrty(UsersManager.getTriggerSev(getUpdate().update_value.severity));
 			Logit.LogCheck("Severity for trigger " + getUpdate().object_id +  " has changed to " + getUpdate().update_value.severity);
 		}
-		if (GeneralFunctions.isChanged(trigger.getUnit().toString(), getUpdate().update_value.xvalue_unit))
+		if (trigger.getUnit() != null && GeneralFunctions.isChanged(trigger.getUnit().toString(), getUpdate().update_value.xvalue_unit) ||
+				(trigger.getUnit() == null && getUpdate().update_value.xvalue_unit != null))
 		{
-			trigger.setUnit(SnmpUnit.valueOf(getUpdate().update_value.xvalue_unit));
+			trigger.setUnit(Enums.XValueUnit.valueOf(getUpdate().update_value.xvalue_unit));
 			Logit.LogCheck("X value unit for trigger " + getUpdate().object_id +  " has changed to " + getUpdate().update_value.xvalue_unit);
 		}
 			
