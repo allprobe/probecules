@@ -272,6 +272,10 @@ public class RunnableProbeContainer implements IRunnableProbeContainer {
 
 	private Boolean addSnmpRunnableProbeToBatches(RunnableProbe runnableProbe) {
 		SnmpProbesBatch batch = null;
+		String rpStr2 = runnableProbe.getId();
+		if (rpStr2.contains(
+				"0b05919c-6cc0-42cc-a74b-de3b0dcd4a2a@7352a46f-5189-428c-b4c0-fb98dedd10b1@inner_aecc1485-6849-471d-b446-8e4ba05519da"))
+			Logit.LogDebug("BREAKPOINT");
 		try{
 			for (Map.Entry<String, SnmpProbesBatch> _batch : batches.entrySet()) {
 				try {
@@ -280,8 +284,12 @@ public class RunnableProbeContainer implements IRunnableProbeContainer {
 					BaseProbe probe = runnableProbe.getProbe();
 					if (batch.getBatchId().contains(host.getHostId().toString() + "@" + probe.getTemplate_id().toString() + "@" + probe.getInterval())
 							&& batch.getSnmpProbes().size() < Constants.getBatchesSize()) {
+						String rpStr3 = runnableProbe.getId();
+						if (rpStr3.contains(
+								"0b05919c-6cc0-42cc-a74b-de3b0dcd4a2a@7352a46f-5189-428c-b4c0-fb98dedd10b1@inner_aecc1485-6849-471d-b446-8e4ba05519da"))
+							Logit.LogDebug("BREAKPOINT");
 						batch.getSnmpProbes().put(runnableProbe.getId(), runnableProbe);
-						batches.put(runnableProbe.getId(), batch);
+						batches.put(batch.getBatchId(), batch);
 						batch.setRunning(true);
 						return true;
 					}
@@ -299,9 +307,15 @@ public class RunnableProbeContainer implements IRunnableProbeContainer {
 		}
 
 		try {
+			String rpStr = runnableProbe.getId();
+			if (rpStr.contains(
+					"0b05919c-6cc0-42cc-a74b-de3b0dcd4a2a@7352a46f-5189-428c-b4c0-fb98dedd10b1@inner_aecc1485-6849-471d-b446-8e4ba05519da"))
+				Logit.LogDebug("BREAKPOINT");
 			SnmpProbesBatch newBatch = new SnmpProbesBatch(runnableProbe);
+			if(newBatch.getBatchId().contains("7352a46f-5189-428c-b4c0-fb98dedd10b1@0b05919c-6cc0-42cc-a74b-de3b0dcd4a2a@30@"))
+				Logit.LogDebug("BREAKPOINT");
 			snmpBatchExec.execute(newBatch);
-			batches.put(runnableProbe.getId(), newBatch);
+			batches.put(newBatch.getBatchId(), newBatch);
 			newBatch.setRunning(true);
 			return true;
 		} catch (Exception e) {
