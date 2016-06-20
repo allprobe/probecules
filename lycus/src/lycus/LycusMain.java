@@ -50,12 +50,11 @@ public class LycusMain {
 			GlobalConfig.setConfPath(args[0]);
 		if (!GlobalConfig.Initialize())
 			return;
-		Logit.LogInfo("Probecules Version: 0.7.4");
 
 		
 //		Net.ExtendedWeber(null, null, null, null, 0);
 		
-		 System.err.println("Finished getting messages");
+//		 System.err.println("Finished getting messages");
 		
 		
 

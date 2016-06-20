@@ -101,7 +101,7 @@ public class RunnableProbe implements Runnable {
 			try {
 				String rpStr1 = this.getId();
 				if (rpStr1.contains(
-						"f84b117c-03fb-40aa-8003-4283a72c35e4@01179751-b842-4dbb-a72e-30082c677249@discovery_d4f2d536-bd50-404f-a6c2-a45f0f68aad8"))
+						"discovery_7ba5008b-5b4e-4e56-b4f0-6339243196e0"))
 					Logit.LogDebug("BREAKPOINT - RunnableProbe");
 				
 				if (!isActive() || !getProbe().isActive())

@@ -1,5 +1,6 @@
 package Results;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
@@ -73,11 +74,15 @@ public class DiscoveryResult extends BaseResult {
 	@Override
 	public String getResultString() {
 		JSONArray results=new JSONArray();
-		for(BaseElement element:elements.values())
-		{
-			results.add(JsonUtil.ToJson(element).toString());
-		}
-		return results.toString();
+		ArrayList<BaseElement> list=new ArrayList<BaseElement>(elements.values());
+//		for(BaseElement element:elements.values())
+//		{
+//			list.add(e)
+//			results.add(JsonUtil.ToJson(element).toString());
+//		}
+		
+		
+		return JsonUtil.ToJson(list);
 	}
 	// returns true if there is any change made on the host elements
 //	private boolean checkForElementsChanges(HashMap<String, BaseElement> lastScanElements, long timestamp) {
