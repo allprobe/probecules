@@ -219,17 +219,18 @@ public class ResultsContainer implements IResultsContainer {
 		if (result.getRunnableProbeId().equals("8b0104e7-5902-4419-933f-668582fc3acd@6975cb58-8aa4-4ecd-b9fc-47b78c0d7af8@snmp_5d937636-eb75-4165-b339-38a729aa2b7d"))
 			Logit.LogDebug("BREAKPOINT");
 
+//		temporarly commented for pricing consideration		
 		if (result instanceof DiscoveryResult) {
 			DiscoveryResult discoveryResult = (DiscoveryResult) result;
 			switch (discoveryResult.getElementsType()) {
 			case bw:
 				if (!ElementsContainer.getInstance().isNicElementsChanged(discoveryResult)) {
-				return true;
+//				return true;
 				}
 				break;
 			case ds:
 				if (!ElementsContainer.getInstance().isDiskElementsChanged(discoveryResult)) {
-					return true;
+//					return true;
 				}
 				break;
 			}
