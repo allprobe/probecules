@@ -44,6 +44,10 @@ public class TemplateUpdate extends BaseUpdate {
 			if (runnableProbes == null)
 				return true;
 			for (RunnableProbe runnableProbe : runnableProbes.values()) {
+				String rpStr = runnableProbe.getId();
+				if (rpStr.contains(
+						"0b05919c-6cc0-42cc-a74b-de3b0dcd4a2a@74cda666-3d85-4e56-a804-9d53c4e16259@inner_aecc1485-6849-471d-b446-8e4ba05519da"))
+					Logit.LogDebug("BREAKPOINT");
 				if (isActive != runnableProbe.getProbe().isActive())
 				{
 					runnableProbe.getProbe().setActive(isActive);

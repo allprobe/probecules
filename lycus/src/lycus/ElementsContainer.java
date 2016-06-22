@@ -175,8 +175,12 @@ public class ElementsContainer {
 	}
 
 	private void runDiskElement(String userId, String runnableProbeId, BaseElement element) {
+		if(UsersManager.getUser(userId)==null)
+			return;
 		DiscoveryProbe probe = (DiscoveryProbe) UsersManager.getUser(userId).getTemplateProbes()
 				.get(runnableProbeId.split("@")[2]);
+		if(probe==null)
+			return;
 		User user = probe.getUser();
 		Host host = user.getHost(UUID.fromString(runnableProbeId.split("@")[1]));
 		DiskProbe diskProbe = new DiskProbe(probe, (DiskElement) element);
@@ -194,8 +198,12 @@ public class ElementsContainer {
 	}
 
 	private void runNicElement(String userId, String runnableProbeId, BaseElement element) {
+		if(UsersManager.getUser(userId)==null)
+			return;
 		DiscoveryProbe probe = (DiscoveryProbe) UsersManager.getUser(userId).getTemplateProbes()
 				.get(runnableProbeId.split("@")[2]);
+		if(probe==null)
+			return;
 		User user = probe.getUser();
 		Host host = user.getHost(UUID.fromString(runnableProbeId.split("@")[1]));
 		NicProbe nicProbe = new NicProbe(probe, (NicElement) element);

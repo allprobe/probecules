@@ -141,6 +141,11 @@ public class SnmpProbesBatch implements Runnable {
 					
 					for (RunnableProbe runnableProbe : snmpProbes) {
 
+						String rpStr2 = runnableProbe.getId();
+						if (rpStr.contains(
+								"36897eaf-db96-4533-b261-3476bb4e90a2@7352a46f-5189-428c-b4c0-fb98dedd10b1@snmp_50bdfcc0-f01b-4aad-95c1-791442744c3e"))
+							Logit.LogDebug("BREAKPOINT");
+						
 						if (runnableProbe.isActive() && runnableProbe.getProbe().isActive()) {
 							if (rpStr.contains(
 									"9f2929aa-b0fe-4c85-a563-1d40178ba34f@74cda666-3d85-4e56-a804-9d53c4e16259@snmp_3d2224a8-2500-4ea5-8d37-f631204ffb18"))
