@@ -115,11 +115,11 @@ public class SnmpProbesBatch implements Runnable {
 	// #endregion
 
 	public void run() {
-		String rpStr = this.getBatchId();
-		if (rpStr.contains("7352a46f-5189-428c-b4c0-fb98dedd10b1@0b05919c-6cc0-42cc-a74b-de3b0dcd4a2a") && this.getInterval()==30)
-			Logit.LogDebug("BREAKPOINT");
 		while (isRunning()) {
 			try {
+				String rpStr = this.getBatchId();
+				if (rpStr.contains("8b0104e7-5902-4419-933f-668582fc3acd@6975cb58-8aa4-4ecd-b9fc-47b78c0d7af8@snmp_5d937636-eb75-4165-b339-38a729aa2b7d"))
+					Logit.LogDebug("BREAKPOINT");
 
 				if (this.getHost().isHostStatus() && this.getHost().isSnmpStatus()) {
 					Host host = this.getHost();
@@ -141,11 +141,6 @@ public class SnmpProbesBatch implements Runnable {
 					
 					for (RunnableProbe runnableProbe : snmpProbes) {
 
-						String rpStr2 = runnableProbe.getId();
-						if (rpStr.contains(
-								"0b05919c-6cc0-42cc-a74b-de3b0dcd4a2a@7352a46f-5189-428c-b4c0-fb98dedd10b1@inner_aecc1485-6849-471d-b446-8e4ba05519da"))
-							Logit.LogDebug("BREAKPOINT");
-						
 						if (runnableProbe.isActive() && runnableProbe.getProbe().isActive()) {
 							if (rpStr.contains(
 									"9f2929aa-b0fe-4c85-a563-1d40178ba34f@74cda666-3d85-4e56-a804-9d53c4e16259@snmp_3d2224a8-2500-4ea5-8d37-f631204ffb18"))
