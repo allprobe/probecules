@@ -234,8 +234,8 @@ public class UsersManager {
 		for (int i = 0; i < allElementsJson.size(); i++) {
 			JSONObject hostElementsJson = (JSONObject) allElementsJson.get(i);
 			try {
-//				JSONArray elementsArray = (JSONArray) (new JSONParser())
-//						.parse((String) hostElementsJson.get("elements"));
+				JSONArray elementsArray = (JSONArray) (new JSONParser())
+						.parse((String) hostElementsJson.get("elements"));
 				JSONArray elementsArray = (JSONArray) hostElementsJson.get("elements");
 				for (Object element : elementsArray) {
 					JSONObject elementJson = (JSONObject) element;
@@ -254,7 +254,7 @@ public class UsersManager {
 
 					String rpStr = runnableProbeId;
 					if (rpStr.contains(
-							"discovery_d3c95875-4947-4388-989f-64ffd863c704"))
+							"d9d66bc1-be00-4c55-8e15-9032f550de1a@6b999cd6-fcbb-4ca8-9936-5529b4c66976@discovery_fc209a9a-67f9-4f45-9941-52acb8f74512"))
 						Logit.LogDebug("BREAKPOINT");
 					
 					// JSONObject elementN=(JSONObject)elements.get();

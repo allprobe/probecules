@@ -11,7 +11,7 @@
             <AppenderRef ref="syslog"/>
         </Root>
         <logger name="syslogger-production" level="error">
-        <AppenderRef ref="syslog"/>
+        <AppenderRef ref="console"/>
     </logger>
     <logger name="syslog-debug" level="debug">
         <AppenderRef ref="syslog"/>
