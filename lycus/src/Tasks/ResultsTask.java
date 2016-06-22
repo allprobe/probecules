@@ -27,12 +27,12 @@ public class ResultsTask extends BaseTask {
 			ResultsContainer resultsContainer = ResultsContainer.getInstance();
 			String results = resultsContainer.getResults();
 
-			if (results.contains("8b0104e7-5902-4419-933f-668582fc3acd@6975cb58-8aa4-4ecd-b9fc-47b78c0d7af8@snmp_5d937636-eb75-4165-b339-38a729aa2b7d"))
+			if (results.contains("0122dc0b-2de1-4d9c-abe1-1c65371775f2@7352a46f-5189-428c-b4c0-fb98dedd10b1@discovery_d3c95875-4947-4388-989f-64ffd863c704@dmVuZXQw"))
 				Logit.LogDebug("BREAKPOINT - ResultsTask");
 			RollupsContainer rollupsContainer = RollupsContainer.getInstance();
 			String rollups = rollupsContainer.getAllFinsihedRollups();
 //			System.out.println(rollups);
-//			System.out.println(results);
+			System.out.println(results);
 			if (rollups != null)
 				Logit.LogDebug("BREAKPOINT - ResultsTask");
 

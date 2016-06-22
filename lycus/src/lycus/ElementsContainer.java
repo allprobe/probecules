@@ -141,11 +141,9 @@ public class ElementsContainer {
 			if (runnableProbeId
 					.contains("74cda666-3d85-4e56-a804-9d53c4e16259@discovery_777938b0-e4b0-4ec6-b0f2-ea880a0c09ef"))
 				Logit.LogDebug("BREAKPOINT");
-			removeNicElement(userId, runnableProbeId, element);
 			stopElement(userId, runnableProbeId, element);
 		}
 		if (element instanceof DiskElement) {
-			removeDiskElement(userId, runnableProbeId, element);
 			stopElement(userId, runnableProbeId, element);
 		}
 	}
