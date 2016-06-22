@@ -234,8 +234,8 @@ public class UsersManager {
 		for (int i = 0; i < allElementsJson.size(); i++) {
 			JSONObject hostElementsJson = (JSONObject) allElementsJson.get(i);
 			try {
-				JSONArray elementsArray = (JSONArray) (new JSONParser())
-						.parse((String) hostElementsJson.get("elements"));
+//				JSONArray elementsArray = (JSONArray) (new JSONParser())
+//						.parse((String) hostElementsJson.get("elements"));
 				JSONArray elementsArray = (JSONArray) hostElementsJson.get("elements");
 				for (Object element : elementsArray) {
 					JSONObject elementJson = (JSONObject) element;
