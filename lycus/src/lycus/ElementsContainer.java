@@ -184,7 +184,9 @@ public class ElementsContainer {
 		User user = probe.getUser();
 		Host host = user.getHost(UUID.fromString(runnableProbeId.split("@")[1]));
 		DiskProbe diskProbe = new DiskProbe(probe, (DiskElement) element);
+		diskProbe.setActive(true);
 		RunnableProbe diskRunnableProbe = new RunnableProbe(host, diskProbe);
+		diskRunnableProbe.setActive(true);
 		RunnableProbeContainer.getInstanece().add(diskRunnableProbe);
 		// user.addRunnableProbe(nicRunnableProbe);
 	}
@@ -207,7 +209,9 @@ public class ElementsContainer {
 		User user = probe.getUser();
 		Host host = user.getHost(UUID.fromString(runnableProbeId.split("@")[1]));
 		NicProbe nicProbe = new NicProbe(probe, (NicElement) element);
+		nicProbe.setActive(true);
 		RunnableProbe nicRunnableProbe = new RunnableProbe(host, nicProbe);
+		nicRunnableProbe.setActive(true);
 		RunnableProbeContainer.getInstanece().add(nicRunnableProbe);
 		// user.addRunnableProbe(nicRunnableProbe);
 	}

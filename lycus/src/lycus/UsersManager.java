@@ -643,7 +643,6 @@ public class UsersManager {
 	}
 
 	private static void addRunnableProbes(HashMap<String, UUID> runnableProbesIds) {
-		System.out.println(runnableProbesIds.toString());
 		for (Map.Entry<String, UUID> rp : runnableProbesIds.entrySet()) {
 			UUID userID = rp.getValue();
 			String rpID = rp.getKey();
