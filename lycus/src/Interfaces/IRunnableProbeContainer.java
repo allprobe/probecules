@@ -10,7 +10,7 @@ public interface IRunnableProbeContainer {
 	ConcurrentHashMap<String,RunnableProbe> getByUser(String userId);
 	ConcurrentHashMap<String,RunnableProbe> getByHost(String hostId);
 	ConcurrentHashMap<String,RunnableProbe> getByProbe(String probeId);
-	ConcurrentHashMap<String,RunnableProbe> getByHostTemplate(String templateId, String hostId);
+	ConcurrentHashMap<String,RunnableProbe> getByTemplate(String templateId);
 	boolean add(RunnableProbe runnableProbe);
 	boolean remove(RunnableProbe runnableProbe);
 //	boolean pause(String runnableProbeId, boolean isActive);

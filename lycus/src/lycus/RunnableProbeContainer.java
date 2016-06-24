@@ -27,8 +27,10 @@ public class RunnableProbeContainer implements IRunnableProbeContainer {
 	private ConcurrentHashMap<String, ConcurrentHashMap<String, RunnableProbe>> userRunnableProbes; // HashMap<userId,
 																				// HashMap<runnableProbeId,RunnableProbe>>
 	private ConcurrentHashMap<String, ConcurrentHashMap<String, RunnableProbe>> probeRunnableProbes; // HashMap<probeId,
-																					// HashMap<runnableProbeId,RunnableProbe>>
-
+																				// HashMap<runnableProbeId,RunnableProbe>>
+	private ConcurrentHashMap<String, ConcurrentHashMap<String, RunnableProbe>> templateRunnableProbes; // HashMap<templateId,
+																				// HashMap<runnableProbeId,RunnableProbe>>
+	
 	private ExecutorService pingerExec = Executors.newFixedThreadPool(GlobalConfig.getPingerThreadCount());
 	private ExecutorService porterExec = Executors.newFixedThreadPool(GlobalConfig.getPorterThreadCount());
 	private ExecutorService weberExec = Executors.newFixedThreadPool(GlobalConfig.getWeberThreadCount());
@@ -48,6 +50,7 @@ public class RunnableProbeContainer implements IRunnableProbeContainer {
 		hostRunnableProbes = new ConcurrentHashMap<String, ConcurrentHashMap<String, RunnableProbe>>();
 		userRunnableProbes = new ConcurrentHashMap<String, ConcurrentHashMap<String, RunnableProbe>>();
 		probeRunnableProbes = new ConcurrentHashMap<String, ConcurrentHashMap<String, RunnableProbe>>();
+		templateRunnableProbes = new ConcurrentHashMap<String, ConcurrentHashMap<String, RunnableProbe>>();
 	}
 
 	public static RunnableProbeContainer getInstanece() {
@@ -82,19 +85,24 @@ public class RunnableProbeContainer implements IRunnableProbeContainer {
 	}
 
 	@Override
-	public ConcurrentHashMap<String, RunnableProbe> getByHostTemplate(String templateId, String hostId) {
-		ConcurrentHashMap<String, RunnableProbe> runnableProbes = getByHost(hostId);
-		ConcurrentHashMap<String, RunnableProbe> runnableProbesByTemplate = null;
-		for (RunnableProbe runnableProbe : runnableProbes.values()) {
-			if (runnableProbe.getProbe().getTemplate_id().toString().equals(templateId)) {
-				if (runnableProbesByTemplate == null)
-					runnableProbesByTemplate = new ConcurrentHashMap<String, RunnableProbe>();
-				runnableProbesByTemplate.put(runnableProbe.getId(), runnableProbe);
-			}
-		}
-
-		return runnableProbesByTemplate;
+	public ConcurrentHashMap<String,RunnableProbe> getByTemplate(String templateId){
+		return templateRunnableProbes.get(templateId); 
 	}
+	
+//	@Override
+//	public ConcurrentHashMap<String, RunnableProbe> getByHostTemplate(String templateId, String hostId) {
+//		ConcurrentHashMap<String, RunnableProbe> runnableProbes = getByHost(hostId);
+//		ConcurrentHashMap<String, RunnableProbe> runnableProbesByTemplate = null;
+//		for (RunnableProbe runnableProbe : runnableProbes.values()) {
+//			if (runnableProbe.getProbe().getTemplate_id().toString().equals(templateId)) {
+//				if (runnableProbesByTemplate == null)
+//					runnableProbesByTemplate = new ConcurrentHashMap<String, RunnableProbe>();
+//				runnableProbesByTemplate.put(runnableProbe.getId(), runnableProbe);
+//			}
+//		}
+//
+//		return runnableProbesByTemplate;
+//	}
 
 	@Override
 	public boolean add(RunnableProbe runnableProbe) {
@@ -113,6 +121,9 @@ public class RunnableProbeContainer implements IRunnableProbeContainer {
 		String probeId = runnableProbe.getProbe().getProbe_id();
 		addToMap(runnableProbe, probeId, probeRunnableProbes);
 
+		String templateId = runnableProbe.getProbe().getTemplate_id().toString();
+		addToMap(runnableProbe, templateId, templateRunnableProbes);
+		
 		return true;
 	}
 
@@ -146,6 +157,9 @@ public class RunnableProbeContainer implements IRunnableProbeContainer {
 			UsersManager.removeUser(userId);
 
 		removeFromMap(runnableProbe, probeId, probeRunnableProbes);
+		
+		String templateId = runnableProbe.getProbe().getTemplate_id().toString();
+		removeFromMap(runnableProbe, templateId, templateRunnableProbes);
 
 		if (runnableProbe.getProbeType() == ProbeTypes.SNMP) {
 			// todo: add proper error
@@ -178,11 +192,8 @@ public class RunnableProbeContainer implements IRunnableProbeContainer {
 
 	@Override
 	public boolean removeByTemplateId(String teplateId) {
-		for (RunnableProbe runnableProbe : runnableProbes.values()) {
-			if (runnableProbe.getProbe().getTemplate_id().toString().equals(teplateId)) {
-				remove(runnableProbe);
-			}
-		}
+		for (RunnableProbe runnableProbe : getByTemplate(teplateId).values())
+			remove(runnableProbe);
 		return true;
 	}
 
