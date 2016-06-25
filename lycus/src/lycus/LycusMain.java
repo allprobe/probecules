@@ -27,6 +27,7 @@ import NetConnection.Net;
 import Tasks.EventTask;
 import Tasks.ResultsTask;
 import Tasks.RollupsDumpTask;
+import Tasks.SlaTask;
 import Updates.Updates;
 import Utils.Logit;
 
@@ -108,6 +109,10 @@ public class LycusMain {
 		RollupsDumpTask rollupsMemoryDump = new RollupsDumpTask();
 		ScheduledExecutorService rollupsThread = Executors.newSingleThreadScheduledExecutor();
 		rollupsThread.scheduleAtFixedRate(rollupsMemoryDump, 0, rollupsMemoryDump.getInterval(), TimeUnit.SECONDS);
+		
+		SlaTask slaTask = new SlaTask();
+		ScheduledExecutorService slaThread = Executors.newSingleThreadScheduledExecutor();
+		slaThread.scheduleAtFixedRate(slaTask, 0, slaTask.getInterval(), TimeUnit.SECONDS);
 		
 		return true;
 

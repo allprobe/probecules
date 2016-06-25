@@ -32,13 +32,8 @@ public class TemplateUpdate extends BaseUpdate {
 	public Boolean Update() {
 		super.Update();
 		String templateId = getUpdate().template_id;
-		// User user = UsersManager.getUser(getUpdate().user_id);
-//		if (user == null)
-//			return true;
-		// Set<UUID> hosts = user.getHosts().keySet();
 		boolean isActive = getUpdate().update_value.status.equals(Constants._true);
 
-		// for (UUID hostId : hosts) {
 		ConcurrentHashMap<String, RunnableProbe> runnableProbes = RunnableProbeContainer.getInstanece()
 				.getByTemplate(templateId);
 		if (runnableProbes == null)
@@ -56,7 +51,6 @@ public class TemplateUpdate extends BaseUpdate {
 								+ getUpdate().update_id + ", probe_id: " + runnableProbe.getProbe().getProbe_id());
 			}
 		}
-		// }
 
 		return true;
 	}

@@ -1,9 +1,7 @@
 package Results;
 
 import java.util.HashMap;
-
 import org.json.simple.JSONArray;
-
 import GlobalConstants.ProbeTypes;
 import Utils.Logit;
 import lycus.Trigger;
@@ -12,20 +10,18 @@ import lycus.TriggerCondition;
 public class PortResult extends BaseResult {
 	private Boolean portStatus;
 	private Long responseTime;
-//	private DataPointsRollup[] responseTimeRollups;
 
 	public PortResult(String runnableProbeId, long timestamp, boolean portState, long responseTime2) {
-		super(runnableProbeId,timestamp);
-		this.probeType=ProbeTypes.PORT;
-
-		this.portStatus=portState;
-		this.responseTime=responseTime2;
-//		this.responseTimeRollups = this.initRollupSeries(new DataPointsRollup[6]);
+		super(runnableProbeId, timestamp);
+		this.probeType = ProbeTypes.PORT;
+		this.portStatus = portState;
+		this.responseTime = responseTime2;
 	}
+
 	public PortResult(String runnableProbeId) {
 		super(runnableProbeId);
 	}
-	
+
 	public Boolean isActive() {
 		return portStatus;
 	}
@@ -42,41 +38,8 @@ public class PortResult extends BaseResult {
 		this.responseTime = responseTime;
 	}
 
-//	public DataPointsRollup[] getResponseTimeRollups() {
-//		return responseTimeRollups;
-//	}
-//
-//	public void setResponseTimeRollups(DataPointsRollup[] responseTimeRollups) {
-//		this.responseTimeRollups = responseTimeRollups;
-//	}
-
-//	@Override
-//	public synchronized void acceptResults(ArrayList<Object> results) throws Exception {
-//		super.acceptResults(results);
-//		long lastTimestamp = (long) results.get(0);
-//		boolean status = (boolean) results.get(1);
-//		long time = Long.parseLong(String.valueOf(results.get(2)));
-//
-//		this.setLastTimestamp(lastTimestamp);
-//		this.setPortStatus(status);
-//		this.setResponseTime(time);
-//
-//		for (int i = 0; i < this.getNumberOfRollupTables(); i++) {
-//			DataPointsRollup responseTimeRollups = this.getResponseTimeRollups()[i];
-//			if (responseTimeRollups == null)
-//				continue;
-//			responseTimeRollups.add(lastTimestamp, time);
-//		}
-//
-//		try {
-//			checkIfTriggerd();
-//		} catch (Exception e) {
-//			Logit.LogError("PorterResults - acceptResults", "Error triggering RunnableProbe: " + this.getRp());
-//		}
-//	}
-
 	@Override
-	public void checkIfTriggerd(HashMap<String,Trigger> triggers) throws Exception {
+	public void checkIfTriggerd(HashMap<String, Trigger> triggers) throws Exception {
 		super.checkIfTriggerd(triggers);
 		for (Trigger trigger : triggers.values()) {
 			boolean triggered = false;
@@ -88,9 +51,8 @@ public class PortResult extends BaseResult {
 				triggered = checkForResponseTimeTrigger(trigger);
 				break;
 			}
-			
-			super.processTriggerResult(trigger, triggered);
 
+			super.processTriggerResult(trigger, triggered);
 		}
 	}
 
@@ -120,13 +82,12 @@ public class PortResult extends BaseResult {
 	private boolean checkForResponseTimeTrigger(Trigger trigger) {
 		boolean flag = false;
 		for (TriggerCondition condition : trigger.getCondtions()) {
-			long x ;
-			try{
-			x = Long.parseLong(condition.getxValue());
-			}
-			catch(Exception e)
-			{
-				Logit.LogInfo("Unable to parse trigger X value for triggerId: "+trigger.getTriggerId()+", E: "+e.getMessage());
+			long x;
+			try {
+				x = Long.parseLong(condition.getxValue());
+			} catch (Exception e) {
+				Logit.LogInfo("Unable to parse trigger X value for triggerId: " + trigger.getTriggerId() + ", E: "
+						+ e.getMessage());
 				throw e;
 			}
 			long lastValue = this.getResponseTime();
@@ -156,62 +117,9 @@ public class PortResult extends BaseResult {
 		return flag;
 	}
 
-//	@Override
-//	public void insertExistingRollups(DataPointsRollup[][] existing) {
-//		this.addRollupsFromExistingMemoryDump(this.getResponseTimeRollups(), existing[0]);
-//	}
-
-//	@Override
-//	public DataPointsRollup[][] retrieveExistingRollups() {
-//		DataPointsRollup[][] existing = new DataPointsRollup[1][6];
-//		existing[0] = this.getResponseTimeRollups();
-//		return existing;
-//	}
-//
-//	@Override
-//	public HashMap<String, String> getResults() throws Throwable {
-//		HashMap<String, String> results = super.getResults();
-//		JSONArray rawResults = new JSONArray();
-//		rawResults.add(2);
-//		rawResults.add(this.isPortStatus());
-//		this.setPortStatus(null);
-//		rawResults.add(this.getResponseTime());
-//		this.setResponseTime(null);
-//
-//		results.put("RAW@portState_responseTime@" + this.getLastTimestamp(), rawResults.toJSONString());
-//		int rollupsNumber = this.getNumberOfRollupTables();
-//		for (int i = 0; i < rollupsNumber; i++) {
-//
-//			DataPointsRollup currentResponseTimeRollup = this.getResponseTimeRollups()[i];
-//			DataPointsRollup finishedResponseTimeRollup = currentResponseTimeRollup.getLastFinishedRollup();
-//			if (currentResponseTimeRollup == null) {
-//				SysLogger
-//						.Record(new Log("Wrong Rollup Tables Number Of: " + getRunnableProbeId(), LogType.Debug));
-//				continue;
-//			}
-//			if (finishedResponseTimeRollup != null) {
-//				JSONArray responseTimeRollupResults = new JSONArray();
-//				responseTimeRollupResults.add(finishedResponseTimeRollup.getMin());
-//				responseTimeRollupResults.add(finishedResponseTimeRollup.getMax());
-//				responseTimeRollupResults.add(finishedResponseTimeRollup.getAvg());
-//				responseTimeRollupResults.add(finishedResponseTimeRollup.getResultsCounter());
-//
-//				JSONArray fullRollupResults = new JSONArray();
-//				fullRollupResults.add(responseTimeRollupResults);
-//
-//				results.put("ROLLUP" + finishedResponseTimeRollup.getTimePeriod().getName() + "@responseTime@"
-//						+ finishedResponseTimeRollup.getEndTime(), fullRollupResults.toJSONString());
-//
-//				currentResponseTimeRollup.setLastFinishedRollup(null);
-//			}
-//		}
-//		this.setLastTimestamp((long) 0);
-//
-//		return results;
-//	}
 	@Override
 	public String getResultString() {
-		JSONArray result=new JSONArray();
+		JSONArray result = new JSONArray();
 		result.add(2);
 		result.add(portStatus);
 		result.add(responseTime);

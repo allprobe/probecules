@@ -7,17 +7,12 @@ import java.util.List;
 import java.util.Map;
 import java.util.UUID;
 import java.util.concurrent.ConcurrentHashMap;
-
 import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
-
-import DAL.ApiInterface;
 import DAL.DAL;
-import GlobalConstants.Enums;
 import GlobalConstants.Enums.ApiAction;
-import GlobalConstants.ProbeTypes;
 import Interfaces.IResultsContainer;
 import Results.BaseResult;
 import Results.DiscoveryResult;
@@ -30,8 +25,6 @@ public class ResultsContainer implements IResultsContainer {
 	private static ResultsContainer instance;
 	private List<BaseResult> results;
 	private ConcurrentHashMap<String, ConcurrentHashMap<String, Event>> events; // HashMap<runnableProbeId,
-	// HashMap<triggerId,
-	// Event>>
 	private SLAContainer slaContainer;
 
 	private Object lockResults = new Object();
@@ -75,10 +68,6 @@ public class ResultsContainer implements IResultsContainer {
 	}
 
 	public boolean clear() {
-		// synchronized (lockEvents) {
-		//
-		// events.clear();
-		// }
 		eventsClear();
 		// TODO: Leave 10 last results from each kind on the list
 		results.clear();
@@ -88,7 +77,7 @@ public class ResultsContainer implements IResultsContainer {
 
 	private void eventsClear() {
 		for (Map.Entry<String, ConcurrentHashMap<String, Event>> runnableProbeEvents : events.entrySet()) {
-			String runnableProbeId = runnableProbeEvents.getKey();
+//			String runnableProbeId = runnableProbeEvents.getKey();
 			for (Map.Entry<String, Event> triggerEvent : runnableProbeEvents.getValue().entrySet()) {
 				String triggerId = triggerEvent.getKey();
 				Event event = triggerEvent.getValue();
@@ -122,19 +111,6 @@ public class ResultsContainer implements IResultsContainer {
 
 		return result;
 	}
-
-	// private HashMap<String, BaseResults> getAllResultsUsers(ArrayList<User>
-	// users) {
-	// HashMap<String, BaseResults> rprs = new HashMap<String, BaseResults>();
-	// for (User u : users) {
-	// Collection<RunnableProbe> usersRPs = u.getAllRunnableProbes().values();
-	// for (RunnableProbe rp : usersRPs) {
-	//
-	// rprs.put(rp.getRPString(), rp.getResult());
-	// }
-	// }
-	// return rprs;
-	// }
 
 	public void pullCurrentLiveEvents() {
 		while (true) {
@@ -255,100 +231,6 @@ public class ResultsContainer implements IResultsContainer {
 
 	@Override
 	public String getResults() {
-		// HashMap<String, HashMap<String, HashMap<String, String>>> newResults
-		// = new HashMap<String, HashMap<String, HashMap<String, String>>>();
-		// newResults.put("RAW", new HashMap<String, HashMap<String,
-		// String>>());
-		//
-		// newResults.put("4mRollups", new HashMap<String, HashMap<String,
-		// String>>());
-		// newResults.put("20mRollups", new HashMap<String, HashMap<String,
-		// String>>());
-		// newResults.put("1hRollups", new HashMap<String, HashMap<String,
-		// String>>());
-		// newResults.put("6hRollups", new HashMap<String, HashMap<String,
-		// String>>());
-		// newResults.put("36hRollups", new HashMap<String, HashMap<String,
-		// String>>());
-		// newResults.put("11dRollups", new HashMap<String, HashMap<String,
-		// String>>());
-		//
-		// for (BaseResult result : results) {
-		//
-		// if
-		// (result.getRunnableProbeId().contains("fc46cf87-0872-4e5d-9b83-c44a3d1f3ea6@icmp_1f1aed08-7331-4126-97ef-225e90b4a969"))
-		// System.out.println("BREAKPOINT - RunnableProbesHistory");
-		//
-		// if (result.getLastTimestamp() == null || result.getLastTimestamp() ==
-		// 0)
-		// continue;
-		//
-		// HashMap<String, String> probeResults;
-		//
-		// try {
-		//
-		// probeResults = result.getResults();
-		//
-		// if (probeResults.containsKey("error")) {
-		// Logit.LogError("ResultsContainer - getResults()", "Seriious error
-		// getting runnable probe results of: " + result.getRunnableProbeId());
-		// continue;
-		// }
-		// for (Map.Entry<String, String> probeResult :
-		// probeResults.entrySet()) {
-		// String resultKey = probeResult.getKey();
-		// String resultValue = probeResult.getValue();
-		//
-		// if (resultKey.contains("RAW")) {
-		// HashMap<String, String> test = rawResultsDBFormat(result, resultKey,
-		// resultValue);
-		// newResults.get("RAW").put(result.getRunnableProbeId(),
-		// rawResultsDBFormat(result, resultKey, resultValue));
-		// }
-		// if (resultKey.contains("ROLLUP_4minutes")) {
-		// newResults.get("4mRollups").put(rp.getRPString(),
-		// rollupResultsDBFormat(result, resultKey, resultValue));
-		// }
-		// if (resultKey.contains("ROLLUP_20minutes")) {
-		// newResults.get("20mRollups").put(rp.getRPString(),
-		// rollupResultsDBFormat(result, resultKey, resultValue));
-		// }
-		// if (resultKey.contains("ROLLUP_1hour")) {
-		// newResults.get("1hRollups").put(rp.getRPString(),
-		// rollupResultsDBFormat(result, resultKey, resultValue));
-		// }
-		// if (resultKey.contains("ROLLUP_6hour")) {
-		// newResults.get("6hRollups").put(rp.getRPString(),
-		// rollupResultsDBFormat(result, resultKey, resultValue));
-		// }
-		// if (resultKey.contains("ROLLUP_36hour")) {
-		// newResults.get("36hRollups").put(rp.getRPString(),
-		// rollupResultsDBFormat(result, resultKey, resultValue));
-		// }
-		// if (resultKey.contains("ROLLUP_11day")) {
-		// newResults.get("11dRollups").put(rp.getRPString(),
-		// rollupResultsDBFormat(result, resultKey, resultValue));
-		// }
-		// }
-		// } catch (Throwable th) {
-		//
-		// Logit.LogError("ResultsContainer - getResults()",
-		// "Error collecting runnable probes results! stopped at: " +
-		// result.getRunnableProbeId());
-		// StringWriter sw = new StringWriter();
-		// PrintWriter pw = new PrintWriter(sw);
-		// th.printStackTrace(pw);
-		//
-		// Logit.LogError("ResultsContainer - getResults()", sw.toString());
-		// }
-		// }
-		//
-		// Run
-		// RuntimeTypeAdapterFactory<BaseResult> adapter =
-		// RuntimeTypeAdapterFactory
-		// .of(ObixBaseObj.class)
-		// .registerSubtype(ObixBaseObj.class)
-		// .registerSubtype(ObixOp.class);
 		try {
 			JSONArray resultsDBFormat = new JSONArray();
 			for (int i = 0; i < results.size(); i++) {
@@ -366,23 +248,8 @@ public class ResultsContainer implements IResultsContainer {
 		} catch (Exception e) {
 			Logit.LogFatal("ResultsContainer - getResults()",
 					"Error getting results from resultsContainer! E: " + e.getMessage(), e);
-			// Logit.LogFatal("ResultsContainer - getResults()", "trace:
-			// "+e.getStackTrace().toString(),e);
 			return null;
 		}
-		// try {
-		// String jsonString = null;
-		// synchronized(lock1) {
-		// jsonString = JsonUtil.ToJson(this.results);
-		// }
-		// return jsonString;
-		// } catch (Exception e) {
-		// Logit.LogFatal("ResultsContainer - getResults()",
-		// "Unable to parse results to json format! not sent!, E: " +
-		// e.getMessage());
-		//
-		// return null;
-		// }
 	}
 
 	@Override
@@ -423,7 +290,6 @@ public class ResultsContainer implements IResultsContainer {
 					continue;
 				}
 			}
-
 		}
 
 		Gson gson = new GsonBuilder().setPrettyPrinting().create();

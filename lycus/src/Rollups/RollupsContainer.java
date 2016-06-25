@@ -52,15 +52,6 @@ public class RollupsContainer implements IRollupsContainer {
 	private HashMap<String, DataPointsRollup[]> diskSizeDataRollups = new HashMap<String, DataPointsRollup[]>();
 	private HashMap<String, DataPointsRollup[]> diskUsedDataRollups = new HashMap<String, DataPointsRollup[]>();
 
-	// Those are finished rollups
-	// private JSONObject finishedRollups4m = new JSONObject(); //
-	// JSONObject<runnableProbeId,JSONArray<DataPointsRollup>>
-	// private JSONObject finishedRollups20m = new JSONObject();
-	// private JSONObject finishedRollups1h = new JSONObject();
-	// private JSONObject finishedRollups6h = new JSONObject();
-	// private JSONObject finishedRollups36h = new JSONObject();
-	// private JSONObject finishedRollups11d = new JSONObject();
-
 	private JSONArray finishedRollups = new JSONArray();
 
 	public static RollupsContainer getInstance() {
@@ -93,8 +84,6 @@ public class RollupsContainer implements IRollupsContainer {
 		return false;
 	}
 
-
-
 	@Override
 	public synchronized String getAllFinsihedRollups() {
 
@@ -105,20 +94,7 @@ public class RollupsContainer implements IRollupsContainer {
 				for (Map.Entry<String, DataPointsRollup[]> rolups : packetLossRollups.entrySet()) {
 					DataPointsRollup[] dataPointsRollups = rttRollups.get(rolups.getKey());
 					addFinished(i, rolups.getValue(), dataPointsRollups);
-
 				}
-				// for (DataPointsRollup[] rolups : packetLossRollups.values())
-				// {
-				//
-				// addFinished(i, rolups);
-				// }
-
-				// finishedRollups.a
-				// for (DataPointsRollup[] rolups : rttRollups.values()) {
-				// addFinished(i, rolups);
-				// }
-
-				// finishedRollups // otef otam
 
 				for (DataPointsRollup[] rolups : webResponseTimeRollups.values()) {
 					addFinished(i, rolups);
@@ -142,37 +118,8 @@ public class RollupsContainer implements IRollupsContainer {
 				}
 			}
 
-			// finishedRollups // otef hakol
-
-			// if (finishedRollups4m.size() != 0)
-			// rollups.put("rollups4m", JsonUtil.ToJson(finishedRollups4m));
-			//
-			// if (finishedRollups20m.size() != 0)
-			// rollups.put("rollups20m", JsonUtil.ToJson(finishedRollups20m));
-			//
-			// if (finishedRollups1h.size() != 0)
-			// rollups.put("rollups1h", JsonUtil.ToJson(finishedRollups1h));
-			//
-			// if (finishedRollups6h.size() != 0)
-			// rollups.put("rollups6h", JsonUtil.ToJson(finishedRollups6h));
-			//
-			// if (finishedRollups36h.size() != 0)
-			// rollups.put("rollups36h", JsonUtil.ToJson(finishedRollups36h));
-			//
-			// if (finishedRollups11d.size() != 0)
-			// rollups.put("rollups11d", JsonUtil.ToJson(finishedRollups11d));
-
 			if (finishedRollups.size() == 0)
 				return null;
-
-			// rollups.put("packetLossRollups",
-			// JsonUtil.ToJson(packetLossRollups));
-			// rollups.put("rttRollups", JsonUtil.ToJson(rttRollups));
-			// rollups.put("portResponseTimeRollups",
-			// JsonUtil.ToJson(portResponseTimeRollups));
-			// rollups.put("webResponseTimeRollups",
-			// JsonUtil.ToJson(webResponseTimeRollups));
-			// rollups.put("snmpDataRollups", JsonUtil.ToJson(snmpDataRollups));
 
 			if (finishedRollups.contains(
 					"0b05919c-6cc0-42cc-a74b-de3b0dcd4a2a@e7ecd619-b7a5-49b7-a849-b2c9b1b64bf3@snmp_18e51b8d-807e-45c0-b5bc-d047da3e0876"))
@@ -182,7 +129,6 @@ public class RollupsContainer implements IRollupsContainer {
 		} catch (Exception e) {
 			Logit.LogFatal("RollupsContainer - getAllFinsihedRollups()",
 					"Error getting finished rollups from rollupsContainer! E: " + e.getMessage(),e);
-//			Logit.LogFatal("RollupsContainer - getAllFinsihedRollups()", "trace: " + e.getStackTrace().toString());
 			return null;
 		}
 	}
@@ -250,40 +196,6 @@ public class RollupsContainer implements IRollupsContainer {
 
 	}
 
-	// @Override
-	// public boolean mergeRollups(JSONArray jsonArray) {
-	// Logit.LogInfo("Retrieving existing rollups from DB...");
-	// Object rollupsEncoded =
-	// ApiInterface.executeRequest(Enums.ApiAction.GetServerMemoryDump, "GET",
-	// null);
-	//
-	// if (rollupsEncoded == null || ((String) rollupsEncoded).equals("0\n")) {
-	// Logit.LogWarn("Unable to retrieve existing rollups, trying again in about
-	// 30 secs...");
-	// return false;
-	// }
-	//
-	// String rollups = ((String) rollupsEncoded).substring(1, ((String)
-	// rollupsEncoded).length() - 1);
-	//
-	// ArrayList<DataPointsRollup[][]> rollupses =
-	// this.deserializeRollups(rollups);
-	// for (DataPointsRollup[][] rollupsResult : rollupses) {
-	// DataPointsRollup sampleRollup = rollupsResult[0][0];
-	// String rpID = sampleRollup.getRunnableProbeId();
-	//
-	// BaseResult rpr = ResultsContainer.getInstance().getResult(rpID);
-	//
-	// // if (rpr != null)
-	// // rpr.insertExistingRollups(rollupsResult);
-	// // else {
-	// // handle runnable probe without results object
-	// // }
-	// }
-	//
-	// return false;
-	// }
-
 	public ArrayList<DataPointsRollup[][]> deserializeRollups(String rollups) {
 		ArrayList<DataPointsRollup[][]> allRollupsDeserialized = new ArrayList<DataPointsRollup[][]>();
 		Gson gson = new GsonBuilder().setPrettyPrinting().create();
@@ -315,56 +227,6 @@ public class RollupsContainer implements IRollupsContainer {
 		return allRollupsDeserialized;
 	}
 
-	// private boolean addRollupTo(int rollupType, DataPointsRollup
-	// dataPointsRollup) {
-	//
-	//
-	//
-	// switch (rollupType) {
-	// case 5:
-	// if (finishedRollups4m.get(dataPointsRollup.getRunnableProbeId()) == null)
-	// finishedRollups4m.put(dataPointsRollup.getRunnableProbeId(), new
-	// JSONArray());
-	// ((JSONArray)finishedRollups4m.get(dataPointsRollup.getRunnableProbeId())).add(rollupResultsDBFormat(dataPointsRollup));
-	// break;
-	// case 4:
-	// if (finishedRollups20m.get(dataPointsRollup.getRunnableProbeId()) ==
-	// null)
-	// finishedRollups20m.put(dataPointsRollup.getRunnableProbeId(), new
-	// JSONArray());
-	// ((JSONArray)finishedRollups20m.get(dataPointsRollup.getRunnableProbeId())).add(rollupResultsDBFormat(dataPointsRollup));
-	// break;
-	// case 3:
-	// if (finishedRollups1h.get(dataPointsRollup.getRunnableProbeId()) == null)
-	// finishedRollups1h.put(dataPointsRollup.getRunnableProbeId(), new
-	// JSONArray());
-	// ((JSONArray)finishedRollups1h.get(dataPointsRollup.getRunnableProbeId())).add(rollupResultsDBFormat(dataPointsRollup));
-	// break;
-	// case 2:
-	// if (finishedRollups6h.get(dataPointsRollup.getRunnableProbeId()) == null)
-	// finishedRollups6h.put(dataPointsRollup.getRunnableProbeId(), new
-	// JSONArray());
-	// ((JSONArray)finishedRollups6h.get(dataPointsRollup.getRunnableProbeId())).add(rollupResultsDBFormat(dataPointsRollup));
-	// break;
-	// case 1:
-	// if (finishedRollups36h.get(dataPointsRollup.getRunnableProbeId()) ==
-	// null)
-	// finishedRollups36h.put(dataPointsRollup.getRunnableProbeId(), new
-	// JSONArray());
-	// ((JSONArray)finishedRollups36h.get(dataPointsRollup.getRunnableProbeId())).add(rollupResultsDBFormat(dataPointsRollup));
-	// break;
-	// case 0:
-	// if (finishedRollups11d.get(dataPointsRollup.getRunnableProbeId()) ==
-	// null)
-	// finishedRollups11d.put(dataPointsRollup.getRunnableProbeId(), new
-	// JSONArray());
-	// ((JSONArray)finishedRollups11d.get(dataPointsRollup.getRunnableProbeId())).add(rollupResultsDBFormat(dataPointsRollup));
-	// break;
-	// }
-	//
-	// return true;
-	// }
-
 	private boolean addFinishedRollup(DataPointsRollup dataPointsRollup) {
 
 		finishedRollups.add(rollupResultsDBFormat(dataPointsRollup));
@@ -380,10 +242,7 @@ public class RollupsContainer implements IRollupsContainer {
 	private String rollupResultsDBFormat(DataPointsRollup dataPointsRollup1, DataPointsRollup dataPointsRollup2) {
 		JSONObject rollup = new JSONObject();
 
-		// rollup.put("USER_ID",
-		// rp.getProbe().getUser().getUserId().toString());
 		rollup.put("RESULTS_TIME", dataPointsRollup1.getEndTime());
-		// rollup.put("RESULTS_NAME", resultkey.split("@")[1]);
 		JSONArray resultsStrings = new JSONArray();
 		resultsStrings.add(dataPointsRollup1.getResultString());
 		resultsStrings.add(dataPointsRollup2.getResultString());
@@ -403,10 +262,7 @@ public class RollupsContainer implements IRollupsContainer {
 		if (dataPointsRollup.getRunnableProbeId().contains(
 				"0b05919c-6cc0-42cc-a74b-de3b0dcd4a2a@98437013-a93f-4b27-9963-a4800860b90f@snmp_924430db-e1d7-43ce-ba98-a9b7883a440a"))
 			Logit.LogDebug("BREAKPOINT");
-		// rollup.put("USER_ID",
-		// rp.getProbe().getUser().getUserId().toString());
 		rollup.put("RESULTS_TIME", dataPointsRollup.getEndTime());
-		// rollup.put("RESULTS_NAME", resultkey.split("@")[1]);
 		JSONArray resultsStrings = new JSONArray();
 		resultsStrings.add(dataPointsRollup.getResultString());
 		rollup.put("RESULTS", resultsStrings.toString());
@@ -415,7 +271,6 @@ public class RollupsContainer implements IRollupsContainer {
 		rollup.put("USER_ID", RunnableProbeContainer.getInstanece().get(dataPointsRollup.getRunnableProbeId())
 				.getProbe().getUser().getUserId().toString());
 		return rollup.toString();
-
 	}
 
 	private DataPointsRollupSize getRollupSize(int i) {
@@ -591,10 +446,6 @@ public class RollupsContainer implements IRollupsContainer {
 		// TODO: finish mergeExistingRollupsFromMemDump()
 
 		JSONObject rollupsUnDecoded = DAL.getInstanece().get(Enums.ApiAction.GetServerMemoryDump);
-
-		// Object rollupsUnDecoded =
-		// ApiInterface.executeRequest(Enums.ApiAction.GetServerMemoryDump,
-		// "GET", null);
 
 		if (rollupsUnDecoded == null) {
 			Logit.LogWarn("Unable to retrieve existing rollups!");

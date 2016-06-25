@@ -64,11 +64,6 @@ public class RunnableProbeContainer implements IRunnableProbeContainer {
 		return runnableProbes.get(runnableProbeId);
 	}
 
-	// @Override
-	// public HashMap<String, RunnableProbe> get() {
-	// return runnableProbes;
-	// }
-
 	@Override
 	public ConcurrentHashMap<String, RunnableProbe> getByUser(String userId) {
 		return userRunnableProbes.get(userId);
@@ -89,21 +84,6 @@ public class RunnableProbeContainer implements IRunnableProbeContainer {
 		return templateRunnableProbes.get(templateId); 
 	}
 	
-//	@Override
-//	public ConcurrentHashMap<String, RunnableProbe> getByHostTemplate(String templateId, String hostId) {
-//		ConcurrentHashMap<String, RunnableProbe> runnableProbes = getByHost(hostId);
-//		ConcurrentHashMap<String, RunnableProbe> runnableProbesByTemplate = null;
-//		for (RunnableProbe runnableProbe : runnableProbes.values()) {
-//			if (runnableProbe.getProbe().getTemplate_id().toString().equals(templateId)) {
-//				if (runnableProbesByTemplate == null)
-//					runnableProbesByTemplate = new ConcurrentHashMap<String, RunnableProbe>();
-//				runnableProbesByTemplate.put(runnableProbe.getId(), runnableProbe);
-//			}
-//		}
-//
-//		return runnableProbesByTemplate;
-//	}
-
 	@Override
 	public boolean add(RunnableProbe runnableProbe) {
 		Boolean isStarted = startProbe(runnableProbe);

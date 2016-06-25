@@ -90,8 +90,6 @@ public class RunnableProbe implements Runnable {
 			return ProbeTypes.BANDWIDTH_ELEMENT;
 		if (getProbe() instanceof DiskProbe)
 			return ProbeTypes.DISK_ELEMENT;
-		// if (getProbe() instanceof BaseElement)
-		// return ProbeTypes.DISCOVERYELEMENT;
 		return null;
 	}
 
@@ -101,7 +99,7 @@ public class RunnableProbe implements Runnable {
 			try {
 				String rpStr1 = this.getId();
 				if (rpStr1.contains(
-						"721feef6-504b-4fe3-81e3-089ab33d53a1@6b999cd6-fcbb-4ca8-9936-5529b4c66976@snmp_2f18d7ac-aaf8-4368-ada9-738ad25ac3eb"))
+						"9837b74a-e916-466a-b260-318a406df6fe@6b999cd6-fcbb-4ca8-9936-5529b4c66976@rbl_b1579283-3c21-467b-ab6e-2d89694bf96e"))
 					Logit.LogDebug("BREAKPOINT - RunnableProbe");
 				
 				if (!isActive() || !getProbe().isActive())
@@ -157,9 +155,7 @@ public class RunnableProbe implements Runnable {
 						continue;
 
 					}
-//					if (this.getProbeType() == ProbeTypes.DISCOVERY)
-//						ElementsContainer.getInstance().addResult((DiscoveryResult) result);
-//					else
+					
 					ResultsContainer.getInstance().addResult(result);
 				} catch (Exception e) {
 					Logit.LogError("RunnableProbe - run()",
@@ -183,9 +179,7 @@ public class RunnableProbe implements Runnable {
 					synchronized (this) {
 						wait(this.getProbe().getInterval() * 1000);
 					}
-					// Thread.sleep(this.getProbe().getInterval() * 1000);
 				} catch (InterruptedException e) {
-					// TODO Auto-generated catch block
 					e.printStackTrace();
 				}
 			}
