@@ -1,20 +1,31 @@
 package SLA;
 
 import java.util.concurrent.ConcurrentHashMap;
-
+import org.json.simple.JSONArray;
 import Results.BaseResult;
 import Results.PingResult;
 import Results.PortResult;
 import Results.WebResult;
 
 public class SLAContainer {
+	private static SLAContainer instance;
+	
 	private ConcurrentHashMap<String, SLAObject> webSLA; // ConcurrentHashMap<RunnableProbeId,
 															// SLAObject>
 	private ConcurrentHashMap<String, SLAObject> pingSLA; // ConcurrentHashMap<RunnableProbeId,
 															// SLAObject>
 	private ConcurrentHashMap<String, SLAObject> portSLA; // ConcurrentHashMap<RunnableProbeId,
 															// SLAObject>
+	
+	private JSONArray finishedSla = new JSONArray();
 
+	public static SLAContainer getInstance() {
+		if (instance == null) {
+			instance = new SLAContainer();
+		}
+		return instance;
+	}
+	
 	public SLAContainer() {
 		webSLA = new ConcurrentHashMap<String, SLAObject>();
 		pingSLA = new ConcurrentHashMap<String, SLAObject>();

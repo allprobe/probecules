@@ -12,6 +12,7 @@ import Probes.SnmpProbe;
 import Probes.DiskProbe;
 import Results.BaseResult;
 import Rollups.RollupsContainer;
+import SLA.SLAContainer;
 import Utils.Logit;
 
 public class RunnableProbe implements Runnable {
@@ -171,6 +172,14 @@ public class RunnableProbe implements Runnable {
 					continue;
 				}
 
+				try {
+					SLAContainer.getInstance().addToSLA(result);
+				} catch (Exception e) {
+					Logit.LogError("RunnableProbe - run()",
+							"Error processing runnable probe results to SLA container!" + this.getId(), e);
+					continue;
+				}
+				
 			} finally {
 				try {
 					Logit.LogInfo("Running Probe: " + this.getId() + " at Host: " + this.getHost().getHostIp() + "("

@@ -21,6 +21,7 @@ import com.gargoylesoftware.htmlunit.html.HtmlPage;
 import DAL.ApiInterface;
 import DAL.ApiRequest;
 import DAL.FailedRequestsHandler;
+import GlobalConstants.Constants;
 import GlobalConstants.Enums.ApiAction;
 import GlobalConstants.GlobalConfig;
 import NetConnection.Net;
@@ -111,6 +112,7 @@ public class LycusMain {
 		rollupsThread.scheduleAtFixedRate(rollupsMemoryDump, 0, rollupsMemoryDump.getInterval(), TimeUnit.SECONDS);
 		
 		SlaTask slaTask = new SlaTask();
+		slaTask.setInterval(Constants.slaInterval);
 		ScheduledExecutorService slaThread = Executors.newSingleThreadScheduledExecutor();
 		slaThread.scheduleAtFixedRate(slaTask, 0, slaTask.getInterval(), TimeUnit.SECONDS);
 		

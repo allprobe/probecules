@@ -14,5 +14,4 @@ public abstract class BaseTask implements Runnable {
 	public void setInterval(long interval) {
 		this.interval = interval;
 	}
-	
 }
