@@ -24,6 +24,8 @@ import java.util.List;
 import java.util.Map;
 import java.util.StringTokenizer;
 import org.apache.commons.io.IOUtils;
+import org.json.simple.JSONObject;
+import org.json.simple.parser.JSONParser;
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
 import org.jsoup.nodes.Element;
@@ -374,51 +376,74 @@ public class Net {
 
 	}
 
-	public static ArrayList<Object> ExtendedWeber(String url, String requestType, String user, String pass,
-			int timeout) {
+	public static JSONObject ExtendedWeber(String url, String requestType, String user, String pass, int timeout) {
+		Process p = null;
 		try {
-			WebClient webClient = new WebClient(BrowserVersion.CHROME);
-			HtmlPage htmlPage = webClient.getPage("http://www.walla.co.il/");
-			long timeStart=System.currentTimeMillis();
-			Document doc = Jsoup.connect("http://www.walla.co.il/").get();
-			long endTime=System.currentTimeMillis();
-			
-						
-			Elements allElements=doc.getAllElements();
-			// get all links in page
-		      Elements links = doc.select("a[href]");//a links
-		      Elements cssLinks = doc.select("link[href]");//links
-		      Elements scripts = doc.select("script[src]"); //scripts
-		      Elements images = doc.select("img[src]"); //images
-		      
-		      for (Element link : allElements) {
-		    	  System.out.println(link.text());
-		    	  System.out.println(link.toString());
-		    	  
-		        // get the value from the href attribute
-//		        System.out.println("\nimage: " + link.attr("src"));
-//		        System.out.println("language: " + link.attr("type"));
-		      }
-//			System.out.println(htmlPage.asText());
-//			System.out.println(htmlPage.getDocumentElement());
-//			for (DomElement element : htmlPage.getDomElementDescendants()) {
-//				System.out.println(element.toString());
-//			}
-			// fetch the document over HTTP
 
-			// get the page title
-			String title = doc.title();
-			System.out.println("title: " + title);
+			StringBuilder b = new StringBuilder();
+			b.append("phantomjs/phantomjs").append(" ").append("phantomjs/netsniff.js").append(" ").append(url)
+					.append(" ").append(user).append(" ").append(pass).append(" ").append(timeout).append(" ").append(">").append(" ").append("phantomjs/website.log");
+			p = Runtime.getRuntime().exec(b.toString());
+			BufferedReader stdInput = new BufferedReader(new InputStreamReader(p.getInputStream()));
 
-			// get all links in page
-//			Elements links = doc.select("a[href]");
-//			for (Element link : links) {
-//				// get the value from the href attribute
-//				System.out.println("\nlink: " + link.attr("href"));
-//				System.out.println("text: " + link.text());
-//			}
+			StringBuilder sb = new StringBuilder();
+
+			String line;
+			while ((line = stdInput.readLine()) != null) {
+				sb.append(line);
+			}
+
+			if (sb.toString().equals("FAIL to load the address"))
+				return null;
+
+			JSONObject harFile = (JSONObject) new JSONParser().parse(sb.toString());
+			return harFile;
+			// WebClient webClient = new WebClient(BrowserVersion.CHROME);
+			// HtmlPage htmlPage = webClient.getPage("http://www.walla.co.il/");
+			// long timeStart=System.currentTimeMillis();
+			// Document doc = Jsoup.connect("http://www.walla.co.il/").get();
+			// long endTime=System.currentTimeMillis();
+			//
+			//
+			// Elements allElements=doc.getAllElements();
+			// // get all links in page
+			// Elements links = doc.select("a[href]");//a links
+			// Elements cssLinks = doc.select("link[href]");//links
+			// Elements scripts = doc.select("script[src]"); //scripts
+			// Elements images = doc.select("img[src]"); //images
+			//
+			// for (Element link : allElements) {
+			// System.out.println(link.text());
+			// System.out.println(link.toString());
+			//
+			// // get the value from the href attribute
+			//// System.out.println("\nimage: " + link.attr("src"));
+			//// System.out.println("language: " + link.attr("type"));
+			// }
+			//// System.out.println(htmlPage.asText());
+			//// System.out.println(htmlPage.getDocumentElement());
+			//// for (DomElement element : htmlPage.getDomElementDescendants())
+			// {
+			//// System.out.println(element.toString());
+			//// }
+			// // fetch the document over HTTP
+			//
+			// // get the page title
+			// String title = doc.title();
+			// System.out.println("title: " + title);
+			//
+			// // get all links in page
+			//// Elements links = doc.select("a[href]");
+			//// for (Element link : links) {
+			//// // get the value from the href attribute
+			//// System.out.println("\nlink: " + link.attr("href"));
+			//// System.out.println("text: " + link.text());
+			// }
 		} catch (Exception e) {
 			e.printStackTrace();
+		} finally {
+			if (p != null)
+				p.destroy();
 		}
 		return null;
 	}

@@ -425,7 +425,7 @@ public class UsersManager {
 					probeParams.http_auth_username = (String) probeKeyJson.get("http_auth_user");
 					probeParams.http_auth_password = (String) probeKeyJson.get("http_auth_password");
 					probeParams.timeout = Integer.parseInt(probeKeyJson.get("timeout").toString());
-
+					probeParams.http_deep=Integer.parseInt(probeKeyJson.get("http_deep").toString());
 					break;
 				}
 				case Constants.snmp: {

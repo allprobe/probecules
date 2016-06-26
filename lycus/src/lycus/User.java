@@ -444,14 +444,16 @@ public class User {
 				String auth = probeParams.http_auth;
 				String authUser = GeneralFunctions.Base64Decode(probeParams.http_auth_username);
 				String authPass = GeneralFunctions.Base64Decode(probeParams.http_auth_password);
+				boolean deepCheck=probeParams.http_deep==1?true:false;
+				
 				int timeout = probeParams.timeout;
 
 				if (auth.equals(Constants.no))
 					probe = new HttpProbe(this, probeId, templateId, name, interval, multiplier, status, timeout,
-							method, url);
+							method, url,deepCheck);
 				else
 					probe = new HttpProbe(this, probeId, templateId, name, interval, multiplier, status, timeout,
-							method, url, auth, authUser, authPass);
+							method, url, auth, authUser, authPass,deepCheck);
 				break;
 			}
 			case Constants.snmp: {

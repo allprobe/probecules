@@ -28,7 +28,7 @@ public class ProbeParams {
 	public String url;
 	public Integer element_interval;
 	public String trigger_id;;
-	
+	public int http_deep;
 	// Discovery
 	public String discovery_type;
 	public DiscoveryTrigger[] discovery_triggers;

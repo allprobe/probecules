@@ -58,7 +58,7 @@ public class LycusMain {
 		
 //		 System.err.println("Finished getting messages");
 		
-		
+		Net.ExtendedWeber("http://allfdfinternet.co.il", "", "", "", 5);
 
 		
 		 UsersManager.Initialize();// setup initial config (InitServer)

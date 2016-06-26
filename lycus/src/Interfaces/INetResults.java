@@ -15,6 +15,7 @@ import Results.PingResult;
 import Results.PortResult;
 import Results.RblResult;
 import Results.SnmpResult;
+import Results.WebExtendedResult;
 import Results.WebResult;
 import lycus.Host;
 
@@ -26,4 +27,5 @@ public interface INetResults {
 	List<SnmpResult>   getSnmpResults(Host host,List<SnmpProbe> snmpProbes);
 	NicResult getNicResult(Host host, NicProbe nicProbe);
 	DiscoveryResult getDiscoveryResult(Host h, DiscoveryProbe discoveryProbe);
+	WebExtendedResult getWebExtendedResult(Host host, HttpProbe probe);
 }

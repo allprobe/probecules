@@ -1,12 +1,18 @@
 package NetConnection;
 
+import java.text.DateFormatSymbols;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
+import org.json.simple.JSONArray;
+import org.json.simple.JSONObject;
 import org.snmp4j.smi.OID;
 
 import Elements.BaseElement;
@@ -26,6 +32,7 @@ import Probes.PortProbe;
 import Probes.RBLProbe;
 import Probes.SnmpProbe;
 import Probes.DiskProbe;
+import Results.DOMElement;
 import Results.DiscoveryResult;
 import Results.DiskResult;
 import Results.NicResult;
@@ -34,6 +41,7 @@ import Results.PortResult;
 import Results.RblResult;
 import Results.SnmpDeltaResult;
 import Results.SnmpResult;
+import Results.WebExtendedResult;
 import Results.WebResult;
 import Utils.GeneralFunctions;
 import Utils.Logit;
@@ -116,6 +124,61 @@ public class NetResults implements INetResults {
 				responseSize);
 
 		return weberResult;
+	}
+
+	@Override
+	public WebExtendedResult getWebExtendedResult(Host host, HttpProbe probe) {
+		JSONObject rawResults = Net.ExtendedWeber(probe.getUrl(), probe.getHttpRequestType(), probe.getAuthUsername(),
+				probe.getAuthPassword(), probe.getTimeout());
+		if (rawResults == null || rawResults.size() == 0)
+			return null;
+
+		long timestamp=fromHarTimeToEpoch((String)((JSONObject)((JSONArray)((JSONObject)rawResults.get("log")).get("pages")).get(0)).get("startedDateTime"));
+		
+		long responseTime = (long)((JSONObject)((JSONObject)((JSONArray)((JSONObject)rawResults.get("log")).get("pages")).get(0)).get("pageTimings")).get("onLoad");
+		int responseCode = ((Long)((JSONObject)((JSONObject)((JSONArray)((JSONObject)rawResults.get("log")).get("entries")).get(0)).get("response")).get("status")).intValue();
+		long responseSize = (long)((JSONObject)((JSONObject)((JSONArray)((JSONObject)rawResults.get("log")).get("entries")).get(0)).get("response")).get("bodySize");
+		
+		ArrayList<DOMElement> allElements=convertDOMElementsResult(((JSONArray)((JSONObject)rawResults.get("log")).get("entries")));
+		
+		WebExtendedResult result=new WebExtendedResult(getRunnableProbeId(probe, host),timestamp,responseTime,responseCode,responseSize);
+		result.setAllElementsResults(allElements);
+		
+		return result;
+	}
+	
+	private ArrayList<DOMElement> convertDOMElementsResult(JSONArray allElementsJson) {
+		ArrayList<DOMElement> allElements=new ArrayList<DOMElement>();
+		for(int i=0;i<allElementsJson.size();i++)
+		{
+			JSONObject elementJson=(JSONObject)allElementsJson.get(i);
+			String nameEncoded=GeneralFunctions.Base64Encode(((String)((JSONObject)elementJson.get("request")).get("url")));
+			long startTime=fromHarTimeToEpoch((String)elementJson.get("startedDateTime"));
+			long time=(long)elementJson.get("time");
+			int responseStatusCode=((Long)((JSONObject)elementJson.get("response")).get("status")).intValue();
+			long size=(long)((JSONObject)elementJson.get("response")).get("bodySize");
+			long waitTime=((long)((JSONObject)elementJson.get("timings")).get("wait"));
+			long dnsTime=time-waitTime;
+			String mimeType=(String)((JSONObject)((JSONObject)elementJson.get("response")).get("content")).get("mimeType");
+			DOMElement element=new DOMElement(nameEncoded,startTime, time,dnsTime, responseStatusCode, size, mimeType);
+			allElements.add(element);
+		}
+		return allElements;
+	}
+
+	private long fromHarTimeToEpoch(String dateHar) {
+		dateHar=dateHar.replace("T", " ");
+		dateHar=dateHar.replace("Z", "");
+		SimpleDateFormat harDateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss.SSS");
+	    Date date=null;
+		try {
+			date = harDateFormat.parse(dateHar);
+		} catch (ParseException e) {
+			// TODO Handle Date parse error!
+			e.printStackTrace();
+		}
+	    long epoch = date.getTime();
+	    return epoch;
 	}
 
 	@Override
