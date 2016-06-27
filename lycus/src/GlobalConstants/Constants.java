@@ -79,6 +79,10 @@ public class Constants {
 	public static final int pingPacketLostMin = 80;
 	public static final int slaInterval = 60;
 	
+	
+	public static final String hourly = "1h";
+	public static final String daily = "1s";
+	
 	public static int getBatchesSize() {
 		return 1400 / GlobalConfig.getMaxSnmpResponseInBytes();
 	}

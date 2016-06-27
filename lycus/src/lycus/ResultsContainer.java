@@ -17,7 +17,6 @@ import Interfaces.IResultsContainer;
 import Results.BaseResult;
 import Results.DiscoveryResult;
 import Rollups.RollupsContainer;
-import SLA.SLAContainer;
 import Utils.GeneralFunctions;
 import Utils.Logit;
 

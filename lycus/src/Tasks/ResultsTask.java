@@ -6,6 +6,7 @@ import org.json.simple.JSONObject;
 import DAL.ApiRequest;
 import DAL.FailedRequestsHandler;
 import GlobalConstants.Enums;
+import Interfaces.IResultsContainer;
 import Rollups.RollupsContainer;
 import Utils.GeneralFunctions;
 import Utils.Logit;
@@ -18,7 +19,7 @@ public class ResultsTask extends BaseTask {
 		try {
 			Logit.LogInfo("Sending collected results to API...");
 
-			ResultsContainer resultsContainer = ResultsContainer.getInstance();
+			IResultsContainer resultsContainer = ResultsContainer.getInstance();
 			String results = resultsContainer.getResults();
 
 			if (results.contains("0122dc0b-2de1-4d9c-abe1-1c65371775f2@7352a46f-5189-428c-b4c0-fb98dedd10b1@discovery_d3c95875-4947-4388-989f-64ffd863c704@dmVuZXQw"))

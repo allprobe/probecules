@@ -6,16 +6,12 @@ import java.util.UUID;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
-import java.util.concurrent.ScheduledExecutorService;
-import java.util.concurrent.ScheduledFuture;
-import java.util.concurrent.TimeUnit;
 import GlobalConstants.Constants;
 import GlobalConstants.GlobalConfig;
 import GlobalConstants.ProbeTypes;
 import Interfaces.IRunnableProbeContainer;
 import Probes.BaseProbe;
 import Utils.Logit;
-import sun.misc.Lock;
 
 public class RunnableProbeContainer implements IRunnableProbeContainer {
 

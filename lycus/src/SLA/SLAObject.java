@@ -30,7 +30,7 @@ public class SLAObject {
 		return true;
 	}
 
-	public double getPercentage() {
+	private double getPercentage() {
 		return percentage;
 	}
 
@@ -38,11 +38,11 @@ public class SLAObject {
 		this.percentage = percentage;
 	}
 
-	public double getDailyPercentage() {
+	private double getDailyPercentage() {
 		return dailyPercentage;
 	}
 
-	public void setDailyPercentage(double dailyPercentage) {
+	private void setDailyPercentage(double dailyPercentage) {
 		this.dailyPercentage = dailyPercentage;
 	}
 	
