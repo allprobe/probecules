@@ -395,9 +395,11 @@ public class Net {
 				sb.append(line);
 			}
 
-			if (sb.toString().equals("FAIL to load the address"))
+			if (sb.toString().equals("FAIL to load the address")||sb.toString().equals(""))
 				return null;
 
+//			System.out.println(sb.toString());
+			
 			JSONObject harFile = (JSONObject) new JSONParser().parse(sb.toString());
 			return harFile;
 			// WebClient webClient = new WebClient(BrowserVersion.CHROME);
