@@ -381,9 +381,15 @@ public class Net {
 		try {
 
 			StringBuilder b = new StringBuilder();
-			b.append("phantomjs/phantomjs").append(" ").append("phantomjs/netsniff.js").append(" ").append(url)
-					.append(" ").append(user).append(" ").append(pass).append(" ").append(timeout).append(" ").append(">").append(" ").append("phantomjs/website.log");
-//			p = Runtime.getRuntime().exec(b.toString());
+			if(user!=null&&pass!=null)
+			b.append("phantomjs/phantomjs").append(" ").append("phantomjs/netsniff_auth.js").append(" ").append(url)
+					.append(" ").append(user).append(" ").append(pass).append(" ").append(timeout);
+			else
+				b.append("phantomjs/phantomjs").append(" ").append("phantomjs/netsniff.js").append(" ").append(url)
+				.append(" ").append(timeout);
+
+			
+			//			p = Runtime.getRuntime().exec(b.toString());
 			p = Runtime.getRuntime().exec(new String[]{"bash","-c",b.toString()});
 
 			BufferedReader stdInput = new BufferedReader(new InputStreamReader(p.getInputStream()));
@@ -395,6 +401,8 @@ public class Net {
 				sb.append(line);
 			}
 
+//			System.out.println(sb.toString());
+			
 			if (sb.toString().equals("FAIL to load the address")||sb.toString().equals(""))
 				return null;
 

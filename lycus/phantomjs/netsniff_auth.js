@@ -104,7 +104,9 @@ if (system.args.length === 1) {
 
     page.address = system.args[1];
     page.resources = [];
-    page.settings.resourceTimeout = system.args[2]    
+    page.settings.userName = system.args[2]
+    page.settings.password = system.args[3]
+    page.settings.resourceTimeout = system.args[4]    
 
     page.onLoadStarted = function () {
         page.startTime = new Date();
