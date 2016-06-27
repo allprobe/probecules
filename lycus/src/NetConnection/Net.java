@@ -383,7 +383,9 @@ public class Net {
 			StringBuilder b = new StringBuilder();
 			b.append("phantomjs/phantomjs").append(" ").append("phantomjs/netsniff.js").append(" ").append(url)
 					.append(" ").append(user).append(" ").append(pass).append(" ").append(timeout).append(" ").append(">").append(" ").append("phantomjs/website.log");
-			p = Runtime.getRuntime().exec(b.toString());
+//			p = Runtime.getRuntime().exec(b.toString());
+			p = Runtime.getRuntime().exec(new String[]{"bash","-c",b.toString()});
+
 			BufferedReader stdInput = new BufferedReader(new InputStreamReader(p.getInputStream()));
 
 			StringBuilder sb = new StringBuilder();
