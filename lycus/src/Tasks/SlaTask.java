@@ -23,7 +23,7 @@ public class SlaTask extends BaseTask {
 			ISLAContainer slaContainer = SLAContainer.getInstance();
 			JSONObject sendJson = slaContainer.getHourlySLA();
 
-			if (DAL.getInstanece().put(Enums.ApiAction.PutSlaBatches, sendJson) == null)
+			if (DAL.getInstanece().put(Enums.ApiAction.PutSlaBatches, sendJson, true) == null)
 				FailedRequestsHandler.getInstance()
 						.addRequest(new ApiRequest(Enums.ApiAction.PutSlaBatches, sendJson));
 
@@ -31,7 +31,7 @@ public class SlaTask extends BaseTask {
 			{
 				JSONObject sendDailyJson = slaContainer.getDailySLA();
 
-				if (DAL.getInstanece().put(Enums.ApiAction.PutSlaBatches, sendDailyJson) == null)
+				if (DAL.getInstanece().put(Enums.ApiAction.PutSlaBatches, sendDailyJson, true) == null)
 					FailedRequestsHandler.getInstance()
 							.addRequest(new ApiRequest(Enums.ApiAction.PutSlaBatches, sendDailyJson));
 				

@@ -45,18 +45,17 @@ public class DAL implements IDAL {
 		return dal;
 	}
 
-	public JSONObject executeRequest(ApiRequest request)
-	{
+	public JSONObject executeRequest(ApiRequest request) {
 		executeFailedRequests();
 		switch (request.getType()) {
 		case Constants.get:
 			return get(request.getAction());
 		case Constants.put:
-			return put(request.getAction(), request.getRequestBody());
+			return put(request.getAction(), request.getRequestBody(), false);
 		}
 		return null;
 	}
-	
+
 	@Override
 	public JSONObject get(ApiAction action) {
 
@@ -69,7 +68,7 @@ public class DAL implements IDAL {
 		try {
 			url = new URL(fullUrl);
 		} catch (MalformedURLException e) {
-			Logit.LogFatal("DAL - get", "Unable to process URL: " + fullUrl + ", failed to communicate with API!",e);
+			Logit.LogFatal("DAL - get", "Unable to process URL: " + fullUrl + ", failed to communicate with API!", e);
 			return null;
 		}
 
@@ -78,7 +77,7 @@ public class DAL implements IDAL {
 			conn = (HttpURLConnection) url.openConnection();
 		} catch (IOException e) {
 			Logit.LogFatal("DAL - get",
-					"Unable to open connection with URL: " + fullUrl + ", failed to communicate with API!",e);
+					"Unable to open connection with URL: " + fullUrl + ", failed to communicate with API!", e);
 			addGetFailedRequest(action);
 			return null;
 		}
@@ -87,7 +86,7 @@ public class DAL implements IDAL {
 			conn.setRequestMethod(Constants.get);
 		} catch (ProtocolException e) {
 			Logit.LogFatal("DAL - get",
-					"Unable to set GET request method for URL: " + fullUrl + ", failed to communicate with API!",e);
+					"Unable to set GET request method for URL: " + fullUrl + ", failed to communicate with API!", e);
 			addGetFailedRequest(action);
 
 			return null;
@@ -105,7 +104,7 @@ public class DAL implements IDAL {
 		try {
 			response = executeGetRequest(conn);
 		} catch (Exception e) {
-			Logit.LogFatal("DAL - get", "Failed to request URL: " + fullUrl + ", E: " + e.getMessage(),e);
+			Logit.LogFatal("DAL - get", "Failed to request URL: " + fullUrl + ", E: " + e.getMessage(), e);
 			addGetFailedRequest(action);
 
 			return null;
@@ -118,14 +117,14 @@ public class DAL implements IDAL {
 				return response.equals("") ? null : (JSONObject) ((new JSONParser()).parse(response));
 		} catch (IOException ioe) {
 			Logit.LogFatal("DAL - get", "Unable to retrieve response code from response for url: " + fullUrl
-					+ ", response is: " + response + ", E: " + ioe.getMessage(),ioe);
+					+ ", response is: " + response + ", E: " + ioe.getMessage(), ioe);
 			addGetFailedRequest(action);
 
 			return null;
 
 		} catch (ParseException pe) {
 			Logit.LogFatal("DAL - get", "Unable to parse json string from URL: " + fullUrl + ", JSON string is: "
-					+ response + ", E: " + pe.getMessage(),pe);
+					+ response + ", E: " + pe.getMessage(), pe);
 			addGetFailedRequest(action);
 
 			return null;
@@ -136,7 +135,7 @@ public class DAL implements IDAL {
 	}
 
 	@Override
-	public JSONObject put(ApiAction action, JSONObject reqBody) {
+	public JSONObject put(ApiAction action, JSONObject reqBody, boolean isBase64Decode) {
 		String fullUrl = getApiUrl();
 		fullUrl += "/" + action.name() + "/";
 		fullUrl += GlobalConfig.getDataCenterID() + "-" + GlobalConfig.getThisHostToken() + "/"
@@ -147,7 +146,7 @@ public class DAL implements IDAL {
 			url = new URL(fullUrl);
 		} catch (MalformedURLException e) {
 
-			Logit.LogFatal("DAL - put", "Unable to process URL: " + fullUrl + ", failed to communicate with API!",e);
+			Logit.LogFatal("DAL - put", "Unable to process URL: " + fullUrl + ", failed to communicate with API!", e);
 			addPutFailedRequest(action, reqBody);
 			return null;
 		}
@@ -156,7 +155,7 @@ public class DAL implements IDAL {
 			conn = (HttpURLConnection) url.openConnection();
 		} catch (IOException e) {
 			Logit.LogFatal("DAL - put",
-					"Unable to open connection with URL: " + fullUrl + ", failed to communicate with API!",e);
+					"Unable to open connection with URL: " + fullUrl + ", failed to communicate with API!", e);
 			addPutFailedRequest(action, reqBody);
 
 			return null;
@@ -181,9 +180,13 @@ public class DAL implements IDAL {
 		String response;
 
 		try {
-			response = executePutRequest(conn, reqBody.toJSONString());
+			if (isBase64Decode) {
+				String base64String = GeneralFunctions.Base64Encode(reqBody.toJSONString());
+				response = executePutRequest(conn, base64String);
+			} else
+				response = executePutRequest(conn, reqBody.toJSONString());
 		} catch (Exception e) {
-			Logit.LogFatal("DAL - put", "Failed to request URL: " + fullUrl + ", E: " + e.getMessage(),e);
+			Logit.LogFatal("DAL - put", "Failed to request URL: " + fullUrl + ", E: " + e.getMessage(), e);
 			addPutFailedRequest(action, reqBody);
 
 			return null;
@@ -196,14 +199,14 @@ public class DAL implements IDAL {
 				return response.equals("") ? null : (JSONObject) ((new JSONParser()).parse(response.toString()));
 		} catch (IOException ioe) {
 			Logit.LogFatal("DAL - put", "Unable to retrieve response code from response for url: " + fullUrl
-					+ ", response is: " + response + ", E: " + ioe.getMessage(),ioe);
+					+ ", response is: " + response + ", E: " + ioe.getMessage(), ioe);
 			addPutFailedRequest(action, reqBody);
 
 			return null;
 
 		} catch (ParseException pe) {
 			Logit.LogFatal("DAL - put", "Unable to parse json string from URL: " + fullUrl + ", JSON string is: "
-					+ response + ", E: " + pe.getMessage(),pe);
+					+ response + ", E: " + pe.getMessage(), pe);
 			addPutFailedRequest(action, reqBody);
 
 			return null;
@@ -228,7 +231,7 @@ public class DAL implements IDAL {
 					failedRequests.remove();
 				break;
 			case Constants.put:
-				if (put(failedRequest.getAction(), failedRequest.getRequestBody()) != null)
+				if (put(failedRequest.getAction(), failedRequest.getRequestBody(), false) != null)
 					failedRequests.remove();
 			}
 		}
@@ -236,11 +239,11 @@ public class DAL implements IDAL {
 	}
 
 	private void addPutFailedRequest(ApiAction action, JSONObject requestBody) {
-//		failedRequests.add(new ApiRequest(action, requestBody));
+		// failedRequests.add(new ApiRequest(action, requestBody));
 	}
 
 	private void addGetFailedRequest(ApiAction action) {
-//		failedRequests.add(new ApiRequest(action));
+		// failedRequests.add(new ApiRequest(action));
 	}
 
 	private String executeGetRequest(HttpURLConnection conn) throws Exception {

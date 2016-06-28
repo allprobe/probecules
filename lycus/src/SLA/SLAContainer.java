@@ -82,33 +82,33 @@ public class SLAContainer implements ISLAContainer {
 			
 			for (String runnableProbeId : webSLA.keySet()) {
 				JSONObject jsonItem = new JSONObject();
-				jsonItem.put("runnable_probe_id", runnableProbeId);
-				jsonItem.put("timestamp", timeStamp);
-				jsonItem.put("type", Constants.hourly);
-				jsonItem.put("sla", webSLA.get(runnableProbeId).getResults());
+				jsonItem.put("RUNNABLE_PROBE_ID", runnableProbeId);
+				jsonItem.put("TIMESTAMP", timeStamp);
+				jsonItem.put("TYPE", Constants.hourly);
+				jsonItem.put("SLA", webSLA.get(runnableProbeId).getResults());
 
 				slaArray.add(jsonItem);
 			}
 			for (String runnableProbeId : pingSLA.keySet()) {
 				JSONObject jsonItem = new JSONObject();
-				jsonItem.put("runnable_probe_id", runnableProbeId);
-				jsonItem.put("timestamp", timeStamp);
-				jsonItem.put("type", Constants.hourly);
-				jsonItem.put("sla", pingSLA.get(runnableProbeId).getResults());
+				jsonItem.put("RUNNABLE_PROBE_ID", runnableProbeId);
+				jsonItem.put("TIMESTAMP", timeStamp);
+				jsonItem.put("TYPE", Constants.hourly);
+				jsonItem.put("SLA", pingSLA.get(runnableProbeId).getResults());
 
 				slaArray.add(jsonItem);
 			}
 			for (String runnableProbeId : portSLA.keySet()) {
 				JSONObject jsonItem = new JSONObject();
-				jsonItem.put("runnable_probe_id", runnableProbeId);
-				jsonItem.put("timestamp", timeStamp);
-				jsonItem.put("type", Constants.hourly);
-				jsonItem.put("sla", portSLA.get(runnableProbeId).getResults());
+				jsonItem.put("RUNNABLE_PROBE_ID", runnableProbeId);
+				jsonItem.put("TIMESTAMP", timeStamp);
+				jsonItem.put("TYPE", Constants.hourly);
+				jsonItem.put("SLA", portSLA.get(runnableProbeId).getResults());
 
 				slaArray.add(jsonItem);
 			}
 
-			returnJson.put("sla_results", slaArray);
+			returnJson.put("SLA_RESULTS", slaArray);
 			return returnJson;
 		} catch (Exception ex) {
 			Logit.LogError("SLAContainer - getHourlySLA()", "Building Json failed!");
@@ -123,33 +123,33 @@ public class SLAContainer implements ISLAContainer {
 
 			for (String runnableProbeId : webSLA.keySet()) {
 				JSONObject jsonItem = new JSONObject();
-				jsonItem.put("runnable_probe_id", runnableProbeId);
-				jsonItem.put("timestamp", webSLA.get(runnableProbeId));
-				jsonItem.put("type", Constants.daily);
-				jsonItem.put("sla", webSLA.get(runnableProbeId).getDailyResults());
+				jsonItem.put("RUNNABLE_PROBE_ID", runnableProbeId);
+				jsonItem.put("TIMESTAMP", webSLA.get(runnableProbeId));
+				jsonItem.put("TYPE", Constants.daily);
+				jsonItem.put("SLA", webSLA.get(runnableProbeId).getDailyResults());
 
 				slaArray.add(jsonItem);
 			}
 			for (String runnableProbeId : pingSLA.keySet()) {
 				JSONObject jsonItem = new JSONObject();
-				jsonItem.put("runnable_probe_id", runnableProbeId);
-				jsonItem.put("timestamp", webSLA.get(runnableProbeId));
-				jsonItem.put("type", Constants.daily);
-				jsonItem.put("sla", pingSLA.get(runnableProbeId).getDailyResults());
+				jsonItem.put("RUNNABLE_PROBE_ID", runnableProbeId);
+				jsonItem.put("TIMESTAMP", webSLA.get(runnableProbeId));
+				jsonItem.put("TYPE", Constants.daily);
+				jsonItem.put("SLA", pingSLA.get(runnableProbeId).getDailyResults());
 
 				slaArray.add(jsonItem);
 			}
 			for (String runnableProbeId : portSLA.keySet()) {
 				JSONObject jsonItem = new JSONObject();
-				jsonItem.put("runnable_probe_id", runnableProbeId);
-				jsonItem.put("timestamp", webSLA.get(runnableProbeId));
-				jsonItem.put("type", Constants.daily);
-				jsonItem.put("sla", pingSLA.get(runnableProbeId).getDailyResults());
+				jsonItem.put("RUNNABLE_PROBE_ID", runnableProbeId);
+				jsonItem.put("TIMESTAMP", webSLA.get(runnableProbeId));
+				jsonItem.put("TYPE", Constants.daily);
+				jsonItem.put("SLA", pingSLA.get(runnableProbeId).getDailyResults());
 
 				slaArray.add(jsonItem);
 			}
 
-			returnJson.put("sla_results", slaArray);
+			returnJson.put("SLA_RESULTS", slaArray);
 			return returnJson;
 		} catch (Exception ex) {
 			Logit.LogError("SLAContainer - getHourlySLA()", "Building Json failed!");

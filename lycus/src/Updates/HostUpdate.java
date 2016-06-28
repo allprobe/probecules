@@ -125,7 +125,7 @@ public class HostUpdate extends BaseUpdate {
 
 		snmpTemplates.put(Constants.snmpTemplates, snmpTemplatesArray);
 
-		JSONObject jsonObject = dal.put(ApiAction.GetSnmpTemplates, snmpTemplates);
+		JSONObject jsonObject = dal.put(ApiAction.GetSnmpTemplates, snmpTemplates, false);
 
 		JSONArray jsonArray = (JSONArray) jsonObject.get("snmp_templates");
 		UsersManager.addSnmpTemplates(jsonArray);

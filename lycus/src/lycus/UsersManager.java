@@ -341,7 +341,7 @@ public class UsersManager {
 				templateId.put(Constants.snmpTemplates, snmpTemplateIds);
 				
 				IDAL dal = DAL.getInstanece();
-				JSONObject jsonObject = dal.put(ApiAction.GetSnmpTemplates, templateId);
+				JSONObject jsonObject = dal.put(ApiAction.GetSnmpTemplates, templateId, false);
 				
 				UsersManager.addSnmpTemplates((JSONArray)jsonObject.get("snmp_templates"));
 //				UUID id = jsonObject.get("snmp_user_id");
