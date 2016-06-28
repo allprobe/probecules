@@ -34,6 +34,8 @@ public class SlaTask extends BaseTask {
 				if (DAL.getInstanece().put(Enums.ApiAction.PutSlaBatches, sendDailyJson) == null)
 					FailedRequestsHandler.getInstance()
 							.addRequest(new ApiRequest(Enums.ApiAction.PutSlaBatches, sendDailyJson));
+				
+				hourCount = 0;  //todo: check if the sla was sent first before celaring the count.
 			}
 		} catch (Throwable thrown) {
 			Logit.LogError("ResultsTask - run()", "Sending collected SLA to API failed!");
