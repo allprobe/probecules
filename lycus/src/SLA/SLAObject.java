@@ -7,23 +7,26 @@ public class SLAObject {
 	private double dailyCount;
 	
 	public SLAObject(){
-		count = 0;
-		dailyCount = 0;
-		setPercentage(100);
-		setDailyPercentage(100);
+		count = 1;
+		dailyCount = 1;
+		setPercentage(0);
+		setDailyPercentage(0);
 	}
 	
 	public boolean addResult(Boolean iaActive)
 	{
 		if (iaActive == null)
 			return false;
-		if ((iaActive && getPercentage() != 100) || !iaActive)
+		
+		if (iaActive)
 		{
-			setPercentage(getPercentage() + 1/count);
+			setPercentage((getPercentage() + 100) /count);
+			setDailyPercentage((getDailyPercentage() + 100) /count);
 		}
-		if ((iaActive && getDailyPercentage() != 100) || !iaActive)
+		else
 		{
-			setDailyPercentage(getDailyPercentage() + 1/dailyCount);
+			setPercentage(getPercentage() /count);
+			setDailyPercentage(getDailyPercentage() /count);
 		}
 		
 		count++;
@@ -49,7 +52,7 @@ public class SLAObject {
 	public double getResults()
 	{
 		double percentage = getPercentage();
-		count = 0;
+		count = 1;
 		setPercentage(100);
 		return percentage;
 	}
@@ -57,7 +60,7 @@ public class SLAObject {
 	public double getDailyResults()
 	{
 		double dailyPercentage = getDailyPercentage();
-		dailyCount = 0;
+		dailyCount = 1;
 		setDailyPercentage(100);
 		return dailyPercentage;
 	}
