@@ -131,8 +131,11 @@ public class NetResults implements INetResults {
 		JSONObject rawResults = Net.ExtendedWeber(probe.getUrl(), probe.getHttpRequestType(), probe.getAuthUsername(),
 				probe.getAuthPassword(), probe.getTimeout());
 		if (rawResults == null || rawResults.size() == 0)
+		{
+			Logit.LogError("", "RUnnableProbe:"+probe.getProbe_id()+" returns null!");
 			return null;
-
+		
+		}
 		long timestamp=fromHarTimeToEpoch((String)((JSONObject)((JSONArray)((JSONObject)rawResults.get("log")).get("pages")).get(0)).get("startedDateTime"));
 		
 		long responseTime = (long)((JSONObject)((JSONObject)((JSONArray)((JSONObject)rawResults.get("log")).get("pages")).get(0)).get("pageTimings")).get("onLoad");
