@@ -78,11 +78,12 @@ public class SLAContainer implements ISLAContainer {
 		JSONObject returnJson = new JSONObject();
 		try {
 			JSONArray slaArray = new JSONArray();
-
+			long timeStamp = System.currentTimeMillis();
+			
 			for (String runnableProbeId : webSLA.keySet()) {
 				JSONObject jsonItem = new JSONObject();
 				jsonItem.put("runnable_probe_id", runnableProbeId);
-				jsonItem.put("timestamp", webSLA.get(runnableProbeId));
+				jsonItem.put("timestamp", timeStamp);
 				jsonItem.put("type", Constants.hourly);
 				jsonItem.put("sla", webSLA.get(runnableProbeId).getResults());
 
@@ -91,7 +92,7 @@ public class SLAContainer implements ISLAContainer {
 			for (String runnableProbeId : pingSLA.keySet()) {
 				JSONObject jsonItem = new JSONObject();
 				jsonItem.put("runnable_probe_id", runnableProbeId);
-				jsonItem.put("timestamp", webSLA.get(runnableProbeId));
+				jsonItem.put("timestamp", timeStamp);
 				jsonItem.put("type", Constants.hourly);
 				jsonItem.put("sla", pingSLA.get(runnableProbeId).getResults());
 
@@ -100,9 +101,9 @@ public class SLAContainer implements ISLAContainer {
 			for (String runnableProbeId : portSLA.keySet()) {
 				JSONObject jsonItem = new JSONObject();
 				jsonItem.put("runnable_probe_id", runnableProbeId);
-				jsonItem.put("timestamp", webSLA.get(runnableProbeId));
+				jsonItem.put("timestamp", timeStamp);
 				jsonItem.put("type", Constants.hourly);
-				jsonItem.put("sla", pingSLA.get(runnableProbeId).getResults());
+				jsonItem.put("sla", portSLA.get(runnableProbeId).getResults());
 
 				slaArray.add(jsonItem);
 			}

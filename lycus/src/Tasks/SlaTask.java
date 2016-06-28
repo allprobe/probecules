@@ -13,7 +13,7 @@ import SLA.SLAContainer;
 import Utils.Logit;
 
 public class SlaTask extends BaseTask {
-	private long interval = 60;
+	private long interval = 3600;
 	private int hourCount = 0;
 
 	public void run() {
