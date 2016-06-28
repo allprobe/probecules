@@ -130,12 +130,12 @@ public class RunnableProbe implements Runnable {
 					result = getProbe().getResult(this.getHost());
 				} catch (Exception e) {
 					Logit.LogError("RunnableProbe - run()", "Error getting runnable probe results! "
-							+ this.getProbe().getName() + ", \nRunnabelProbeId: " + this.getId());
+							+ this.getProbe().getName() + ", \nRunnabelProbeId: " + this.getId(),e);
 					continue;
 				}
 
 				if (result == null) {
-					Logit.LogError("RunnableProbe - run()", "Error getting runnable probe results! "
+					Logit.LogError("RunnableProbe - run()", "Error getting runnable probe results! results are NULL! "
 							+ this.getProbe().getName() + ", \nRunnabelProbeId: " + this.getId());
 					continue;
 				}
