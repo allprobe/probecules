@@ -64,7 +64,7 @@ public class ResultsTask extends BaseTask {
 
 			if(FailedRequestsHandler.getInstance().getNumberOfFailedRequests()!=0)
 				FailedRequestsHandler.getInstance().executeRequests();
-			if(DAL.DAL.getInstanece().put(Enums.ApiAction.InsertDatapointsBatches,jsonToSend, false)==null)
+			if(DAL.DAL.getInstanece().put(Enums.ApiAction.InsertDatapointsBatches,jsonToSend)==null)
 				FailedRequestsHandler.getInstance().addRequest(new ApiRequest(Enums.ApiAction.InsertDatapointsBatches,jsonToSend));
 			
 			ResultsContainer.getInstance().clear();

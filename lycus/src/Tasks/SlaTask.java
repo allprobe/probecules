@@ -10,6 +10,7 @@ import DAL.FailedRequestsHandler;
 import GlobalConstants.Enums;
 import Interfaces.ISLAContainer;
 import SLA.SLAContainer;
+import Utils.GeneralFunctions;
 import Utils.Logit;
 
 public class SlaTask extends BaseTask {
@@ -22,8 +23,9 @@ public class SlaTask extends BaseTask {
 			
 			ISLAContainer slaContainer = SLAContainer.getInstance();
 			JSONObject sendJson = slaContainer.getHourlySLA();
-
-			if (DAL.getInstanece().put(Enums.ApiAction.PutSlaBatches, sendJson, true) == null)
+		
+			
+			if (DAL.getInstanece().put(Enums.ApiAction.PutSlaBatches, sendJson) == null)
 				FailedRequestsHandler.getInstance()
 						.addRequest(new ApiRequest(Enums.ApiAction.PutSlaBatches, sendJson));
 
@@ -31,7 +33,7 @@ public class SlaTask extends BaseTask {
 			{
 				JSONObject sendDailyJson = slaContainer.getDailySLA();
 
-				if (DAL.getInstanece().put(Enums.ApiAction.PutSlaBatches, sendDailyJson, true) == null)
+				if (DAL.getInstanece().put(Enums.ApiAction.PutSlaBatches, sendDailyJson) == null)
 					FailedRequestsHandler.getInstance()
 							.addRequest(new ApiRequest(Enums.ApiAction.PutSlaBatches, sendDailyJson));
 				

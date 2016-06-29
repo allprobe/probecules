@@ -42,7 +42,7 @@ public class ProbeUpdate extends BaseUpdate {
 				hostsArray.add(getUpdate().host_id);
 				hosts.put(Constants.hosts, hostsArray);
 
-				JSONObject jsonObject = dal.put(ApiAction.GetHosts, hosts, false);
+				JSONObject jsonObject = dal.put(ApiAction.GetHosts, hosts);
 				JSONArray jsonArray = (JSONArray) jsonObject.get("hosts");
 				UsersManager.addHostsForUpdate(jsonArray);
 				Logit.LogCheck("New host was created from server");

@@ -95,7 +95,7 @@ public class FailedRequestsHandler implements IFailedRequestsHandler {
 							"Unable to read failed api request file! E: " + e.getMessage());
 				}
 				if (DAL.getInstanece().put(ApiAction.valueOf(FilenameUtils.getExtension(failedRequestFile.getName())),
-						obj, false) != null)
+						obj) != null)
 					failedRequestFile.delete();
 				else
 					return;

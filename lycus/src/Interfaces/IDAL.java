@@ -6,5 +6,5 @@ import GlobalConstants.Enums;
 
 public interface IDAL {
 	JSONObject get(Enums.ApiAction action);
-	JSONObject put(Enums.ApiAction action, JSONObject reqBody, boolean isBase64Decode);
+	JSONObject put(Enums.ApiAction action, JSONObject reqBody);
 }

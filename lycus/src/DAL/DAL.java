@@ -10,6 +10,7 @@ import java.net.HttpURLConnection;
 import java.net.MalformedURLException;
 import java.net.ProtocolException;
 import java.net.URL;
+import java.util.Base64;
 import java.util.concurrent.ConcurrentLinkedQueue;
 
 import org.json.simple.JSONObject;
@@ -51,7 +52,7 @@ public class DAL implements IDAL {
 		case Constants.get:
 			return get(request.getAction());
 		case Constants.put:
-			return put(request.getAction(), request.getRequestBody(), false);
+			return put(request.getAction(), request.getRequestBody());
 		}
 		return null;
 	}
@@ -135,7 +136,7 @@ public class DAL implements IDAL {
 	}
 
 	@Override
-	public JSONObject put(ApiAction action, JSONObject reqBody, boolean isBase64Decode) {
+	public JSONObject put(ApiAction action, JSONObject reqBody) {
 		String fullUrl = getApiUrl();
 		fullUrl += "/" + action.name() + "/";
 		fullUrl += GlobalConfig.getDataCenterID() + "-" + GlobalConfig.getThisHostToken() + "/"
@@ -180,11 +181,7 @@ public class DAL implements IDAL {
 		String response;
 
 		try {
-			if (isBase64Decode) {
-				String base64String = GeneralFunctions.Base64Encode(reqBody.toJSONString());
-				response = executePutRequest(conn, base64String);
-			} else
-				response = executePutRequest(conn, reqBody.toJSONString());
+			response = executePutRequest(conn, reqBody.toJSONString());
 		} catch (Exception e) {
 			Logit.LogFatal("DAL - put", "Failed to request URL: " + fullUrl + ", E: " + e.getMessage(), e);
 			addPutFailedRequest(action, reqBody);
@@ -231,7 +228,7 @@ public class DAL implements IDAL {
 					failedRequests.remove();
 				break;
 			case Constants.put:
-				if (put(failedRequest.getAction(), failedRequest.getRequestBody(), false) != null)
+				if (put(failedRequest.getAction(), failedRequest.getRequestBody()) != null)
 					failedRequests.remove();
 			}
 		}

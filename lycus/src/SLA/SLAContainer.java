@@ -7,6 +7,7 @@ import Results.BaseResult;
 import Results.PingResult;
 import Results.PortResult;
 import Results.WebResult;
+import Utils.GeneralFunctions;
 import Utils.Logit;
 
 import org.json.simple.JSONObject;
@@ -108,7 +109,8 @@ public class SLAContainer implements ISLAContainer {
 				slaArray.add(jsonItem);
 			}
 
-			returnJson.put("SLA_RESULTS", slaArray);
+			String slaResults = GeneralFunctions.Base64Encode(slaArray.toJSONString());
+			returnJson.put("sla_results", slaResults);
 			return returnJson;
 		} catch (Exception ex) {
 			Logit.LogError("SLAContainer - getHourlySLA()", "Building Json failed!");
@@ -148,8 +150,9 @@ public class SLAContainer implements ISLAContainer {
 
 				slaArray.add(jsonItem);
 			}
-
-			returnJson.put("SLA_RESULTS", slaArray);
+			
+			String slaResults = GeneralFunctions.Base64Encode(slaArray.toJSONString());
+			returnJson.put("sla_results", slaResults);
 			return returnJson;
 		} catch (Exception ex) {
 			Logit.LogError("SLAContainer - getHourlySLA()", "Building Json failed!");

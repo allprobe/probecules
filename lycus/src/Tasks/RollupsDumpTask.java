@@ -57,7 +57,7 @@ public class RollupsDumpTask extends BaseTask {
 
 //		String sendString="{ \"last_rollups\" : \""+rollupsEncoded+"\" }";
 		String sendString=jsonObject.toString();
-		DAL.DAL.getInstanece().put(Enums.ApiAction.FlushServerMemory,jsonObject, false);
+		DAL.DAL.getInstanece().put(Enums.ApiAction.FlushServerMemory,jsonObject);
 //		ApiInterface.executeRequest(Enums.ApiAction.FlushServerMemory, "PUT", sendString);
 	}
 
