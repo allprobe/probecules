@@ -53,7 +53,7 @@ public class SLAObject {
 	{
 		double percentage = getPercentage();
 		count = 1;
-		setPercentage(100);
+		setPercentage(0);
 		return percentage;
 	}
 	
@@ -61,7 +61,7 @@ public class SLAObject {
 	{
 		double dailyPercentage = getDailyPercentage();
 		dailyCount = 1;
-		setDailyPercentage(100);
+		setDailyPercentage(0);
 		return dailyPercentage;
 	}
 }
