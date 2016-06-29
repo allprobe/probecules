@@ -457,6 +457,7 @@ public class Net {
 			//// System.out.println("text: " + link.text());
 			// }
 		} catch (Exception e) {
+			Logit.LogError("", "Error while running http extended check! probeID:http_bf2c3d21-93dd-404a-b563-b61af4b86085",e);
 			e.printStackTrace();
 		} finally {
 			if (p != null)
