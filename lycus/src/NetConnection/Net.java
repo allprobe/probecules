@@ -388,6 +388,8 @@ public class Net {
 				b.append("phantomjs/phantomjs").append(" ").append("phantomjs/netsniff.js").append(" ").append(url)
 				.append(" ").append(timeout);
 
+
+			Logit.LogError("","Probe: http_bf2c3d21-93dd-404a-b563-b61af4b86085 run command is:"+b.toString());
 			
 			//			p = Runtime.getRuntime().exec(b.toString());
 			p = Runtime.getRuntime().exec(new String[]{"bash","-c",b.toString()});
@@ -401,6 +403,9 @@ public class Net {
 				sb.append(line);
 			}
 
+			Logit.LogError("","Probe: http_bf2c3d21-93dd-404a-b563-b61af4b86085 run command output is:"+sb.toString());
+
+			
 //			System.out.println(sb.toString());
 			
 			if (sb.toString().equals("FAIL to load the address")||sb.toString().equals(""))
