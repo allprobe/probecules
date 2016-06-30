@@ -131,12 +131,9 @@ public class NetResults implements INetResults {
 		JSONObject rawResults = Net.ExtendedWeber(probe.getUrl(), probe.getHttpRequestType(), probe.getAuthUsername(),
 				probe.getAuthPassword(), probe.getTimeout());
 		if (rawResults == null || rawResults.size() == 0)
-		{
-			Logit.LogError("", "RUnnableProbe:"+probe.getProbe_id()+" returns null!");
 			return null;
-		
-		}
-		long timestamp=fromHarTimeToEpoch((String)((JSONObject)((JSONArray)((JSONObject)rawResults.get("log")).get("pages")).get(0)).get("startedDateTime"));
+
+		Long timestamp=fromHarTimeToEpoch((String)((JSONObject)((JSONArray)((JSONObject)rawResults.get("log")).get("pages")).get(0)).get("startedDateTime"));
 		
 		long responseTime = (long)((JSONObject)((JSONObject)((JSONArray)((JSONObject)rawResults.get("log")).get("pages")).get(0)).get("pageTimings")).get("onLoad");
 		int responseCode = ((Long)((JSONObject)((JSONObject)((JSONArray)((JSONObject)rawResults.get("log")).get("entries")).get(0)).get("response")).get("status")).intValue();
@@ -156,7 +153,7 @@ public class NetResults implements INetResults {
 		{
 			JSONObject elementJson=(JSONObject)allElementsJson.get(i);
 			String nameEncoded=GeneralFunctions.Base64Encode(((String)((JSONObject)elementJson.get("request")).get("url")));
-			long startTime=fromHarTimeToEpoch((String)elementJson.get("startedDateTime"));
+			Long startTime=fromHarTimeToEpoch((String)elementJson.get("startedDateTime"));
 			long time=(long)elementJson.get("time");
 			int responseStatusCode=((Long)((JSONObject)elementJson.get("response")).get("status")).intValue();
 			long size=(long)((JSONObject)elementJson.get("response")).get("bodySize");
@@ -169,7 +166,7 @@ public class NetResults implements INetResults {
 		return allElements;
 	}
 
-	private long fromHarTimeToEpoch(String dateHar) {
+	private Long fromHarTimeToEpoch(String dateHar) {
 		dateHar=dateHar.replace("T", " ");
 		dateHar=dateHar.replace("Z", "");
 		SimpleDateFormat harDateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss.SSS");
@@ -177,8 +174,8 @@ public class NetResults implements INetResults {
 		try {
 			date = harDateFormat.parse(dateHar);
 		} catch (ParseException e) {
-			// TODO Handle Date parse error!
-			e.printStackTrace();
+			Logit.LogError("NetResults - fromHarTimeToEpoch", "Unable to parse date for http extended probe!", e);
+			return null;
 		}
 	    long epoch = date.getTime();
 	    return epoch;

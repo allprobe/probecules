@@ -389,7 +389,6 @@ public class Net {
 				.append(" ").append(timeout);
 
 
-			Logit.LogError("","Probe: http_bf2c3d21-93dd-404a-b563-b61af4b86085 run command is:"+b.toString());
 			
 						p = Runtime.getRuntime().exec(b.toString());
 //			p = Runtime.getRuntime().exec(new String[]{"bash","-c",b.toString()});
@@ -403,15 +402,10 @@ public class Net {
 				sb.append(line);
 			}
 
-			Logit.LogError("","Probe: http_bf2c3d21-93dd-404a-b563-b61af4b86085 run command output is:"+sb.toString());
-
-			
-//			System.out.println(sb.toString());
 			
 			if (sb.toString().equals("FAIL to load the address")||sb.toString().equals(""))
 				return null;
 
-//			System.out.println(sb.toString());
 			
 			JSONObject harFile = (JSONObject) new JSONParser().parse(sb.toString());
 			return harFile;
@@ -457,8 +451,7 @@ public class Net {
 			//// System.out.println("text: " + link.text());
 			// }
 		} catch (Exception e) {
-			Logit.LogError("", "Error while running http extended check! probeID:http_bf2c3d21-93dd-404a-b563-b61af4b86085",e);
-			e.printStackTrace();
+			Logit.LogError("Net - ExtendedWeber", "Error while running http extended check! URL: "+url,e);
 		} finally {
 			if (p != null)
 				p.destroy();
