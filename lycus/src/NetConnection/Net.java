@@ -391,8 +391,8 @@ public class Net {
 
 			Logit.LogError("","Probe: http_bf2c3d21-93dd-404a-b563-b61af4b86085 run command is:"+b.toString());
 			
-			//			p = Runtime.getRuntime().exec(b.toString());
-			p = Runtime.getRuntime().exec(new String[]{"bash","-c",b.toString()});
+						p = Runtime.getRuntime().exec(b.toString());
+//			p = Runtime.getRuntime().exec(new String[]{"bash","-c",b.toString()});
 
 			BufferedReader stdInput = new BufferedReader(new InputStreamReader(p.getInputStream()));
 
