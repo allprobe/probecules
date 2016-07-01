@@ -173,8 +173,7 @@ public class WebResult extends BaseResult {
 		return result.toString();
 	}
 
-	// TODO: Oren ask ran what is true?
 	public Boolean isActive() {
-		return Arrays.asList(Constants.OkStatus).contains(statusCode);
+		return Constants.okStatus.contains(statusCode);
 	}
 }

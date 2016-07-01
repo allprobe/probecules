@@ -1,5 +1,9 @@
 package GlobalConstants;
 
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
+
 import org.snmp4j.smi.OID;
 
 public class Constants {
@@ -73,9 +77,9 @@ public class Constants {
 	public static final String or = "or";
 	public static final OID ifAll = new OID("1.3.6.1.2.1.2.2.1");
 	public static final OID storageAll = new OID("1.3.6.1.2.1.25.2.3.1");
-
+	 
 	public static final OID sysDescr = new OID("1.3.6.1.2.1.1.1.0");
-	public static final int[] OkStatus = new int[] {200, 301};
+	public static final List<Integer> okStatus = Arrays.asList(200, 301, 303);
 	public static final int pingPacketLostMin = 80;
 	public static final int slaInterval = 3600;
 	

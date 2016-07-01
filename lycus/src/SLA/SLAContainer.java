@@ -45,32 +45,29 @@ public class SLAContainer implements ISLAContainer {
 			if (slaObject == null)
 			{
 				slaObject = new SLAObject();
-				portSLA.put(result.getRunnableProbeId(), slaObject);
 			}
 			slaObject.addResult(((PortResult) result).isActive());
+			portSLA.put(result.getRunnableProbeId(), slaObject);
 			
 		} else if (result instanceof PingResult) {
 			SLAObject slaObject = pingSLA.get(result.getRunnableProbeId());
 			if (slaObject == null)
 			{
 				slaObject = new SLAObject();
-				pingSLA.put(result.getRunnableProbeId(), slaObject);
 			}
 			slaObject.addResult(((PingResult) result).isActive());
+			pingSLA.put(result.getRunnableProbeId(), slaObject);
 			
 		} else if (result instanceof WebResult) {
 			SLAObject slaObject = webSLA.get(result.getRunnableProbeId());
 			if (slaObject == null)
 			{
 				slaObject = new SLAObject();
-				webSLA.put(result.getRunnableProbeId(), slaObject);
 			}
-				
 
 			slaObject.addResult(((WebResult) result).isActive());
+			webSLA.put(result.getRunnableProbeId(), slaObject);
 		}
-		
-		
 
 		return true;
 	}
