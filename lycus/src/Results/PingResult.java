@@ -149,6 +149,6 @@ public class PingResult extends BaseResult {
 
 	// TODO: Oren ask ran what is true?
 	public Boolean isActive() {
-		return packetLoss > Constants.pingPacketLostMin;
+		return packetLoss < Constants.pingPacketLostMin;
 	}
 }
