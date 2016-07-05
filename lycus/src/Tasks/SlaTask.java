@@ -21,7 +21,6 @@ public class SlaTask extends BaseTask {
 			
 			ISLAContainer slaContainer = SLAContainer.getInstance();
 			JSONObject sendJson = slaContainer.getHourlySLA();
-		
 			
 			if (DAL.getInstanece().put(Enums.ApiAction.PutSlaBatches, sendJson) == null)
 				FailedRequestsHandler.getInstance()
