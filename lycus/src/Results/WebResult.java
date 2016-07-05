@@ -174,6 +174,7 @@ public class WebResult extends BaseResult {
 	}
 
 	public Boolean isActive() {
-		return Constants.okStatus.contains(statusCode);
+		return statusCode < 400;
+//		return Constants.okStatus.contains(statusCode);
 	}
 }
