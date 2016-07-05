@@ -6,11 +6,11 @@ package Probes;
 
 import java.util.UUID;
 
+import GlobalConstants.Constants;
 import Model.UpdateModel;
 import Model.UpdateValueModel;
 import lycus.Host;
 import NetConnection.NetResults;
-import Results.WebExtendedResult;
 import Results.WebResult;
 import Utils.GeneralFunctions;
 import Utils.Logit;
@@ -220,6 +220,12 @@ public class HttpProbe extends BaseProbe {
 		if (GeneralFunctions.isChanged(getTimeout(), updateValue.key.timeout)) {
 			this.setTimeout(updateValue.key.timeout);
 			Logit.LogCheck("Timeout for " + getName() + " has changed to " + updateValue.key.timeout);
+		}
+		if (updateValue.key.http_deep != null && isDeepCheck() != updateValue.key.http_deep.equals(Constants._true))
+		{
+			boolean isDeepCheck = updateValue.key.http_deep.equals(Constants._true);
+			setDeepCheck(isDeepCheck);
+			Logit.LogCheck("Deep check for " + getName() +  " Is " + isDeepCheck + " Update_id: " + updateModel.update_id + ", probe_id: " + updateModel.probe_id);
 		}
 
 		return true;

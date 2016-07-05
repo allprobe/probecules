@@ -15,6 +15,7 @@ public class KeyUpdateModel {
 	public String http_method;
 	public String http_auth_password;
 	public String urls;
+	public String http_deep;
 	
 	public Integer port;
 	public String proto;
