@@ -133,52 +133,79 @@ public class NetResults implements INetResults {
 		if (rawResults == null || rawResults.size() == 0)
 			return null;
 
-		Long timestamp=fromHarTimeToEpoch((String)((JSONObject)((JSONArray)((JSONObject)rawResults.get("log")).get("pages")).get(0)).get("startedDateTime"));
-		
-		long responseTime = (long)((JSONObject)((JSONObject)((JSONArray)((JSONObject)rawResults.get("log")).get("pages")).get(0)).get("pageTimings")).get("onLoad");
-		int responseCode = ((Long)((JSONObject)((JSONObject)((JSONArray)((JSONObject)rawResults.get("log")).get("entries")).get(0)).get("response")).get("status")).intValue();
-		long responseSize = (long)((JSONObject)((JSONObject)((JSONArray)((JSONObject)rawResults.get("log")).get("entries")).get(0)).get("response")).get("bodySize");
-		
-		ArrayList<DOMElement> allElements=convertDOMElementsResult(((JSONArray)((JSONObject)rawResults.get("log")).get("entries")));
-		
-		WebExtendedResult result=new WebExtendedResult(getRunnableProbeId(probe, host),timestamp,responseTime,responseCode,responseSize);
+		Long timestamp = fromHarTimeToEpoch(
+				(String) ((JSONObject) ((JSONArray) ((JSONObject) rawResults.get("log")).get("pages")).get(0))
+						.get("startedDateTime"));
+
+		long responseTime = (long) ((JSONObject) ((JSONObject) ((JSONArray) ((JSONObject) rawResults.get("log"))
+				.get("pages")).get(0)).get("pageTimings")).get("onLoad");
+		int responseCode = ((Long) ((JSONObject) ((JSONObject) ((JSONArray) ((JSONObject) rawResults.get("log"))
+				.get("entries")).get(0)).get("response")).get("status")).intValue();
+		long responseSize = (long) ((JSONObject) ((JSONObject) ((JSONArray) ((JSONObject) rawResults.get("log"))
+				.get("entries")).get(0)).get("response")).get("bodySize");
+
+		ArrayList<DOMElement> allElements = convertDOMElementsResult(
+				((JSONArray) ((JSONObject) rawResults.get("log")).get("entries")));
+
+		WebExtendedResult result = new WebExtendedResult(getRunnableProbeId(probe, host), timestamp, responseTime,
+				responseCode, responseSize);
 		result.setAllElementsResults(allElements);
-		
+
 		return result;
 	}
-	
+
 	private ArrayList<DOMElement> convertDOMElementsResult(JSONArray allElementsJson) {
-		ArrayList<DOMElement> allElements=new ArrayList<DOMElement>();
-		for(int i=0;i<allElementsJson.size();i++)
-		{
-			JSONObject elementJson=(JSONObject)allElementsJson.get(i);
-			String nameEncoded=GeneralFunctions.Base64Encode(((String)((JSONObject)elementJson.get("request")).get("url")));
-			Long startTime=fromHarTimeToEpoch((String)elementJson.get("startedDateTime"));
-			long time=(long)elementJson.get("time");
-			int responseStatusCode=((Long)((JSONObject)elementJson.get("response")).get("status")).intValue();
-			long size=(long)((JSONObject)elementJson.get("response")).get("bodySize");
-			long waitTime=((long)((JSONObject)elementJson.get("timings")).get("wait"));
-			long dnsTime=time-waitTime;
-			String mimeType=(String)((JSONObject)((JSONObject)elementJson.get("response")).get("content")).get("mimeType");
-			DOMElement element=new DOMElement(nameEncoded,startTime, time,dnsTime, responseStatusCode, size, mimeType);
+		ArrayList<DOMElement> allElements = new ArrayList<DOMElement>();
+		for (int i = 0; i < allElementsJson.size(); i++) {
+			JSONObject elementJson = null;
+			String nameEncoded = null;
+			Long startTime = null;
+			Long time = null;
+			Integer responseStatusCode = null;
+			Long size = null;
+			Long waitTime = null;
+			Long dnsTime = null;
+			String mimeType = null;
+			try {
+				elementJson = (JSONObject) allElementsJson.get(i);
+				nameEncoded = GeneralFunctions
+						.Base64Encode(((String) ((JSONObject) elementJson.get("request")).get("url")));
+				startTime = fromHarTimeToEpoch((String) elementJson.get("startedDateTime"));
+				time = (long) elementJson.get("time");
+				if (((JSONObject) elementJson.get("response")).get("status") == null)
+					responseStatusCode = 400;
+				else
+					responseStatusCode = ((Long) ((JSONObject) elementJson.get("response")).get("status")).intValue();
+				size = (long) ((JSONObject) elementJson.get("response")).get("bodySize");
+				waitTime = ((long) ((JSONObject) elementJson.get("timings")).get("wait"));
+				dnsTime = time - waitTime;
+				mimeType = (String) ((JSONObject) ((JSONObject) elementJson.get("response")).get("content"))
+						.get("mimeType");
+			} catch (Exception e) {
+				Logit.LogError("NetResults - convertDOMElementsResult",
+						"Unable to process one of http extended check website's element! " + elementJson, e);
+				continue;
+			}
+			DOMElement element = new DOMElement(nameEncoded, startTime, time, dnsTime, responseStatusCode, size,
+					mimeType);
 			allElements.add(element);
 		}
 		return allElements;
 	}
 
 	private Long fromHarTimeToEpoch(String dateHar) {
-		dateHar=dateHar.replace("T", " ");
-		dateHar=dateHar.replace("Z", "");
+		dateHar = dateHar.replace("T", " ");
+		dateHar = dateHar.replace("Z", "");
 		SimpleDateFormat harDateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss.SSS");
-	    Date date=null;
+		Date date = null;
 		try {
 			date = harDateFormat.parse(dateHar);
 		} catch (ParseException e) {
 			Logit.LogError("NetResults - fromHarTimeToEpoch", "Unable to parse date for http extended probe!", e);
 			return null;
 		}
-	    long epoch = date.getTime();
-	    return epoch;
+		long epoch = date.getTime();
+		return epoch;
 	}
 
 	@Override
@@ -219,15 +246,13 @@ public class NetResults implements INetResults {
 					snmpTemplate.getCryptPass(), snmpTemplate.getCryptType(), probesOids.values());
 			break;
 		}
-		if (rawResults == null || rawResults.size() == 0)
-		{
-			for (SnmpProbe snmpProbe : snmpProbes)
-			{
-				SnmpResult snmpResult = new SnmpResult(getRunnableProbeId(snmpProbe, host),timestamp);
+		if (rawResults == null || rawResults.size() == 0) {
+			for (SnmpProbe snmpProbe : snmpProbes) {
+				SnmpResult snmpResult = new SnmpResult(getRunnableProbeId(snmpProbe, host), timestamp);
 				snmpResult.setError(SnmpError.NO_COMUNICATION);
 				allResults.add(snmpResult);
 			}
-			
+
 			return allResults;
 		}
 
@@ -312,11 +337,10 @@ public class NetResults implements INetResults {
 
 		String walkOid;
 
-		if(host.getHostIp().contains("192.168.0.121"))
-		{
+		if (host.getHostIp().contains("192.168.0.121")) {
 			Logit.LogDebug("test");
 		}
-		
+
 		long timestamp = System.currentTimeMillis();
 		HashMap<String, BaseElement> elements = null;
 		switch (probe.getType()) {
@@ -475,7 +499,7 @@ public class NetResults implements INetResults {
 			// Long.parseLong(disksWalk.get("1.3.6.1.2.1.25.2.3.1.1.6." +
 			// index));
 
-			DiskElement diskElement = new DiskElement(index, name,false);
+			DiskElement diskElement = new DiskElement(index, name, false);
 			lastElements.put(name, diskElement);
 		}
 
