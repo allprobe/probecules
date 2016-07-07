@@ -1,67 +1,75 @@
 package SLA;
 
 public class SLAObject {
-	private long count;
-	private double percentage;
-	private double dailyPercentage;
-	private double dailyCount;
+	private int count;
+	private int sum;
+	private int dailySum;
+	private int dailyCount;
 	
 	public SLAObject(){
-		count = 1;
-		dailyCount = 1;
-		setPercentage(0);
-		setDailyPercentage(0);
+		count = 0;
+		dailyCount = 0;
+		setSum(0);
+		setDailySum(0);
 	}
 	
-	public boolean addResult(Boolean iaActive)
+	public boolean addResult(Boolean isActive)
 	{
-		if (iaActive == null)
+		if (isActive == null)
 			return false;
 		
-		if (iaActive)
+		if (isActive)
 		{
-			setPercentage((getPercentage() + 100) /count);
-			setDailyPercentage((getDailyPercentage() + 100) /count);
+			setSum((getSum() + 100));
+			setDailySum((getDailySum() + 100));
 		}
 		else
 		{
-			setPercentage(getPercentage() /count);
-			setDailyPercentage(getDailyPercentage() /count);
+			setSum(getSum());
+			setDailySum(getDailySum());
 		}
 		
 		count++;
 		return true;
 	}
 
-	private double getPercentage() {
-		return percentage;
+	private int getSum() {
+		return sum;
 	}
 
-	private void setPercentage(double percentage) {
-		this.percentage = percentage;
+	private void setSum(int percentage) {
+		this.sum = percentage;
 	}
 
-	private double getDailyPercentage() {
-		return dailyPercentage;
+	private int getDailySum() {
+		return dailySum;
 	}
 
-	private void setDailyPercentage(double dailyPercentage) {
-		this.dailyPercentage = dailyPercentage;
+	private void setDailySum(int dailyPercentage) {
+		this.dailySum = dailyPercentage;
 	}
 	
+	private double getDailyPercentage() {
+		return dailySum / dailyCount;
+	}
+	
+	private double getPecentage() {
+		return sum / count;
+	}
+
 	public double getResults()
 	{
-		double percentage = getPercentage();
-		count = 1;
-		setPercentage(0);
+		double percentage = getPecentage();
+		count = 0;
+		setSum(0);
 		return percentage;
 	}
 	
 	public double getDailyResults()
 	{
 		double dailyPercentage = getDailyPercentage();
-		dailyCount = 1;
-		setDailyPercentage(0);
+		dailyCount = 0;
+		setDailySum(0);
 		return dailyPercentage;
 	}
 }
