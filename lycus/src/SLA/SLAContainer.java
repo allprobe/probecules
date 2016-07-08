@@ -83,7 +83,7 @@ public class SLAContainer implements ISLAContainer {
 				jsonItem.put("RUNNABLE_PROBE_ID", runnableProbeId);
 				jsonItem.put("TIMESTAMP", timeStamp);
 				jsonItem.put("TYPE", Constants.hourly);
-				jsonItem.put("SLA", webSLA.get(runnableProbeId).getResults() * 100);
+				jsonItem.put("SLA", webSLA.get(runnableProbeId).getResults());
 
 				slaArray.add(jsonItem);
 			}
@@ -92,7 +92,7 @@ public class SLAContainer implements ISLAContainer {
 				jsonItem.put("RUNNABLE_PROBE_ID", runnableProbeId);
 				jsonItem.put("TIMESTAMP", timeStamp);
 				jsonItem.put("TYPE", Constants.hourly);
-				jsonItem.put("SLA", pingSLA.get(runnableProbeId).getResults() * 100);
+				jsonItem.put("SLA", pingSLA.get(runnableProbeId).getResults());
 
 				slaArray.add(jsonItem);
 			}
@@ -101,7 +101,7 @@ public class SLAContainer implements ISLAContainer {
 				jsonItem.put("RUNNABLE_PROBE_ID", runnableProbeId);
 				jsonItem.put("TIMESTAMP", timeStamp);
 				jsonItem.put("TYPE", Constants.hourly);
-				jsonItem.put("SLA", portSLA.get(runnableProbeId).getResults() * 100);
+				jsonItem.put("SLA", portSLA.get(runnableProbeId).getResults());
 
 				slaArray.add(jsonItem);
 			}
@@ -125,7 +125,7 @@ public class SLAContainer implements ISLAContainer {
 				jsonItem.put("RUNNABLE_PROBE_ID", runnableProbeId);
 				jsonItem.put("TIMESTAMP", webSLA.get(runnableProbeId));
 				jsonItem.put("TYPE", Constants.daily);
-				jsonItem.put("SLA", webSLA.get(runnableProbeId).getDailyResults() * 100);
+				jsonItem.put("SLA", webSLA.get(runnableProbeId).getDailyResults());
 
 				slaArray.add(jsonItem);
 			}
@@ -134,7 +134,7 @@ public class SLAContainer implements ISLAContainer {
 				jsonItem.put("RUNNABLE_PROBE_ID", runnableProbeId);
 				jsonItem.put("TIMESTAMP", webSLA.get(runnableProbeId));
 				jsonItem.put("TYPE", Constants.daily);
-				jsonItem.put("SLA", pingSLA.get(runnableProbeId).getDailyResults() * 100);
+				jsonItem.put("SLA", pingSLA.get(runnableProbeId).getDailyResults());
 
 				slaArray.add(jsonItem);
 			}
@@ -143,7 +143,7 @@ public class SLAContainer implements ISLAContainer {
 				jsonItem.put("RUNNABLE_PROBE_ID", runnableProbeId);
 				jsonItem.put("TIMESTAMP", webSLA.get(runnableProbeId));
 				jsonItem.put("TYPE", Constants.daily);
-				jsonItem.put("SLA", pingSLA.get(runnableProbeId).getDailyResults() * 100);
+				jsonItem.put("SLA", pingSLA.get(runnableProbeId).getDailyResults());
 
 				slaArray.add(jsonItem);
 			}

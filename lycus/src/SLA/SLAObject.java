@@ -5,31 +5,24 @@ public class SLAObject {
 	private int sum;
 	private int dailySum;
 	private int dailyCount;
-	
-	public SLAObject(){
+
+	public SLAObject() {
 		count = 0;
 		dailyCount = 0;
 		setSum(0);
 		setDailySum(0);
 	}
-	
-	public boolean addResult(Boolean isActive)
-	{
+
+	public boolean addResult(Boolean isActive) {
 		if (isActive == null)
 			return false;
-		
-		if (isActive)
-		{
+
+		if (isActive) {
 			setSum((getSum() + 100));
-			setDailySum((getDailySum() + 100));
 		}
-		else
-		{
-			setSum(getSum());
-			setDailySum(getDailySum());
-		}
-		
+
 		count++;
+
 		return true;
 	}
 
@@ -41,32 +34,28 @@ public class SLAObject {
 		this.sum = percentage;
 	}
 
-	private int getDailySum() {
-		return dailySum;
+	private void setDailySum(int dailySum) {
+		this.dailySum = dailySum;
 	}
 
-	private void setDailySum(int dailyPercentage) {
-		this.dailySum = dailyPercentage;
-	}
-	
 	private double getDailyPercentage() {
 		return dailySum / dailyCount;
 	}
-	
+
 	private double getPecentage() {
 		return sum / count;
 	}
 
-	public double getResults()
-	{
+	public double getResults() {
+		setDailySum(getSum());
+		dailyCount += count;
 		double percentage = getPecentage();
 		count = 0;
 		setSum(0);
 		return percentage;
 	}
-	
-	public double getDailyResults()
-	{
+
+	public double getDailyResults() {
 		double dailyPercentage = getDailyPercentage();
 		dailyCount = 0;
 		setDailySum(0);
