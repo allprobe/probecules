@@ -381,17 +381,16 @@ public class Net {
 		try {
 
 			StringBuilder b = new StringBuilder();
-			if(user!=null&&pass!=null)
-			b.append("lycus/phantomjs/phantomjs").append(" ").append("lycus/phantomjs/netsniff_auth.js").append(" ").append(url)
-					.append(" ").append(user).append(" ").append(pass).append(" ").append(timeout);
+			if (user != null && pass != null)
+				b.append("lycus/phantomjs/phantomjs").append(" ").append("lycus/phantomjs/netsniff_auth.js").append(" ")
+						.append(url).append(" ").append(user).append(" ").append(pass).append(" ").append(timeout);
 			else
-				b.append("lycus/phantomjs/phantomjs").append(" ").append("lycus/phantomjs/netsniff.js").append(" ").append(url)
-				.append(" ").append(timeout);
+				b.append("lycus/phantomjs/phantomjs").append(" ").append("lycus/phantomjs/netsniff.js").append(" ")
+						.append(url).append(" ").append(timeout);
 
-
-			
-						p = Runtime.getRuntime().exec(b.toString());
-//			p = Runtime.getRuntime().exec(new String[]{"bash","-c",b.toString()});
+			p = Runtime.getRuntime().exec(b.toString());
+			// p = Runtime.getRuntime().exec(new
+			// String[]{"bash","-c",b.toString()});
 
 			BufferedReader stdInput = new BufferedReader(new InputStreamReader(p.getInputStream()));
 
@@ -402,11 +401,9 @@ public class Net {
 				sb.append(line);
 			}
 
-			
-			if (sb.toString().equals("FAIL to load the address")||sb.toString().equals(""))
+			if (sb.toString().equals("FAIL to load the address") || sb.toString().equals(""))
 				return null;
 
-			
 			JSONObject harFile = (JSONObject) new JSONParser().parse(sb.toString());
 			return harFile;
 			// WebClient webClient = new WebClient(BrowserVersion.CHROME);
@@ -451,7 +448,7 @@ public class Net {
 			//// System.out.println("text: " + link.text());
 			// }
 		} catch (Exception e) {
-			Logit.LogError("Net - ExtendedWeber", "Error while running http extended check! URL: "+url,e);
+			Logit.LogError("Net - ExtendedWeber", "Error while running http extended check! URL: " + url, e);
 		} finally {
 			if (p != null)
 				p.destroy();

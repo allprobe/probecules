@@ -63,10 +63,10 @@ public class RollupsContainer implements IRollupsContainer {
 
 	@Override
 	public boolean addResult(BaseResult result) {
-		
-		if(result.getRunnableProbeId().contains("discovery_d3c95875-4947-4388-989f-64ffd863c704@dmVuZXQw"))
+
+		if (result.getRunnableProbeId().contains("discovery_d3c95875-4947-4388-989f-64ffd863c704@dmVuZXQw"))
 			Logit.LogDebug("BREAKPOINT");
-		
+
 		if (result instanceof PingResult) {
 			addPingerResult(result);
 		} else if (result instanceof PortResult) {
@@ -77,10 +77,9 @@ public class RollupsContainer implements IRollupsContainer {
 			addSnmpResult(result);
 		} else if (result instanceof NicResult) {
 			addNicResult(result);
+		} else if (result instanceof DiskResult) {
+			addDiskResult(result);
 		}
-		 else if (result instanceof DiskResult) {
-				addDiskResult(result);
-			}
 		return false;
 	}
 
@@ -128,7 +127,7 @@ public class RollupsContainer implements IRollupsContainer {
 			return finishedRollups.toString();
 		} catch (Exception e) {
 			Logit.LogFatal("RollupsContainer - getAllFinsihedRollups()",
-					"Error getting finished rollups from rollupsContainer! E: " + e.getMessage(),e);
+					"Error getting finished rollups from rollupsContainer! E: " + e.getMessage(), e);
 			return null;
 		}
 	}
@@ -147,8 +146,8 @@ public class RollupsContainer implements IRollupsContainer {
 		rollups.put("diskSizeDataRollups", JsonUtil.ToJson(diskSizeDataRollups));
 		rollups.put("diskUsedDataRollups", JsonUtil.ToJson(diskUsedDataRollups));
 
-		if (rollups.toString().contains(
-				"788b1b9e-d753-4dfa-ac46-61c4374eeb84@inner_7be55137-c5d8-438e-bca7-325f56656071"))
+		if (rollups.toString()
+				.contains("788b1b9e-d753-4dfa-ac46-61c4374eeb84@inner_7be55137-c5d8-438e-bca7-325f56656071"))
 			Logit.LogDebug("BREAKPOINT");
 
 		return rollups.toString();
@@ -182,10 +181,9 @@ public class RollupsContainer implements IRollupsContainer {
 			return;
 
 		String rpStr = finishedDataRollup1.getRunnableProbeId();
-		if (rpStr.contains(
-				"discovery_d3c95875-4947-4388-989f-64ffd863c704"))
+		if (rpStr.contains("discovery_d3c95875-4947-4388-989f-64ffd863c704"))
 			Logit.LogDebug("BREAKPOINT");
-		
+
 		addFinishedRollup(finishedDataRollup1, finishedDataRollup2);
 		rolups1[i] = null;
 		rolups2[i] = null;
@@ -341,7 +339,7 @@ public class RollupsContainer implements IRollupsContainer {
 
 			}
 			Logit.LogDebug("BREAKPOINT");
-			if(nicResults.getInBW()==null||nicResults.getOutBW()==null)
+			if (nicResults.getInBW() == null || nicResults.getOutBW() == null)
 				continue;
 			nicInRollup.add(nicResults.getLastTimestamp(), nicResults.getInBW());
 			nicOutRollup.add(nicResults.getLastTimestamp(), nicResults.getOutBW());
@@ -375,14 +373,14 @@ public class RollupsContainer implements IRollupsContainer {
 
 			}
 			Logit.LogDebug("BREAKPOINT");
-			if(diskResults.getHrStorageSize()==null||diskResults.getHrStorageUsed()==null)
+			if (diskResults.getHrStorageSize() == null || diskResults.getHrStorageUsed() == null)
 				continue;
 			diskSizeRollup.add(diskResults.getLastTimestamp(), diskResults.getHrStorageSize());
 			diskUsedRollup.add(diskResults.getLastTimestamp(), diskResults.getHrStorageUsed());
 
 		}
 	}
-	
+
 	private void addWeberResult(BaseResult result) {
 		WebResult weberResults = (WebResult) result;
 		DataPointsRollup[] responseTimeRollups = webResponseTimeRollups.get(result.getRunnableProbeId());
@@ -425,7 +423,7 @@ public class RollupsContainer implements IRollupsContainer {
 
 		}
 		for (int i = 0; i < result.getNumberOfRollupTables(); i++) {
-			DataPointsRollup packetLostRollup =  packetLossRollups.get(result.getRunnableProbeId())[i];
+			DataPointsRollup packetLostRollup = packetLossRollups.get(result.getRunnableProbeId())[i];
 			DataPointsRollup rttRollup = rttRollups.get(result.getRunnableProbeId())[i];
 
 			if (packetLostRollup == null || rttRollup == null) {
@@ -495,14 +493,14 @@ public class RollupsContainer implements IRollupsContainer {
 		HashMap<String, DataPointsRollup[]> webResponseTimeRollupsFromDump;
 		HashMap<String, DataPointsRollup[]> snmpDataRollupsFromDump;
 		try {
-			Type rollupsMapType = new TypeToken<HashMap<String, DataPointsRollup[]>>() {}.getType();
-			
-			packetLossRollupsFromDump =JsonUtil.ToObject(pakcketLossRollupsJson, rollupsMapType);
-			rttRollupsFromDump =JsonUtil.ToObject(rttRollupsJson, rollupsMapType);
-			portResponseTimeRollupsFromDump =JsonUtil.ToObject(portResponseTimeRollupsJson, rollupsMapType);
-			webResponseTimeRollupsFromDump =JsonUtil.ToObject(webResponseTimeRollupsJson, rollupsMapType);
-			snmpDataRollupsFromDump =JsonUtil.ToObject(snmpDataRollupsJson, rollupsMapType);
+			Type rollupsMapType = new TypeToken<HashMap<String, DataPointsRollup[]>>() {
+			}.getType();
 
+			packetLossRollupsFromDump = JsonUtil.ToObject(pakcketLossRollupsJson, rollupsMapType);
+			rttRollupsFromDump = JsonUtil.ToObject(rttRollupsJson, rollupsMapType);
+			portResponseTimeRollupsFromDump = JsonUtil.ToObject(portResponseTimeRollupsJson, rollupsMapType);
+			webResponseTimeRollupsFromDump = JsonUtil.ToObject(webResponseTimeRollupsJson, rollupsMapType);
+			snmpDataRollupsFromDump = JsonUtil.ToObject(snmpDataRollupsJson, rollupsMapType);
 
 		} catch (Exception e) {
 			Logit.LogError("RollupsContainer - mergeExistingRollupsFromMemDump",
@@ -527,13 +525,13 @@ public class RollupsContainer implements IRollupsContainer {
 			if (runnableProbeIdRollups.getKey()
 					.contains("788b1b9e-d753-4dfa-ac46-61c4374eeb84@inner_7be55137-c5d8-438e-bca7-325f56656071")) {
 				Logit.LogDebug("BREAKPOINT");
-			}DataPointsRollup dumpRollups[]=new DataPointsRollup[6];DataPointsRollup[] existingRollups=new DataPointsRollup[6];
-			try{
-				 dumpRollups = runnableProbeIdRollups.getValue();
-				existingRollups = currentRollups.get(runnableProbeIdRollups.getKey());
 			}
-			catch(Exception e)
-			{
+			DataPointsRollup dumpRollups[] = new DataPointsRollup[6];
+			DataPointsRollup[] existingRollups = new DataPointsRollup[6];
+			try {
+				dumpRollups = runnableProbeIdRollups.getValue();
+				existingRollups = currentRollups.get(runnableProbeIdRollups.getKey());
+			} catch (Exception e) {
 				Logit.LogDebug("BREAKPOINT");
 				continue;
 			}

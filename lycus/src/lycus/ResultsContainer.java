@@ -24,7 +24,7 @@ public class ResultsContainer implements IResultsContainer {
 	private static ResultsContainer instance;
 	private List<BaseResult> results;
 	private ConcurrentHashMap<String, ConcurrentHashMap<String, Event>> events; // HashMap<runnableProbeId,
-//	private SLAContainer slaContainer;
+	// private SLAContainer slaContainer;
 
 	private Object lockResults = new Object();
 	private Object lockEvents = new Object();
@@ -76,7 +76,7 @@ public class ResultsContainer implements IResultsContainer {
 
 	private void eventsClear() {
 		for (Map.Entry<String, ConcurrentHashMap<String, Event>> runnableProbeEvents : events.entrySet()) {
-//			String runnableProbeId = runnableProbeEvents.getKey();
+			// String runnableProbeId = runnableProbeEvents.getKey();
 			for (Map.Entry<String, Event> triggerEvent : runnableProbeEvents.getValue().entrySet()) {
 				String triggerId = triggerEvent.getKey();
 				Event event = triggerEvent.getValue();
@@ -191,24 +191,29 @@ public class ResultsContainer implements IResultsContainer {
 	@Override
 	public boolean addResult(BaseResult result) {
 
-		if (result.getRunnableProbeId().equals("8b0104e7-5902-4419-933f-668582fc3acd@6975cb58-8aa4-4ecd-b9fc-47b78c0d7af8@snmp_5d937636-eb75-4165-b339-38a729aa2b7d"))
+		if (result.getRunnableProbeId().equals(
+				"8b0104e7-5902-4419-933f-668582fc3acd@6975cb58-8aa4-4ecd-b9fc-47b78c0d7af8@snmp_5d937636-eb75-4165-b339-38a729aa2b7d"))
 			Logit.LogDebug("BREAKPOINT");
 
-		if (result instanceof DiscoveryResult) {
-			DiscoveryResult discoveryResult = (DiscoveryResult) result;
-			switch (discoveryResult.getElementsType()) {
-			case bw:
-				if (!ElementsContainer.getInstance().isNicElementsChanged(discoveryResult)) {
-				return true;
-				}
-				break;
-			case ds:
-				if (!ElementsContainer.getInstance().isDiskElementsChanged(discoveryResult)) {
-					return true;
-				}
-				break;
-			}
-		}
+		// if (result instanceof DiscoveryResult) {
+		// DiscoveryResult discoveryResult = (DiscoveryResult) result;
+		// switch (discoveryResult.getElementsType()) {
+		// case bw:
+		// if
+		// (!ElementsContainer.getInstance().isNicElementsChanged(discoveryResult))
+		// {
+		// return true;
+		// }
+		// break;
+		// case ds:
+		// if
+		// (!ElementsContainer.getInstance().isDiskElementsChanged(discoveryResult))
+		// {
+		// return true;
+		// }
+		// break;
+		// }
+		// }
 
 		synchronized (lockResults) {
 			results.add(result);
@@ -235,7 +240,8 @@ public class ResultsContainer implements IResultsContainer {
 			for (int i = 0; i < results.size(); i++) {
 
 				String rpStr = results.get(i).getRunnableProbeId();
-				if (rpStr.contains("8b0104e7-5902-4419-933f-668582fc3acd@6975cb58-8aa4-4ecd-b9fc-47b78c0d7af8@snmp_5d937636-eb75-4165-b339-38a729aa2b7d"))
+				if (rpStr.contains(
+						"8b0104e7-5902-4419-933f-668582fc3acd@6975cb58-8aa4-4ecd-b9fc-47b78c0d7af8@snmp_5d937636-eb75-4165-b339-38a729aa2b7d"))
 					Logit.LogDebug("BREAKPOINT");
 
 				JSONObject resultDBFormat = rawResultsDBFormat(results.get(i));

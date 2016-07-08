@@ -98,39 +98,30 @@ public class RunnableProbe implements Runnable {
 		while (isRunning()) {
 			BaseResult result = null;
 			try {
-				String rpStr1 = this.getId();
-				if (rpStr1.contains(
-						"http_bf2c3d21-93dd-404a-b563-b61af4b86085"))
-					Logit.LogDebug("BREAKPOINT - RunnableProbe");
-				
-				if (!isActive() || !getProbe().isActive())
-					continue;
-				
-				if (this.getProbeType().equals(ProbeTypes.BANDWIDTH_ELEMENT)
-						&& (!((NicProbe)getProbe()).getNicElement().isActive() || !getProbe().isActive()))
-					continue;
-				if (this.getProbeType().equals(ProbeTypes.DISK_ELEMENT)
-						&& (!((DiskProbe)getProbe()).getDiskElement().isActive() || !getProbe().isActive()))
-					continue;
-
-				// Long timeStamp = result.getLastTimestamp();
-				
 				String rpStr = this.getId();
 				if (rpStr.contains(
-						"3cfbc5dc-15b4-4cf5-86b8-d12008c00ffc@ae1981c3-c157-4ce2-9086-11e869d4a344@http_d536b359-e496-40dc-b02c-b6cf8ff2a593"))
+						"21fd2bec-bca4-4cf7-9812-6e78bd2a1809@d934aa3b-f703-4d4b-99c6-66b470c782f2@http_ae06f73a-e08f-426b-ac44-9e1c9111a2a2"))
 					Logit.LogDebug("BREAKPOINT - RunnableProbe");
 
-				if (this.getProbeType().equals(ProbeTypes.BANDWIDTH_ELEMENT))
-					Logit.LogDebug("BREAKPOINT");
-				
-				if (!this.isActive())
+				if (!isActive() || !getProbe().isActive())
 					continue;
+
+				// if (this.getProbeType().equals(ProbeTypes.BANDWIDTH_ELEMENT)
+				// && (!((NicProbe)getProbe()).getNicElement().isActive() ||
+				// !getProbe().isActive()))
+				// continue;
+				// if (this.getProbeType().equals(ProbeTypes.DISK_ELEMENT)
+				// && (!((DiskProbe)getProbe()).getDiskElement().isActive() ||
+				// !getProbe().isActive()))
+				// continue;
+
+				// Long timeStamp = result.getLastTimestamp();
 
 				try {
 					result = getProbe().getResult(this.getHost());
 				} catch (Exception e) {
 					Logit.LogError("RunnableProbe - run()", "Error getting runnable probe results! "
-							+ this.getProbe().getName() + ", \nRunnabelProbeId: " + this.getId(),e);
+							+ this.getProbe().getName() + ", \nRunnabelProbeId: " + this.getId(), e);
 					continue;
 				}
 
@@ -156,7 +147,7 @@ public class RunnableProbe implements Runnable {
 						continue;
 
 					}
-					
+
 					ResultsContainer.getInstance().addResult(result);
 				} catch (Exception e) {
 					Logit.LogError("RunnableProbe - run()",
@@ -179,7 +170,7 @@ public class RunnableProbe implements Runnable {
 							"Error processing runnable probe results to SLA container!" + this.getId(), e);
 					continue;
 				}
-				
+
 			} finally {
 				try {
 					Logit.LogInfo("Running Probe: " + this.getId() + " at Host: " + this.getHost().getHostIp() + "("
