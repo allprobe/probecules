@@ -4,7 +4,7 @@
  */
 package lycus;
 
-import java.time.LocalTime;
+import java.util.Date;
 import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.TimeUnit;
@@ -66,8 +66,8 @@ public class LycusMain {
 		SlaTask slaTask = new SlaTask();
 		slaTask.setInterval(Constants.slaInterval);
 		ScheduledExecutorService slaThread = Executors.newSingleThreadScheduledExecutor();
-		LocalTime currentTime = LocalTime.now();
-		long initialDelay = (60 - currentTime.getMinute()) * 60 - (60 - currentTime.getSecond());
+		Date currentTime = new Date();
+		long initialDelay = (60 - currentTime.getMinutes()) * 60 - (60 - currentTime.getSeconds());
 		slaThread.scheduleAtFixedRate(slaTask, initialDelay, slaTask.getInterval(), TimeUnit.SECONDS);
 
 		return true;
