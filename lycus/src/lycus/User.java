@@ -33,6 +33,7 @@ import Probes.NicProbe;
 import Probes.PortProbe;
 import Probes.RBLProbe;
 import Probes.SnmpProbe;
+import Probes.TracerouteProbe;
 import Utils.GeneralFunctions;
 import Utils.Logit;
 
@@ -59,7 +60,7 @@ public class User {
 		this.setHosts(new HashMap<UUID, Host>());
 		this.setTemplateProbes(new HashMap<String, BaseProbe>());
 		this.setSnmpTemplates(new HashMap<UUID, SnmpTemplate>());
-//		this.setSnmpManager(new SnmpManager(this));
+		// this.setSnmpManager(new SnmpManager(this));
 	}
 
 	// Getters/Setters
@@ -180,14 +181,14 @@ public class User {
 	// return null;
 	// }
 
-//	private void runProbes(List<RunnableProbe> rps) {
-//		for (RunnableProbe rp : rps) {
-//			if (rp.getId().contains(
-//					"0b05919c-6cc0-42cc-a74b-de3b0dcd4a2a@6aadf750-e887-43ee-b872-326c94fbab7c@discovery_6b54463e-fe1c-4e2c-a090-452dbbf2d510"))
-//				Logit.LogDebug("BREAKPOINT");
-//			this.startRunnableProbe(rp);
-//		}
-//	}
+	// private void runProbes(List<RunnableProbe> rps) {
+	// for (RunnableProbe rp : rps) {
+	// if (rp.getId().contains(
+	// "0b05919c-6cc0-42cc-a74b-de3b0dcd4a2a@6aadf750-e887-43ee-b872-326c94fbab7c@discovery_6b54463e-fe1c-4e2c-a090-452dbbf2d510"))
+	// Logit.LogDebug("BREAKPOINT");
+	// this.startRunnableProbe(rp);
+	// }
+	// }
 
 	// public void runProbesAtStart() {
 	//// this.runProbes(new
@@ -258,39 +259,41 @@ public class User {
 	// return matchedRps;
 	// }
 
-//	public boolean startRunnableProbe(RunnableProbe rp) {
-//		// if (rp.getProbe() instanceof SnmpProbe) {
-//		// this.getSnmpManager().startProbe(rp);
-//		// return true;
-//		// }
-//
-//		return rp.start();
-//	}
+	// public boolean startRunnableProbe(RunnableProbe rp) {
+	// // if (rp.getProbe() instanceof SnmpProbe) {
+	// // this.getSnmpManager().startProbe(rp);
+	// // return true;
+	// // }
+	//
+	// return rp.start();
+	// }
 
-//	public boolean stopRunnableProbe(RunnableProbe rp) {
-//		if (rp == null)
-//			return false;
-//		if (rp.getProbe() instanceof SnmpProbe && rp.getHost().getSnmpTemp().getVersion() > 1) {
-//			this.getSnmpManager().stopProbe(rp);
-//			return true;
-//		}
-//		try {
-//			rp.stop();
-//			return true;
-//		} catch (Exception e) {
-//			Logit.LogError("User - stopRunnableProbe", "Unable To stop RunnableProbe: " + rp.getId());
-//			return false;
-//		}
-//	}
+	// public boolean stopRunnableProbe(RunnableProbe rp) {
+	// if (rp == null)
+	// return false;
+	// if (rp.getProbe() instanceof SnmpProbe &&
+	// rp.getHost().getSnmpTemp().getVersion() > 1) {
+	// this.getSnmpManager().stopProbe(rp);
+	// return true;
+	// }
+	// try {
+	// rp.stop();
+	// return true;
+	// } catch (Exception e) {
+	// Logit.LogError("User - stopRunnableProbe", "Unable To stop RunnableProbe:
+	// " + rp.getId());
+	// return false;
+	// }
+	// }
 
-//	public boolean addRunnableProbe(RunnableProbe runnableProbe) {
-//		String rpStr = runnableProbe.getId();
-//		if (rpStr.contains("inner_996a80bf-913e-4ba4-ad46-a28c30f9fe36"))
-//			Logit.LogDebug("BREAKPOINT");
-//
-//		return RunnableProbeContainer.getInstanece().add(runnableProbe);
-////		this.startRunnableProbe(runnableProbe);
-//	}
+	// public boolean addRunnableProbe(RunnableProbe runnableProbe) {
+	// String rpStr = runnableProbe.getId();
+	// if (rpStr.contains("inner_996a80bf-913e-4ba4-ad46-a28c30f9fe36"))
+	// Logit.LogDebug("BREAKPOINT");
+	//
+	// return RunnableProbeContainer.getInstanece().add(runnableProbe);
+	//// this.startRunnableProbe(runnableProbe);
+	// }
 
 	// public boolean removeRunnableProbe(RunnableProbe runnableProbe) {
 	// UUID hostId = runnableProbe.getHost().getHostId();
@@ -319,7 +322,7 @@ public class User {
 	public boolean isSnmpTemplateExist(String snmp_template_id) {
 		return snmpTemplates.containsKey(snmp_template_id);
 	}
-	
+
 	// public boolean removeRunnableProbes(String probe_id) {
 	// List<RunnableProbe> runnableProbes = getRunnableProbesFor(probe_id);
 	// for (RunnableProbe runnableProbe : runnableProbes) {
@@ -364,7 +367,7 @@ public class User {
 						getUserId().toString());
 			}
 			addHost(host);
-			 
+
 		} catch (Exception e) {
 			Logit.LogWarn("Creation of Host Failed: " + hostParams + " , not added! E: " + e.getMessage());
 		}
@@ -402,12 +405,11 @@ public class User {
 
 	}
 
-	public boolean removeTemplateProbe(String templateId)
-	{
+	public boolean removeTemplateProbe(String templateId) {
 		templateProbes.remove(templateId);
 		return true;
 	}
-	
+
 	public BaseProbe addTemplateProbe(ProbeParams probeParams) {
 		try {
 			UUID templateId = UUID.fromString(probeParams.template_id);
@@ -444,18 +446,24 @@ public class User {
 				String auth = probeParams.http_auth;
 				String authUser = GeneralFunctions.Base64Decode(probeParams.http_auth_username);
 				String authPass = GeneralFunctions.Base64Decode(probeParams.http_auth_password);
-				boolean deepCheck=probeParams.http_deep==1?true:false;
-				
+				boolean deepCheck = probeParams.http_deep == 1 ? true : false;
+
 				int timeout = probeParams.timeout;
 
 				if (auth.equals(Constants.no))
 					probe = new HttpProbe(this, probeId, templateId, name, interval, multiplier, status, timeout,
-							method, url,deepCheck);
+							method, url, deepCheck);
 				else
 					probe = new HttpProbe(this, probeId, templateId, name, interval, multiplier, status, timeout,
-							method, url, auth, authUser, authPass,deepCheck);
+							method, url, auth, authUser, authPass, deepCheck);
 				break;
 			}
+			case Constants.traceroute: {
+				int timeout = 20000;
+				probe = new TracerouteProbe(this, probeId, templateId, name, interval, multiplier, status, timeout);
+				break;
+			}
+
 			case Constants.snmp: {
 
 				OID oid = new OID(probeParams.oid);
@@ -482,31 +490,31 @@ public class User {
 				long elementsInterval = probeParams.element_interval;
 				// int triggerCode = probeParams.discovery_trigger_code;
 				// String triggerXValue = probeParams.discovery_trigger_x_value;
-//				String unitType = probeParams.snmp_unit;
+				// String unitType = probeParams.snmp_unit;
 
 				// TriggerSeverity severity =
 				// getTriggerSev(probeParams.discovery_trigger_severity);
-//				SnmpUnit trigValueUnit = getSnmpUnit(unitType);
-//				if (trigValueUnit == null) {
-//					Logit.LogError("User = addTemplateProbe()",
-//							"Probe: " + probeId + " Wrong Unit Type, Doesn't Added!");
-//					return null;
-//				}
+				// SnmpUnit trigValueUnit = getSnmpUnit(unitType);
+				// if (trigValueUnit == null) {
+				// Logit.LogError("User = addTemplateProbe()",
+				// "Probe: " + probeId + " Wrong Unit Type, Doesn't Added!");
+				// return null;
+				// }
 				Enums.DiscoveryElementType discoveryType;
 				switch (probeParams.discovery_type) {
-					case Constants.bw:
-						discoveryType = Enums.DiscoveryElementType.bw;
-						break;
-					case Constants.ds:
-						discoveryType = Enums.DiscoveryElementType.ds;
-						break;
-					default:
-						throw new Exception("Unable to determine discovery type --- " + probeParams.probe_id);
+				case Constants.bw:
+					discoveryType = Enums.DiscoveryElementType.bw;
+					break;
+				case Constants.ds:
+					discoveryType = Enums.DiscoveryElementType.ds;
+					break;
+				default:
+					throw new Exception("Unable to determine discovery type --- " + probeParams.probe_id);
 				}
 
-				probe = new DiscoveryProbe(this, probeId, templateId, name, interval,
-						multiplier,status, discoveryType, elementsInterval);
-				
+				probe = new DiscoveryProbe(this, probeId, templateId, name, interval, multiplier, status, discoveryType,
+						elementsInterval);
+
 				updateTriggers(probeParams, templateId, probeId, name, probe);
 				break;
 			}
@@ -527,21 +535,21 @@ public class User {
 			return null;
 		}
 	}
-	
+
 	private void updateTriggers(ProbeParams probeParams, UUID templateId, String probeId, String name,
 			BaseProbe probe) {
-	
+
 		for (DiscoveryTrigger trigger : probeParams.discovery_triggers) {
 			String triggerId = templateId.toString() + "@" + probeId + "@" + trigger;
 			ArrayList<TriggerCondition> conditions = new ArrayList<TriggerCondition>();
-			TriggerCondition triggerCondition = new TriggerCondition(trigger.discovery_trigger_code, Constants.and, trigger.discovery_trigger_x_value, "");
+			TriggerCondition triggerCondition = new TriggerCondition(trigger.discovery_trigger_code, Constants.and,
+					trigger.discovery_trigger_x_value, "");
 			conditions.add(triggerCondition);
-			
-			TriggerSeverity sev=UsersManager.getTriggerSev(trigger.discovery_trigger_severity);
+
+			TriggerSeverity sev = UsersManager.getTriggerSev(trigger.discovery_trigger_severity);
 			Enums.XValueUnit un = Enums.XValueUnit.valueOf(trigger.discovery_trigger_unit);
-			
-			Trigger discoveryTrigger = new Trigger(triggerId, name, probe, sev, true, "",un,
-					conditions);
+
+			Trigger discoveryTrigger = new Trigger(triggerId, name, probe, sev, true, "", un, conditions);
 			probe.addTrigger(discoveryTrigger);
 		}
 	}

@@ -31,6 +31,7 @@ import Probes.NicProbe;
 import Probes.PortProbe;
 import Probes.RBLProbe;
 import Probes.SnmpProbe;
+import Probes.TracerouteProbe;
 import Probes.DiskProbe;
 import Results.DOMElement;
 import Results.DiscoveryResult;
@@ -41,6 +42,7 @@ import Results.PortResult;
 import Results.RblResult;
 import Results.SnmpDeltaResult;
 import Results.SnmpResult;
+import Results.TraceRouteResult;
 import Results.WebExtendedResult;
 import Results.WebResult;
 import Utils.GeneralFunctions;
@@ -82,6 +84,20 @@ public class NetResults implements INetResults {
 		PingResult pingerResult = new PingResult(getRunnableProbeId(probe, host), timestamp, packetLoss, rtt, ttl);
 
 		return pingerResult;
+	}
+
+	@Override
+	public TraceRouteResult getTracerouteResult(Host host, TracerouteProbe probe) {
+		ArrayList<Object> rawResults = Net.Traceroute(host.getHostIp());
+		if (rawResults == null || rawResults.size() == 0)
+			return null;
+
+		long timestamp = (long) rawResults.get(0);
+		ArrayList<String> route = (ArrayList<String>) rawResults.get(1);
+
+		TraceRouteResult tracerouteResult = new TraceRouteResult(getRunnableProbeId(probe, host), timestamp);
+		tracerouteResult.setRoutes(route);
+		return tracerouteResult;
 	}
 
 	@Override

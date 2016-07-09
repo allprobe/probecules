@@ -22,6 +22,7 @@ import Utils.Logit;
  */
 public class GlobalConfig {
 
+
 	private static String confPath = null;
 
 	private static String dateFormat = "yyyy-MM-dd HH:mm:ss";
@@ -42,6 +43,7 @@ public class GlobalConfig {
 	private static int SnmpBatchThreadCount = 50;
 	private static int BandwidthThreadCount = 50;
 	private static int DiskhreadCount = 50;
+	private static  int TracerouteThreadCount = 50;
 	private static Boolean Debug = null;
 	private static Boolean Development = null;
 	private static String syslogHost = null;
@@ -315,6 +317,10 @@ public class GlobalConfig {
 
 	public static void setDiskhreadCount(int diskhreadCount) {
 		DiskhreadCount = diskhreadCount;
+	}
+
+	public static int getTracerouteThreadCount() {
+		return TracerouteThreadCount;
 	}
 
 }

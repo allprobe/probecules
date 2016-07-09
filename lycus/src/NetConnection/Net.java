@@ -382,10 +382,10 @@ public class Net {
 
 			StringBuilder b = new StringBuilder();
 			if (user != null && pass != null)
-				b.append("lycus/phantomjs/phantomjs").append(" ").append("lycus/phantomjs/netsniff_auth.js").append(" ")
+				b.append("phantomjs/phantomjs").append(" ").append("lycus/phantomjs/netsniff_auth.js").append(" ")
 						.append(url).append(" ").append(user).append(" ").append(pass).append(" ").append(timeout);
 			else
-				b.append("lycus/phantomjs/phantomjs").append(" ").append("lycus/phantomjs/netsniff.js").append(" ")
+				b.append("phantomjs/phantomjs").append(" ").append("lycus/phantomjs/netsniff.js").append(" ")
 						.append(url).append(" ").append(timeout);
 
 			p = Runtime.getRuntime().exec(b.toString());
@@ -448,6 +448,8 @@ public class Net {
 			//// System.out.println("text: " + link.text());
 			// }
 		} catch (Exception e) {
+			Logit.LogError("Net - ExtendedWeber", "current working dir: " + System.getProperty("user.dir"), e);
+
 			Logit.LogError("Net - ExtendedWeber", "Error while running http extended check! URL: " + url, e);
 		} finally {
 			if (p != null)

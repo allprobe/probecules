@@ -24,160 +24,164 @@ import Utils.GeneralFunctions;
  */
 enum RequestTypes {
 
-    POST, GET
+	POST, GET
 }
 
 public class HttpRequest {
 
-    private String url;
-    private RequestTypes type;
-    private int timeOut;
-    private String credentials;//credentials format User:Pass
-    private HttpClient httpClient;
-    private HttpRequestBase request;
-    private HttpResponse response;
-    private RequestConfig requestConfig;
-    private int responseStatusCode;
-    private long responseQueryTime;
-    private HttpEntity responseEntity;
-    private String responsePageContent;
-    private boolean isTimeOut = false;
+	private String url;
+	private RequestTypes type;
+	private int timeOut;
+	private String credentials;// credentials format User:Pass
+	private HttpClient httpClient;
+	private HttpRequestBase request;
+	private HttpResponse response;
+	private RequestConfig requestConfig;
+	private int responseStatusCode;
+	private long responseQueryTime;
+	private HttpEntity responseEntity;
+	private String responsePageContent;
+	private boolean isTimeOut = false;
 
-    public HttpRequest(String url, RequestTypes type, int timeOut) {
-        this.url = url;
-        this.type = type;
-        this.timeOut = timeOut;
-        //set time out to http client
-        this.requestConfig = RequestConfig.custom().setConnectTimeout(timeOut).build();
-      
-        this.httpClient = HttpClientBuilder.create().setDefaultRequestConfig(requestConfig).build();
-        
-        //initialize request
-        this.request = (type == RequestTypes.POST) ? new HttpPost(url) : new HttpGet(url);
-    }
+	public HttpRequest(String url, RequestTypes type, int timeOut) {
+		this.url = url;
+		this.type = type;
+		this.timeOut = timeOut;
+		// set time out to http client
+		this.requestConfig = RequestConfig.custom().setConnectTimeout(timeOut).build();
 
-    public HttpRequest(String url, RequestTypes type, int timeOut, String credentials) {
-        this.url = url;
-        this.type = type;
-        this.timeOut = timeOut;
-        this.credentials = credentials;
-        //set time out to http client
-        this.requestConfig = RequestConfig.custom().setConnectTimeout(timeOut).build();
-        this.httpClient = HttpClientBuilder.create().setDefaultRequestConfig(requestConfig).build();
-        //initialize request
-        this.request = (type == RequestTypes.POST) ? new HttpPost(url) : new HttpGet(url);
-            this.request.setHeader("Authorization", "Basic " + GeneralFunctions.Base64Encode(credentials));
-        
-    }
+		this.httpClient = HttpClientBuilder.create().setDefaultRequestConfig(requestConfig).build();
 
-    //#region Getters/Setters
-    /**
-     * @return the url
-     */
-    public String getUrl() {
-        return url;
-    }
+		// initialize request
+		this.request = (type == RequestTypes.POST) ? new HttpPost(url) : new HttpGet(url);
+	}
 
-    /**
-     * @param url the url to set
-     */
-    public void setUrl(String url) {
-        this.url = url;
-    }
+	public HttpRequest(String url, RequestTypes type, int timeOut, String credentials) {
+		this.url = url;
+		this.type = type;
+		this.timeOut = timeOut;
+		this.credentials = credentials;
+		// set time out to http client
+		this.requestConfig = RequestConfig.custom().setConnectTimeout(timeOut).build();
+		this.httpClient = HttpClientBuilder.create().setDefaultRequestConfig(requestConfig).build();
+		// initialize request
+		this.request = (type == RequestTypes.POST) ? new HttpPost(url) : new HttpGet(url);
+		this.request.setHeader("Authorization", "Basic " + GeneralFunctions.Base64Encode(credentials));
 
-    /**
-     * @return the type
-     */
-    public RequestTypes getType() {
-        return type;
-    }
+	}
 
-    /**
-     * @param type the type to set
-     */
-    public void setType(RequestTypes type) {
-        this.type = type;
-    }
+	// #region Getters/Setters
+	/**
+	 * @return the url
+	 */
+	public String getUrl() {
+		return url;
+	}
 
-    /**
-     * @return the timeOut
-     */
-    public long getTimeOut() {
-        return timeOut;
-    }
+	/**
+	 * @param url
+	 *            the url to set
+	 */
+	public void setUrl(String url) {
+		this.url = url;
+	}
 
-    /**
-     * @param timeOut the timeOut to set
-     */
-    public void setTimeOut(int timeOut) {
-        this.timeOut = timeOut;
-    }
+	/**
+	 * @return the type
+	 */
+	public RequestTypes getType() {
+		return type;
+	}
 
-    /**
-     * @return the credentials
-     */
-    public String getCredentials() {
-        return credentials;
-    }
+	/**
+	 * @param type
+	 *            the type to set
+	 */
+	public void setType(RequestTypes type) {
+		this.type = type;
+	}
 
-    /**
-     * @param credentials the credentials to set
-     */
-    public void setCredentials(String credentials) {
-        this.credentials = credentials;
-    }
-    public int getResponseStatusCode() {
-        return responseStatusCode;
-    }
+	/**
+	 * @return the timeOut
+	 */
+	public long getTimeOut() {
+		return timeOut;
+	}
 
-    public long getResponseQueryTime() {
-        return responseQueryTime;
-    }
+	/**
+	 * @param timeOut
+	 *            the timeOut to set
+	 */
+	public void setTimeOut(int timeOut) {
+		this.timeOut = timeOut;
+	}
 
-    public HttpEntity getResponseEntity() {
-        return responseEntity;
-    }
+	/**
+	 * @return the credentials
+	 */
+	public String getCredentials() {
+		return credentials;
+	}
 
-    public boolean getIsTimeOut() {
-        return isTimeOut;
-    }
+	/**
+	 * @param credentials
+	 *            the credentials to set
+	 */
+	public void setCredentials(String credentials) {
+		this.credentials = credentials;
+	}
 
-    public String getResponsePageContent() {
-        return responsePageContent;
-    }
-    //#endregion
+	public int getResponseStatusCode() {
+		return responseStatusCode;
+	}
 
-    public void Execute() {
-        long start = System.currentTimeMillis();
-        try {
-            response = httpClient.execute(request);
-            if (response != null) {
-                responseStatusCode = response.getStatusLine().getStatusCode();
-                responseEntity = response.getEntity();
-                StringWriter sw = new StringWriter();
-                IOUtils.copy(responseEntity.getContent(), sw, "UTF-8");
-                responsePageContent = sw.toString();
-                responseQueryTime = System.currentTimeMillis() - start;
-            } else {
-                responseStatusCode = 0;
-                responseEntity = null;
-                responseQueryTime = 0;
-                responsePageContent=null;
-                isTimeOut = true;
-            }
-        } catch (IOException | IllegalStateException e) {
-            responseStatusCode = 0;
-            responseEntity = null;
-            responseQueryTime = 0;
-            responsePageContent = null;
-            isTimeOut = true;
+	public long getResponseQueryTime() {
+		return responseQueryTime;
+	}
 
-        } finally {
-            if (request != null) {
-                request.releaseConnection();
-            }
-        }
-    }
+	public HttpEntity getResponseEntity() {
+		return responseEntity;
+	}
 
-    
+	public boolean getIsTimeOut() {
+		return isTimeOut;
+	}
+
+	public String getResponsePageContent() {
+		return responsePageContent;
+	}
+	// #endregion
+
+	public void Execute() {
+		long start = System.currentTimeMillis();
+		try {
+			response = httpClient.execute(request);
+			if (response != null) {
+				responseStatusCode = response.getStatusLine().getStatusCode();
+				responseEntity = response.getEntity();
+				StringWriter sw = new StringWriter();
+				IOUtils.copy(responseEntity.getContent(), sw, "UTF-8");
+				responsePageContent = sw.toString();
+				responseQueryTime = System.currentTimeMillis() - start;
+			} else {
+				responseStatusCode = 0;
+				responseEntity = null;
+				responseQueryTime = 0;
+				responsePageContent = null;
+				isTimeOut = true;
+			}
+		} catch (IOException | IllegalStateException e) {
+			responseStatusCode = 0;
+			responseEntity = null;
+			responseQueryTime = 0;
+			responsePageContent = null;
+			isTimeOut = true;
+
+		} finally {
+			if (request != null) {
+				request.releaseConnection();
+			}
+		}
+	}
+
 }

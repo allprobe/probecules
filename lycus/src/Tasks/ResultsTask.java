@@ -22,7 +22,7 @@ public class ResultsTask extends BaseTask {
 			IResultsContainer resultsContainer = ResultsContainer.getInstance();
 			String results = resultsContainer.getResults();
 
-			if (results.contains("http_bf2c3d21-93dd-404a-b563-b61af4b86085"))
+			if (results.contains("TRACEROUTE"))
 				Logit.LogDebug("BREAKPOINT - ResultsTask");
 			RollupsContainer rollupsContainer = RollupsContainer.getInstance();
 			String rollups = rollupsContainer.getAllFinsihedRollups();

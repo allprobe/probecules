@@ -9,6 +9,7 @@ import Probes.NicProbe;
 import Probes.PortProbe;
 import Probes.RBLProbe;
 import Probes.SnmpProbe;
+import Probes.TracerouteProbe;
 import Probes.DiskProbe;
 import Results.BaseResult;
 import Rollups.RollupsContainer;
@@ -91,6 +92,8 @@ public class RunnableProbe implements Runnable {
 			return ProbeTypes.BANDWIDTH_ELEMENT;
 		if (getProbe() instanceof DiskProbe)
 			return ProbeTypes.DISK_ELEMENT;
+		if (getProbe() instanceof TracerouteProbe)
+			return ProbeTypes.TRACEROUTE;
 		return null;
 	}
 

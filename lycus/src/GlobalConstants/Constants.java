@@ -36,6 +36,7 @@ public class Constants {
 	public final static String port = "port";
 	public final static String http = "http";
 	public final static String snmp = "snmp";
+	public static final String traceroute = "traceroute";
 	public final static String discovery = "discovery";
 	public final static String rbl = "rbl";
 	public final static String no = "no";

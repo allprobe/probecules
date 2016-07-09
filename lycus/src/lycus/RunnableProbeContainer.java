@@ -4,6 +4,7 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.UUID;
 import java.util.concurrent.ConcurrentHashMap;
+import java.util.concurrent.Executor;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import GlobalConstants.Constants;
@@ -19,14 +20,14 @@ public class RunnableProbeContainer implements IRunnableProbeContainer {
 
 	private ConcurrentHashMap<String, RunnableProbe> runnableProbes; // HashMap<runnableProbeId,RunnableProbe>
 	private ConcurrentHashMap<String, ConcurrentHashMap<String, RunnableProbe>> hostRunnableProbes; // HashMap<hostId,
-																				// HashMap<runnableProbeId,RunnableProbe>>
+	// HashMap<runnableProbeId,RunnableProbe>>
 	private ConcurrentHashMap<String, ConcurrentHashMap<String, RunnableProbe>> userRunnableProbes; // HashMap<userId,
-																				// HashMap<runnableProbeId,RunnableProbe>>
+	// HashMap<runnableProbeId,RunnableProbe>>
 	private ConcurrentHashMap<String, ConcurrentHashMap<String, RunnableProbe>> probeRunnableProbes; // HashMap<probeId,
-																				// HashMap<runnableProbeId,RunnableProbe>>
+	// HashMap<runnableProbeId,RunnableProbe>>
 	private ConcurrentHashMap<String, ConcurrentHashMap<String, RunnableProbe>> templateRunnableProbes; // HashMap<templateId,
-																				// HashMap<runnableProbeId,RunnableProbe>>
-	
+	// HashMap<runnableProbeId,RunnableProbe>>
+
 	private ExecutorService pingerExec = Executors.newFixedThreadPool(GlobalConfig.getPingerThreadCount());
 	private ExecutorService porterExec = Executors.newFixedThreadPool(GlobalConfig.getPorterThreadCount());
 	private ExecutorService weberExec = Executors.newFixedThreadPool(GlobalConfig.getWeberThreadCount());
@@ -35,9 +36,11 @@ public class RunnableProbeContainer implements IRunnableProbeContainer {
 	private ExecutorService discoveryExec = Executors.newFixedThreadPool(GlobalConfig.getSnmpBatchThreadCount());
 	private ExecutorService bandwidthProbeExec = Executors.newFixedThreadPool(GlobalConfig.getBandwidthThreadCount());
 	private ExecutorService diskProbeExec = Executors.newFixedThreadPool(GlobalConfig.getDiskhreadCount());
-	
+	private ExecutorService tracerouteExec = Executors.newFixedThreadPool(GlobalConfig.getTracerouteThreadCount());
+
 	private HashMap<String, SnmpProbesBatch> batches = new HashMap<String, SnmpProbesBatch>(); // HashMap<runnableProbeId,
-																								// SnmpProbesBatch>
+
+	// SnmpProbesBatch>
 
 	// private final Object lock = new Lock();
 
@@ -76,10 +79,10 @@ public class RunnableProbeContainer implements IRunnableProbeContainer {
 	}
 
 	@Override
-	public ConcurrentHashMap<String,RunnableProbe> getByTemplate(String templateId){
-		return templateRunnableProbes.get(templateId); 
+	public ConcurrentHashMap<String, RunnableProbe> getByTemplate(String templateId) {
+		return templateRunnableProbes.get(templateId);
 	}
-	
+
 	@Override
 	public boolean add(RunnableProbe runnableProbe) {
 		Boolean isStarted = startProbe(runnableProbe);
@@ -99,7 +102,7 @@ public class RunnableProbeContainer implements IRunnableProbeContainer {
 
 		String templateId = runnableProbe.getProbe().getTemplate_id().toString();
 		addToMap(runnableProbe, templateId, templateRunnableProbes);
-		
+
 		return true;
 	}
 
@@ -133,7 +136,7 @@ public class RunnableProbeContainer implements IRunnableProbeContainer {
 			UsersManager.removeUser(userId);
 
 		removeFromMap(runnableProbe, probeId, probeRunnableProbes);
-		
+
 		String templateId = runnableProbe.getProbe().getTemplate_id().toString();
 		removeFromMap(runnableProbe, templateId, templateRunnableProbes);
 
@@ -224,7 +227,8 @@ public class RunnableProbeContainer implements IRunnableProbeContainer {
 				diskProbeExec.execute(runnableProbe);
 				break;
 			case TRACEROUTE:
-				return true;
+				tracerouteExec.execute(runnableProbe);
+				break;
 			default:
 				return true;
 			}
@@ -259,13 +263,15 @@ public class RunnableProbeContainer implements IRunnableProbeContainer {
 
 	private Boolean addSnmpRunnableProbeToBatches(RunnableProbe runnableProbe) {
 		SnmpProbesBatch batch = null;
-		try{
+		try {
 			for (Map.Entry<String, SnmpProbesBatch> _batch : batches.entrySet()) {
 				try {
 					batch = _batch.getValue();
 					Host host = runnableProbe.getHost();
 					BaseProbe probe = runnableProbe.getProbe();
-					if (batch.getBatchId().contains(host.getHostId().toString() + "@" + probe.getTemplate_id().toString() + "@" + probe.getInterval())
+					if (batch.getBatchId()
+							.contains(host.getHostId().toString() + "@" + probe.getTemplate_id().toString() + "@"
+									+ probe.getInterval())
 							&& batch.getSnmpProbes().size() < Constants.getBatchesSize()) {
 						batch.getSnmpProbes().put(runnableProbe.getId(), runnableProbe);
 						batches.put(runnableProbe.getId(), batch);
@@ -278,8 +284,7 @@ public class RunnableProbeContainer implements IRunnableProbeContainer {
 					return null;
 				}
 			}
-		}
-		catch (Exception e) {
+		} catch (Exception e) {
 			Logit.LogWarn(
 					"Unable to add Runnable Probe to existing batch: " + runnableProbe.getId() + "\n" + e.getMessage());
 			return false;
@@ -319,7 +324,7 @@ public class RunnableProbeContainer implements IRunnableProbeContainer {
 			return false;
 		}
 	}
-	
+
 	// @Override
 	// public boolean pause(String runnableProbeId, boolean isActive) {
 	// if (!runnableProbeId.contains("@@")) {

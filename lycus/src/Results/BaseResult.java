@@ -26,6 +26,7 @@ public class BaseResult implements IResult {
 
 	public BaseResult(String runnableProbeId) {
 		this.runnableProbeId = runnableProbeId;
+		this.lastTimestamp = System.currentTimeMillis();
 		setSent(false);
 	}
 
