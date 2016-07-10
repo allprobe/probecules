@@ -85,7 +85,9 @@ public class DiscoveryResult extends BaseResult {
 //		}
 //		result.add(0);
 		try {
-			result.add((JSONArray) (new JSONParser()).parse(JsonUtil.ToJson(list)));
+//			result.add((JSONArray) (new JSONParser()).parse(JsonUtil.ToJson(list)));
+			result=(JSONArray) (new JSONParser()).parse(JsonUtil.ToJson(list));
+
 		} catch (ParseException e) {
 			Logit.LogError("WebExtendedResult - getResultObject()",
 					"Unable to parse all elements of extended http probe " + this.getRunnableProbeId() + " to json! ",
