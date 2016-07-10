@@ -118,11 +118,11 @@ public class PortResult extends BaseResult {
 	}
 
 	@Override
-	public String getResultString() {
+	public Object getResultObject() {
 		JSONArray result = new JSONArray();
 		result.add(2);
 		result.add(portStatus);
 		result.add(responseTime);
-		return result.toString();
+		return result;
 	}
 }

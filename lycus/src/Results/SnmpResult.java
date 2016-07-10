@@ -431,11 +431,11 @@ public class SnmpResult extends BaseResult {
 		this.oid = oid;
 	}
 	@Override
-	public String getResultString() {
+	public Object getResultObject() {
 		JSONArray result=new JSONArray();
 		result.add(4);
 		result.add(data);
-		return result.toString();
+		return result;
 	}
 
 	public SnmpError getError() {

@@ -72,7 +72,7 @@ public class DiscoveryResult extends BaseResult {
 		super.checkIfTriggerd(triggers);
 	}
 	@Override
-	public String getResultString() {
+	public Object getResultObject() {
 		JSONArray results=new JSONArray();
 		ArrayList<BaseElement> list=new ArrayList<BaseElement>(elements.values());
 //		for(BaseElement element:elements.values())

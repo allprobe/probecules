@@ -116,7 +116,7 @@ public class NicResult extends BaseResult {
 		long bwInBits=(delta*8)/(deltaTimeInSec);
 		return bwInBits;
 	}
-	public String getResultString() {
+	public Object getResultObject() {
 		if(this.getLastTimestamp()==null)
 			return null;
 			
@@ -131,7 +131,7 @@ public class NicResult extends BaseResult {
 		result.add(getInBW());
 		result.add(getOutBW());
 		}
-		return result.toString();
+		return result;
 	}
 
 	public Enums.SnmpError getError() {

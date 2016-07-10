@@ -47,7 +47,7 @@ public class DiskResult extends BaseResult {
 //	public void setHrStorageUnits(long hrStorageUnits) {
 //		this.hrStorageUnits = hrStorageUnits;
 //	}
-	public String getResultString() {
+	public Object getResultObject() {
 		if(this.getLastTimestamp()==null)
 			return null;
 			
@@ -62,7 +62,7 @@ public class DiskResult extends BaseResult {
 		result.add(getHrStorageSize());
 		result.add(getHrStorageUsed());
 		}
-		return result.toString();
+		return result;
 	}
 
 	public Enums.SnmpError getError() {

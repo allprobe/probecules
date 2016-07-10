@@ -76,13 +76,13 @@ public class PingResult extends BaseResult {
 	}
 
 	@Override
-	public String getResultString() {
+	public Object getResultObject() {
 		JSONArray result = new JSONArray();
 		result.add(1);
 		result.add(packetLoss);
 		result.add(rtt);
 		result.add(ttl);
-		return result.toString();
+		return result;
 	}
 
 	private boolean checkForPacketLostTrigger(Trigger trigger) {

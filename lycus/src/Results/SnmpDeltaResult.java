@@ -48,10 +48,10 @@ public class SnmpDeltaResult extends SnmpResult {
 //	}
 	
 	@Override
-	public String getResultString() {
+	public Object getResultObject() {
 		JSONArray result = new JSONArray();
 		result.add(4);
 		result.add(getData());
-		return result.toString();
+		return result;
 	}
 }

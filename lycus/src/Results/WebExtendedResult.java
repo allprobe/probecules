@@ -5,6 +5,9 @@ import java.util.ArrayList;
 import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
 
+import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
+
 import Probes.HttpProbe;
 import Utils.JsonUtil;
 import lycus.RunnableProbeContainer;
@@ -26,7 +29,7 @@ public class WebExtendedResult extends WebResult {
 	}
 
 	@Override
-	public String getResultString() {
+	public Object getResultObject() {
 		JSONArray result = new JSONArray();
 		if (((HttpProbe) RunnableProbeContainer.getInstanece().get(this.getRunnableProbeId()).getProbe()).isDeepCheck())
 			result.add(3.5);
@@ -36,8 +39,11 @@ public class WebExtendedResult extends WebResult {
 		result.add(this.getStatusCode());
 		result.add(this.getResponseTime());
 		result.add(this.getPageSize());
-		result.add(JsonUtil.ToJson(this.getAllElementsResults()));
+		
+		Gson gson = new GsonBuilder().disableHtmlEscaping().create();
+		
+		result.add(gson.toJson(this.getAllElementsResults()));
 		// System.out.println(result);
-		return result.toString();
+		return result;
 	}
 }

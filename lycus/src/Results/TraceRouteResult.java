@@ -33,7 +33,7 @@ public class TraceRouteResult extends BaseResult {
 	}
 
 	@Override
-	public String getResultString() {
+	public Object getResultObject() {
 		return JsonUtil.ToJson(routes);
 	}
 

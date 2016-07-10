@@ -102,10 +102,10 @@ public class RblResult extends BaseResult {
 //		return results;
 //	}
 	@Override
-	public String getResultString() {
+	public Object getResultObject() {
 		JSONArray result=new JSONArray();
 		result.add(5);
 		result.add(IsListed);
-		return result.toString();
+		return result;
 	}
 }

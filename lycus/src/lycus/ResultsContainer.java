@@ -96,7 +96,7 @@ public class ResultsContainer implements IResultsContainer {
 
 		RunnableProbe rp = RunnableProbeContainer.getInstanece().get(rpr.getRunnableProbeId());
 
-		if (rpr.getResultString() == null)
+		if (rpr.getResultObject() == null)
 			return null;
 
 		if (rp == null)
@@ -105,7 +105,7 @@ public class ResultsContainer implements IResultsContainer {
 		result.put("PROBE_TYPE", rp.getProbeType().name());
 		result.put("RESULTS_TIME", rpr.getLastTimestamp());
 		result.put("RESULTS_NAME", rpr.getName());
-		result.put("RESULTS", rpr.getResultString());
+		result.put("RESULTS", rpr.getResultObject());
 		result.put("RUNNABLE_PROBE_ID", rp.getId());
 
 		return result;

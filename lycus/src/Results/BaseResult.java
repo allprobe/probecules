@@ -104,7 +104,7 @@ public class BaseResult implements IResult {
 	}
 
 	@Override
-	public String getResultString() {
+	public Object getResultObject() {
 		return null;
 	}
 

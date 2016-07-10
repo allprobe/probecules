@@ -164,13 +164,13 @@ public class WebResult extends BaseResult {
 	}
 
 	@Override
-	public String getResultString() {
+	public Object getResultObject() {
 		JSONArray result = new JSONArray();
 		result.add(3);
 		result.add(statusCode);
 		result.add(responseTime);
 		result.add(pageSize);
-		return result.toString();
+		return result;
 	}
 
 	public Boolean isActive() {
