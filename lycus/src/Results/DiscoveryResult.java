@@ -83,7 +83,7 @@ public class DiscoveryResult extends BaseResult {
 //			list.add(e)
 //			results.add(JsonUtil.ToJson(element).toString());
 //		}
-		result.add(0);
+//		result.add(0);
 		try {
 			result.add((JSONArray) (new JSONParser()).parse(JsonUtil.ToJson(list)));
 		} catch (ParseException e) {
