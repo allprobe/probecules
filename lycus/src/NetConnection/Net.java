@@ -382,11 +382,11 @@ public class Net {
 
 			StringBuilder b = new StringBuilder();
 			if (user != null && pass != null)
-				b.append("phantomjs/phantomjs").append(" ").append("lycus/phantomjs/netsniff_auth.js").append(" ")
-						.append(url).append(" ").append(user).append(" ").append(pass).append(" ").append(timeout);
+				b.append("phantomjs/phantomjs").append(" ").append("phantomjs/netsniff_auth.js").append(" ").append(url)
+						.append(" ").append(user).append(" ").append(pass).append(" ").append(timeout);
 			else
-				b.append("phantomjs/phantomjs").append(" ").append("lycus/phantomjs/netsniff.js").append(" ")
-						.append(url).append(" ").append(timeout);
+				b.append("phantomjs/phantomjs").append(" ").append("phantomjs/netsniff.js").append(" ").append(url)
+						.append(" ").append(timeout);
 
 			p = Runtime.getRuntime().exec(b.toString());
 			// p = Runtime.getRuntime().exec(new
@@ -448,7 +448,8 @@ public class Net {
 			//// System.out.println("text: " + link.text());
 			// }
 		} catch (Exception e) {
-			Logit.LogError("Net - ExtendedWeber", "current working dir: " + System.getProperty("user.dir"), e);
+			// Logit.LogError("Net - ExtendedWeber", "current working dir: " +
+			// System.getProperty("user.dir"), e);
 
 			Logit.LogError("Net - ExtendedWeber", "Error while running http extended check! URL: " + url, e);
 		} finally {
@@ -1427,7 +1428,7 @@ public class Net {
 				traceRt = Runtime.getRuntime().exec("tracert " + endAddress.getHostAddress());
 			else {
 				String[] cmd = { "/bin/sh", "-c", "traceroute -w 0.9 -n " + endAddress.getHostAddress()
-						+ " | tail -n+2 | awk \'{ print $1 \",\" $2 }\'" };
+						+ " | tail -n+2 | awk \'{ print $1 \",\" $2 \",\" $3 }\'" };
 
 				traceRt = Runtime.getRuntime().exec(cmd);
 
@@ -1446,7 +1447,7 @@ public class Net {
 			return null;
 		}
 
-		ArrayList<String> convertedRoutes = convertTracerouteOutput(route);
+		ArrayList<ArrayList<Object>> convertedRoutes = convertTracerouteOutput(route);
 		ArrayList<Object> results = new ArrayList<Object>();
 		results.add(System.currentTimeMillis());
 		results.add(convertedRoutes);
@@ -1454,13 +1455,17 @@ public class Net {
 
 	}
 
-	private static ArrayList<String> convertTracerouteOutput(String trcrt) {
-		ArrayList<String> routes = new ArrayList<String>();
+	private static ArrayList<ArrayList<Object>> convertTracerouteOutput(String trcrt) {
+		ArrayList<ArrayList<Object>> routes = new ArrayList<ArrayList<Object>>();
 		String[] lines = trcrt.split("\\r?\\n");
 		for (String line : lines) {
 			int index = Integer.parseInt(line.split(",")[0]);
 			String route = line.split(",")[1];
-			routes.add(route);
+			double rtt = Double.parseDouble(line.split(",")[2]);
+			ArrayList<Object> hop = new ArrayList<Object>();
+			hop.add(route);
+			hop.add(rtt);
+			routes.add(hop);
 		}
 		return routes;
 	}

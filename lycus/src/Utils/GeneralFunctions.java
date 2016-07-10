@@ -35,14 +35,14 @@ public class GeneralFunctions {
 
 	public static String Base64Encode(String uri) {
 
-		if(uri==null)
+		if (uri == null)
 			return null;
 		String s = new String(Base64.encodeBase64(uri.getBytes()));
 		return s;
 	}
 
 	public static String Base64Decode(String uri) {
-		if(uri==null)
+		if (uri == null)
 			return null;
 		String s = new String(Base64.decodeBase64(uri.getBytes()));
 		return s;
@@ -171,65 +171,64 @@ public class GeneralFunctions {
 		return s.hasNext() ? s.next() : "";
 	}
 
-//	public static String convertHexToString(String hex) {
-//
-//		StringBuilder sb = new StringBuilder();
-//		StringBuilder temp = new StringBuilder();
-//
-//		// 49204c6f7665204a617661 split into two characters 49, 20, 4c...
-//		for (int i = 0; i < hex.length() - 1; i += 2) {
-//
-//			// grab the hex in pairs
-//			String output = hex.substring(i, (i + 2));
-//			// convert hex to decimal
-//			int decimal = Integer.parseInt(output, 16);
-//			// convert the decimal to character
-//			sb.append((char) decimal);
-//
-//			temp.append(decimal);
-//		}
-//		return sb.toString();
-//	}
-	
+	// public static String convertHexToString(String hex) {
+	//
+	// StringBuilder sb = new StringBuilder();
+	// StringBuilder temp = new StringBuilder();
+	//
+	// // 49204c6f7665204a617661 split into two characters 49, 20, 4c...
+	// for (int i = 0; i < hex.length() - 1; i += 2) {
+	//
+	// // grab the hex in pairs
+	// String output = hex.substring(i, (i + 2));
+	// // convert hex to decimal
+	// int decimal = Integer.parseInt(output, 16);
+	// // convert the decimal to character
+	// sb.append((char) decimal);
+	//
+	// temp.append(decimal);
+	// }
+	// return sb.toString();
+	// }
+
 	public static String convertHexToString(String hex) {
-	String hexString = 		hex.replace(":","");
-   
-	byte[] bytes=null;
-	try {
-		bytes = Hex.decodeHex(hexString.toCharArray());
-	} catch (DecoderException e) {
-		Logit.LogError("GeneralFunctions - convertHexToString", "failed to convert hex to string! : "+hex+", E: "+e.getMessage());
-		return null;
+		String hexString = hex.replace(":", "");
+
+		byte[] bytes = null;
+		try {
+			bytes = Hex.decodeHex(hexString.toCharArray());
+		} catch (DecoderException e) {
+			Logit.LogError("GeneralFunctions - convertHexToString",
+					"failed to convert hex to string! : " + hex + ", E: " + e.getMessage());
+			return null;
+		}
+		try {
+			String result = new String(bytes, "UTF-8");
+			return result;
+		} catch (UnsupportedEncodingException e) {
+			Logit.LogError("GeneralFunctions - convertHexToString",
+					"failed to convert hex to string! : " + hex + ", E: " + e.getMessage());
+			return null;
+		}
 	}
-	try {
-		String result=new String(bytes, "UTF-8");
-		return result;
-	} catch (UnsupportedEncodingException e) {
-		Logit.LogError("GeneralFunctions - convertHexToString", "failed to convert hex to string! : "+hex+", E: "+e.getMessage());
-		return null;
-	}
-	}
+
 	public static boolean isNullOrEmpty(String str) {
 		return str == null || str.isEmpty();
 	}
 
-	public static boolean isChanged(String oldStr, String newStr)
-	{
-		
+	public static boolean isChanged(String oldStr, String newStr) {
+
 		return !isNullOrEmpty(newStr) && (oldStr != null ? !oldStr.equals(newStr) : true);
 	}
-	
-	public static boolean isChanged(float oldVal, float newVal)
-	{
+
+	public static boolean isChanged(float oldVal, float newVal) {
 		return newVal != 0 && oldVal != newVal;
 	}
-	
-	public static boolean isChanged(int oldVal, Integer newVal)
-	{
+
+	public static boolean isChanged(int oldVal, Integer newVal) {
 		return newVal != null && oldVal != newVal;
 	}
-	
-	
+
 	public static String getRunnableProbeId(UUID templateId, UUID hostId, String probeId) {
 		return templateId.toString() + "@" + hostId.toString() + "@" + probeId;
 	}
@@ -237,7 +236,7 @@ public class GeneralFunctions {
 	public static String getRunnableProbeId(String templateId, String hostId, String probeId) {
 		return templateId + "@" + hostId + "@" + probeId;
 	}
-	
+
 	public int getNumberOfRollupTables(long interval) {
 		if (interval < 240)
 			return 6;
@@ -259,6 +258,5 @@ public class GeneralFunctions {
 			return Enums.HostType.Windows;
 		return null;
 	}
-	
 
 }

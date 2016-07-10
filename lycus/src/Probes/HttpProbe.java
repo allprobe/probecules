@@ -35,7 +35,7 @@ public class HttpProbe extends BaseProbe {
 
 	public HttpProbe(User user, String probe_id, UUID template_id, String name, long interval, float multiplier,
 			boolean status, int timeout, String type, String url, String authStatus, String authUsername,
-			String authPassword,boolean deepCheck) {
+			String authPassword, boolean deepCheck) {
 		super(user, probe_id, template_id, name, interval, multiplier, status);
 		this.httpRequestType = type;
 		this.authMethod = authStatus;
@@ -43,11 +43,11 @@ public class HttpProbe extends BaseProbe {
 		this.authPassword = authPassword;
 		this.url = url;
 		this.timeout = timeout;
-		this.deepCheck=deepCheck;
+		this.deepCheck = deepCheck;
 	}
 
 	public HttpProbe(User user, String probe_id, UUID template_id, String name, long interval, float multiplier,
-			boolean status, int timeout, String type, String url,boolean deepCheck) {
+			boolean status, int timeout, String type, String url, boolean deepCheck) {
 		super(user, probe_id, template_id, name, interval, multiplier, status);
 		this.httpRequestType = type;
 		this.authMethod = null;
@@ -55,7 +55,7 @@ public class HttpProbe extends BaseProbe {
 		this.authPassword = null;
 		this.url = url;
 		this.timeout = timeout;
-		this.deepCheck=deepCheck;
+		this.deepCheck = deepCheck;
 	}
 
 	// Getters/Setters
@@ -221,11 +221,11 @@ public class HttpProbe extends BaseProbe {
 			this.setTimeout(updateValue.key.timeout);
 			Logit.LogCheck("Timeout for " + getName() + " has changed to " + updateValue.key.timeout);
 		}
-		if (updateValue.key.http_deep != null && isDeepCheck() != updateValue.key.http_deep.equals(Constants._true))
-		{
+		if (updateValue.key.http_deep != null && isDeepCheck() != updateValue.key.http_deep.equals(Constants._true)) {
 			boolean isDeepCheck = updateValue.key.http_deep.equals(Constants._true);
 			setDeepCheck(isDeepCheck);
-			Logit.LogCheck("Deep check for " + getName() +  " Is " + isDeepCheck + " Update_id: " + updateModel.update_id + ", probe_id: " + updateModel.probe_id);
+			Logit.LogCheck("Deep check for " + getName() + " Is " + isDeepCheck + " Update_id: " + updateModel.update_id
+					+ ", probe_id: " + updateModel.probe_id);
 		}
 
 		return true;

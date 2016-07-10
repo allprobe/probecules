@@ -5,24 +5,24 @@ import java.util.HashMap;
 
 import Results.BaseResult;
 import Utils.JsonUtil;
-import lycus.RunnableProbe;
 
 public class TraceRouteResult extends BaseResult {
 
-	private ArrayList<String> routes;
+	private ArrayList<ArrayList<Object>> routes;
 
 	public TraceRouteResult(String runnableProbeId) {
 		super(runnableProbeId);
 	}
+
 	public TraceRouteResult(String runnableProbeId, long timestamp) {
 		super(runnableProbeId, timestamp);
 	}
-	
-	public ArrayList<String> getRoutes() {
+
+	public ArrayList<ArrayList<Object>> getRoutes() {
 		return routes;
 	}
 
-	public void setRoutes(ArrayList<String> routes) {
+	public void setRoutes(ArrayList<ArrayList<Object>> routes) {
 		this.routes = routes;
 	}
 
@@ -37,5 +37,4 @@ public class TraceRouteResult extends BaseResult {
 		return JsonUtil.ToJson(routes);
 	}
 
-	
 }

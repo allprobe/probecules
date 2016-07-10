@@ -93,7 +93,7 @@ public class NetResults implements INetResults {
 			return null;
 
 		long timestamp = (long) rawResults.get(0);
-		ArrayList<String> route = (ArrayList<String>) rawResults.get(1);
+		ArrayList<ArrayList<Object>> route = (ArrayList<ArrayList<Object>>) rawResults.get(1);
 
 		TraceRouteResult tracerouteResult = new TraceRouteResult(getRunnableProbeId(probe, host), timestamp);
 		tracerouteResult.setRoutes(route);
