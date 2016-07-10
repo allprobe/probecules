@@ -4,6 +4,8 @@ import java.util.ArrayList;
 
 import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
+import org.json.simple.parser.JSONParser;
+import org.json.simple.parser.ParseException;
 
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
@@ -41,8 +43,13 @@ public class WebExtendedResult extends WebResult {
 		result.add(this.getPageSize());
 		
 		Gson gson = new GsonBuilder().disableHtmlEscaping().create();
-		
-		result.add(gson.toJson(this.getAllElementsResults()));
+	
+		try {
+			result.add((JSONArray)(new JSONParser()).parse(gson.toJson(this.getAllElementsResults())));
+		} catch (ParseException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
 		// System.out.println(result);
 		return result;
 	}
