@@ -12,6 +12,7 @@ import com.google.gson.GsonBuilder;
 
 import Probes.HttpProbe;
 import Utils.JsonUtil;
+import Utils.Logit;
 import lycus.RunnableProbeContainer;
 
 public class WebExtendedResult extends WebResult {
@@ -41,14 +42,16 @@ public class WebExtendedResult extends WebResult {
 		result.add(this.getStatusCode());
 		result.add(this.getResponseTime());
 		result.add(this.getPageSize());
-		
+
 		Gson gson = new GsonBuilder().disableHtmlEscaping().create();
-	
+
 		try {
-			result.add((JSONArray)(new JSONParser()).parse(gson.toJson(this.getAllElementsResults())));
+			result.add((JSONArray) (new JSONParser()).parse(gson.toJson(this.getAllElementsResults())));
 		} catch (ParseException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
+			Logit.LogError("WebExtendedResult - getResultObject()",
+					"Unable to parse all elements of extended http probe " + this.getRunnableProbeId() + " to json! ",
+					e);
+			return null;
 		}
 		// System.out.println(result);
 		return result;

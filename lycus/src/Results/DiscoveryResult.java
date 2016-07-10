@@ -6,6 +6,8 @@ import java.util.Iterator;
 import java.util.List;
 
 import org.json.simple.JSONArray;
+import org.json.simple.parser.JSONParser;
+import org.json.simple.parser.ParseException;
 
 import Elements.BaseElement;
 import Elements.DiskElement;
@@ -13,6 +15,7 @@ import Elements.NicElement;
 import GlobalConstants.Enums;
 import GlobalConstants.Enums.DiscoveryElementType;
 import Utils.JsonUtil;
+import Utils.Logit;
 import lycus.Trigger;
 
 public class DiscoveryResult extends BaseResult {
@@ -73,16 +76,23 @@ public class DiscoveryResult extends BaseResult {
 	}
 	@Override
 	public Object getResultObject() {
-		JSONArray results=new JSONArray();
+		JSONArray result=new JSONArray();
 		ArrayList<BaseElement> list=new ArrayList<BaseElement>(elements.values());
 //		for(BaseElement element:elements.values())
 //		{
 //			list.add(e)
 //			results.add(JsonUtil.ToJson(element).toString());
 //		}
-		
-		
-		return JsonUtil.ToJson(list);
+		result.add(0);
+		try {
+			result.add((JSONArray) (new JSONParser()).parse(JsonUtil.ToJson(list)));
+		} catch (ParseException e) {
+			Logit.LogError("WebExtendedResult - getResultObject()",
+					"Unable to parse all elements of extended http probe " + this.getRunnableProbeId() + " to json! ",
+					e);
+		}
+
+		return result;
 	}
 	// returns true if there is any change made on the host elements
 //	private boolean checkForElementsChanges(HashMap<String, BaseElement> lastScanElements, long timestamp) {

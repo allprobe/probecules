@@ -3,8 +3,13 @@ package Results;
 import java.util.ArrayList;
 import java.util.HashMap;
 
+import org.json.simple.JSONArray;
+import org.json.simple.parser.JSONParser;
+import org.json.simple.parser.ParseException;
+
 import Results.BaseResult;
 import Utils.JsonUtil;
+import Utils.Logit;
 
 public class TraceRouteResult extends BaseResult {
 
@@ -34,7 +39,19 @@ public class TraceRouteResult extends BaseResult {
 
 	@Override
 	public Object getResultObject() {
-		return JsonUtil.ToJson(routes);
+		JSONArray result = new JSONArray();
+		result.add(8);
+		
+		try {
+			result.add((JSONArray) (new JSONParser()).parse(JsonUtil.ToJson(routes)));
+		} catch (ParseException e) {
+			Logit.LogError("TraceRouteResult - getResultObject()",
+					"Unable to parse all routes of traceroute probe " + this.getRunnableProbeId() + " to json! ",
+					e);
+			return null;
+		}
+
+		return result;
 	}
 
 }

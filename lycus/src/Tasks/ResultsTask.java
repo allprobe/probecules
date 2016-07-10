@@ -27,7 +27,7 @@ public class ResultsTask extends BaseTask {
 			RollupsContainer rollupsContainer = RollupsContainer.getInstance();
 			String rollups = rollupsContainer.getAllFinsihedRollups();
 			// System.out.println(rollups);
-			 System.out.println(results);
+//			 System.out.println(results);
 			if (rollups != null)
 				Logit.LogDebug("BREAKPOINT - ResultsTask");
 
