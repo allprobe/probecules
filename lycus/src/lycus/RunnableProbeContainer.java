@@ -171,14 +171,20 @@ public class RunnableProbeContainer implements IRunnableProbeContainer {
 
 	@Override
 	public boolean removeByTemplateId(String teplateId) {
-		for (RunnableProbe runnableProbe : getByTemplate(teplateId).values())
+		ConcurrentHashMap<String, RunnableProbe> templates = getByTemplate(teplateId);
+		if (templates == null)
+			return true;
+		for (RunnableProbe runnableProbe : templates.values())
 			remove(runnableProbe);
 		return true;
 	}
 
 	@Override
 	public boolean removeByProbeId(String probeId) {
-		for (RunnableProbe runnableProbe : getByProbe(probeId).values())
+		ConcurrentHashMap<String, RunnableProbe>  probes = getByProbe(probeId);
+		if (probes == null)
+			return true;
+		for (RunnableProbe runnableProbe : probes.values())
 			remove(runnableProbe);
 		return true;
 	}
