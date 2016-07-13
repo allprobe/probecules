@@ -141,7 +141,7 @@ public class SnmpProbesBatch implements Runnable {
 
 						String rpStr = runnableProbe.getId();
 						if (rpStr.contains(
-								"0b05919c-6cc0-42cc-a74b-de3b0dcd4a2a@74cda666-3d85-4e56-a804-9d53c4e16259@snmp_1df9a0e7-6cf7-40ce-9322-7fb8cc2ad294"))
+								"snmp_52caf27e-445b-4b8d-bfc6-0307fd4ef3eb"))
 							Logit.LogDebug("BREAKPOINT");
 
 						_runnableProbes.add(runnableProbe);
@@ -160,6 +160,7 @@ public class SnmpProbesBatch implements Runnable {
 					} else {
 						long resultsTimestamp = System.currentTimeMillis();
 						for (SnmpResult result : response) {
+							result.checkIfTriggerd(RunnableProbeContainer.getInstanece().get(result.getRunnableProbeId()).getProbe().getTriggers());
 							SnmpStoreAs storeAs = ((SnmpProbe) RunnableProbeContainer.getInstanece()
 									.get(result.getRunnableProbeId()).getProbe()).getStoreAs();
 							if (storeAs == SnmpStoreAs.asIs) {

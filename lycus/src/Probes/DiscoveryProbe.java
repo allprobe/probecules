@@ -7,6 +7,7 @@ import java.util.UUID;
 import GlobalConstants.Constants;
 import GlobalConstants.Enums;
 import GlobalConstants.Enums.DiscoveryElementType;
+import GlobalConstants.SnmpUnit;
 import Model.DiscoveryTrigger;
 import Model.KeyUpdateModel;
 import Model.UpdateModel;
@@ -19,7 +20,6 @@ import lycus.Trigger;
 import lycus.TriggerCondition;
 import lycus.User;
 import lycus.UsersManager;
-
 public class DiscoveryProbe extends BaseProbe {
 	private Enums.DiscoveryElementType type;
 	private long elementsInterval;
@@ -95,7 +95,7 @@ public class DiscoveryProbe extends BaseProbe {
 			
 			Trigger trigger = new Trigger(triggers[index].discovery_trigger_id, "", this, 
 					UsersManager.getTriggerSev(triggers[index].discovery_trigger_severity), true,
-					key.discovery_type, Enums.XValueUnit.valueOf(triggers[index].discovery_trigger_unit), conditions); 
+					key.discovery_type, SnmpUnit.valueOf(triggers[index].discovery_trigger_unit), conditions); 
 			 
 			if (key.discovery_type.equals("bw"))
 			{

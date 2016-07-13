@@ -14,12 +14,12 @@ public class Trigger implements Cloneable {
 	private TriggerSeverity svrty;
 	private boolean status;
 	private String elementType;
-	private XValueUnit unit;
+	private SnmpUnit unit;
 	private ArrayList<TriggerCondition> condtions;
 	private boolean isTriggered;
 
 	public Trigger(String triggerId, String name, BaseProbe probe, TriggerSeverity svrty, boolean status,
-			String elementType, XValueUnit unit, ArrayList<TriggerCondition> condtions) {
+			String elementType, SnmpUnit unit, ArrayList<TriggerCondition> condtions) {
 		this.triggerId = triggerId;
 		this.name = name;
 		this.probe = probe;
@@ -87,11 +87,11 @@ public class Trigger implements Cloneable {
 		this.elementType = elementType;
 	}
 
-	public XValueUnit getUnit() {
+	public SnmpUnit getUnit() {
 		return unit;
 	}
 
-	public void setUnit(XValueUnit unit) {
+	public void setUnit(SnmpUnit unit) {
 		this.unit = unit;
 	}
 

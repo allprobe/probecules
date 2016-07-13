@@ -6,6 +6,7 @@ import org.snmp4j.smi.OID;
 import GlobalConstants.SnmpDataType;
 import GlobalConstants.SnmpUnit;
 import GlobalConstants.Enums.SnmpStoreAs;
+import GlobalConstants.Enums.XValueUnit;
 import Model.UpdateModel;
 import Model.UpdateValueModel;
 import Results.BaseResult;
@@ -19,11 +20,11 @@ public class SnmpProbe extends BaseProbe {
 	private OID oid;
 	private SnmpDataType dataType;
 	private SnmpUnit unit;
-	private SnmpStoreAs storeAs; 
+	private SnmpStoreAs storeAs;
 
-	public SnmpProbe(User user,String probe_id, UUID template_id, String name, long interval, float multiplier,
+	public SnmpProbe(User user, String probe_id, UUID template_id, String name, long interval, float multiplier,
 			boolean status, OID oid, SnmpDataType dataType, SnmpUnit unit, SnmpStoreAs storeAs) {
-		super(user,probe_id, template_id, name, interval, multiplier, status);
+		super(user, probe_id, template_id, name, interval, multiplier, status);
 		this.setOid(oid);
 		this.setDataType(dataType);
 		this.setStoreAs(storeAs);
@@ -76,35 +77,33 @@ public class SnmpProbe extends BaseProbe {
 		s.append("OID:").append(this.getOid().toString()).append("; ");
 		return s.toString();
 	}
-	
-	public boolean updateKeyValues(UpdateModel updateModel)
-	{
+
+	public boolean updateKeyValues(UpdateModel updateModel) {
 		super.updateKeyValues(updateModel);
 		UpdateValueModel updateValue = updateModel.update_value;
-		if (!GeneralFunctions.isNullOrEmpty(updateValue.key.snmp_oid) && !getOid().equals(updateValue.key.snmp_oid))
-		{
+		if (!GeneralFunctions.isNullOrEmpty(updateValue.key.snmp_oid) && !getOid().equals(updateValue.key.snmp_oid)) {
 			oid = new OID(updateValue.key.snmp_oid);
-			Logit.LogCheck("OID for " + getName() +  " has changed to " + updateValue.key.snmp_oid);
+			Logit.LogCheck("OID for " + getName() + " has changed to " + updateValue.key.snmp_oid);
 		}
-			
-		if ((unit == null &&  updateValue.key.value_unit != null) || !GeneralFunctions.isNullOrEmpty(updateValue.key.value_unit) && !updateValue.key.value_unit.equals(unit.toString()))
-		{
-			unit = UsersManager.getSnmpUnit(updateValue.key.value_unit);
-			Logit.LogCheck("Snmp unit for " + getName() +  " has changed to " + updateValue.key.value_unit);
+
+		if ((unit == null && updateValue.key.value_unit != null)
+				|| !GeneralFunctions.isNullOrEmpty(updateValue.key.value_unit)
+						&& !updateValue.key.value_unit.equals(unit.toString())) {
+			unit = SnmpUnit.valueOf(updateValue.key.value_unit);
+			Logit.LogCheck("Snmp unit for " + getName() + " has changed to " + updateValue.key.value_unit);
 		}
-		
-		if (!GeneralFunctions.isNullOrEmpty(updateValue.key.value_type) && !updateValue.key.value_type.equals(dataType.toString()))
-		{
-			dataType =  UsersManager.getSnmpDataType(updateValue.key.value_type);
-			Logit.LogCheck("Snmp data for " + getName() +  " has changed to " + updateValue.key.value_type);
+
+		if (!GeneralFunctions.isNullOrEmpty(updateValue.key.value_type)
+				&& !updateValue.key.value_type.equals(dataType.toString())) {
+			dataType = UsersManager.getSnmpDataType(updateValue.key.value_type);
+			Logit.LogCheck("Snmp data for " + getName() + " has changed to " + updateValue.key.value_type);
 		}
-		
-		if (updateValue.key.store_value_as != null && !updateValue.key.store_value_as.equals(storeAs.toString()))
-		{
+
+		if (updateValue.key.store_value_as != null && !updateValue.key.store_value_as.equals(storeAs.toString())) {
 			storeAs = SnmpStoreAs.values()[updateValue.key.store_value_as];
-			Logit.LogCheck("Snmp store as.. for " + getName() +  " has changed to " + updateValue.key.store_value_as);
+			Logit.LogCheck("Snmp store as.. for " + getName() + " has changed to " + updateValue.key.store_value_as);
 		}
-			
+
 		return true;
 	}
 }

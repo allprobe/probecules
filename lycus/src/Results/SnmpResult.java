@@ -6,10 +6,14 @@ import org.json.simple.JSONArray;
 
 import GlobalConstants.Constants;
 import GlobalConstants.Enums.SnmpError;
+import GlobalConstants.Enums.XValueUnit;
 import GlobalConstants.ProbeTypes;
+import GlobalConstants.SnmpUnit;
 import Probes.SnmpProbe;
+import Utils.Logit;
 import lycus.Trigger;
 import lycus.DataPointsRollup;
+import lycus.RunnableProbeContainer;
 import lycus.TriggerCondition;
 
 public class SnmpResult extends BaseResult {
@@ -17,18 +21,18 @@ public class SnmpResult extends BaseResult {
 	private String oid;
 	private String data;
 	private SnmpError error;
-	
-	//private DataPointsRollup[] dataRollups;
-//	private String snmpResultError;
-//	private Double tmpDeltaVar;// last results when probe "save results as"
-								// delta
-//	private Long tmpDeltaTimestamp;
+
+	// private DataPointsRollup[] dataRollups;
+	// private String snmpResultError;
+	// private Double tmpDeltaVar;// last results when probe "save results as"
+	// delta
+	// private Long tmpDeltaTimestamp;
 
 	public SnmpResult(String runnableProbeId, long timestamp) {
 		super(runnableProbeId, timestamp);
 		this.probeType = ProbeTypes.SNMP;
 	}
-	
+
 	public SnmpResult(String runnableProbeId, long timestamp, String data) {
 		super(runnableProbeId, timestamp);
 		this.probeType = ProbeTypes.SNMP;
@@ -60,11 +64,10 @@ public class SnmpResult extends BaseResult {
 		return data;
 	}
 
-	public void setData(String data)
-	{
+	public void setData(String data) {
 		this.data = data;
 	}
-	
+
 	// public void setStringData(String stringData) {
 	// this.data = stringData;
 	// }
@@ -86,37 +89,37 @@ public class SnmpResult extends BaseResult {
 		return numData;
 	}
 
-//	public Double getTmpDeltaVar() {
-//		return tmpDeltaVar;
-//	}
-//
-//	public void setTmpDeltaVar(Double tmpDeltaVar) {
-//		this.tmpDeltaVar = tmpDeltaVar;
-//	}
-//
-//	public Long getTmpDeltaTimestamp() {
-//		return tmpDeltaTimestamp;
-//	}
-//
-//	public void setTmpDeltaTimestamp(Long tmpDeltaTimestamp) {
-//		this.tmpDeltaTimestamp = tmpDeltaTimestamp;
-//	}
-//
-//	public synchronized DataPointsRollup[] getDataRollups() {
-//		return dataRollups;
-//	}
-//
-//	public synchronized void setDataRollups(DataPointsRollup[] dataRollups) {
-//		this.dataRollups = dataRollups;
-//	}
-//
-//	public String getSnmpResultError() {
-//		return snmpResultError;
-//	}
-//
-//	public void setSnmpResultError(String snmpResultError) {
-//		this.snmpResultError = snmpResultError;
-//	}
+	// public Double getTmpDeltaVar() {
+	// return tmpDeltaVar;
+	// }
+	//
+	// public void setTmpDeltaVar(Double tmpDeltaVar) {
+	// this.tmpDeltaVar = tmpDeltaVar;
+	// }
+	//
+	// public Long getTmpDeltaTimestamp() {
+	// return tmpDeltaTimestamp;
+	// }
+	//
+	// public void setTmpDeltaTimestamp(Long tmpDeltaTimestamp) {
+	// this.tmpDeltaTimestamp = tmpDeltaTimestamp;
+	// }
+	//
+	// public synchronized DataPointsRollup[] getDataRollups() {
+	// return dataRollups;
+	// }
+	//
+	// public synchronized void setDataRollups(DataPointsRollup[] dataRollups) {
+	// this.dataRollups = dataRollups;
+	// }
+	//
+	// public String getSnmpResultError() {
+	// return snmpResultError;
+	// }
+	//
+	// public void setSnmpResultError(String snmpResultError) {
+	// this.snmpResultError = snmpResultError;
+	// }
 
 	// @Override
 	// public synchronized void acceptResults(ArrayList<Object> results) throws
@@ -221,23 +224,30 @@ public class SnmpResult extends BaseResult {
 	// }
 	// }
 
-//	private Double getBytesPerSecond(long lastTimestamp, Double data, long ifSpeed) {
-//		Double oldOctets = this.getTmpDeltaVar();
-//		Double newOctets = data;
-//		long oldTimestamp = this.getTmpDeltaTimestamp();
-//		long newTimestamp = lastTimestamp;
-//
-//		Double bandwidth = ((newOctets - oldOctets) * 8 * 100) / (((newTimestamp - oldTimestamp) / 1000) * ifSpeed);
-//
-//		return bandwidth;
-//	}
-//
-//	private void setTmpDeltaTimestamp(long lastTimestamp) {
-//		this.tmpDeltaTimestamp = lastTimestamp;
-//	}
+	// private Double getBytesPerSecond(long lastTimestamp, Double data, long
+	// ifSpeed) {
+	// Double oldOctets = this.getTmpDeltaVar();
+	// Double newOctets = data;
+	// long oldTimestamp = this.getTmpDeltaTimestamp();
+	// long newTimestamp = lastTimestamp;
+	//
+	// Double bandwidth = ((newOctets - oldOctets) * 8 * 100) / (((newTimestamp
+	// - oldTimestamp) / 1000) * ifSpeed);
+	//
+	// return bandwidth;
+	// }
+	//
+	// private void setTmpDeltaTimestamp(long lastTimestamp) {
+	// this.tmpDeltaTimestamp = lastTimestamp;
+	// }
 
 	@Override
 	public void checkIfTriggerd(HashMap<String, Trigger> triggers) throws Exception {
+
+		if (this.getRunnableProbeId()
+				.contains("15a29f39-5baf-4672-8853-c08b4b247be0@snmp_52caf27e-445b-4b8d-bfc6-0307fd4ef3eb"))
+			Logit.LogDebug("BREAKPOINT");
+
 		super.checkIfTriggerd(triggers);
 		for (Trigger trigger : triggers.values()) {
 
@@ -260,24 +270,53 @@ public class SnmpResult extends BaseResult {
 		boolean flag = false;
 		for (TriggerCondition condition : trigger.getCondtions()) {
 			int x = Integer.parseInt(condition.getxValue());
-			double lastValue = this.getNumData();
-			switch (condition.getCode()) {
-			case 1:
-				if (lastValue > x)
-					flag = true;
-				break;
-			case 2:
-				if (lastValue < x)
-					flag = true;
-				break;
-			case 3:
-				if (lastValue == x)
-					flag = true;
-				break;
-			case 4:
-				if (lastValue != x)
-					flag = true;
-				break;
+			Double lastValue = this.getNumData();
+			if (lastValue == null)
+				continue;
+			SnmpUnit resultUnit = ((SnmpProbe) RunnableProbeContainer.getInstanece().get(this.getRunnableProbeId())
+					.getProbe()).getUnit();
+			SnmpUnit triggerUnit = trigger.getUnit();
+			if (resultUnit.equals(SnmpUnit.as_is)) {
+				switch (condition.getCode()) {
+				case 1:
+					if (lastValue > x)
+						flag = true;
+					break;
+				case 2:
+					if (lastValue < x)
+						flag = true;
+					break;
+				case 3:
+					if (lastValue == x)
+						flag = true;
+					break;
+				case 4:
+					if (lastValue != x)
+						flag = true;
+					break;
+				}
+			} else {
+
+				long resultInBits = SnmpUnit.getBasic(Math.round(lastValue), resultUnit);
+				long triggerInBits = SnmpUnit.getBasic(Long.parseLong(condition.getxValue()), trigger.getUnit());
+				switch (condition.getCode()) {
+				case 1:
+					if (resultInBits > triggerInBits)
+						flag = true;
+					break;
+				case 2:
+					if (resultInBits < triggerInBits)
+						flag = true;
+					break;
+				case 3:
+					if (resultInBits == triggerInBits)
+						flag = true;
+					break;
+				case 4:
+					if (resultInBits != triggerInBits)
+						flag = true;
+					break;
+				}
 			}
 			if (flag && condition.getAndOr().equals("or"))
 				return true;
@@ -430,9 +469,10 @@ public class SnmpResult extends BaseResult {
 	public void setOid(String oid) {
 		this.oid = oid;
 	}
+
 	@Override
 	public Object getResultObject() {
-		JSONArray result=new JSONArray();
+		JSONArray result = new JSONArray();
 		result.add(4);
 		result.add(data);
 		return result;

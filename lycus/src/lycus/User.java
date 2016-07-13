@@ -477,7 +477,7 @@ public class User {
 					return null;
 				}
 
-				SnmpUnit unit = getSnmpUnit(valueUnit);
+				SnmpUnit unit = SnmpUnit.valueOf(valueUnit);
 				if (unit == null) {
 					Logit.LogWarn("Probe: " + probeId + " Wrong Unit Type, Doesn't Added!");
 					return null;
@@ -547,7 +547,7 @@ public class User {
 			conditions.add(triggerCondition);
 
 			TriggerSeverity sev = UsersManager.getTriggerSev(trigger.discovery_trigger_severity);
-			Enums.XValueUnit un = Enums.XValueUnit.valueOf(trigger.discovery_trigger_unit);
+			SnmpUnit un = SnmpUnit.valueOf(trigger.discovery_trigger_unit);
 
 			Trigger discoveryTrigger = new Trigger(triggerId, name, probe, sev, true, "", un, conditions);
 			probe.addTrigger(discoveryTrigger);
@@ -577,46 +577,46 @@ public class User {
 		return dataType;
 	}
 
-	private SnmpUnit getSnmpUnit(String unitType) {
-		SnmpUnit unit;
-		switch (unitType) {
-		case Constants.b:
-			unit = SnmpUnit.bits;
-			break;
-		case Constants.B:
-			unit = SnmpUnit.bytes;
-			break;
-		case Constants.Kb:
-			unit = SnmpUnit.kbits;
-			break;
-		case Constants.KB:
-			unit = SnmpUnit.kbytes;
-			break;
-		case Constants.Mb:
-			unit = SnmpUnit.mbits;
-			break;
-		case Constants.MB:
-			unit = SnmpUnit.mbytes;
-			break;
-		case Constants.Gb:
-			unit = SnmpUnit.gbits;
-			break;
-		case Constants.GB:
-			unit = SnmpUnit.gbytes;
-			break;
-		case Constants.none:
-			unit = SnmpUnit.none;
-			break;
-		case "":
-			unit = SnmpUnit.none;
-			break;
-
-		default: {
-			unit = SnmpUnit.none;
-		}
-		}
-		return unit;
-	}
+	// private SnmpUnit getSnmpUnit(String unitType) {
+	// SnmpUnit unit;
+	// switch (unitType) {
+	// case Constants.b:
+	// unit = SnmpUnit.bits;
+	// break;
+	// case Constants.B:
+	// unit = SnmpUnit.bytes;
+	// break;
+	// case Constants.Kb:
+	// unit = SnmpUnit.kbits;
+	// break;
+	// case Constants.KB:
+	// unit = SnmpUnit.kbytes;
+	// break;
+	// case Constants.Mb:
+	// unit = SnmpUnit.mbits;
+	// break;
+	// case Constants.MB:
+	// unit = SnmpUnit.mbytes;
+	// break;
+	// case Constants.Gb:
+	// unit = SnmpUnit.gbits;
+	// break;
+	// case Constants.GB:
+	// unit = SnmpUnit.gbytes;
+	// break;
+	// case Constants.none:
+	// unit = SnmpUnit.none;
+	// break;
+	// case "":
+	// unit = SnmpUnit.none;
+	// break;
+	//
+	// default: {
+	// unit = SnmpUnit.none;
+	// }
+	// }
+	// return unit;
+	// }
 
 	private TriggerSeverity getTriggerSev(String sev) {
 		switch (sev) {

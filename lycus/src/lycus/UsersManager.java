@@ -87,9 +87,8 @@ public class UsersManager {
 	public static boolean addUser(UUID userId) {
 		User user = new User(userId);
 		if (!getUsers().containsKey(userId)) {
-			
+
 			getUsers().put(userId, user);
-			
 
 		}
 		User u = getUsers().get(userId);
@@ -120,7 +119,7 @@ public class UsersManager {
 		HashMap<String, UUID> probeByUser = getProbeByUser(runnableProbesIds);
 
 		if (runnableProbesIds == null) {
-			Logit.LogFatal("UsersManager", "no probes found for this server!",null);
+			Logit.LogFatal("UsersManager", "no probes found for this server!", null);
 			return false;
 		}
 
@@ -167,7 +166,7 @@ public class UsersManager {
 		return ExtendedProbeID_UserID;
 
 	}
-	
+
 	private static HashMap<String, UUID> getProbeByUser(HashMap<String, UUID> runnableProbesIds) {
 		HashMap<String, UUID> probeByUser = new HashMap<String, UUID>();
 		for (Map.Entry<String, UUID> rp : runnableProbesIds.entrySet()) {
@@ -254,7 +253,7 @@ public class UsersManager {
 					if (rpStr.contains(
 							"0122dc0b-2de1-4d9c-abe1-1c65371775f2@7352a46f-5189-428c-b4c0-fb98dedd10b1@discovery_d3c95875-4947-4388-989f-64ffd863c704"))
 						Logit.LogDebug("BREAKPOINT");
-					
+
 					// JSONObject elementN=(JSONObject)elements.get();
 					// JSONObject
 					// elementValues=(JSONObject)elements.get(elementParams.name);
@@ -262,12 +261,12 @@ public class UsersManager {
 					elementParams.name = (String) elementJson.get("name");
 					elementParams.index = Integer.parseInt(elementJson.get("index").toString());
 					elementParams.status = (boolean) elementJson.get("active");
-					
-					if(((String)hostElementsJson.get("elements_type")).contains("bw")){
-					elementParams.hostType = (String) elementJson.get("hostType");
-					elementParams.ifSpeed = (long) elementJson.get("ifSpeed");}
-					else if(((String)hostElementsJson.get("elements_type")).contains("ds"))
-						elementParams.hrStorageAllocationUnits=(long) elementJson.get("hrStorageAllocationUnits");
+
+					if (((String) hostElementsJson.get("elements_type")).contains("bw")) {
+						elementParams.hostType = (String) elementJson.get("hostType");
+						elementParams.ifSpeed = (long) elementJson.get("ifSpeed");
+					} else if (((String) hostElementsJson.get("elements_type")).contains("ds"))
+						elementParams.hrStorageAllocationUnits = (long) elementJson.get("hrStorageAllocationUnits");
 					User user = getUsers().get(UUID.fromString(elementParams.user_id));
 					if (user == null)
 						continue;
@@ -303,7 +302,7 @@ public class UsersManager {
 			JSONObject hostJson = (JSONObject) allHostsJson.get(i);
 			UUID user_id = UUID.fromString((String) hostJson.get("user_id"));
 			User user = getUsers().get(user_id);
-			
+
 			HostParams hostParams = new HostParams();
 			hostParams.host_id = (String) hostJson.get("host_id");
 			hostParams.name = (String) hostJson.get("host_name");
@@ -322,38 +321,38 @@ public class UsersManager {
 			JSONObject hostJson = (JSONObject) allHostsJson.get(i);
 			UUID user_id = UUID.fromString((String) hostJson.get("user_id"));
 			User user = getUsers().get(user_id);
-			if (user == null)
-			{
+			if (user == null) {
 				addUser(user_id);
 				user = getUser(user_id);
-//				getUsers().put(user_id, user);
+				// getUsers().put(user_id, user);
 			}
-			
-			String snmpTemplateId = ((JSONObject)allHostsJson.get(0)).get("snmp_template").toString();
-			if (snmpTemplateId != null && !user.isSnmpTemplateExist(snmpTemplateId))
-			{
+
+			String snmpTemplateId = ((JSONObject) allHostsJson.get(0)).get("snmp_template").toString();
+			if (snmpTemplateId != null && !user.isSnmpTemplateExist(snmpTemplateId)) {
 				JSONObject templateId = new JSONObject();
 				JSONObject userIdSnmpTemplate = new JSONObject();
 				userIdSnmpTemplate.put(user_id, snmpTemplateId);
-				
+
 				JSONArray snmpTemplateIds = new JSONArray();
 				snmpTemplateIds.add(userIdSnmpTemplate);
 				templateId.put(Constants.snmpTemplates, snmpTemplateIds);
-				
+
 				IDAL dal = DAL.getInstanece();
 				JSONObject jsonObject = dal.put(ApiAction.GetSnmpTemplates, templateId);
-				
-				UsersManager.addSnmpTemplates((JSONArray)jsonObject.get("snmp_templates"));
-//				UUID id = jsonObject.get("snmp_user_id");
-//				
-//				
-//				(UUID id,String name, int version,int port, String sec, String userName,
-//						String authPass, String algo,String cryptPass,String cryptType,int timeout,boolean status
-//				SnmpTemplate snmpTemplate = new SnmpTemplate(id, name, version, port, sec, userName, authPass, algo, cryptPass, cryptType, timeout, status)
+
+				UsersManager.addSnmpTemplates((JSONArray) jsonObject.get("snmp_templates"));
+				// UUID id = jsonObject.get("snmp_user_id");
+				//
+				//
+				// (UUID id,String name, int version,int port, String sec,
+				// String userName,
+				// String authPass, String algo,String cryptPass,String
+				// cryptType,int timeout,boolean status
+				// SnmpTemplate snmpTemplate = new SnmpTemplate(id, name,
+				// version, port, sec, userName, authPass, algo, cryptPass,
+				// cryptType, timeout, status)
 			}
-			
-			
-			
+
 			HostParams hostParams = new HostParams();
 			hostParams.host_id = (String) hostJson.get("host_id");
 			hostParams.name = (String) hostJson.get("host_name");
@@ -366,7 +365,7 @@ public class UsersManager {
 			user.addHost(hostParams);
 		}
 	}
-	
+
 	// private static ArrayList<UUID> convertNotificationGroupsArray(Object
 	// notifs) {
 	// if (notifs == null)
@@ -425,7 +424,7 @@ public class UsersManager {
 					probeParams.http_auth_username = (String) probeKeyJson.get("http_auth_user");
 					probeParams.http_auth_password = (String) probeKeyJson.get("http_auth_password");
 					probeParams.timeout = Integer.parseInt(probeKeyJson.get("timeout").toString());
-					probeParams.http_deep=Integer.parseInt(probeKeyJson.get("http_deep").toString());
+					probeParams.http_deep = Integer.parseInt(probeKeyJson.get("http_deep").toString());
 					break;
 				}
 				case Constants.snmp: {
@@ -511,7 +510,7 @@ public class UsersManager {
 
 				String rpStr = triggerId;
 				if (rpStr.contains(
-						"e8b03d1e-48c8-4bd1-abeb-7e9a96a4cae4@icmp_41468c4c-c7d4-4dae-bd03-a5b2ca0b44d6@2b082834-7c37-4988-a12a-14947b064430"))
+						"snmp_52caf27e-445b-4b8d-bfc6-0307fd4ef3eb"))
 					Logit.LogDebug("BREAKPOINT");
 
 				String name = (String) triggerJson.get("name");
@@ -521,7 +520,7 @@ public class UsersManager {
 				boolean status = ((String) triggerJson.get("status")).equals("1") ? true : false;
 				String elementType = (String) triggerJson.get("trigger_type");
 				String unitType = (String) triggerJson.get("xvalue_unit");
-				XValueUnit trigValueUnit = XValueUnit.valueOf(unitType);
+				SnmpUnit trigValueUnit = SnmpUnit.valueOf(unitType);
 
 				ArrayList<TriggerCondition> conditions = getTriggerConds((JSONArray) triggerJson.get("conditions"));
 
@@ -549,48 +548,49 @@ public class UsersManager {
 		}
 	}
 
-	public static SnmpUnit getSnmpUnit(String unitType) {
-		SnmpUnit unit;
-		switch (unitType) {
-		case "b":
-			unit = SnmpUnit.bits;
-			break;
-		case "B":
-			unit = SnmpUnit.bytes;
-			break;
-		case "Kb":
-			unit = SnmpUnit.kbits;
-			break;
-		case "KB":
-			unit = SnmpUnit.kbytes;
-			break;
-		case "Mb":
-			unit = SnmpUnit.mbits;
-			break;
-		case "MB":
-			unit = SnmpUnit.mbytes;
-			break;
-		case "Gb":
-			unit = SnmpUnit.gbits;
-			break;
-		case "GB":
-			unit = SnmpUnit.gbytes;
-			break;
-		case "none":
-			unit = SnmpUnit.none;
-			break;
-		case "":
-			unit = null;
-			break;
-
-		default: {
-			unit = null;
-			// throw new IOException("Unable to create SnmpUnit unreadble value:
-			// " + unitType);
-		}
-		}
-		return unit;
-	}
+	// public static SnmpUnit getSnmpUnit(String unitType) {
+	// SnmpUnit unit;
+	// switch (unitType) {
+	// case "b":
+	// unit = SnmpUnit.bits;
+	// break;
+	// case "B":
+	// unit = SnmpUnit.bytes;
+	// break;
+	// case "Kb":
+	// unit = SnmpUnit.kbits;
+	// break;
+	// case "KB":
+	// unit = SnmpUnit.kbytes;
+	// break;
+	// case "Mb":
+	// unit = SnmpUnit.mbits;
+	// break;
+	// case "MB":
+	// unit = SnmpUnit.mbytes;
+	// break;
+	// case "Gb":
+	// unit = SnmpUnit.gbits;
+	// break;
+	// case "GB":
+	// unit = SnmpUnit.gbytes;
+	// break;
+	// case "none":
+	// unit = SnmpUnit.none;
+	// break;
+	// case "":
+	// unit = null;
+	// break;
+	//
+	// default: {
+	// unit = null;
+	// // throw new IOException("Unable to create SnmpUnit unreadble value:
+	// // " + unitType);
+	// }
+	// }
+	// return unit;
+	//
+	// }
 
 	private static ArrayList<TriggerCondition> getTriggerConds(JSONArray jsonArray) {
 		ArrayList<TriggerCondition> conditions = new ArrayList<TriggerCondition>();
@@ -645,7 +645,8 @@ public class UsersManager {
 			UUID userID = rp.getValue();
 			String rpID = rp.getKey();
 
-			if (rpID.contains("36897eaf-db96-4533-b261-3476bb4e90a2@7352a46f-5189-428c-b4c0-fb98dedd10b1@snmp_50bdfcc0-f01b-4aad-95c1-791442744c3e"))
+			if (rpID.contains(
+					"36897eaf-db96-4533-b261-3476bb4e90a2@7352a46f-5189-428c-b4c0-fb98dedd10b1@snmp_50bdfcc0-f01b-4aad-95c1-791442744c3e"))
 				Logit.LogDebug("BREAKPOINT");
 
 			User u = getUsers().get(userID);
@@ -659,7 +660,7 @@ public class UsersManager {
 
 			RunnableProbe runnableProbe = new RunnableProbe(host, probe);
 			RunnableProbeContainer.getInstanece().add(runnableProbe);
-//			u.addRunnableProbe(runnableProbe);
+			// u.addRunnableProbe(runnableProbe);
 		}
 	}
 
@@ -699,7 +700,8 @@ public class UsersManager {
 				try {
 					Thread.sleep(60000);
 				} catch (InterruptedException e) {
-					Logit.LogError("UsersManager - getServerInfoFromApi","Main Thread Interrupted! E: " + e.getMessage());
+					Logit.LogError("UsersManager - getServerInfoFromApi",
+							"Main Thread Interrupted! E: " + e.getMessage());
 				}
 			} else {
 				JSONObject jsonInitServer = (JSONObject) (initServer);
