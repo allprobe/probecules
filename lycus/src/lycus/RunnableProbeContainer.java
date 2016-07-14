@@ -344,7 +344,7 @@ public class RunnableProbeContainer implements IRunnableProbeContainer {
 	public ThreadsCount getThreadCount() {
 		ThreadsCount threadCount = new ThreadsCount();
 		for (RunnableProbe runnableProbe : runnableProbes.values()) {
-			if (runnableProbe.isActive()) {
+			if (runnableProbe.isActive() && runnableProbe.getProbe().isActive()) {
 				if (runnableProbe.getProbe() instanceof IcmpProbe)
 					threadCount.ping++;
 				if (runnableProbe.getProbe() instanceof PortProbe)
