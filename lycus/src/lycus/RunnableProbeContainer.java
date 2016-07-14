@@ -11,7 +11,17 @@ import GlobalConstants.Constants;
 import GlobalConstants.GlobalConfig;
 import GlobalConstants.ProbeTypes;
 import Interfaces.IRunnableProbeContainer;
+import Model.ThreadsCount;
 import Probes.BaseProbe;
+import Probes.DiscoveryProbe;
+import Probes.DiskProbe;
+import Probes.HttpProbe;
+import Probes.IcmpProbe;
+import Probes.NicProbe;
+import Probes.PortProbe;
+import Probes.RBLProbe;
+import Probes.SnmpProbe;
+import Probes.TracerouteProbe;
 import Utils.Logit;
 
 public class RunnableProbeContainer implements IRunnableProbeContainer {
@@ -181,7 +191,7 @@ public class RunnableProbeContainer implements IRunnableProbeContainer {
 
 	@Override
 	public boolean removeByProbeId(String probeId) {
-		ConcurrentHashMap<String, RunnableProbe>  probes = getByProbe(probeId);
+		ConcurrentHashMap<String, RunnableProbe> probes = getByProbe(probeId);
 		if (probes == null)
 			return true;
 		for (RunnableProbe runnableProbe : probes.values())
@@ -329,6 +339,33 @@ public class RunnableProbeContainer implements IRunnableProbeContainer {
 			Logit.LogWarn("Unable to stop running probe: " + runnableProbe.getId() + ",\n" + e.getMessage());
 			return false;
 		}
+	}
+
+	public ThreadsCount getThreadCount() {
+		ThreadsCount threadCount = new ThreadsCount();
+		for (RunnableProbe runnableProbe : runnableProbes.values()) {
+			if (runnableProbe.isActive()) {
+				if (runnableProbe.getProbe() instanceof IcmpProbe)
+					threadCount.ping++;
+				if (runnableProbe.getProbe() instanceof PortProbe)
+					threadCount.port++;
+				if (runnableProbe.getProbe() instanceof HttpProbe)
+					threadCount.web++;
+				if (runnableProbe.getProbe() instanceof SnmpProbe)
+					threadCount.snmp++;
+				if (runnableProbe.getProbe() instanceof RBLProbe)
+					threadCount.rbl++;
+				if (runnableProbe.getProbe() instanceof DiscoveryProbe)
+					threadCount.discovery++;
+				if (runnableProbe.getProbe() instanceof NicProbe)
+					threadCount.nic++;
+				if (runnableProbe.getProbe() instanceof DiskProbe)
+					threadCount.disk++;
+				if (runnableProbe.getProbe() instanceof TracerouteProbe)
+					threadCount.traceroute++;
+			}
+		}
+		return threadCount;
 	}
 
 	// @Override

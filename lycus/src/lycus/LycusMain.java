@@ -11,6 +11,7 @@ import java.util.concurrent.TimeUnit;
 import GlobalConstants.Constants;
 import GlobalConstants.GlobalConfig;
 import NetConnection.Net;
+import Tasks.DiagnosticTask;
 import Tasks.EventTask;
 import Tasks.ResultsTask;
 import Tasks.RollupsDumpTask;
@@ -70,6 +71,10 @@ public class LycusMain {
 		long initialDelay = (60 - currentTime.getMinutes()) * 60 - (60 - currentTime.getSeconds());
 		slaThread.scheduleAtFixedRate(slaTask, initialDelay, slaTask.getInterval(), TimeUnit.SECONDS);
 
+		DiagnosticTask diagnosticTask = new DiagnosticTask();
+		ScheduledExecutorService DiagnosticThread = Executors.newSingleThreadScheduledExecutor();
+		rollupsThread.scheduleAtFixedRate(diagnosticTask, 0, 300, TimeUnit.SECONDS);
+		
 		return true;
 
 	}

@@ -13,7 +13,8 @@ public class Enums {
 		DevGetThreadsUpdates,
 		GetHosts,
 		GetSnmpTemplates,
-		PutSlaBatches
+		PutSlaBatches,
+		DiagnosticResults
 	}
 	
 	public static enum DiscoveryElementType
