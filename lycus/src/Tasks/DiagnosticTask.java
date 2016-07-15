@@ -22,9 +22,9 @@ public class DiagnosticTask extends BaseTask {
 	public void run() {
 		try {
 			Logit.LogInfo("Sending Diagmostic API...");
-			
+
 			ThreadsCount threadsCount = RunnableProbeContainer.getInstanece().getThreadCount();
-			
+
 			JSONObject jsonItem = new JSONObject();
 			jsonItem.put("PING", threadsCount.ping);
 			jsonItem.put("PORT", threadsCount.port);
@@ -34,13 +34,15 @@ public class DiagnosticTask extends BaseTask {
 			jsonItem.put("DISCOVERY", threadsCount.discovery);
 			jsonItem.put("NIC", threadsCount.nic);
 			jsonItem.put("DISK", threadsCount.disk);
-			jsonItem.put("TRACEROUT", threadsCount.traceroute);
+			jsonItem.put("TRACEROUTE", threadsCount.traceroute);
 			JSONObject returnJson = new JSONObject();
 			returnJson.put("diagnostic_results", jsonItem);
-			
+
 			if (DAL.getInstanece().put(Enums.ApiAction.DiagnosticResults, returnJson) == null)
 				FailedRequestsHandler.getInstance()
 						.addRequest(new ApiRequest(Enums.ApiAction.DiagnosticResults, returnJson));
+
+			threadsCount = null;
 		} catch (Throwable thrown) {
 			Logit.LogError("DiagnosticTask - run()", "Sending collected threads diagnostics results!");
 			StringWriter sw = new StringWriter();
