@@ -117,23 +117,21 @@ public class RunnableProbe implements Runnable {
 				} catch (Exception e) {
 					result = new BaseResult(this.getId());
 					result.setErrorMessage("RESULT_EXCEPTION");
-					Logit.LogError("RunnableProbe - run()", "Error, getting runnable probe results from probe! getResult() throws exception" + this.getProbeType() + " "
+					Logit.LogError("RunnableProbe - run()", "Error, getting runnable probe results from probe! getResult() throws exception " + this.getProbeType() + " "
 							+ this.getProbe().getName() + ", \nRunnabelProbeId: " + this.getId(), e);
 				}
 
 				if (result == null) {
-					if (result.getErrorMessage() != "")
-						result.setErrorMessage(result.getErrorMessage() + ", RESULT_OBJECT_NULL");
-					else
-						result.setErrorMessage("RESULT_OBJECT_NULL");
-					Logit.LogError("RunnableProbe - run()", "Error, getting runnable probe results from probe! Returned object is null" + this.getProbeType() + " "
+					result = new BaseResult(this.getId());
+					result.setErrorMessage("RESULT_OBJECT_NULL");
+					Logit.LogError("RunnableProbe - run()", "Error, getting runnable probe results from probe! Returned object is null " + this.getProbeType() + " "
 							+ this.getProbe().getName() + ", \nRunnabelProbeId: " + this.getId());
 				}
 
 				try {
 					result.checkIfTriggerd(getProbe().getTriggers());
 				} catch (Exception e) {
-					Logit.LogError("RunnableProbe - run()", "Error triggering runnable probe results!  "
+					Logit.LogError("RunnableProbe - run()", "Error triggering runnable probe results!  "+ this.getProbeType() + " "
 							+ this.getProbe().getName() + ", \nRunnabelProbeId: " + this.getId());
 //					continue;
 				}
