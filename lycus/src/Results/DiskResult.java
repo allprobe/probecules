@@ -7,12 +7,12 @@ import GlobalConstants.Enums.SnmpError;
 
 public class DiskResult extends BaseResult {
 
-//	private long hrStorageUnits;// in bytes
+	// private long hrStorageUnits;// in bytes
 	private long hrStorageSize;// in hrStorageUnits
 	private long hrStorageUsed;// in hrStorageUnits
 
 	private Enums.SnmpError error;
-	
+
 	public DiskResult(String runnableProbeId, long timestamp, long hrStorageUsed, long hrStorageSize,
 			long hrStorageAllocationUnits) {
 		super(runnableProbeId, timestamp);
@@ -40,28 +40,19 @@ public class DiskResult extends BaseResult {
 		this.hrStorageUsed = hrStorageUsed;
 	}
 
-//	public long getHrStorageUnits() {
-//		return hrStorageUnits;
-//	}
-//
-//	public void setHrStorageUnits(long hrStorageUnits) {
-//		this.hrStorageUnits = hrStorageUnits;
-//	}
 	public Object getResultObject() {
-		if(this.getLastTimestamp()==null)
+		if (this.getLastTimestamp() == null)
 			return null;
-			
-		JSONArray result=new JSONArray();
+
+		JSONArray result = new JSONArray();
 		result.add(12);
-		if(error==SnmpError.NO_COMUNICATION)
-		{
+		if (error == SnmpError.NO_COMUNICATION) {
 			result.add("NO_ROUTE");
-		}
-		else
-		{
-		result.add(getHrStorageSize());
-		result.add(getHrStorageUsed());
-		}
+		} else if (this.getErrorMessage().equals("")) {
+			result.add(getHrStorageSize());
+			result.add(getHrStorageUsed());
+		} else
+			result.add(this.getErrorMessage());
 		return result;
 	}
 

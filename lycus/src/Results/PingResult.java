@@ -75,16 +75,6 @@ public class PingResult extends BaseResult {
 		return super.getName();
 	}
 
-	@Override
-	public Object getResultObject() {
-		JSONArray result = new JSONArray();
-		result.add(1);
-		result.add(packetLoss);
-		result.add(rtt);
-		result.add(ttl);
-		return result;
-	}
-
 	private boolean checkForPacketLostTrigger(Trigger trigger) {
 		boolean flag = false;
 		for (TriggerCondition condition : trigger.getCondtions()) {
@@ -151,4 +141,19 @@ public class PingResult extends BaseResult {
 	public Boolean isActive() {
 		return packetLoss < Constants.pingPacketLostMin;
 	}
+
+	@Override
+	public Object getResultObject() {
+		JSONArray result = new JSONArray();
+		result.add(1);
+		if (this.getErrorMessage().equals("")) {
+			result.add(packetLoss);
+			result.add(rtt);
+			result.add(ttl);
+		}
+		else
+			result.add(this.getErrorMessage());
+		return result;
+	}
+
 }

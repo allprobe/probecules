@@ -98,39 +98,36 @@ public class RunnableProbe implements Runnable {
 	}
 
 	public void run() {
+		//isRunning = false will stop the thread
 		while (isRunning()) {
 			BaseResult result = null;
 			try {
 				String rpStr = this.getId();
-				if (rpStr.contains("snmp_52caf27e-445b-4b8d-bfc6-0307fd4ef3eb"))
+				if (rpStr.contains("f1cec079-fc7d-448a-b1dd-793c8684a0cb@6b999cd6-fcbb-4ca8-9936-5529b4c66976@port_4213fefb-2fe7-484e-a25d-847f27ea3583"))
 					Logit.LogDebug("BREAKPOINT - RunnableProbe");
 
+				//isActive = false will pause the thread
 				if (!isActive() || !getProbe().isActive())
 					continue;
 
-				// if (this.getProbeType().equals(ProbeTypes.BANDWIDTH_ELEMENT)
-				// && (!((NicProbe)getProbe()).getNicElement().isActive() ||
-				// !getProbe().isActive()))
-				// continue;
-				// if (this.getProbeType().equals(ProbeTypes.DISK_ELEMENT)
-				// && (!((DiskProbe)getProbe()).getDiskElement().isActive() ||
-				// !getProbe().isActive()))
-				// continue;
-
-				// Long timeStamp = result.getLastTimestamp();
-
+				long timeStamp = System.currentTimeMillis();
+				
 				try {
 					result = getProbe().getResult(this.getHost());
 				} catch (Exception e) {
-					Logit.LogError("RunnableProbe - run()", "Error getting runnable probe results! "
+					result = new BaseResult(this.getId());
+					result.setErrorMessage("RESULT_EXCEPTION");
+					Logit.LogError("RunnableProbe - run()", "Error, getting runnable probe results from probe! getResult() throws exception" + this.getProbeType() + " "
 							+ this.getProbe().getName() + ", \nRunnabelProbeId: " + this.getId(), e);
-					continue;
 				}
 
 				if (result == null) {
-					Logit.LogError("RunnableProbe - run()", "Error getting runnable probe results! results are NULL! "
+					if (result.getErrorMessage() != "")
+						result.setErrorMessage(result.getErrorMessage() + ", RESULT_OBJECT_NULL");
+					else
+						result.setErrorMessage("RESULT_OBJECT_NULL");
+					Logit.LogError("RunnableProbe - run()", "Error, getting runnable probe results from probe! Returned object is null" + this.getProbeType() + " "
 							+ this.getProbe().getName() + ", \nRunnabelProbeId: " + this.getId());
-					continue;
 				}
 
 				try {
@@ -138,18 +135,19 @@ public class RunnableProbe implements Runnable {
 				} catch (Exception e) {
 					Logit.LogError("RunnableProbe - run()", "Error triggering runnable probe results!  "
 							+ this.getProbe().getName() + ", \nRunnabelProbeId: " + this.getId());
-					continue;
+//					continue;
 				}
 
 				try {
-					if (result.getLastTimestamp() == null) {
-						Logit.LogError("RunnableProbe - run()",
-								"Error getting runnable probe results! last timestamp is null! "
-										+ this.getProbe().getName() + ", \nRunnabelProbeId: " + this.getId());
-						continue;
-
-					}
-
+//					if (result.getLastTimestamp() == null) {
+//						Logit.LogError("RunnableProbe - run()",
+//								"Error getting runnable probe results! last timestamp is null! "
+//										+ this.getProbe().getName() + ", \nRunnabelProbeId: " + this.getId());
+//						continue;
+//					}
+					
+					// Set the timeStamp to the value before the probe.
+					result.setLastTimestamp(timeStamp);  
 					ResultsContainer.getInstance().addResult(result);
 				} catch (Exception e) {
 					Logit.LogError("RunnableProbe - run()",

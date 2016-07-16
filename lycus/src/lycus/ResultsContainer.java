@@ -96,8 +96,9 @@ public class ResultsContainer implements IResultsContainer {
 
 		RunnableProbe rp = RunnableProbeContainer.getInstanece().get(rpr.getRunnableProbeId());
 
-		if (rpr.getResultObject() == null)
-			return null;
+		Object resultObject = rpr.getResultObject();
+//		if (resultObject== null)
+//			return null;
 
 		if (rp == null)
 			return null;
@@ -105,7 +106,7 @@ public class ResultsContainer implements IResultsContainer {
 		result.put("PROBE_TYPE", rp.getProbeType().name());
 		result.put("RESULTS_TIME", rpr.getLastTimestamp());
 		result.put("RESULTS_NAME", rpr.getName());
-		result.put("RESULTS", rpr.getResultObject());
+		result.put("RESULTS", resultObject);
 		result.put("RUNNABLE_PROBE_ID", rp.getId());
 
 		return result;
@@ -137,7 +138,7 @@ public class ResultsContainer implements IResultsContainer {
 				String it = (String) iterator.next();
 
 				if (it.contains(
-						"c3f052eb-d8e3-4672-9bab-cb25fc6e702f@0b05919c-6cc0-42cc-a74b-de3b0dcd4a2a@port_667b9da7-1d9b-46b7-8299-1cc981cb8cc8@07d1af43-1d78-4ddc-9d3b-ee7e3cf8eb50"))
+						"	721feef6-504b-4fe3-81e3-089ab33d53a1@6b999cd6-fcbb-4ca8-9936-5529b4c66976@snmp_986e5c7a-5382-44ce-8421-dea5c02ae6aa"))
 					Logit.LogDebug("BREAKPOINT");
 				try {
 					UUID hostId = UUID.fromString(it.split("@")[0]);

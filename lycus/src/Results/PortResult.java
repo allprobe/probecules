@@ -121,8 +121,13 @@ public class PortResult extends BaseResult {
 	public Object getResultObject() {
 		JSONArray result = new JSONArray();
 		result.add(2);
-		result.add(portStatus);
-		result.add(responseTime);
+		if (this.getErrorMessage().equals("")) {
+			result.add(portStatus);
+			result.add(responseTime);
+		}
+		else
+			result.add(this.getErrorMessage());
+		
 		return result;
 	}
 }

@@ -2,17 +2,12 @@ package Tasks;
 
 import java.io.PrintWriter;
 import java.io.StringWriter;
-
 import org.json.simple.JSONObject;
-
 import DAL.ApiRequest;
 import DAL.DAL;
 import DAL.FailedRequestsHandler;
-import GlobalConstants.Constants;
 import GlobalConstants.Enums;
-import Interfaces.ISLAContainer;
 import Model.ThreadsCount;
-import SLA.SLAContainer;
 import Utils.Logit;
 import lycus.RunnableProbeContainer;
 

@@ -41,15 +41,17 @@ public class TraceRouteResult extends BaseResult {
 	public Object getResultObject() {
 		JSONArray result = new JSONArray();
 		result.add(8);
-		
-		try {
-			result.add((JSONArray) (new JSONParser()).parse(JsonUtil.ToJson(routes)));
-		} catch (ParseException e) {
-			Logit.LogError("TraceRouteResult - getResultObject()",
-					"Unable to parse all routes of traceroute probe " + this.getRunnableProbeId() + " to json! ",
-					e);
-			return null;
-		}
+		if (this.getErrorMessage().equals("")) {
+			try {
+				result.add((JSONArray) (new JSONParser()).parse(JsonUtil.ToJson(routes)));
+			} catch (ParseException e) {
+				Logit.LogError("TraceRouteResult - getResultObject()",
+						"Unable to parse all routes of traceroute probe " + this.getRunnableProbeId() + " to json! ",
+						e);
+				return null;
+			}
+		} else
+			result.add(this.getErrorMessage());
 
 		return result;
 	}

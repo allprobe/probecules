@@ -16,17 +16,20 @@ public class BaseResult implements IResult {
 	private boolean isSent;
 	private String runnableProbeId;
 	protected ProbeTypes probeType;
+	private String errorMessage;
 
 	public BaseResult(String runnableProbeId, long timestamp) {
 
 		this.runnableProbeId = runnableProbeId;
 		this.lastTimestamp = timestamp;
+		errorMessage = "";
 		setSent(false);
 	}
 
 	public BaseResult(String runnableProbeId) {
 		this.runnableProbeId = runnableProbeId;
 		this.lastTimestamp = System.currentTimeMillis();
+		errorMessage = "";
 		setSent(false);
 	}
 
@@ -106,6 +109,14 @@ public class BaseResult implements IResult {
 	@Override
 	public Object getResultObject() {
 		return null;
+	}
+
+	public String getErrorMessage() {
+		return errorMessage;
+	}
+
+	public void setErrorMessage(String errorMessage) {
+		this.errorMessage = errorMessage;
 	}
 
 }

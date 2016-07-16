@@ -167,9 +167,14 @@ public class WebResult extends BaseResult {
 	public Object getResultObject() {
 		JSONArray result = new JSONArray();
 		result.add(3);
-		result.add(statusCode);
-		result.add(responseTime);
-		result.add(pageSize);
+		if (this.getErrorMessage().equals("")) {
+			result.add(statusCode);
+			result.add(responseTime);
+			result.add(pageSize);
+		}
+		else
+			result.add(this.getErrorMessage());
+		
 		return result;
 	}
 
