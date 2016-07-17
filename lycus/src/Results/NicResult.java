@@ -1,10 +1,13 @@
 package Results;
 
+import java.util.HashMap;
+
 import org.json.simple.JSONArray;
 
 import GlobalConstants.Enums;
 import GlobalConstants.Enums.SnmpError;
 import lycus.RunnableProbeContainer;
+import lycus.Trigger;
 
 public class NicResult extends BaseResult {
 	private long previousInterfaceInOctets;
@@ -141,5 +144,16 @@ public class NicResult extends BaseResult {
 
 	public void setError(Enums.SnmpError error) {
 		this.error = error;
+	}
+
+	@Override
+	public void checkIfTriggerd(HashMap<String, Trigger> triggers) throws Exception {
+		super.checkIfTriggerd(triggers);
+		for (Trigger trigger : triggers.values()) {
+			boolean triggered = false;
+
+			super.processTriggerResult(trigger, triggered);
+		}
+
 	}
 }

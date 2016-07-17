@@ -129,9 +129,12 @@ public class SnmpProbesBatch implements Runnable {
 
 					if (host.getSnmpTemp() == null) {
 						for (RunnableProbe rp : snmpProbes) {
+							SnmpResult result = new SnmpResult(rp.getId());
+							result.setErrorMessage("no snmp template");
+							ResultsContainer.getInstance().addResult(result);
 							Logit.LogInfo("Snmp Probe doesn't run: " + rp.getId() + ", no SNMP template configured!");
 						}
-						continue;
+						return;
 					}
 
 					List<SnmpProbe> _snmpProbes = new ArrayList<SnmpProbe>();
@@ -141,7 +144,7 @@ public class SnmpProbesBatch implements Runnable {
 
 						String rpStr = runnableProbe.getId();
 						if (rpStr.contains(
-								"snmp_52caf27e-445b-4b8d-bfc6-0307fd4ef3eb"))
+								"d382d15a-19e2-4c7f-b544-7de9357ed304@snmp_83d2e1fb-4ec6-4e4c-9183-2d9e4d2af450"))
 							Logit.LogDebug("BREAKPOINT");
 
 						_runnableProbes.add(runnableProbe);
@@ -152,15 +155,19 @@ public class SnmpProbesBatch implements Runnable {
 
 					if (response == null) {
 						for (RunnableProbe runnableProbe : _runnableProbes) {
+							SnmpResult result = new SnmpResult(runnableProbe.getId());
+							result.setErrorMessage("no response for snmp request");
+							ResultsContainer.getInstance().addResult(result);
 							Logit.LogWarn("Unable Probing Runnable Probe of: " + runnableProbe.getId());
 						}
 						Logit.LogInfo("Failed running  snmp batch - host: " + this.getHost().getHostIp()
 								+ ", snmp template:" + this.getHost().getSnmpTemp().toString());
-						continue;
+						return;
 					} else {
 						long resultsTimestamp = System.currentTimeMillis();
 						for (SnmpResult result : response) {
-							result.checkIfTriggerd(RunnableProbeContainer.getInstanece().get(result.getRunnableProbeId()).getProbe().getTriggers());
+							result.checkIfTriggerd(RunnableProbeContainer.getInstanece()
+									.get(result.getRunnableProbeId()).getProbe().getTriggers());
 							SnmpStoreAs storeAs = ((SnmpProbe) RunnableProbeContainer.getInstanece()
 									.get(result.getRunnableProbeId()).getProbe()).getStoreAs();
 							if (storeAs == SnmpStoreAs.asIs) {
@@ -181,6 +188,13 @@ public class SnmpProbesBatch implements Runnable {
 			} catch (Exception ex) {
 				ex.printStackTrace();
 				Logit.LogError("SnmpProbesBatch - run()", "Error running snmp probes batch:" + this.getBatchId(), ex);
+				for (RunnableProbe runnableProbe : this.getSnmpProbes().values()) {
+					SnmpResult result = new SnmpResult(runnableProbe.getId());
+					result.setErrorMessage("exception for snmp probe!");
+					ResultsContainer.getInstance().addResult(result);
+					Logit.LogWarn("Unable Probing Runnable Probe of: " + runnableProbe.getId());
+				}
+
 			} finally {
 				try {
 					synchronized (this) {

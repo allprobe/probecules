@@ -2,25 +2,16 @@ package lycus;
 
 import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.HashSet;
-import java.util.List;
 import java.util.Map;
-import java.util.Map.Entry;
-import java.util.Set;
 import java.util.UUID;
 
-import org.json.simple.JSONObject;
 import org.snmp4j.smi.OID;
 
-import Elements.BaseElement;
-import Elements.DiskElement;
 import GlobalConstants.Constants;
 import GlobalConstants.Enums;
-import GlobalConstants.LogType;
 import GlobalConstants.SnmpDataType;
 import GlobalConstants.SnmpUnit;
 import GlobalConstants.TriggerSeverity;
-import Model.DiscoveryElementParams;
 import Model.DiscoveryTrigger;
 import Model.HostParams;
 import Model.ProbeParams;
@@ -29,7 +20,6 @@ import Probes.BaseProbe;
 import Probes.DiscoveryProbe;
 import Probes.HttpProbe;
 import Probes.IcmpProbe;
-import Probes.NicProbe;
 import Probes.PortProbe;
 import Probes.RBLProbe;
 import Probes.SnmpProbe;
@@ -515,7 +505,16 @@ public class User {
 				probe = new DiscoveryProbe(this, probeId, templateId, name, interval, multiplier, status, discoveryType,
 						elementsInterval);
 
-				updateTriggers(probeParams, templateId, probeId, name, probe);
+				for(DiscoveryTrigger discoveryTrigger:probeParams.discovery_triggers)
+				{
+					ArrayList<TriggerCondition> conditions=new ArrayList<TriggerCondition>();
+					TriggerCondition condition=new TriggerCondition(discoveryTrigger.discovery_trigger_code, Constants.and, discoveryTrigger.discovery_trigger_x_value, null);
+					conditions.add(condition);
+					Trigger trigger=new Trigger(discoveryTrigger.discovery_trigger_id,getDiscoveryTriggerName(probeParams),probe,getTriggerSev(discoveryTrigger.discovery_trigger_severity),true,null,SnmpUnit.valueOf(discoveryTrigger.discovery_trigger_unit),conditions);
+					probe.addTrigger(trigger);
+				}
+				
+//				updateTriggers(probeParams, templateId, probeId, name, probe);
 				break;
 			}
 			case Constants.rbl: {
@@ -534,6 +533,43 @@ public class User {
 			Logit.LogWarn("Creation of Probe Failed: " + probeParams + " , not added!\n" + e.getMessage());
 			return null;
 		}
+	}
+
+	private String getDiscoveryTriggerName(ProbeParams probeParams) throws Exception {
+		switch (probeParams.discovery_type) {
+		case Constants.bw:
+			switch (probeParams.discovery_triggers[0].discovery_trigger_code) {
+			case 1:
+				return "Bandwidth is bigger than trigger X value!";
+			case 2:
+				return "Bandwidth is less than trigger X value!";
+
+			case 3:
+				return "Bandwidth is equal to trigger X value!";
+
+			case 4:
+				return "Bandwidth is different from trigger X value!";
+			}
+
+			break;
+		case Constants.ds:
+			switch (probeParams.discovery_triggers[0].discovery_trigger_code) {
+			case 1:
+				return "Disk is bigger than trigger X value!";
+			case 2:
+				return "Disk is less than trigger X value!";
+
+			case 3:
+				return "Disk is equal to trigger X value!";
+
+			case 4:
+				return "Disk is different from trigger X value!";
+			}
+			break;
+		default:
+			throw new Exception("Unable to determine discovery type --- " + probeParams.probe_id);
+		}
+		return null;
 	}
 
 	private void updateTriggers(ProbeParams probeParams, UUID templateId, String probeId, String name,

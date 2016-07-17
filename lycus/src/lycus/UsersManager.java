@@ -391,7 +391,7 @@ public class UsersManager {
 				probeParams.template_id = (String) probeJson.get("template_id");
 				probeParams.probe_id = (String) probeJson.get("probe_id");
 				String rpStr = probeParams.probe_id;
-				if (rpStr.contains("inner_657259e4-b70b-47d2-9e4a-3db904a367e1"))
+				if (rpStr.contains("snmp_1ea93ba7-8078-4880-8bc6-66c6b9ad9bdb"))
 					Logit.LogDebug("BREAKPOINT");
 				probeParams.name = (String) probeJson.get("probe_name");
 				probeParams.interval = Long.parseLong(probeJson.get("probe_interval").toString());
@@ -646,7 +646,7 @@ public class UsersManager {
 			String rpID = rp.getKey();
 
 			if (rpID.contains(
-					"36897eaf-db96-4533-b261-3476bb4e90a2@7352a46f-5189-428c-b4c0-fb98dedd10b1@snmp_50bdfcc0-f01b-4aad-95c1-791442744c3e"))
+					"01179751-b842-4dbb-a72e-30082c677249@snmp_0131348b-d562-4d0c-97e9-7e03c2fe587e"))
 				Logit.LogDebug("BREAKPOINT");
 
 			User u = getUsers().get(userID);

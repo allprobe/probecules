@@ -408,7 +408,6 @@ public class NetResults implements INetResults {
 		if (snmpVersion == 2) {
 			ifDescrResults = Net.Snmp2Walk(h.getHostIp(), h.getSnmpTemp().getPort(), h.getSnmpTemp().getTimeout(),
 					h.getSnmpTemp().getCommunityName(), Constants.ifAll.toString());
-
 			ArrayList<OID> oids = new ArrayList<OID>();
 			oids.add(Constants.sysDescr);
 			sysDescrResults = Net.Snmp2GETBULK(h.getHostIp(), h.getSnmpTemp().getPort(), h.getSnmpTemp().getTimeout(),

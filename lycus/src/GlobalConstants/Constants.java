@@ -1,6 +1,5 @@
 package GlobalConstants;
 
-import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
@@ -26,11 +25,11 @@ public class Constants {
 	public final static String deleteBucket = "delbucket";
 	public final static String updateSnmp = "updsnmp";
 	public final static String deleteSnmp = "delsnmp";
-//	public final static String updateDiscovery = "udisc";
+	// public final static String updateDiscovery = "udisc";
 	public final static String updateElement = "ude";
-//	public final static String deleteDiscovery = "rdisc";
+	// public final static String deleteDiscovery = "rdisc";
 	public final static String hosts = "hosts";
-	public final static String snmpTemplates="snmpTemplates";
+	public final static String snmpTemplates = "snmpTemplates";
 
 	public final static String icmp = "icmp";
 	public final static String port = "port";
@@ -57,37 +56,36 @@ public class Constants {
 	public final static String _int = "int";
 	public final static String str = "str";
 	public final static String none = "none";
-	
+
 	public final static String notice = "notice";
 	public final static String warning = "warning";
 	public final static String high = "high";
 	public final static String disaster = "disaster";
 	public final static String default1 = "default";
-	
+
 	public final static String _true = "1";
 	public final static String _false = "0";
 	public static final String bw = "bw";
 	public static final String ds = "ds";
 	public static final String inBW = "inBW";
 	public static final String outBW = "outBW";
-	
+
 	public static final String WRONG_OID = "WRONG_OID";
 	public static final String WRONG_VALUE_FORMAT = "WRONG_VALUE_FORMAT";
-	
+
 	public static final String and = "and";
 	public static final String or = "or";
 	public static final OID ifAll = new OID("1.3.6.1.2.1.2.2.1");
 	public static final OID storageAll = new OID("1.3.6.1.2.1.25.2.3.1");
-	 
+
 	public static final OID sysDescr = new OID("1.3.6.1.2.1.1.1.0");
 	public static final List<Integer> okStatus = Arrays.asList(200, 301, 303);
 	public static final int pingPacketLostMin = 80;
 	public static final int slaInterval = 3600;
-	
-	
+
 	public static final String hourly = "1h";
 	public static final String daily = "1s";
-	
+
 	public static int getBatchesSize() {
 		return 1400 / GlobalConfig.getMaxSnmpResponseInBytes();
 	}
