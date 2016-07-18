@@ -84,13 +84,7 @@ public class Constants {
 	public static final int slaInterval = 3600;
 
 	public static final String hourly = "1h";
-<<<<<<< eac95136d4a88db157093b6a0c5f0677e5a65a34
-	public static final String daily = "1s";
-
-=======
 	public static final String daily = "1d";
-	
->>>>>>> d62b2fb6bf9e6ff93af35cbb397362b73825af28
 	public static int getBatchesSize() {
 		return 1400 / GlobalConfig.getMaxSnmpResponseInBytes();
 	}
