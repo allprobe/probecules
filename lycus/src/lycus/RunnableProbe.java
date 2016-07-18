@@ -150,7 +150,6 @@ public class RunnableProbe implements Runnable {
 				} catch (Exception e) {
 					Logit.LogError("RunnableProbe - run()",
 							"Error processing runnable probe results to results container! " + this.getId());
-					continue;
 				}
 
 				try {
@@ -158,7 +157,6 @@ public class RunnableProbe implements Runnable {
 				} catch (Exception e) {
 					Logit.LogError("RunnableProbe - run()",
 							"Error processing runnable probe results to rollups container!" + this.getId(), e);
-					continue;
 				}
 
 				try {
@@ -166,7 +164,6 @@ public class RunnableProbe implements Runnable {
 				} catch (Exception e) {
 					Logit.LogError("RunnableProbe - run()",
 							"Error processing runnable probe results to SLA container!" + this.getId(), e);
-					continue;
 				}
 
 			} finally {
