@@ -60,7 +60,7 @@ public class Enums {
 	
 	public static enum SnmpError
 	{
-		NO_COMUNICATION;
+		NO_COMUNICATION, EXCEPTION_ON_REQUEST;
 	}
 	
 	public static enum ElementChange

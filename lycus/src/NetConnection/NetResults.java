@@ -242,46 +242,56 @@ public class NetResults implements INetResults {
 	public List<SnmpResult> getSnmpResults(Host host, List<SnmpProbe> snmpProbes) {
 
 		List<SnmpResult> allResults = new ArrayList<SnmpResult>();
-		SnmpTemplate snmpTemplate = host.getSnmpTemp();
 
-		HashMap<String, OID> probesOids = new HashMap<String, OID>();
-		for (SnmpProbe snmpProbe : snmpProbes)
-			probesOids.put(getRunnableProbeId(snmpProbe, host), snmpProbe.getOid());
+		try {
+			SnmpTemplate snmpTemplate = host.getSnmpTemp();
 
-		Map<String, String> rawResults = null;
+			HashMap<String, OID> probesOids = new HashMap<String, OID>();
+			for (SnmpProbe snmpProbe : snmpProbes)
+				probesOids.put(getRunnableProbeId(snmpProbe, host), snmpProbe.getOid());
 
-		long timestamp = System.currentTimeMillis();
-		switch (snmpTemplate.getVersion()) {
-		case 2:
-			rawResults = Net.Snmp2GETBULK(host.getHostIp(), snmpTemplate.getPort(), snmpTemplate.getTimeout(),
-					snmpTemplate.getCommunityName(), probesOids.values());
-			break;
-		case 3:
-			rawResults = Net.Snmp3GETBULK(host.getHostIp(), snmpTemplate.getPort(), snmpTemplate.getTimeout(),
-					snmpTemplate.getUserName(), snmpTemplate.getAuthPass(), snmpTemplate.getAlgo(),
-					snmpTemplate.getCryptPass(), snmpTemplate.getCryptType(), probesOids.values());
-			break;
-		}
-		if (rawResults == null || rawResults.size() == 0) {
+			Map<String, String> rawResults = null;
+
+			long timestamp = System.currentTimeMillis();
+			switch (snmpTemplate.getVersion()) {
+			case 2:
+				rawResults = Net.Snmp2GETBULK(host.getHostIp(), snmpTemplate.getPort(), snmpTemplate.getTimeout(),
+						snmpTemplate.getCommunityName(), probesOids.values());
+				break;
+			case 3:
+				rawResults = Net.Snmp3GETBULK(host.getHostIp(), snmpTemplate.getPort(), snmpTemplate.getTimeout(),
+						snmpTemplate.getUserName(), snmpTemplate.getAuthPass(), snmpTemplate.getAlgo(),
+						snmpTemplate.getCryptPass(), snmpTemplate.getCryptType(), probesOids.values());
+				break;
+			}
+			if (rawResults == null || rawResults.size() == 0) {
+				for (SnmpProbe snmpProbe : snmpProbes) {
+					SnmpResult snmpResult = new SnmpResult(getRunnableProbeId(snmpProbe, host), timestamp);
+					snmpResult.setError(SnmpError.NO_COMUNICATION);
+					allResults.add(snmpResult);
+				}
+
+				return allResults;
+			}
+
 			for (SnmpProbe snmpProbe : snmpProbes) {
-				SnmpResult snmpResult = new SnmpResult(getRunnableProbeId(snmpProbe, host), timestamp);
-				snmpResult.setError(SnmpError.NO_COMUNICATION);
+				String stringResult = rawResults.get((snmpProbe).getOid().toString());
+				SnmpResult snmpResult;
+				if (stringResult == null)
+					snmpResult = new SnmpResult(getRunnableProbeId(snmpProbe, host), timestamp, Constants.WRONG_OID);
+				else
+					snmpResult = new SnmpResult(getRunnableProbeId(snmpProbe, host), timestamp, stringResult);
 				allResults.add(snmpResult);
 			}
 
+		} catch (Exception e) {
+			for (SnmpProbe snmpProbe : snmpProbes) {
+				SnmpResult snmpResult = new SnmpResult(getRunnableProbeId(snmpProbe, host), System.currentTimeMillis());
+				snmpResult.setError(SnmpError.EXCEPTION_ON_REQUEST);
+				allResults.add(snmpResult);
+			}
 			return allResults;
 		}
-
-		for (SnmpProbe snmpProbe : snmpProbes) {
-			String stringResult = rawResults.get((snmpProbe).getOid().toString());
-			SnmpResult snmpResult;
-			if (stringResult == null)
-				snmpResult = new SnmpResult(getRunnableProbeId(snmpProbe, host), timestamp, Constants.WRONG_OID);
-			else
-				snmpResult = new SnmpResult(getRunnableProbeId(snmpProbe, host), timestamp, stringResult);
-			allResults.add(snmpResult);
-		}
-
 		return allResults;
 	}
 
