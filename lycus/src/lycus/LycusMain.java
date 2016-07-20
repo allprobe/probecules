@@ -9,6 +9,7 @@ import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.TimeUnit;
 import GlobalConstants.Constants;
+import GlobalConstants.Enums.ApiAction;
 import GlobalConstants.GlobalConfig;
 import NetConnection.Net;
 import Tasks.DiagnosticTask;
@@ -37,7 +38,6 @@ public class LycusMain {
 		if (!GlobalConfig.Initialize())
 			return;
 
-		Net.ExtendedWeber("http://allfdfinternet.co.il", "", "", "", 5);
 
 		UsersManager.Initialize();    // setup initial config (InitServer)
 

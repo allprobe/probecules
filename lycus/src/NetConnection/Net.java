@@ -709,18 +709,18 @@ public class Net {
 	public static Map<String, String> Snmp2GETBULK(String ip, int port, int timeout, String comName,
 			Collection<OID> collection) {
 		Map<String, String> oidsValues = new HashMap<String, String>();
-		Address targetAddress = GenericAddress.parse("udp:" + ip + "/" + port);
-		CommunityTarget target = new CommunityTarget();
-		target.setAddress(targetAddress);
-		target.setRetries(3);
-		target.setTimeout(timeout);
-		target.setVersion(SnmpConstants.version2c);
-		target.setCommunity(new OctetString(comName));
 
 		TransportMapping transport = null;
 		Snmp snmp = null;
 
 		try {
+			Address targetAddress = GenericAddress.parse("udp:" + ip + "/" + port);
+			CommunityTarget target = new CommunityTarget();
+			target.setAddress(targetAddress);
+			target.setRetries(3);
+			target.setTimeout(timeout);
+			target.setVersion(SnmpConstants.version2c);
+			target.setCommunity(new OctetString(comName));
 
 			transport = new DefaultUdpTransportMapping();
 			snmp = new Snmp(transport);
@@ -757,6 +757,7 @@ public class Net {
 					transport.close();
 				} catch (IOException e) {
 					Logit.LogError(null, "Unable to close TransportMapping! may cause memory leak!");
+					return null;
 				}
 			}
 			if (snmp != null) {
@@ -764,6 +765,7 @@ public class Net {
 					snmp.close();
 				} catch (IOException e) {
 					Logit.LogError(null, "Unable to close SNMP! may cause memory leak!");
+					return null;
 				}
 			}
 		}
@@ -780,32 +782,32 @@ public class Net {
 				: cryptAlgo.equals("des") ? PrivDES.ID : cryptAlgo.equals("aes") ? PrivAES128.ID : null;
 		OctetString _cryptPass = cryptPass == null ? null : new OctetString(cryptPass);
 		Map<String, String> oidsValues = new HashMap<String, String>();
-		Address targetAddress = GenericAddress.parse("udp:" + ip + "/" + port);
-		UserTarget target = new UserTarget();
-		target.setAddress(targetAddress);
-		target.setRetries(3);
-		target.setTimeout(timeout);
-		target.setVersion(SnmpConstants.version3);
-		target.setSecurityName(new OctetString(userName));
-		UsmUser usera = null;
-		if (userPass == null)
-			target.setSecurityLevel(SecurityLevel.NOAUTH_NOPRIV);
-		else if (cryptPass == null)
-			target.setSecurityLevel(SecurityLevel.AUTH_NOPRIV);
-		else
-			target.setSecurityLevel(SecurityLevel.AUTH_PRIV);
-		usera = new UsmUser(new OctetString(userName), // security
-				_authAlgo, // authprotocol
-				_authPass, // authpassphrase
-				_cryptAlgo, // privacyprotocol
-				_cryptPass // privacypassphrase
-		);
 		TransportMapping transport = transportMapping;
 		Snmp snmp = snmpInterface;
 		if (transport == null || snmp == null)
 			return null;
 
 		try {
+			Address targetAddress = GenericAddress.parse("udp:" + ip + "/" + port);
+			UserTarget target = new UserTarget();
+			target.setAddress(targetAddress);
+			target.setRetries(3);
+			target.setTimeout(timeout);
+			target.setVersion(SnmpConstants.version3);
+			target.setSecurityName(new OctetString(userName));
+			UsmUser usera = null;
+			if (userPass == null)
+				target.setSecurityLevel(SecurityLevel.NOAUTH_NOPRIV);
+			else if (cryptPass == null)
+				target.setSecurityLevel(SecurityLevel.AUTH_NOPRIV);
+			else
+				target.setSecurityLevel(SecurityLevel.AUTH_PRIV);
+			usera = new UsmUser(new OctetString(userName), // security
+					_authAlgo, // authprotocol
+					_authPass, // authpassphrase
+					_cryptAlgo, // privacyprotocol
+					_cryptPass // privacypassphrase
+					);
 
 			USM usm;
 			usm = new USM(SecurityProtocols.getInstance(), new OctetString(MPv3.createLocalEngineID()), 0);
@@ -843,7 +845,24 @@ public class Net {
 			Logit.LogError(null, "Unable to run Snmp3 GETBULK check!");
 			return null;
 		}
-
+		finally {
+			if (transport != null) {
+				try {
+					transport.close();
+				} catch (IOException e) {
+					Logit.LogError(null, "Unable to close TransportMapping! may cause memory leak!");
+					return null;
+				}
+			}
+			if (snmp != null) {
+				try {
+					snmp.close();
+				} catch (IOException e) {
+					Logit.LogError(null, "Unable to close SNMP! may cause memory leak!");
+					return null;
+				}
+			}
+		}
 		return oidsValues;
 	}
 

@@ -33,6 +33,10 @@ public class DiagnosticTask extends BaseTask {
 			JSONObject returnJson = new JSONObject();
 			returnJson.put("diagnostic_results", jsonItem);
 
+			
+			if (FailedRequestsHandler.getInstance().getNumberOfFailedRequests() != 0)
+				FailedRequestsHandler.getInstance().executeRequests();
+
 			if (DAL.getInstanece().put(Enums.ApiAction.DiagnosticResults, returnJson) == null)
 				FailedRequestsHandler.getInstance()
 						.addRequest(new ApiRequest(Enums.ApiAction.DiagnosticResults, returnJson));
