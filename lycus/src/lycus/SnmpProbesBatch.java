@@ -160,8 +160,9 @@ public class SnmpProbesBatch implements Runnable {
 							ResultsContainer.getInstance().addResult(result);
 							Logit.LogWarn("Unable Probing Runnable Probe of: " + runnableProbe.getId());
 						}
-						Logit.LogInfo("Failed running  snmp batch - host: " + this.getHost().getHostIp()
-								+ ", snmp template:" + this.getHost().getSnmpTemp().toString());
+						Logit.LogError("SnmpProbesBatch - run()",
+								"Failed running  snmp batch - host: " + this.getHost().getHostIp() + ", snmp template:"
+										+ this.getHost().getSnmpTemp().toString());
 						return;
 					} else {
 						long resultsTimestamp = System.currentTimeMillis();
@@ -176,12 +177,9 @@ public class SnmpProbesBatch implements Runnable {
 								RollupsContainer.getInstance().addResult(result);
 							} else if (storeAs == SnmpStoreAs.delta) {
 								SnmpDeltaResult snmpDeltaResult = getSnmpDeltaResult(result, resultsTimestamp);
-								// if (!snmpDeltaResult.isFirst()) {
 								ResultsContainer.getInstance().addResult(snmpDeltaResult);
 								RollupsContainer.getInstance().addResult(snmpDeltaResult);
-								// }
 							}
-
 						}
 					}
 				}
