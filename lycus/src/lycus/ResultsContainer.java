@@ -69,8 +69,8 @@ public class ResultsContainer implements IResultsContainer {
 	public boolean clear() {
 		eventsClear();
 		// TODO: Leave 10 last results from each kind on the list
-		results.clear();
-
+		// results.clear();
+		removeSentResults();
 		return true;
 	}
 
@@ -97,8 +97,8 @@ public class ResultsContainer implements IResultsContainer {
 		RunnableProbe rp = RunnableProbeContainer.getInstanece().get(rpr.getRunnableProbeId());
 
 		Object resultObject = rpr.getResultObject();
-//		if (resultObject== null)
-//			return null;
+		// if (resultObject== null)
+		// return null;
 
 		if (rp == null)
 			return null;
@@ -220,13 +220,18 @@ public class ResultsContainer implements IResultsContainer {
 
 	@Override
 	public boolean removeSentResults() {
+		List<BaseResult> results = new ArrayList<BaseResult>();
 		for (BaseResult result : results) {
 			if (result.isSent())
 				synchronized (lockResults) {
-					results.remove(result);
+					results.add(result);
 				}
-			result = null;
 		}
+		
+		for (BaseResult result : results) {
+			this.results.remove(result);
+		}
+
 		return true;
 	}
 
@@ -241,7 +246,9 @@ public class ResultsContainer implements IResultsContainer {
 						"8b0104e7-5902-4419-933f-668582fc3acd@6975cb58-8aa4-4ecd-b9fc-47b78c0d7af8@snmp_5d937636-eb75-4165-b339-38a729aa2b7d"))
 					Logit.LogDebug("BREAKPOINT");
 
-				JSONObject resultDBFormat = rawResultsDBFormat(results.get(i));
+				BaseResult result = results.get(i);
+				result.setSent(true);
+				JSONObject resultDBFormat = rawResultsDBFormat(result);
 				if (resultDBFormat == null)
 					continue;
 				resultsDBFormat.add(resultDBFormat);
