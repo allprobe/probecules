@@ -223,15 +223,14 @@ public class ResultsContainer implements IResultsContainer {
 		List<BaseResult> results = new ArrayList<BaseResult>();
 		for (BaseResult result : results) {
 			if (result.isSent())
-				synchronized (lockResults) {
-					results.add(result);
-				}
-		}
-		
-		for (BaseResult result : results) {
-			this.results.remove(result);
+				results.add(result);
 		}
 
+		for (BaseResult result : results) {
+			synchronized (lockResults) {
+				this.results.remove(result);
+			}
+		}
 		return true;
 	}
 
