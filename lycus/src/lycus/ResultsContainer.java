@@ -237,22 +237,34 @@ public class ResultsContainer implements IResultsContainer {
 	@Override
 	public String getResults() {
 		try {
+			List<BaseResult> resultsToDelete = new ArrayList<BaseResult>();
 			JSONArray resultsDBFormat = new JSONArray();
-			for (int i = 0; i < results.size(); i++) {
+			synchronized (lockResults) {
+				for (BaseResult result : results) {
+					if (!result.isSent()) {
 
-				String rpStr = results.get(i).getRunnableProbeId();
-				if (rpStr.contains(
-						"8b0104e7-5902-4419-933f-668582fc3acd@6975cb58-8aa4-4ecd-b9fc-47b78c0d7af8@snmp_5d937636-eb75-4165-b339-38a729aa2b7d"))
-					Logit.LogDebug("BREAKPOINT");
-
-				BaseResult result = results.get(i);
-				result.setSent(true);
-				JSONObject resultDBFormat = rawResultsDBFormat(result);
-				if (resultDBFormat == null)
-					continue;
-				resultsDBFormat.add(resultDBFormat);
+						// String rpStr = result.getRunnableProbeId();
+						// if (rpStr.contains(
+						// "8b0104e7-5902-4419-933f-668582fc3acd@6975cb58-8aa4-4ecd-b9fc-47b78c0d7af8@snmp_5d937636-eb75-4165-b339-38a729aa2b7d"))
+						// Logit.LogDebug("BREAKPOINT");
+						result.setSent(true);
+						JSONObject resultDBFormat = rawResultsDBFormat(result);
+						if (resultDBFormat == null)
+							continue;
+						resultsDBFormat.add(resultDBFormat);
+						resultsToDelete.add(result);
+					}
+				}
 			}
+
+			for (BaseResult result : resultsToDelete) {
+				synchronized (lockResults) {
+					this.results.remove(result);
+				}
+			}
+
 			return resultsDBFormat.toString();
+
 		} catch (Exception e) {
 			Logit.LogFatal("ResultsContainer - getResults()",
 					"Error getting results from resultsContainer! E: " + e.getMessage(), e);

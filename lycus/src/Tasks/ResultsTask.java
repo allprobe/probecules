@@ -22,7 +22,7 @@ public class ResultsTask extends BaseTask {
 
 			IResultsContainer resultsContainer = ResultsContainer.getInstance();
 			String results = resultsContainer.getResults();
-			ResultsContainer.getInstance().clear();
+//			ResultsContainer.getInstance().clear();
 			
 			if (results.contains("ed334812-4559-435a-9e43-0b52693be309@7352a46f-5189-428c-b4c0-fb98dedd10b1@http_01fe4920-086b-46b3-98f6-98be105a8aae"))
 				Logit.LogDebug("BREAKPOINT - ResultsTask");
