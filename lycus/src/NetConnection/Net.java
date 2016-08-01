@@ -118,7 +118,7 @@ public class Net {
                     return null;
                 }
             } else {
-				/* Linux & OSX */
+                /* Linux & OSX */
                 try {
                     StringBuilder b = new StringBuilder();
                     Integer buffer = (timeout / 1000);
@@ -401,9 +401,13 @@ public class Net {
                 sb.append(line);
             }
 
-            if (sb.toString().equals("FAIL to load the address") || sb.toString().equals(""))
+            if (sb.toString().equals(""))
                 return null;
 
+            if (sb.toString().equals("FAIL to load the address")) {
+                Logit.LogInfo("Error processing probe - might caused by timeout as well, Failed URL:" + url);
+                return null;
+            }
             JSONObject harFile = (JSONObject) new JSONParser().parse(sb.toString());
             return harFile;
             // WebClient webClient = new WebClient(BrowserVersion.CHROME);

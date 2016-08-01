@@ -312,6 +312,20 @@ public class ResultsContainer implements IResultsContainer {
 			}
 		}
 
+		for (Map.Entry<String, ConcurrentHashMap<String, Event>> runnableProbeEventsEntry : events.entrySet()) {
+			String runnableProbeId = runnableProbeEventsEntry.getKey();
+
+			ConcurrentHashMap<String, Event> runnableProbeEvents = runnableProbeEventsEntry.getValue();
+			for (Map.Entry<String, Event> triggerEvent : runnableProbeEvents.entrySet()) {
+				if (triggerEvent.getValue().isSent()) {
+					synchronized (lockEvents) {
+						this.events.get(runnableProbeId).remove(triggerEvent.getKey());
+					}
+				}
+			}
+
+		}
+
 		Gson gson = new GsonBuilder().setPrettyPrinting().create();
 		return (gson.toJson(eventsToSend));
 	}
