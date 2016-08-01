@@ -24,7 +24,9 @@ public class WebResult extends BaseResult {
 	public WebResult(String runnableProbeId) {
 		super(runnableProbeId);
 	}
-
+	public WebResult(String runnableProbeId,long timestamp) {
+		super(runnableProbeId,timestamp);
+	}
 	public Integer getStatusCode() {
 		return statusCode;
 	}

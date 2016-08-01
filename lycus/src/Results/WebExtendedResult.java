@@ -22,7 +22,12 @@ public class WebExtendedResult extends WebResult {
 			long responseSize) {
 		super(runnableProbeId, timestamp, responseCode, responseTime, responseSize);
 	}
-
+	public WebExtendedResult(String runnableProbeId, long timestamp) {
+		super(runnableProbeId, timestamp);
+	}
+	public WebExtendedResult(String runnableProbeId) {
+		super(runnableProbeId);
+	}
 	public ArrayList<DOMElement> getAllElementsResults() {
 		return allElementsResults;
 	}

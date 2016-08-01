@@ -146,9 +146,12 @@ public class NetResults implements INetResults {
 	public WebExtendedResult getWebExtendedResult(Host host, HttpProbe probe) {
 		JSONObject rawResults = Net.ExtendedWeber(probe.getUrl(), probe.getHttpRequestType(), probe.getAuthUsername(),
 				probe.getAuthPassword(), probe.getTimeout());
-		if (rawResults == null || rawResults.size() == 0)
-			return null;
-
+		if (rawResults == null || rawResults.size() == 0) {
+			WebExtendedResult result = new WebExtendedResult(
+					GeneralFunctions.getRunnableProbeId(probe.getTemplate_id(), host.getHostId(), probe.getProbe_id()));
+			result.setErrorMessage("Issue while running extended http probe - might be timeout");
+			return result;
+		}
 		Long timestamp = fromHarTimeToEpoch(
 				(String) ((JSONObject) ((JSONArray) ((JSONObject) rawResults.get("log")).get("pages")).get(0))
 						.get("startedDateTime"));
