@@ -378,6 +378,8 @@ public class Net {
 
     public static JSONObject ExtendedWeber(String url, String requestType, String user, String pass, int timeout) {
         Process p = null;
+
+
         try {
 
             StringBuilder b = new StringBuilder();
@@ -404,10 +406,11 @@ public class Net {
             if (sb.toString().equals(""))
                 return null;
 
-            if (sb.toString().equals("FAIL to load the address")) {
+            if (sb.toString().equals("FAIL to load the address")||sb.toString().startsWith("ReferenceError")) {
                 Logit.LogInfo("Error processing probe - might caused by timeout as well, Failed URL:" + url);
                 return null;
             }
+
             JSONObject harFile = (JSONObject) new JSONParser().parse(sb.toString());
             return harFile;
             // WebClient webClient = new WebClient(BrowserVersion.CHROME);

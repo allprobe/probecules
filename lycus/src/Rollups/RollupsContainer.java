@@ -383,6 +383,10 @@ public class RollupsContainer implements IRollupsContainer {
 
 	private void addWeberResult(BaseResult result) {
 		WebResult weberResults = (WebResult) result;
+		
+		if(weberResults.getStatusCode()==null)
+			return;
+		
 		DataPointsRollup[] responseTimeRollups = webResponseTimeRollups.get(result.getRunnableProbeId());
 		if (responseTimeRollups == null)
 			webResponseTimeRollups.put(result.getRunnableProbeId(), new DataPointsRollup[6]);
