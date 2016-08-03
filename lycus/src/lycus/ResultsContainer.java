@@ -209,6 +209,8 @@ public class ResultsContainer implements IResultsContainer {
 					// return true;
 				}
 				break;
+			default:
+				return false;
 			}
 		}
 

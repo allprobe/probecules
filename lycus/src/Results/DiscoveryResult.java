@@ -32,6 +32,10 @@ public class DiscoveryResult extends BaseResult {
 	}
 
 	public DiscoveryElementType getElementsType() {
+		
+		if(this.elements==null)
+			return DiscoveryElementType.unknown;
+		
 		for (BaseElement element : getElements().values()) {
 			if (element instanceof NicElement)
 				return DiscoveryElementType.bw;

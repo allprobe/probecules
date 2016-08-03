@@ -366,7 +366,8 @@ public class NetResults implements INetResults {
 
 		String walkOid;
 
-		if (host.getHostIp().contains("192.168.0.121")) {
+		if (probe.getProbe_id().equals("discovery_3ee653fc-adaa-468e-9430-b1793b1d1c7d")
+				&& host.getHostId().toString().equals("bf4e7e1c-4c44-4e0f-bee5-871aadfe1174")) {
 			Logit.LogDebug("test");
 		}
 
@@ -380,9 +381,11 @@ public class NetResults implements INetResults {
 			elements = this.getDiskElements(host);
 			break;
 		}
-		if (elements == null)
-			return null;
-		discoveryResult = new DiscoveryResult(getRunnableProbeId(probe, host), timestamp, elements);
+		if (elements == null) {
+			discoveryResult = new DiscoveryResult(getRunnableProbeId(probe, host), timestamp, null);
+			discoveryResult.setErrorMessage("no elements found!");
+		} else
+			discoveryResult = new DiscoveryResult(getRunnableProbeId(probe, host), timestamp, elements);
 		return discoveryResult;
 	}
 

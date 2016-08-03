@@ -20,6 +20,7 @@ public class Enums {
 	public static enum DiscoveryElementType
 	{
 		bw , ds	// bw = band width, ds = discs space/block device
+, unknown
 		}
 	
 	public static enum SnmpStoreAs
