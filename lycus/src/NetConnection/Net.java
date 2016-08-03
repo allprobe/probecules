@@ -61,21 +61,11 @@ import org.snmp4j.util.TreeEvent;
 import org.snmp4j.util.TreeListener;
 import org.snmp4j.util.TreeUtils;
 
-import com.gargoylesoftware.htmlunit.BrowserVersion;
-import com.gargoylesoftware.htmlunit.History;
-import com.gargoylesoftware.htmlunit.Page;
-import com.gargoylesoftware.htmlunit.WebClient;
-import com.gargoylesoftware.htmlunit.WebWindow;
-import com.gargoylesoftware.htmlunit.html.DomElement;
-import com.gargoylesoftware.htmlunit.html.HtmlPage;
-import com.gargoylesoftware.htmlunit.javascript.background.JavaScriptJobManager;
 
 import GlobalConstants.GlobalConfig;
-import GlobalConstants.LogType;
 import Utils.GeneralFunctions;
 import Utils.Logit;
 import lycus.Host;
-import net.sourceforge.htmlunit.corejs.javascript.ScriptableObject;
 
 /**
  * @author Roi
@@ -1201,13 +1191,13 @@ public class Net {
             };
             synchronized (treeListener) {
                 treeUtils.getSubtree(target, new OID(_oid), null, treeListener);
-                try {
-                    treeListener.wait();
-                } catch (InterruptedException ex) {
-                    Logit.LogError("Net - Snmp2Walk",
-                            "Tree retrieval interrupted:" + ex.getMessage() + ", for host: " + ip);
-                    Thread.currentThread().interrupt();
-                }
+//                try {
+//                    treeListener.wait();
+//                } catch (InterruptedException ex) {
+//                    Logit.LogError("Net - Snmp2Walk",
+//                            "Tree retrieval interrupted:" + ex.getMessage() + ", for host: " + ip);
+//                    Thread.currentThread().interrupt();
+//                }
             }
             return walkResults;
         } catch (Exception e) {
@@ -1351,12 +1341,12 @@ public class Net {
             };
             synchronized (treeListener) {
                 treeUtils.getSubtree(target, new OID(_oid), null, treeListener);
-                try {
-                    treeListener.wait();
-                } catch (InterruptedException ex) {
-                    Logit.LogError("Net - Snmp3Walk()", "Tree retrieval interrupted: " + ex.getMessage());
-                    Thread.currentThread().interrupt();
-                }
+//                try {
+//                    treeListener.wait();
+//                } catch (InterruptedException ex) {
+//                    Logit.LogError("Net - Snmp3Walk()", "Tree retrieval interrupted: " + ex.getMessage());
+//                    Thread.currentThread().interrupt();
+//                }
                 return walkResults;
             }
         } catch (Exception e) {
