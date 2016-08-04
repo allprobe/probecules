@@ -1536,7 +1536,11 @@ public class Net {
     }
 
     public static Map<String, String> Snmp2Walk(String ip, int port, int timeout, String comName, String _oid) {
-        HashMap<String, String> results = new HashMap<String, String>();
+     
+    	if(ip.equals("62.90.132.23"))
+    		Logit.LogDebug("BREAKPOINT");
+    	
+    	HashMap<String, String> results = new HashMap<String, String>();
 
         Address targetAddress = GenericAddress.parse("udp:" + ip + "/" + port);
         CommunityTarget target = new CommunityTarget();
@@ -1581,8 +1585,7 @@ public class Net {
 
                     VariableBinding[] varBindings = event.getVariableBindings();
                     if (varBindings == null || varBindings.length == 0) {
-                        Logit.LogInfo("No result returned for snmp walk check.");
-                        return null;
+                        Logit.LogInfo("No result returned for snmp walk check. varBindings is empty!");
                     }
                     for (VariableBinding varBinding : varBindings) {
                         results.put(varBinding.getOid().toString(), varBinding.getVariable().toString());
