@@ -24,6 +24,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.StringTokenizer;
 
+import org.apache.bcel.Constants;
 import org.apache.commons.io.IOUtils;
 import org.json.simple.JSONObject;
 import org.json.simple.parser.JSONParser;
@@ -60,7 +61,6 @@ import org.snmp4j.util.DefaultPDUFactory;
 import org.snmp4j.util.TreeEvent;
 import org.snmp4j.util.TreeListener;
 import org.snmp4j.util.TreeUtils;
-
 
 import GlobalConstants.GlobalConfig;
 import Utils.GeneralFunctions;
@@ -108,7 +108,7 @@ public class Net {
                     return null;
                 }
             } else {
-                /* Linux & OSX */
+				/* Linux & OSX */
                 try {
                     StringBuilder b = new StringBuilder();
                     Integer buffer = (timeout / 1000);
@@ -369,7 +369,6 @@ public class Net {
     public static JSONObject ExtendedWeber(String url, String requestType, String user, String pass, int timeout) {
         Process p = null;
 
-
         try {
 
             StringBuilder b = new StringBuilder();
@@ -396,7 +395,7 @@ public class Net {
             if (sb.toString().equals(""))
                 return null;
 
-            if (sb.toString().equals("FAIL to load the address")||sb.toString().startsWith("ReferenceError")) {
+            if (sb.toString().equals("FAIL to load the address") || sb.toString().startsWith("ReferenceError")) {
                 Logit.LogInfo("Error processing probe - might caused by timeout as well, Failed URL:" + url);
                 return null;
             }
@@ -1110,7 +1109,8 @@ public class Net {
 
     }
 
-    public static Map<String, String> Snmp2Walk(final String ip, int port, int timeout, String comName, String _oid) {
+    public static Map<String, String> Snmp2WalkOLD(final String ip, int port, int timeout, String comName,
+                                                   String _oid) {
         Address targetAddress = GenericAddress.parse("udp:" + ip + "/" + port);
         CommunityTarget target = new CommunityTarget();
         target.setAddress(targetAddress);
@@ -1191,13 +1191,14 @@ public class Net {
             };
             synchronized (treeListener) {
                 treeUtils.getSubtree(target, new OID(_oid), null, treeListener);
-//                try {
-//                    treeListener.wait();
-//                } catch (InterruptedException ex) {
-//                    Logit.LogError("Net - Snmp2Walk",
-//                            "Tree retrieval interrupted:" + ex.getMessage() + ", for host: " + ip);
-//                    Thread.currentThread().interrupt();
-//                }
+                // try {
+                // treeListener.wait();
+                // } catch (InterruptedException ex) {
+                // Logit.LogError("Net - Snmp2Walk",
+                // "Tree retrieval interrupted:" + ex.getMessage() + ", for
+                // host: " + ip);
+                // Thread.currentThread().interrupt();
+                // }
             }
             return walkResults;
         } catch (Exception e) {
@@ -1224,8 +1225,8 @@ public class Net {
         }
     }
 
-    public static Map<String, String> Snmp3Walk(String ip, int port, int timeout, String userName, String userPass,
-                                                String authAlgo, String cryptPass, String cryptAlgo, String _oid) {
+    public static Map<String, String> Snmp3WalkOLD(String ip, int port, int timeout, String userName, String userPass,
+                                                   String authAlgo, String cryptPass, String cryptAlgo, String _oid) {
         Map<String, String> results = new HashMap<String, String>();
 
         OctetString _username = userName == null ? null : new OctetString(userName);
@@ -1341,12 +1342,13 @@ public class Net {
             };
             synchronized (treeListener) {
                 treeUtils.getSubtree(target, new OID(_oid), null, treeListener);
-//                try {
-//                    treeListener.wait();
-//                } catch (InterruptedException ex) {
-//                    Logit.LogError("Net - Snmp3Walk()", "Tree retrieval interrupted: " + ex.getMessage());
-//                    Thread.currentThread().interrupt();
-//                }
+                // try {
+                // treeListener.wait();
+                // } catch (InterruptedException ex) {
+                // Logit.LogError("Net - Snmp3Walk()", "Tree retrieval
+                // interrupted: " + ex.getMessage());
+                // Thread.currentThread().interrupt();
+                // }
                 return walkResults;
             }
         } catch (Exception e) {
@@ -1532,6 +1534,175 @@ public class Net {
         long end = System.currentTimeMillis();
         return end - start;
     }
+
+    public static Map<String, String> Snmp2Walk(String ip, int port, int timeout, String comName, String _oid) {
+        HashMap<String, String> results = new HashMap<String, String>();
+
+        Address targetAddress = GenericAddress.parse("udp:" + ip + "/" + port);
+        CommunityTarget target = new CommunityTarget();
+        target.setAddress(targetAddress);
+        target.setRetries(3);
+        target.setTimeout(timeout);
+        target.setVersion(SnmpConstants.version2c);
+        target.setCommunity(new OctetString(comName));
+        // target.setMaxSizeRequestPDU(65535);
+
+        TransportMapping transport = null;
+        Snmp snmp = null;
+
+        try {
+
+            transport = new DefaultUdpTransportMapping();
+            snmp = new Snmp(transport);
+            transport.listen();
+
+            OID oid = null;
+            try {
+                oid = new OID(_oid);
+            } catch (RuntimeException ex) {
+                Logit.LogInfo("OID specified is not valid! - " + _oid.toString());
+                return null;
+            }
+
+            TreeUtils treeUtils = new TreeUtils(snmp, new DefaultPDUFactory());
+            List<TreeEvent> events = treeUtils.getSubtree(target, oid);
+            if (events == null || events.size() == 0) {
+                Logit.LogInfo("No result returned for snmp walk check.");
+                return null;
+            }
+
+            // Get snmpwalk result.
+
+            for (TreeEvent event : events) {
+                if (event != null) {
+                    if (event.isError()) {
+                        Logit.LogInfo("error on snmp walk check for OID " + oid + " !");
+                    }
+
+                    VariableBinding[] varBindings = event.getVariableBindings();
+                    if (varBindings == null || varBindings.length == 0) {
+                        Logit.LogInfo("No result returned for snmp walk check.");
+                        return null;
+                    }
+                    for (VariableBinding varBinding : varBindings) {
+                        results.put(varBinding.getOid().toString(), varBinding.getVariable().toString());
+                    }
+                }
+            }
+
+            return results;
+        } catch (Exception e) {
+            Logit.LogError("Net - Snmp2Walk",
+                    "Unable to run Snmp2 WALK check! " + e.getMessage() + ", for host: " + ip);
+            return null;
+        } finally {
+            try {
+                snmp.close();
+            } catch (IOException e) {
+                Logit.LogError("Net - Snmp2Walk", "Error while closing SNMP connection!", e);
+            }
+        }
+    }
+
+    public static Map<String, String> Snmp3Walk(String ip, int port, int timeout, String userName, String userPass,
+                                                String authAlgo, String cryptPass, String cryptAlgo, String _oid) {
+        Map<String, String> results = new HashMap<String, String>();
+
+        OctetString _username = userName == null ? null : new OctetString(userName);
+        OID _authAlgo = authAlgo == null ? null
+                : authAlgo.equals("md5") ? AuthMD5.ID : authAlgo.equals("sha1") ? AuthSHA.ID : null;
+        OctetString _authPass = userPass == null ? null : new OctetString(userPass);
+        OID _cryptAlgo = cryptAlgo == null ? null
+                : cryptAlgo.equals("des") ? PrivDES.ID : cryptAlgo.equals("aes") ? PrivAES256.ID : null;
+        OctetString _cryptPass = cryptPass == null ? null : new OctetString(cryptPass);
+
+        Address targetAddress = GenericAddress.parse("udp:" + ip + "/" + port);
+        UserTarget target = new UserTarget();
+        target.setAddress(targetAddress);
+        target.setRetries(3);
+        target.setTimeout(timeout);
+        target.setVersion(SnmpConstants.version3);
+        target.setSecurityName(_username);
+        // target.setMaxSizeRequestPDU(65535);
+        UsmUser usera = null;
+        if (userPass == null)
+            target.setSecurityLevel(SecurityLevel.NOAUTH_NOPRIV);
+        else if (cryptPass == null)
+            target.setSecurityLevel(SecurityLevel.AUTH_NOPRIV);
+        else
+            target.setSecurityLevel(SecurityLevel.AUTH_PRIV);
+        usera = new UsmUser(_username, // security
+                _authAlgo, // authprotocol
+                _authPass, // authpassphrase
+                _cryptAlgo, // privacyprotocol
+                _cryptPass // privacypassphrase
+        );
+
+        TransportMapping transport = null;
+        Snmp snmp = null;
+
+        try {
+
+            transport = new DefaultUdpTransportMapping();
+            snmp = new Snmp(transport);
+            transport.listen();
+
+            USM usm;
+            usm = new USM(SecurityProtocols.getInstance(), new OctetString(MPv3.createLocalEngineID()), 0);
+            SecurityModels.getInstance().addSecurityModel(usm);
+            if (usera != null) {
+                snmp.getUSM().addUser(usera.getSecurityName(), usera);
+            } else {
+                return null;
+            }
+
+            OID oid = null;
+            try {
+                oid = new OID(_oid);
+            } catch (RuntimeException ex) {
+                Logit.LogInfo("OID specified is not valid! - " + _oid.toString());
+                return null;
+            }
+
+            TreeUtils treeUtils = new TreeUtils(snmp, new DefaultPDUFactory());
+            List<TreeEvent> events = treeUtils.getSubtree(target, oid);
+            if (events == null || events.size() == 0) {
+                Logit.LogInfo("No result returned for snmp walk check.");
+                return null;
+            }
+
+            // Get snmpwalk result.
+
+            for (TreeEvent event : events) {
+                if (event != null) {
+                    if (event.isError()) {
+                        Logit.LogInfo("error on snmp walk check for OID " + oid + " !");
+                    }
+
+                    VariableBinding[] varBindings = event.getVariableBindings();
+                    if (varBindings == null || varBindings.length == 0) {
+                        Logit.LogInfo("No result returned for snmp walk check.");
+                        return null;
+                    }
+                    for (VariableBinding varBinding : varBindings) {
+                        results.put(varBinding.getOid().toString(), varBinding.getVariable().toString());
+                    }
+                }
+            }
+
+            return results;
+        } catch (Exception e) {
+            Logit.LogError("Net = Snmp3Walk()", "Unable to run Snmp2 WALK check! " + e.getMessage());
+            return null;
+        } finally {
+            try {
+                snmp.close();
+            } catch (IOException e) {
+                Logit.LogError("Net - Snmp3Walk", "Error while closing SNMP connection!", e);
+            }
+        }
+    }
+
 }
 
 class SnmpWalkCounts {
