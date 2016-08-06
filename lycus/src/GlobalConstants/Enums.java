@@ -74,11 +74,11 @@ public class Enums {
 		as_is,
 		b,
 		B,
-		kb, 
+		Kb, 
 		KB,
-		mb,
+		Mb,
 		MB,
-		gb,
+		Gb,
 		GB
 	}
 	
