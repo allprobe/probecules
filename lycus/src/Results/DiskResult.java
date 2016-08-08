@@ -14,7 +14,7 @@ import lycus.TriggerCondition;
 
 public class DiskResult extends BaseResult {
 
-	 private long hrStorageUnits;// in bytes
+	private long hrStorageUnits;// in bytes
 	private long hrStorageSize;// in hrStorageUnits
 	private long hrStorageUsed;// in hrStorageUnits
 
@@ -55,6 +55,18 @@ public class DiskResult extends BaseResult {
 		this.hrStorageUnits = hrStorageUnits;
 	}
 
+	public Long getStorageSize() {
+		return this.hrStorageSize * this.hrStorageUnits;
+	}
+
+	public Long getStorageUsed() {
+		return this.hrStorageUsed * this.hrStorageUnits;
+	}
+
+	public Long getStorageFree() {
+		return this.getStorageSize() - this.getStorageUsed();
+	}
+
 	// public long getHrStorageUnits() {
 	// return hrStorageUnits;
 	// }
@@ -71,8 +83,9 @@ public class DiskResult extends BaseResult {
 		if (error == SnmpError.NO_COMUNICATION) {
 			result.add("NO_ROUTE");
 		} else if (this.getErrorMessage().equals("")) {
-			result.add(getHrStorageSize());
-			result.add(getHrStorageUsed());
+			result.add(getStorageSize());
+			result.add(getStorageUsed());
+			result.add(getStorageFree());
 		} else
 			result.add(this.getErrorMessage());
 		return result;
@@ -95,22 +108,22 @@ public class DiskResult extends BaseResult {
 			SnmpUnit resultUnit = SnmpUnit.B;
 			SnmpUnit triggerUnit = trigger.getUnit();
 			long usedInBits = SnmpUnit.getBasic(this.getHrStorageUsed(), resultUnit);
-			long freeInBits = SnmpUnit.getBasic(this.getHrStorageSize()-this.getHrStorageUsed(),resultUnit);
+			long freeInBits = SnmpUnit.getBasic(this.getHrStorageSize() - this.getHrStorageUsed(), resultUnit);
 			long triggerInBits = SnmpUnit.getBasic(Long.parseLong(condition.getxValue()), triggerUnit);
 			switch (condition.getCode()) {
-			case 11://free disk is less than
+			case 11:// free disk is less than
 				if (freeInBits < triggerInBits)
 					flag = true;
 				break;
-			case 12://free disk is larger than
+			case 12:// free disk is larger than
 				if (freeInBits > triggerInBits)
 					flag = true;
 				break;
-			case 13://used disk is less than
+			case 13:// used disk is less than
 				if (usedInBits < triggerInBits)
 					flag = true;
 				break;
-			case 14://used disk is larger than
+			case 14:// used disk is larger than
 				if (usedInBits > triggerInBits)
 					flag = true;
 				break;

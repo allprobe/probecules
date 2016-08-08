@@ -51,6 +51,7 @@ public class RollupsContainer implements IRollupsContainer {
 	private HashMap<String, DataPointsRollup[]> nicOutDataRollups = new HashMap<String, DataPointsRollup[]>();
 	private HashMap<String, DataPointsRollup[]> diskSizeDataRollups = new HashMap<String, DataPointsRollup[]>();
 	private HashMap<String, DataPointsRollup[]> diskUsedDataRollups = new HashMap<String, DataPointsRollup[]>();
+	private HashMap<String, DataPointsRollup[]> diskFreeDataRollups = new HashMap<String, DataPointsRollup[]>();
 
 	private JSONArray finishedRollups = new JSONArray();
 
@@ -355,38 +356,46 @@ public class RollupsContainer implements IRollupsContainer {
 
 		DataPointsRollup[] diskSizeRollups = diskSizeDataRollups.get(result.getRunnableProbeId());
 		DataPointsRollup[] diskUsedRollups = diskUsedDataRollups.get(result.getRunnableProbeId());
+		DataPointsRollup[] diskFreeRollups = diskFreeDataRollups.get(result.getRunnableProbeId());
 
-		if (diskSizeRollups == null || diskUsedRollups == null) {
+		if (diskSizeRollups == null || diskUsedRollups == null || diskFreeRollups == null) {
 			diskSizeDataRollups.put(result.getRunnableProbeId(), new DataPointsRollup[6]);
 			diskUsedDataRollups.put(result.getRunnableProbeId(), new DataPointsRollup[6]);
+			diskFreeDataRollups.put(result.getRunnableProbeId(), new DataPointsRollup[6]);
+
 		}
 		for (int i = 0; i < result.getNumberOfRollupTables(); i++) {
 			DataPointsRollup diskSizeRollup = diskSizeDataRollups.get(result.getRunnableProbeId())[i];
 			DataPointsRollup diskUsedRollup = diskUsedDataRollups.get(result.getRunnableProbeId())[i];
+			DataPointsRollup diskFreeRollup = diskFreeDataRollups.get(result.getRunnableProbeId())[i];
 
-			if (diskSizeRollup == null || diskUsedRollup == null) {
+			if (diskSizeRollup == null || diskUsedRollup == null || diskFreeRollup == null) {
 				diskSizeRollup = new DataPointsRollup(result.getRunnableProbeId(), this.getRollupSize(i));
 				diskUsedRollup = new DataPointsRollup(result.getRunnableProbeId(), this.getRollupSize(i));
+				diskFreeRollup = new DataPointsRollup(result.getRunnableProbeId(), this.getRollupSize(i));
 
 				diskSizeDataRollups.get(result.getRunnableProbeId())[i] = diskSizeRollup;
 				diskUsedDataRollups.get(result.getRunnableProbeId())[i] = diskUsedRollup;
+				diskFreeDataRollups.get(result.getRunnableProbeId())[i] = diskFreeRollup;
 
 			}
 			Logit.LogDebug("BREAKPOINT");
-			if (diskResults.getHrStorageSize() == null || diskResults.getHrStorageUsed() == null)
+			if (diskResults.getStorageSize() == null || diskResults.getStorageUsed() == null
+					|| diskResults.getStorageFree() == null)
 				continue;
-			diskSizeRollup.add(diskResults.getLastTimestamp(), diskResults.getHrStorageSize());
-			diskUsedRollup.add(diskResults.getLastTimestamp(), diskResults.getHrStorageUsed());
+			diskSizeRollup.add(diskResults.getLastTimestamp(), diskResults.getStorageSize());
+			diskUsedRollup.add(diskResults.getLastTimestamp(), diskResults.getStorageUsed());
+			diskFreeRollup.add(diskResults.getLastTimestamp(), diskResults.getStorageUsed());
 
 		}
 	}
 
 	private void addWeberResult(BaseResult result) {
 		WebResult weberResults = (WebResult) result;
-		
-		if(weberResults.getStatusCode()==null)
+
+		if (weberResults.getStatusCode() == null)
 			return;
-		
+
 		DataPointsRollup[] responseTimeRollups = webResponseTimeRollups.get(result.getRunnableProbeId());
 		if (responseTimeRollups == null)
 			webResponseTimeRollups.put(result.getRunnableProbeId(), new DataPointsRollup[6]);

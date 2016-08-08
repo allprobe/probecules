@@ -22,19 +22,20 @@ public class ResultsTask extends BaseTask {
 
 			IResultsContainer resultsContainer = ResultsContainer.getInstance();
 			String results = resultsContainer.getResults();
-//			ResultsContainer.getInstance().clear();
-			
-			if (results.contains("ed334812-4559-435a-9e43-0b52693be309@7352a46f-5189-428c-b4c0-fb98dedd10b1@http_01fe4920-086b-46b3-98f6-98be105a8aae"))
+			// ResultsContainer.getInstance().clear();
+
+			if (results.contains(
+					"ed334812-4559-435a-9e43-0b52693be309@7352a46f-5189-428c-b4c0-fb98dedd10b1@http_01fe4920-086b-46b3-98f6-98be105a8aae"))
 				Logit.LogDebug("BREAKPOINT - ResultsTask");
 			IRollupsContainer rollupsContainer = RollupsContainer.getInstance();
 			String rollups = rollupsContainer.getAllFinsihedRollups();
-			 
+
 			if (rollups != null)
 				Logit.LogDebug("BREAKPOINT - ResultsTask");
 
-			if (results == null) {
+			if (results == null)
 				Logit.LogError("ResultsTask - run()", "BREAKPOINT");
-			}
+
 			String rpStr = rollups;
 			if (rollups != null && rpStr.contains("discovery_45035c45-2679-4af6-84ca-e924e78dd7bc")) {
 				Logit.LogDebug("BREAKPOINT - ResultsTask");
@@ -68,7 +69,6 @@ public class ResultsTask extends BaseTask {
 				FailedRequestsHandler.getInstance()
 						.addRequest(new ApiRequest(Enums.ApiAction.InsertDatapointsBatches, jsonToSend));
 
-			
 			RollupsContainer.getInstance().clear();
 		} catch (Throwable thrown) {
 			Logit.LogError("ResultsTask - run()", "Sending collected results to API failed!");
