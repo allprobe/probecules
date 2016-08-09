@@ -23,8 +23,9 @@ public class DiskResult extends BaseResult {
 	public DiskResult(String runnableProbeId, long timestamp, long hrStorageUsed, long hrStorageSize,
 			long hrStorageAllocationUnits) {
 		super(runnableProbeId, timestamp);
-		this.setHrStorageSize(hrStorageAllocationUnits * hrStorageSize);
-		this.setHrStorageUsed(hrStorageAllocationUnits * hrStorageUsed);
+		this.setHrStorageSize(hrStorageSize);
+		this.setHrStorageUsed(hrStorageUsed);
+		this.setHrStorageUnits(hrStorageAllocationUnits);
 	}
 
 	public DiskResult(String runnableProbeId) {
