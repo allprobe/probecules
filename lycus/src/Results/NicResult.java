@@ -100,13 +100,13 @@ public class NicResult extends BaseResult {
 	}
 
 	public Long getInBW() {
-		if (getPreviousTimestamp() == 0)
+		if (getPreviousTimestamp() == 0 || getCurrrentInterfaceInOctets() < getPreviousInterfaceInOctets())
 			return null;
 		return calculateBW(previousInterfaceInOctets, currrentInterfaceInOctets, previousTimestamp, currentTimestamp);
 	}
 
 	public Long getOutBW() {
-		if (getPreviousTimestamp() == 0)
+		if (getPreviousTimestamp() == 0 || getCurrentInterfaceOutOctets() < getPreviousInterfaceOutOctets())
 			return null;
 		return calculateBW(previousInterfaceOutOctets, currentInterfaceOutOctets, previousTimestamp, currentTimestamp);
 
