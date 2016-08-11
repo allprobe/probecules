@@ -14,7 +14,6 @@ public class DataPointsRollup {
 	private double avg;
 	private long endTime;
 
-	private DataPointsRollup lastFinishedRollup;
 
 	public DataPointsRollup(String rpID, DataPointsRollupSize timePeriod) {
 		this.setRunnableProbeId(rpID);
@@ -25,7 +24,6 @@ public class DataPointsRollup {
 		this.min = Double.MAX_VALUE;
 		this.max = Double.MIN_VALUE;
 		this.avg = 0;
-		this.lastFinishedRollup = null;
 	}
 
 	public String getRunnableProbeId() {
@@ -92,17 +90,8 @@ public class DataPointsRollup {
 		this.endTime = endTime;
 	}
 
-	public DataPointsRollup getLastFinishedRollup() {
-		return lastFinishedRollup;
-	}
-
-	public void setLastFinishedRollup(DataPointsRollup lastFinishedRollup) {
-		this.lastFinishedRollup = lastFinishedRollup;
-	}
 
 	public void add(long lastTimestamp, double results) {
-		if (this.isCompleted())
-			this.saveFinishedRollup();
 		if (this.getStartTime() == 0) {
 			this.setStartTime(lastTimestamp);
 			this.setResultsCounter(1);
@@ -117,18 +106,6 @@ public class DataPointsRollup {
 		}
 	}
 
-	private void saveFinishedRollup() {
-		DataPointsRollup finished = new DataPointsRollup(this.getRunnableProbeId(), this.getTimePeriod());
-		finished.setStartTime(this.getStartTime());
-		finished.setMin(this.getMin());
-		finished.setMax(this.getMax());
-		finished.setAvg(this.getAvg());
-		finished.setResultsCounter(this.getResultsCounter());
-		finished.setEndTime(System.currentTimeMillis());
-		this.setLastFinishedRollup(finished);
-		this.reset();
-	}
-
 	private double cumulativeMovingAverage(double lastValue, double lastAverage, int numberOfValues) {
 		return lastAverage + ((lastValue - lastAverage) / (numberOfValues));
 	}
@@ -138,15 +115,6 @@ public class DataPointsRollup {
 				&& (this.getStartTime() != 0);
 	}
 
-	public void reset() {
-		if (!this.isCompleted())
-			return;
-		this.setStartTime(0);
-		this.resultsCounter = 0;
-		this.min = Double.MAX_VALUE;
-		this.max = Double.MIN_VALUE;
-		this.avg = 0;
-	}
 
 	public void mergeRollup(DataPointsRollup existing) {
 		long rollupEndTime = existing.getStartTime() + this.getTimePeriod().getValue();

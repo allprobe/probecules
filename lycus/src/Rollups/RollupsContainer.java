@@ -88,44 +88,9 @@ public class RollupsContainer implements IRollupsContainer {
 	public synchronized String getAllFinsihedRollups() {
 
 		try {
-			JSONObject rollups = new JSONObject();
-
-			for (int i = 0; i < 6; i++) {
-				for (Map.Entry<String, DataPointsRollup[]> rolups : packetLossRollups.entrySet()) {
-					DataPointsRollup[] dataPointsRollups = rttRollups.get(rolups.getKey());
-					addFinished(i, rolups.getValue(), dataPointsRollups);
-				}
-
-				for (DataPointsRollup[] rolups : webResponseTimeRollups.values()) {
-					addFinished(i, rolups);
-				}
-				for (DataPointsRollup[] rolups : portResponseTimeRollups.values()) {
-					addFinished(i, rolups);
-				}
-				for (DataPointsRollup[] rolups : snmpDataRollups.values()) {
-					addFinished(i, rolups);
-				}
-
-				for (Map.Entry<String, DataPointsRollup[]> rolups : nicInDataRollups.entrySet()) {
-					DataPointsRollup[] dataPointsRollups = nicOutDataRollups.get(rolups.getKey());
-					addFinished(i, rolups.getValue(), dataPointsRollups);
-
-				}
-				for (Map.Entry<String, DataPointsRollup[]> rolups : diskSizeDataRollups.entrySet()) {
-					DataPointsRollup[] dataPointsRollups = diskUsedDataRollups.get(rolups.getKey());
-					addFinished(i, rolups.getValue(), dataPointsRollups);
-
-				}
-			}
-
-			if (finishedRollups.size() == 0)
-				return null;
-
-			if (finishedRollups.contains(
-					"0b05919c-6cc0-42cc-a74b-de3b0dcd4a2a@e7ecd619-b7a5-49b7-a849-b2c9b1b64bf3@snmp_18e51b8d-807e-45c0-b5bc-d047da3e0876"))
-				Logit.LogDebug("BREAKPOINT");
-
-			return finishedRollups.toString();
+			String allRollups = finishedRollups.toString();
+			finishedRollups = new JSONArray();
+			return allRollups;
 		} catch (Exception e) {
 			Logit.LogFatal("RollupsContainer - getAllFinsihedRollups()",
 					"Error getting finished rollups from rollupsContainer! E: " + e.getMessage(), e);
@@ -155,28 +120,33 @@ public class RollupsContainer implements IRollupsContainer {
 	}
 
 	private void addFinished(int i, DataPointsRollup[] rolups) {
+		if (rolups == null)
+			return;
 		DataPointsRollup currentDataRollup = rolups[i];
 		if (currentDataRollup == null)
 			return;
-		DataPointsRollup finishedDataRollup = currentDataRollup.getLastFinishedRollup();
+		DataPointsRollup finishedDataRollup = currentDataRollup.isCompleted() ? currentDataRollup : null;
+
 		if (finishedDataRollup == null)
 			return;
 
 		addFinishedRollup(finishedDataRollup);
 		rolups[i] = null;
 
-		// addRollupTo(i, finishedDataRollup);
-		currentDataRollup.setLastFinishedRollup(null);
 	}
 
 	private void addFinished(int i, DataPointsRollup[] rolups1, DataPointsRollup[] rolups2) {
+		if (rolups1 == null || rolups2 == null)
+			return;
+
 		DataPointsRollup currentDataRollup1 = rolups1[i];
 		DataPointsRollup currentDataRollup2 = rolups2[i];
 
 		if (currentDataRollup1 == null || currentDataRollup2 == null)
 			return;
-		DataPointsRollup finishedDataRollup1 = currentDataRollup1.getLastFinishedRollup();
-		DataPointsRollup finishedDataRollup2 = currentDataRollup2.getLastFinishedRollup();
+
+		DataPointsRollup finishedDataRollup1 = currentDataRollup1.isCompleted() ? currentDataRollup1 : null;
+		DataPointsRollup finishedDataRollup2 = currentDataRollup2.isCompleted() ? currentDataRollup2 : null;
 
 		if (finishedDataRollup1 == null || finishedDataRollup2 == null)
 			return;
@@ -188,10 +158,6 @@ public class RollupsContainer implements IRollupsContainer {
 		addFinishedRollup(finishedDataRollup1, finishedDataRollup2);
 		rolups1[i] = null;
 		rolups2[i] = null;
-
-		// addRollupTo(i, finishedDataRollup);
-		currentDataRollup1.setLastFinishedRollup(null);
-		currentDataRollup2.setLastFinishedRollup(null);
 
 	}
 
@@ -241,7 +207,7 @@ public class RollupsContainer implements IRollupsContainer {
 	private String rollupResultsDBFormat(DataPointsRollup dataPointsRollup1, DataPointsRollup dataPointsRollup2) {
 		JSONObject rollup = new JSONObject();
 
-		rollup.put("RESULTS_TIME", dataPointsRollup1.getEndTime());
+		rollup.put("RESULTS_TIME", System.currentTimeMillis());
 		JSONArray resultsStrings = new JSONArray();
 		resultsStrings.add(dataPointsRollup1.getResultString());
 		resultsStrings.add(dataPointsRollup2.getResultString());
@@ -261,7 +227,7 @@ public class RollupsContainer implements IRollupsContainer {
 		if (dataPointsRollup.getRunnableProbeId().contains(
 				"0b05919c-6cc0-42cc-a74b-de3b0dcd4a2a@98437013-a93f-4b27-9963-a4800860b90f@snmp_924430db-e1d7-43ce-ba98-a9b7883a440a"))
 			Logit.LogDebug("BREAKPOINT");
-		rollup.put("RESULTS_TIME", dataPointsRollup.getEndTime());
+		rollup.put("RESULTS_TIME", System.currentTimeMillis());
 		JSONArray resultsStrings = new JSONArray();
 		resultsStrings.add(dataPointsRollup.getResultString());
 		rollup.put("RESULTS", resultsStrings.toString());
@@ -311,7 +277,10 @@ public class RollupsContainer implements IRollupsContainer {
 			if (snmpResults.getNumData() == null)
 				break;
 			snmpDataRollup.add(snmpResults.getLastTimestamp(), snmpResults.getNumData());
+
+			addFinished(i, snmpRollups);
 		}
+
 	}
 
 	private void addNicResult(BaseResult result) {
@@ -344,6 +313,9 @@ public class RollupsContainer implements IRollupsContainer {
 				continue;
 			nicInRollup.add(nicResults.getLastTimestamp(), nicResults.getInBW());
 			nicOutRollup.add(nicResults.getLastTimestamp(), nicResults.getOutBW());
+
+			addFinished(i, nicInRollups);
+			addFinished(i, nicOutRollups);
 
 		}
 	}
@@ -387,6 +359,10 @@ public class RollupsContainer implements IRollupsContainer {
 			diskUsedRollup.add(diskResults.getLastTimestamp(), diskResults.getStorageUsed());
 			diskFreeRollup.add(diskResults.getLastTimestamp(), diskResults.getStorageUsed());
 
+			addFinished(i, diskSizeRollups);
+			addFinished(i, diskUsedRollups);
+			addFinished(i, diskFreeRollups);
+
 		}
 	}
 
@@ -407,6 +383,8 @@ public class RollupsContainer implements IRollupsContainer {
 				webResponseTimeRollups.get(result.getRunnableProbeId())[i] = responseTimeRollup;
 			}
 			responseTimeRollup.add(weberResults.getLastTimestamp(), weberResults.getResponseTime());
+			addFinished(i, responseTimeRollups);
+
 		}
 	}
 
@@ -422,6 +400,8 @@ public class RollupsContainer implements IRollupsContainer {
 				portResponseTimeRollups.get(result.getRunnableProbeId())[i] = responseTimeRollup;
 			}
 			responseTimeRollup.add(porterResults.getLastTimestamp(), porterResults.getResponseTime());
+			addFinished(i, responseTimeRollups);
+
 		}
 	}
 
@@ -447,6 +427,10 @@ public class RollupsContainer implements IRollupsContainer {
 			}
 			packetLostRollup.add(pingerResults.getLastTimestamp(), pingerResults.getPacketLost());
 			rttRollup.add(pingerResults.getLastTimestamp(), pingerResults.getRtt());
+
+			addFinished(i, packetLostRollups);
+			addFinished(i, pingResponseTimeRollups);
+
 		}
 	}
 
