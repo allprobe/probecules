@@ -204,7 +204,7 @@ public class RollupsContainer implements IRollupsContainer {
 		return true;
 	}
 
-	private String rollupResultsDBFormat(DataPointsRollup dataPointsRollup1, DataPointsRollup dataPointsRollup2) {
+	private JSONObject rollupResultsDBFormat(DataPointsRollup dataPointsRollup1, DataPointsRollup dataPointsRollup2) {
 		JSONObject rollup = new JSONObject();
 
 		rollup.put("RESULTS_TIME", System.currentTimeMillis());
@@ -217,11 +217,11 @@ public class RollupsContainer implements IRollupsContainer {
 		rollup.put("USER_ID", RunnableProbeContainer.getInstanece().get(dataPointsRollup1.getRunnableProbeId())
 				.getProbe().getUser().getUserId().toString());
 
-		return rollup.toString();
+		return rollup;
 
 	}
 
-	private String rollupResultsDBFormat(DataPointsRollup dataPointsRollup) {
+	private JSONObject rollupResultsDBFormat(DataPointsRollup dataPointsRollup) {
 		JSONObject rollup = new JSONObject();
 
 		if (dataPointsRollup.getRunnableProbeId().contains(
@@ -235,7 +235,7 @@ public class RollupsContainer implements IRollupsContainer {
 		rollup.put("ROLLUP_SIZE", dataPointsRollup.getTimePeriod().toString());
 		rollup.put("USER_ID", RunnableProbeContainer.getInstanece().get(dataPointsRollup.getRunnableProbeId())
 				.getProbe().getUser().getUserId().toString());
-		return rollup.toString();
+		return rollup;
 	}
 
 	private DataPointsRollupSize getRollupSize(int i) {
@@ -308,7 +308,10 @@ public class RollupsContainer implements IRollupsContainer {
 				nicOutDataRollups.get(result.getRunnableProbeId())[i] = nicOutRollup;
 
 			}
-			Logit.LogDebug("BREAKPOINT");
+			if (nicResults != null)
+				if (nicResults.getOutBW() != null)
+					if (nicResults.getOutBW() == 0)
+						Logit.LogDebug("BREAKPOINT");
 			if (nicResults.getInBW() == null || nicResults.getOutBW() == null)
 				continue;
 			nicInRollup.add(nicResults.getLastTimestamp(), nicResults.getInBW());
