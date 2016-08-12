@@ -98,9 +98,7 @@ public class PingResult extends BaseResult {
 					flag = true;
 				break;
 			}
-			if (flag && condition.getAndOr().equals("or"))
-				return true;
-			else if (!flag && condition.getAndOr().equals("and"))
+			if (!flag)
 				return false;
 		}
 		return flag;
@@ -129,9 +127,7 @@ public class PingResult extends BaseResult {
 					flag = true;
 				break;
 			}
-			if (flag && condition.getAndOr().equals("or"))
-				return true;
-			else if (!flag && condition.getAndOr().equals("and"))
+			if (!flag)
 				return false;
 		}
 		return flag;
@@ -150,8 +146,7 @@ public class PingResult extends BaseResult {
 			result.add(packetLoss);
 			result.add(rtt);
 			result.add(ttl);
-		}
-		else
+		} else
 			result.add(this.getErrorMessage());
 		return result;
 	}

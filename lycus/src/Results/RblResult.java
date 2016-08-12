@@ -60,9 +60,7 @@ public class RblResult extends BaseResult {
 				break;
 			}
 
-			if (flag && condition.getAndOr().equals("or"))
-				return true;
-			else if (!flag && condition.getAndOr().equals("and"))
+			if (!flag)
 				return false;
 		}
 		return flag;

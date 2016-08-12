@@ -139,9 +139,7 @@ public class SnmpResult extends BaseResult {
 					break;
 				}
 			}
-			if (flag && condition.getAndOr().equals("or"))
-				return true;
-			else if (!flag && condition.getAndOr().equals("and"))
+			if (!flag)
 				return false;
 		}
 		return flag;
@@ -162,9 +160,7 @@ public class SnmpResult extends BaseResult {
 					flag = true;
 				break;
 			}
-			if (flag && condition.getAndOr().equals(Constants.or))
-				return true;
-			else if (!flag && condition.getAndOr().equals(Constants.and))
+			if (!flag)
 				return false;
 		}
 		return flag;

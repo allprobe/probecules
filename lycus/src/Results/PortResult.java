@@ -71,9 +71,7 @@ public class PortResult extends BaseResult {
 					flag = true;
 				break;
 			}
-			if (flag && condition.getAndOr().equals("or"))
-				return true;
-			else if (!flag && condition.getAndOr().equals("and"))
+			if (!flag)
 				return false;
 		}
 		return flag;
@@ -109,9 +107,7 @@ public class PortResult extends BaseResult {
 					flag = true;
 				break;
 			}
-			if (flag && condition.getAndOr().equals("or"))
-				return true;
-			else if (!flag && condition.getAndOr().equals("and"))
+			if (!flag)
 				return false;
 		}
 		return flag;
@@ -124,10 +120,9 @@ public class PortResult extends BaseResult {
 		if (this.getErrorMessage().equals("")) {
 			result.add(portStatus);
 			result.add(responseTime);
-		}
-		else
+		} else
 			result.add(this.getErrorMessage());
-		
+
 		return result;
 	}
 }

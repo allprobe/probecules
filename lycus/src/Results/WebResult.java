@@ -24,9 +24,11 @@ public class WebResult extends BaseResult {
 	public WebResult(String runnableProbeId) {
 		super(runnableProbeId);
 	}
-	public WebResult(String runnableProbeId,long timestamp) {
-		super(runnableProbeId,timestamp);
+
+	public WebResult(String runnableProbeId, long timestamp) {
+		super(runnableProbeId, timestamp);
 	}
+
 	public Integer getStatusCode() {
 		return statusCode;
 	}
@@ -95,9 +97,7 @@ public class WebResult extends BaseResult {
 					flag = true;
 				break;
 			}
-			if (flag && condition.getAndOr().equals("or"))
-				return true;
-			else if (!flag && condition.getAndOr().equals("and"))
+			if (!flag)
 				return false;
 		}
 		return flag;
@@ -126,9 +126,7 @@ public class WebResult extends BaseResult {
 					flag = true;
 				break;
 			}
-			if (flag && condition.getAndOr().equals("or"))
-				return true;
-			else if (!flag && condition.getAndOr().equals("and"))
+			if (!flag)
 				return false;
 		}
 		return flag;
@@ -157,9 +155,7 @@ public class WebResult extends BaseResult {
 					flag = true;
 				break;
 			}
-			if (flag && condition.getAndOr().equals("or"))
-				return true;
-			else if (!flag && condition.getAndOr().equals("and"))
+			if (!flag)
 				return false;
 		}
 		return flag;
@@ -173,15 +169,15 @@ public class WebResult extends BaseResult {
 			result.add(statusCode);
 			result.add(responseTime);
 			result.add(pageSize);
-		}
-		else
+		} else
 			result.add(this.getErrorMessage());
-		
+
 		return result;
 	}
 
 	public Boolean isActive() {
-		return statusCode < 400;
-//		return Constants.okStatus.contains(statusCode);
+		return null;
+		// return statusCode < 400;
+		// return Constants.okStatus.contains(statusCode);
 	}
 }

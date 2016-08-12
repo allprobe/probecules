@@ -505,16 +505,20 @@ public class User {
 				probe = new DiscoveryProbe(this, probeId, templateId, name, interval, multiplier, status, discoveryType,
 						elementsInterval);
 
-				for(DiscoveryTrigger discoveryTrigger:probeParams.discovery_triggers)
-				{
-					ArrayList<TriggerCondition> conditions=new ArrayList<TriggerCondition>();
-					TriggerCondition condition=new TriggerCondition(discoveryTrigger.discovery_trigger_code, Constants.and, discoveryTrigger.discovery_trigger_x_value, null);
+				for (DiscoveryTrigger discoveryTrigger : probeParams.discovery_triggers) {
+					ArrayList<TriggerCondition> conditions = new ArrayList<TriggerCondition>();
+					TriggerCondition condition = new TriggerCondition(discoveryTrigger.discovery_trigger_code,
+							discoveryTrigger.discovery_trigger_x_value, null);
 					conditions.add(condition);
-					Trigger trigger=new Trigger(discoveryTrigger.discovery_trigger_id,getDiscoveryTriggerName(probeParams),probe,getTriggerSev(discoveryTrigger.discovery_trigger_severity),true,null,SnmpUnit.valueOf(discoveryTrigger.discovery_trigger_unit),conditions);
+					Trigger trigger = new Trigger(discoveryTrigger.discovery_trigger_id,
+							getDiscoveryTriggerName(probeParams), probe,
+							getTriggerSev(discoveryTrigger.discovery_trigger_severity), true, null,
+							SnmpUnit.valueOf(discoveryTrigger.discovery_trigger_unit), conditions);
 					probe.addTrigger(trigger);
 				}
-				
-//				updateTriggers(probeParams, templateId, probeId, name, probe);
+
+				// updateTriggers(probeParams, templateId, probeId, name,
+				// probe);
 				break;
 			}
 			case Constants.rbl: {
@@ -578,8 +582,8 @@ public class User {
 		for (DiscoveryTrigger trigger : probeParams.discovery_triggers) {
 			String triggerId = templateId.toString() + "@" + probeId + "@" + trigger;
 			ArrayList<TriggerCondition> conditions = new ArrayList<TriggerCondition>();
-			TriggerCondition triggerCondition = new TriggerCondition(trigger.discovery_trigger_code, Constants.and,
-					trigger.discovery_trigger_x_value, "");
+			TriggerCondition triggerCondition = new TriggerCondition(trigger.discovery_trigger_code,
+					trigger.discovery_trigger_x_value, null);
 			conditions.add(triggerCondition);
 
 			TriggerSeverity sev = UsersManager.getTriggerSev(trigger.discovery_trigger_severity);

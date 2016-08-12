@@ -1,16 +1,16 @@
 package lycus;
 
+import Interfaces.IFunction;
+
 public class TriggerCondition {
 	private int code;//0 no trigger, 1 bigger, 2 tinier, 3 equal, 4 is not
-	private String andOr;
 	private String xValue;
-	private String tValue;
+	private IFunction function;
 	
-	public TriggerCondition(int code, String andOr, String xValue, String tValue) {
+	public TriggerCondition(int code, String xValue, IFunction function) {
 		this.code = code;
-		this.andOr = andOr;
 		this.xValue = xValue;
-		this.tValue = tValue;
+		this.setFunction(function);
 	}
 
 	public int getCode() {
@@ -21,14 +21,6 @@ public class TriggerCondition {
 		this.code = code;
 	}
 
-	public String getAndOr() {
-		return andOr;
-	}
-
-	public void setAndOr(String andOr) {
-		this.andOr = andOr;
-	}
-
 	public String getxValue() {
 		return xValue;
 	}
@@ -37,11 +29,12 @@ public class TriggerCondition {
 		this.xValue = xValue;
 	}
 
-	public String gettValue() {
-		return tValue;
+	public IFunction getFunction() {
+		return function;
 	}
 
-	public void settValue(String tValue) {
-		this.tValue = tValue;
+	public void setFunction(IFunction function) {
+		this.function = function;
 	}
+
 }

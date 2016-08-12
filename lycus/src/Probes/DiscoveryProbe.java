@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
 
+import Functions.Last;
 import GlobalConstants.Constants;
 import GlobalConstants.Enums;
 import GlobalConstants.Enums.DiscoveryElementType;
@@ -88,8 +89,7 @@ public class DiscoveryProbe extends BaseProbe {
 		DiscoveryTrigger[] triggers = key.discovery_triggers;
 		for (int index = 0; index < triggers.length; index++)
 		{  
-			TriggerCondition condition = new TriggerCondition(triggers[index].discovery_trigger_code, 
-					Constants.and, triggers[index].discovery_trigger_x_value, "");
+			TriggerCondition condition = new TriggerCondition(triggers[index].discovery_trigger_code, triggers[index].discovery_trigger_x_value,new Last());
 			ArrayList<TriggerCondition> conditions = new ArrayList<TriggerCondition>();
 			conditions.add(condition);
 			

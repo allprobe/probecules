@@ -20,6 +20,7 @@ import DAL.DAL;
 import Elements.BaseElement;
 import Elements.DiskElement;
 import Elements.NicElement;
+import Functions.Last;
 import GlobalConstants.Constants;
 import GlobalConstants.Enums;
 import GlobalConstants.SnmpDataType;
@@ -28,6 +29,7 @@ import GlobalConstants.TriggerSeverity;
 import GlobalConstants.Enums.ApiAction;
 import GlobalConstants.Enums.XValueUnit;
 import Interfaces.IDAL;
+import Interfaces.IFunction;
 import Model.ConditionUpdateModel;
 import Model.DiscoveryElementParams;
 import Model.DiscoveryTrigger;
@@ -509,8 +511,7 @@ public class UsersManager {
 				String triggerId = (String) triggerJson.get("trigger_id");
 
 				String rpStr = triggerId;
-				if (rpStr.contains(
-						"snmp_52caf27e-445b-4b8d-bfc6-0307fd4ef3eb"))
+				if (rpStr.contains("snmp_52caf27e-445b-4b8d-bfc6-0307fd4ef3eb"))
 					Logit.LogDebug("BREAKPOINT");
 
 				String name = (String) triggerJson.get("name");
@@ -518,7 +519,7 @@ public class UsersManager {
 				if (severity == null)
 					Logit.LogWarn("Unable to get trigger severity for: " + triggerId);
 				boolean status = ((String) triggerJson.get("status")).equals("1") ? true : false;
-				String elementType = (String) triggerJson.get("trigger_type");
+				String elementType = (String) triggerJson.get("results_vector_type");
 				String unitType = (String) triggerJson.get("xvalue_unit");
 				SnmpUnit trigValueUnit = SnmpUnit.valueOf(unitType);
 
@@ -597,15 +598,26 @@ public class UsersManager {
 
 		for (int i = 0; i < jsonArray.size(); i++) {
 			JSONObject conditionJson = (JSONObject) jsonArray.get(i);
-			int code = Integer.parseInt((String) conditionJson.get("condition_id"));
-			String andOr = (String) conditionJson.get("andor");
+			int code = Integer.parseInt((String) conditionJson.get("function"));
 			String xValue = (String) conditionJson.get("xvalue");
 			String tValue = (String) conditionJson.get("tvalue");
-			TriggerCondition condition = new TriggerCondition(code, andOr, xValue, tValue);
+			int functionId = Integer.parseInt((String) conditionJson.get("condition"));
+
+			IFunction function = getFunction(functionId);
+			TriggerCondition condition = new TriggerCondition(code, xValue, function);
 			conditions.add(condition);
 
 		}
 		return conditions;
+	}
+
+	private static IFunction getFunction(int functionId) {
+		switch (functionId) {
+		case 1:
+			return new Last();
+		default:
+			return null;
+		}
 	}
 
 	public static ArrayList<TriggerCondition> getTriggerConds(ConditionUpdateModel[] conditionUpdateModels) {
@@ -613,11 +625,13 @@ public class UsersManager {
 
 		for (ConditionUpdateModel conditionUpdateModel : conditionUpdateModels) {
 			// JSONObject conditionJson = (JSONObject) jsonArray.get(i);
-			int code = Integer.parseInt((String) conditionUpdateModel.condition_id);
-			String andOr = (String) conditionUpdateModel.andor;
+			int code = Integer.parseInt((String) conditionUpdateModel.function);
 			String xValue = (String) conditionUpdateModel.xvalue;
-			String tValue = (String) conditionUpdateModel.tvalue;
-			TriggerCondition condition = new TriggerCondition(code, andOr, xValue, tValue);
+			int functionId = Integer.parseInt((String) conditionUpdateModel.condition);
+
+			IFunction function = getFunction(functionId);
+
+			TriggerCondition condition = new TriggerCondition(code, xValue, function);
 			conditions.add(condition);
 
 		}
@@ -645,8 +659,7 @@ public class UsersManager {
 			UUID userID = rp.getValue();
 			String rpID = rp.getKey();
 
-			if (rpID.contains(
-					"01179751-b842-4dbb-a72e-30082c677249@snmp_0131348b-d562-4d0c-97e9-7e03c2fe587e"))
+			if (rpID.contains("01179751-b842-4dbb-a72e-30082c677249@snmp_0131348b-d562-4d0c-97e9-7e03c2fe587e"))
 				Logit.LogDebug("BREAKPOINT");
 
 			User u = getUsers().get(userID);
