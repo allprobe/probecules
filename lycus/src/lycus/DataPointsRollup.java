@@ -129,13 +129,13 @@ public class DataPointsRollup {
 		this.setAvg(newAvg);
 	}
 
-	public String getResultString() {
+	public Object getResultString() {
 		JSONArray rollup = new JSONArray();
 		rollup.add(min);
 		rollup.add(max);
 		rollup.add(avg);
 		rollup.add(resultsCounter);
-		return rollup.toString();
+		return rollup;
 	}
 
 }
