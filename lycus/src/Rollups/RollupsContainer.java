@@ -161,6 +161,35 @@ public class RollupsContainer implements IRollupsContainer {
 
 	}
 
+	private void addFinished(int i, DataPointsRollup[] rolups1, DataPointsRollup[] rolups2,
+			DataPointsRollup[] rolups3) {
+		if (rolups1 == null || rolups2 == null || rolups3 == null)
+			return;
+
+		DataPointsRollup currentDataRollup1 = rolups1[i];
+		DataPointsRollup currentDataRollup2 = rolups2[i];
+		DataPointsRollup currentDataRollup3 = rolups3[i];
+
+		if (currentDataRollup1 == null || currentDataRollup2 == null || currentDataRollup3 == null)
+			return;
+
+		DataPointsRollup finishedDataRollup1 = currentDataRollup1.isCompleted() ? currentDataRollup1 : null;
+		DataPointsRollup finishedDataRollup2 = currentDataRollup2.isCompleted() ? currentDataRollup2 : null;
+		DataPointsRollup finishedDataRollup3 = currentDataRollup3.isCompleted() ? currentDataRollup3 : null;
+
+		if (finishedDataRollup1 == null || finishedDataRollup2 == null || finishedDataRollup3 == null)
+			return;
+
+		String rpStr = finishedDataRollup1.getRunnableProbeId();
+		if (rpStr.contains("discovery_d3c95875-4947-4388-989f-64ffd863c704"))
+			Logit.LogDebug("BREAKPOINT");
+
+		addFinishedRollup(finishedDataRollup1, finishedDataRollup2, finishedDataRollup3);
+		rolups1[i] = null;
+		rolups2[i] = null;
+
+	}
+
 	public ArrayList<DataPointsRollup[][]> deserializeRollups(String rollups) {
 		ArrayList<DataPointsRollup[][]> allRollupsDeserialized = new ArrayList<DataPointsRollup[][]>();
 		Gson gson = new GsonBuilder().setPrettyPrinting().create();
@@ -204,6 +233,13 @@ public class RollupsContainer implements IRollupsContainer {
 		return true;
 	}
 
+	private boolean addFinishedRollup(DataPointsRollup dataPointsRollup1, DataPointsRollup dataPointsRollup2,
+			DataPointsRollup dataPointsRollup3) {
+
+		finishedRollups.add(rollupResultsDBFormat(dataPointsRollup1, dataPointsRollup2, dataPointsRollup3));
+		return true;
+	}
+
 	private JSONObject rollupResultsDBFormat(DataPointsRollup dataPointsRollup1, DataPointsRollup dataPointsRollup2) {
 		JSONObject rollup = new JSONObject();
 
@@ -211,6 +247,25 @@ public class RollupsContainer implements IRollupsContainer {
 		JSONArray resultsStrings = new JSONArray();
 		resultsStrings.add(dataPointsRollup1.getRollupObj());
 		resultsStrings.add(dataPointsRollup2.getRollupObj());
+		rollup.put("RESULTS", resultsStrings);
+		rollup.put("RUNNABLE_PROBE_ID", dataPointsRollup1.getRunnableProbeId());
+		rollup.put("ROLLUP_SIZE", dataPointsRollup1.getTimePeriod().toString());
+		rollup.put("USER_ID", RunnableProbeContainer.getInstanece().get(dataPointsRollup1.getRunnableProbeId())
+				.getProbe().getUser().getUserId().toString());
+
+		return rollup;
+
+	}
+
+	private JSONObject rollupResultsDBFormat(DataPointsRollup dataPointsRollup1, DataPointsRollup dataPointsRollup2,
+			DataPointsRollup dataPointsRollup3) {
+		JSONObject rollup = new JSONObject();
+
+		rollup.put("RESULTS_TIME", System.currentTimeMillis());
+		JSONArray resultsStrings = new JSONArray();
+		resultsStrings.add(dataPointsRollup1.getRollupObj());
+		resultsStrings.add(dataPointsRollup2.getRollupObj());
+		resultsStrings.add(dataPointsRollup3.getRollupObj());
 		rollup.put("RESULTS", resultsStrings);
 		rollup.put("RUNNABLE_PROBE_ID", dataPointsRollup1.getRunnableProbeId());
 		rollup.put("ROLLUP_SIZE", dataPointsRollup1.getTimePeriod().toString());
@@ -317,8 +372,7 @@ public class RollupsContainer implements IRollupsContainer {
 			nicInRollup.add(nicResults.getLastTimestamp(), nicResults.getInBW());
 			nicOutRollup.add(nicResults.getLastTimestamp(), nicResults.getOutBW());
 
-			addFinished(i, nicInRollups);
-			addFinished(i, nicOutRollups);
+			addFinished(i, nicInRollups, nicOutRollups);
 
 		}
 	}
@@ -362,9 +416,7 @@ public class RollupsContainer implements IRollupsContainer {
 			diskUsedRollup.add(diskResults.getLastTimestamp(), diskResults.getStorageUsed());
 			diskFreeRollup.add(diskResults.getLastTimestamp(), diskResults.getStorageUsed());
 
-			addFinished(i, diskSizeRollups);
-			addFinished(i, diskUsedRollups);
-			addFinished(i, diskFreeRollups);
+			addFinished(i, diskSizeRollups, diskUsedRollups, diskFreeRollups);
 
 		}
 	}
@@ -431,9 +483,7 @@ public class RollupsContainer implements IRollupsContainer {
 			packetLostRollup.add(pingerResults.getLastTimestamp(), pingerResults.getPacketLost());
 			rttRollup.add(pingerResults.getLastTimestamp(), pingerResults.getRtt());
 
-			addFinished(i, packetLostRollups);
-			addFinished(i, pingResponseTimeRollups);
-
+			addFinished(i, packetLostRollups, pingResponseTimeRollups);
 		}
 	}
 

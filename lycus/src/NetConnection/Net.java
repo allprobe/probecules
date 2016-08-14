@@ -1585,8 +1585,9 @@ public class Net {
 
                     VariableBinding[] varBindings = event.getVariableBindings();
                     if (varBindings == null || varBindings.length == 0) {
-                        Logit.LogInfo("No result returned for snmp walk check. varBindings is empty!");
+                        Logit.LogInfo("No result returned for snmp walk check. varBindings is empty! host checked: "+ip);
                     }
+                    else
                     for (VariableBinding varBinding : varBindings) {
                         results.put(varBinding.getOid().toString(), varBinding.getVariable().toString());
                     }
