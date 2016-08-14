@@ -129,7 +129,7 @@ public class DataPointsRollup {
 		this.setAvg(newAvg);
 	}
 
-	public Object getResultString() {
+	public Object getRollupObj() {
 		JSONArray rollup = new JSONArray();
 		rollup.add(min);
 		rollup.add(max);
