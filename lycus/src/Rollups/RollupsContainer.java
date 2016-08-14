@@ -247,7 +247,7 @@ public class RollupsContainer implements IRollupsContainer {
 		JSONArray resultsStrings = new JSONArray();
 		resultsStrings.add(dataPointsRollup1.getRollupObj());
 		resultsStrings.add(dataPointsRollup2.getRollupObj());
-		rollup.put("RESULTS", resultsStrings);
+		rollup.put("RESULTS", resultsStrings.toString());
 		rollup.put("RUNNABLE_PROBE_ID", dataPointsRollup1.getRunnableProbeId());
 		rollup.put("ROLLUP_SIZE", dataPointsRollup1.getTimePeriod().toString());
 		rollup.put("USER_ID", RunnableProbeContainer.getInstanece().get(dataPointsRollup1.getRunnableProbeId())
@@ -266,7 +266,7 @@ public class RollupsContainer implements IRollupsContainer {
 		resultsStrings.add(dataPointsRollup1.getRollupObj());
 		resultsStrings.add(dataPointsRollup2.getRollupObj());
 		resultsStrings.add(dataPointsRollup3.getRollupObj());
-		rollup.put("RESULTS", resultsStrings);
+		rollup.put("RESULTS", resultsStrings.toString());
 		rollup.put("RUNNABLE_PROBE_ID", dataPointsRollup1.getRunnableProbeId());
 		rollup.put("ROLLUP_SIZE", dataPointsRollup1.getTimePeriod().toString());
 		rollup.put("USER_ID", RunnableProbeContainer.getInstanece().get(dataPointsRollup1.getRunnableProbeId())
@@ -285,7 +285,7 @@ public class RollupsContainer implements IRollupsContainer {
 		rollup.put("RESULTS_TIME", System.currentTimeMillis());
 		JSONArray resultsStrings = new JSONArray();
 		resultsStrings.add(dataPointsRollup.getRollupObj());
-		rollup.put("RESULTS", resultsStrings);
+		rollup.put("RESULTS", resultsStrings.toString());
 		rollup.put("RUNNABLE_PROBE_ID", dataPointsRollup.getRunnableProbeId());
 		rollup.put("ROLLUP_SIZE", dataPointsRollup.getTimePeriod().toString());
 		rollup.put("USER_ID", RunnableProbeContainer.getInstanece().get(dataPointsRollup.getRunnableProbeId())
