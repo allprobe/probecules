@@ -274,10 +274,10 @@ public class ResultsContainer implements IResultsContainer {
 		}
 	}
 
-	@Override
-	public String getRollups() {
-		return RollupsContainer.getInstance().getAllFinsihedRollups();
-	}
+//	@Override
+//	public String getRollups() {
+//		return RollupsContainer.getInstance().getAllFinsihedRollups();
+//	}
 
 	@Override
 	public String getEvents() {

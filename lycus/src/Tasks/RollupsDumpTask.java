@@ -9,14 +9,10 @@ import com.google.gson.GsonBuilder;
 import com.google.gson.JsonArray;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonParser;
-
-import DAL.ApiInterface;
 import GlobalConstants.Enums;
-import Results.BaseResult;
 import Rollups.RollupsContainer;
 import Utils.GeneralFunctions;
 import Utils.Logit;
-import lycus.ResultsContainer;
 import lycus.DataPointsRollup;
 
 public class RollupsDumpTask extends BaseTask {

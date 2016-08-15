@@ -22,7 +22,6 @@ import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
 import org.json.simple.parser.JSONParser;
 import org.json.simple.parser.ParseException;
-
 import GlobalConstants.Enums;
 import GlobalConstants.GlobalConfig;
 import Utils.GeneralFunctions;
