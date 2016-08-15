@@ -41,14 +41,16 @@ public class SLAObject {
 		return dailySum / dailyCount;
 	}
 
-	private double getPecentage() {
-		return sum / count;
-	}
+//	private double getPecentage() {
+//		return sum / count;
+//	}
 
-	public double getResults() {
-		addDailySum(getSum());
+	public Double getResults() {
+		addDailySum(sum);
 		dailyCount++;
-		double percentage = getPecentage();
+		if (count == 0)
+			return null;
+		Double percentage = (double)(sum / count);
 		count = 0;
 		setSum(0);
 		return percentage;
