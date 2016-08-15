@@ -9,8 +9,8 @@ public class SLAObject {
 	public SLAObject() {
 		count = 0;
 		dailyCount = 0;
-		setSum(0);
-		setDailySum(0);
+		dailySum = 0;
+		addDailySum(0);
 	}
 
 	public boolean addResult(Boolean isActive) {
@@ -22,7 +22,6 @@ public class SLAObject {
 		}
 
 		count++;
-
 		return true;
 	}
 
@@ -34,8 +33,8 @@ public class SLAObject {
 		this.sum = percentage;
 	}
 
-	private void setDailySum(int dailySum) {
-		this.dailySum = dailySum;
+	private void addDailySum(int dailySum) {
+		this.dailySum += dailySum;
 	}
 
 	private double getDailyPercentage() {
@@ -47,18 +46,20 @@ public class SLAObject {
 	}
 
 	public double getResults() {
-		setDailySum(getSum());
-		dailyCount += count;
+		addDailySum(getSum());
+		dailyCount++;
 		double percentage = getPecentage();
 		count = 0;
 		setSum(0);
 		return percentage;
 	}
 
-	public double getDailyResults() {
+	public Double getDailyResults() {
+		if (dailyCount == 0)
+			return null;
 		double dailyPercentage = getDailyPercentage();
 		dailyCount = 0;
-		setDailySum(0);
+		dailySum = 0;
 		return dailyPercentage;
 	}
 }

@@ -119,31 +119,40 @@ public class SLAContainer implements ISLAContainer {
 		JSONObject returnJson = new JSONObject();
 		try {
 			JSONArray slaArray = new JSONArray();
-
+			
 			for (String runnableProbeId : webSLA.keySet()) {
+				Double slaWeb = webSLA.get(runnableProbeId).getDailyResults();
+				if (slaWeb == null)
+					continue;
 				JSONObject jsonItem = new JSONObject();
 				jsonItem.put("RUNNABLE_PROBE_ID", runnableProbeId);
 				jsonItem.put("TIMESTAMP", webSLA.get(runnableProbeId));
 				jsonItem.put("TYPE", Constants.daily);
-				jsonItem.put("SLA", webSLA.get(runnableProbeId).getDailyResults());
+				jsonItem.put("SLA", slaWeb);
 
 				slaArray.add(jsonItem);
 			}
 			for (String runnableProbeId : pingSLA.keySet()) {
+				Double slaPing = pingSLA.get(runnableProbeId).getDailyResults();
+				if (slaPing == null)
+					continue;
 				JSONObject jsonItem = new JSONObject();
 				jsonItem.put("RUNNABLE_PROBE_ID", runnableProbeId);
 				jsonItem.put("TIMESTAMP", webSLA.get(runnableProbeId));
 				jsonItem.put("TYPE", Constants.daily);
-				jsonItem.put("SLA", pingSLA.get(runnableProbeId).getDailyResults());
+				jsonItem.put("SLA", slaPing);
 
 				slaArray.add(jsonItem);
 			}
 			for (String runnableProbeId : portSLA.keySet()) {
+				Double slaPort=  portSLA.get(runnableProbeId).getDailyResults();
+				if (slaPort == null)
+					continue;
 				JSONObject jsonItem = new JSONObject();
 				jsonItem.put("RUNNABLE_PROBE_ID", runnableProbeId);
 				jsonItem.put("TIMESTAMP", webSLA.get(runnableProbeId));
 				jsonItem.put("TYPE", Constants.daily);
-				jsonItem.put("SLA", pingSLA.get(runnableProbeId).getDailyResults());
+				jsonItem.put("SLA", slaPort);
 
 				slaArray.add(jsonItem);
 			}
