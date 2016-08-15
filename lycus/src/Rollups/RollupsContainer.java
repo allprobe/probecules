@@ -132,7 +132,6 @@ public class RollupsContainer implements IRollupsContainer {
 
 		addFinishedRollup(finishedDataRollup);
 		rolups[i] = null;
-
 	}
 
 	private void addFinished(int i, DataPointsRollup[] rolups1, DataPointsRollup[] rolups2) {
@@ -158,7 +157,6 @@ public class RollupsContainer implements IRollupsContainer {
 		addFinishedRollup(finishedDataRollup1, finishedDataRollup2);
 		rolups1[i] = null;
 		rolups2[i] = null;
-
 	}
 
 	private void addFinished(int i, DataPointsRollup[] rolups1, DataPointsRollup[] rolups2,
@@ -254,7 +252,6 @@ public class RollupsContainer implements IRollupsContainer {
 				.getProbe().getUser().getUserId().toString());
 
 		return rollup;
-
 	}
 
 	private JSONObject rollupResultsDBFormat(DataPointsRollup dataPointsRollup1, DataPointsRollup dataPointsRollup2,
@@ -273,7 +270,6 @@ public class RollupsContainer implements IRollupsContainer {
 				.getProbe().getUser().getUserId().toString());
 
 		return rollup;
-
 	}
 
 	private JSONObject rollupResultsDBFormat(DataPointsRollup dataPointsRollup) {
@@ -335,7 +331,6 @@ public class RollupsContainer implements IRollupsContainer {
 
 			addFinished(i, snmpRollups);
 		}
-
 	}
 
 	private void addNicResult(BaseResult result) {
@@ -373,7 +368,6 @@ public class RollupsContainer implements IRollupsContainer {
 			nicOutRollup.add(nicResults.getLastTimestamp(), nicResults.getOutBW());
 
 			addFinished(i, nicInRollups, nicOutRollups);
-
 		}
 	}
 
@@ -406,8 +400,8 @@ public class RollupsContainer implements IRollupsContainer {
 				diskSizeDataRollups.get(result.getRunnableProbeId())[i] = diskSizeRollup;
 				diskUsedDataRollups.get(result.getRunnableProbeId())[i] = diskUsedRollup;
 				diskFreeDataRollups.get(result.getRunnableProbeId())[i] = diskFreeRollup;
-
 			}
+			
 			Logit.LogDebug("BREAKPOINT");
 			if (diskResults.getStorageSize() == null || diskResults.getStorageUsed() == null
 					|| diskResults.getStorageFree() == null)
@@ -439,7 +433,6 @@ public class RollupsContainer implements IRollupsContainer {
 			}
 			responseTimeRollup.add(weberResults.getLastTimestamp(), weberResults.getResponseTime());
 			addFinished(i, responseTimeRollups);
-
 		}
 	}
 
@@ -456,7 +449,6 @@ public class RollupsContainer implements IRollupsContainer {
 			}
 			responseTimeRollup.add(porterResults.getLastTimestamp(), porterResults.getResponseTime());
 			addFinished(i, responseTimeRollups);
-
 		}
 	}
 
@@ -601,10 +593,9 @@ public class RollupsContainer implements IRollupsContainer {
 			}
 		}
 	}
-
-	public void clear() {
-		// TODO Auto-generated method stub
-		finishedRollups.clear();
-	}
-
+ 
+//	public void clear() {
+//		// TODO Auto-generated method stub
+//		finishedRollups.clear();
+//	}
 }

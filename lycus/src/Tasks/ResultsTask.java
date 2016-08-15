@@ -69,7 +69,7 @@ public class ResultsTask extends BaseTask {
 				FailedRequestsHandler.getInstance()
 						.addRequest(new ApiRequest(Enums.ApiAction.InsertDatapointsBatches, jsonToSend));
 
-			RollupsContainer.getInstance().clear();
+//			RollupsContainer.getInstance().clear();
 		} catch (Throwable thrown) {
 			Logit.LogError("ResultsTask - run()", "Sending collected results to API failed!");
 			StringWriter sw = new StringWriter();
