@@ -408,7 +408,7 @@ public class RollupsContainer implements IRollupsContainer {
 				continue;
 			diskSizeRollup.add(diskResults.getLastTimestamp(), diskResults.getStorageSize());
 			diskUsedRollup.add(diskResults.getLastTimestamp(), diskResults.getStorageUsed());
-			diskFreeRollup.add(diskResults.getLastTimestamp(), diskResults.getStorageUsed());
+			diskFreeRollup.add(diskResults.getLastTimestamp(), diskResults.getStorageFree());
 
 			addFinished(i, diskSizeRollups, diskUsedRollups, diskFreeRollups);
 
