@@ -185,7 +185,7 @@ public class RollupsContainer implements IRollupsContainer {
 		addFinishedRollup(finishedDataRollup1, finishedDataRollup2, finishedDataRollup3);
 		rolups1[i] = null;
 		rolups2[i] = null;
-
+		rolups3[i] = null;
 	}
 
 	public ArrayList<DataPointsRollup[][]> deserializeRollups(String rollups) {
