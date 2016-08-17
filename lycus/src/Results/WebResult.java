@@ -176,8 +176,8 @@ public class WebResult extends BaseResult {
 	}
 
 	public Boolean isActive() {
-		return null;
-//		 return statusCode < 400;  faulty when statusCode not yet set!
-		// return Constants.okStatus.contains(statusCode);
+		if(statusCode==null)
+			return false;
+		 return statusCode < 400;
 	}
 }
