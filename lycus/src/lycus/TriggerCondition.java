@@ -3,10 +3,10 @@ package lycus;
 import Interfaces.IFunction;
 
 public class TriggerCondition {
-	private int code;//0 no trigger, 1 bigger, 2 tinier, 3 equal, 4 is not
+	private int code;// 0 no trigger, 1 bigger, 2 tinier, 3 equal, 4 is not
 	private String xValue;
 	private IFunction function;
-	
+
 	public TriggerCondition(int code, String xValue, IFunction function) {
 		this.code = code;
 		this.xValue = xValue;

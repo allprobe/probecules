@@ -20,7 +20,6 @@ import DAL.DAL;
 import Elements.BaseElement;
 import Elements.DiskElement;
 import Elements.NicElement;
-import Functions.Last;
 import GlobalConstants.Constants;
 import GlobalConstants.Enums;
 import GlobalConstants.SnmpDataType;
@@ -603,21 +602,12 @@ public class UsersManager {
 			String tValue = (String) conditionJson.get("tvalue");
 			int functionId = Integer.parseInt((String) conditionJson.get("condition"));
 
-			IFunction function = getFunction(functionId);
+			IFunction function = null;
 			TriggerCondition condition = new TriggerCondition(code, xValue, function);
 			conditions.add(condition);
 
 		}
 		return conditions;
-	}
-
-	private static IFunction getFunction(int functionId) {
-		switch (functionId) {
-		case 1:
-			return new Last();
-		default:
-			return null;
-		}
 	}
 
 	public static ArrayList<TriggerCondition> getTriggerConds(ConditionUpdateModel[] conditionUpdateModels) {
@@ -629,7 +619,7 @@ public class UsersManager {
 			String xValue = (String) conditionUpdateModel.xvalue;
 			int functionId = Integer.parseInt((String) conditionUpdateModel.condition);
 
-			IFunction function = getFunction(functionId);
+			IFunction function = null;
 
 			TriggerCondition condition = new TriggerCondition(code, xValue, function);
 			conditions.add(condition);

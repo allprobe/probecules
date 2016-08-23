@@ -2,6 +2,9 @@ package Results;
 
 import java.util.Arrays;
 import java.util.HashMap;
+
+import Probes.HttpProbe;
+import lycus.RunnableProbeContainer;
 import org.json.simple.JSONArray;
 import GlobalConstants.Constants;
 import GlobalConstants.ProbeTypes;
@@ -59,13 +62,13 @@ public class WebResult extends BaseResult {
 		for (Trigger trigger : triggers.values()) {
 			boolean triggered = false;
 			switch (trigger.getElementType()) {
-			case "rc":
+			case "RC":
 				triggered = checkForResponseCodeTrigger(trigger);
 				break;
-			case "rt":
+			case "RT":
 				triggered = checkForResponseTimeTrigger(trigger);
 				break;
-			case "ps":
+			case "PS":
 				triggered = checkForPageSizeTrigger(trigger);
 				break;
 			}
@@ -136,9 +139,9 @@ public class WebResult extends BaseResult {
 		boolean flag = false;
 		for (TriggerCondition condition : trigger.getCondtions()) {
 			long x = Long.parseLong(condition.getxValue());
-			long lastValue = this.getPageSize();
+			Object[] lastValue =(RunnableProbeContainer.getInstanece().get(this.getRunnableProbeId())).getTriggerFunction(trigger).get();
 			switch (condition.getCode()) {
-			case 1:
+			/*case 1:
 				if (lastValue > x)
 					flag = true;
 				break;
@@ -153,7 +156,7 @@ public class WebResult extends BaseResult {
 			case 4:
 				if (lastValue != x)
 					flag = true;
-				break;
+				break;*/
 			}
 			if (!flag)
 				return false;

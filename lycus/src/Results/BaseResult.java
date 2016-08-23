@@ -5,11 +5,7 @@ import java.util.HashMap;
 import GlobalConstants.ProbeTypes;
 import Interfaces.IResult;
 import Utils.Logit;
-import lycus.Trigger;
-import lycus.Event;
-import lycus.ResultsContainer;
-import lycus.RunnableProbe;
-import lycus.RunnableProbeContainer;
+import lycus.*;
 
 public class BaseResult implements IResult {
 	private Long lastTimestamp;
@@ -117,6 +113,51 @@ public class BaseResult implements IResult {
 
 	public void setErrorMessage(String errorMessage) {
 		this.errorMessage = errorMessage;
+	}
+
+	private boolean checkForTriggerActivated(Trigger trigger) {
+		boolean flag = false;
+		for (TriggerCondition condition : trigger.getCondtions()) {
+			String x = condition.getxValue();
+			Double xNumber=Double.parseDouble(x);
+			Object[] lastValues =(RunnableProbeContainer.getInstanece().get(this.getRunnableProbeId())).getTriggerFunction(trigger).get();
+			switch (condition.getCode()) {
+			case 1:
+				for(int i=0;i<lastValues.length;i++)
+				{
+					Object lastValue=lastValues[i];
+					if ((Double)lastValue > xNumber) {
+						flag = true;
+					}
+				}
+				break;
+			case 2:
+				for(int i=0;i<lastValues.length;i++) {
+					Object lastValue = lastValues[i];
+					if ((Double)lastValue < xNumber)
+						flag = true;
+				}
+				break;
+			case 3:
+				for(int i=0;i<lastValues.length;i++)
+				{
+					Object lastValue=lastValues[i];
+				if ((String)lastValue == x)
+					flag = true;
+				}
+				break;
+			case 4:
+				for(int i=0;i<lastValues.length;i++)
+				{
+					Object lastValue=lastValues[i];
+				if ((String)lastValue != x)
+					flag = true;}
+				break;
+			}
+			if (!flag)
+				return false;
+		}
+		return flag;
 	}
 
 }
