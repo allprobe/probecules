@@ -2,6 +2,8 @@ package Results;
 
 import java.util.HashMap;
 
+import com.google.common.base.Enums;
+
 import GlobalConstants.ProbeTypes;
 import Interfaces.IResult;
 import Utils.Logit;
@@ -64,7 +66,11 @@ public class BaseResult implements IResult {
 	}
 
 	public void checkIfTriggerd(HashMap<String, Trigger> triggers) throws Exception {
-		Logit.LogInfo("Triggering Runnable Probe: " + getRunnableProbeId());
+		for (Trigger trigger : triggers.values()) {
+			boolean triggered = checkForTriggerActivated(trigger);
+			processTriggerResult(trigger, triggered);
+
+		}
 	}
 
 	public void processTriggerResult(Trigger trigger, boolean triggered) {
@@ -119,45 +125,127 @@ public class BaseResult implements IResult {
 		boolean flag = false;
 		for (TriggerCondition condition : trigger.getCondtions()) {
 			String x = condition.getxValue();
-			Double xNumber=Double.parseDouble(x);
-			Object[] lastValues =(RunnableProbeContainer.getInstanece().get(this.getRunnableProbeId())).getTriggerFunction(trigger).get();
-			switch (condition.getCode()) {
-			case 1:
-				for(int i=0;i<lastValues.length;i++)
-				{
-					Object lastValue=lastValues[i];
-					if ((Double)lastValue > xNumber) {
-						flag = true;
-					}
-				}
-				break;
-			case 2:
-				for(int i=0;i<lastValues.length;i++) {
-					Object lastValue = lastValues[i];
-					if ((Double)lastValue < xNumber)
-						flag = true;
-				}
-				break;
-			case 3:
-				for(int i=0;i<lastValues.length;i++)
-				{
-					Object lastValue=lastValues[i];
-				if ((String)lastValue == x)
-					flag = true;
-				}
-				break;
-			case 4:
-				for(int i=0;i<lastValues.length;i++)
-				{
-					Object lastValue=lastValues[i];
-				if ((String)lastValue != x)
-					flag = true;}
-				break;
+			Double xNumber = Double.parseDouble(x);
+			Object[] lastValues = (RunnableProbeContainer.getInstanece().get(this.getRunnableProbeId()))
+					.getTriggerFunction(trigger).get();
+			for (int i = 0; i < lastValues.length; i++) {
+				flag = conditionByType(lastValues[i], x, condition.getCode());
+				if (!flag)
+					return false;
 			}
-			if (!flag)
-				return false;
 		}
 		return flag;
 	}
 
+	private boolean conditionByType(Object lastValue, String triggerValue, int code) {
+		switch (code) {
+		case 1:
+			if (lastValue.getClass().equals(Integer.class))
+				if ((Integer) lastValue > Integer.parseInt(triggerValue))
+					return true;
+			if (lastValue.getClass().equals(Double.class))
+				if ((Double) lastValue > Double.parseDouble(triggerValue))
+					return true;
+			if (lastValue.getClass().equals(Long.class))
+				if ((Integer) lastValue > Integer.parseInt(triggerValue))
+					return true;
+
+		case 2:
+			if (lastValue.getClass().equals(Integer.class))
+				if ((Integer) lastValue < Integer.parseInt(triggerValue))
+					return true;
+			if (lastValue.getClass().equals(Double.class))
+				if ((Double) lastValue < Double.parseDouble(triggerValue))
+					return true;
+			if (lastValue.getClass().equals(Long.class))
+				if ((Integer) lastValue < Integer.parseInt(triggerValue))
+					return true;
+		case 3:
+			if (lastValue.getClass().equals(Integer.class))
+				if ((Integer) lastValue == Integer.parseInt(triggerValue))
+					return true;
+			if (lastValue.getClass().equals(Double.class))
+				if ((Double) lastValue == Double.parseDouble(triggerValue))
+					return true;
+			if (lastValue.getClass().equals(Long.class))
+				if ((Integer) lastValue == Integer.parseInt(triggerValue))
+					return true;
+			if (lastValue.getClass().equals(Boolean.class))
+				if ((Boolean) lastValue == Boolean.parseBoolean(triggerValue))
+					return true;
+			if (lastValue.getClass().equals(String.class))
+				if ((String) lastValue == triggerValue)
+					return true;
+		case 4:
+			if (lastValue.getClass().equals(Integer.class))
+				if ((Integer) lastValue == Integer.parseInt(triggerValue))
+					return true;
+			if (lastValue.getClass().equals(Double.class))
+				if ((Double) lastValue == Double.parseDouble(triggerValue))
+					return true;
+			if (lastValue.getClass().equals(Long.class))
+				if ((Integer) lastValue == Integer.parseInt(triggerValue))
+					return true;
+			if (lastValue.getClass().equals(Boolean.class))
+				if ((Boolean) lastValue == Boolean.parseBoolean(triggerValue))
+					return true;
+			if (lastValue.getClass().equals(String.class))
+				if ((String) lastValue == triggerValue)
+					return true;
+		}
+		return false;
+	}
+
+	public Object getResultElementValue(String valueType) {
+		switch (valueType) {
+		case "WRT":
+			return ((WebResult) this).getResponseTime();
+		case "PRT":
+			return ((PortResult) this).getResponseTime();
+
+		case "RC":
+			return ((WebResult) this).getStatusCode();
+
+		case "PS":
+			return ((WebResult) this).getPageSize();
+
+		case "ST":
+			return ((PortResult) this).isActive();
+
+		case "RTA":
+			return ((PingResult) this).getRtt();
+
+		case "PL":
+			return ((PingResult) this).getPacketLost();
+
+		// case "DFDS":
+		// this.lastResults[0] = null;
+		// break;
+		// case "DUDS":
+		// this.lastResults[0] = ((WebResult) result).getStatusCode();
+		// break;
+		// case "DBI":
+		// this.lastResults[0] = ((WebResult) result).getStatusCode();
+		// break;
+		// case "DBO":
+		// this.lastResults[0] = ((WebResult) result).getStatusCode();
+		// break;
+		// case "WSERT":
+		// this.lastResults[0] = ((WebResult) result).getStatusCode();
+		// break;
+		// case "WAERC":
+		// this.lastResults[0] = ((WebResult) result).getStatusCode();
+		// break;
+		// case "TRARHRT":
+		// this.lastResults[0] = ((WebResult) result).getStatusCode();
+		// break;
+		// case "TRDHRT":
+		// this.lastResults[0] = ((WebResult) result).getStatusCode();
+		// break;
+		// case "DTDS":
+		// this.lastResults[0] = ((WebResult) result).getStatusCode();
+		// break;
+		}
+		return null;
+	}
 }

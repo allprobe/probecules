@@ -1,6 +1,10 @@
 package lycus;
 
+import java.util.ArrayList;
+
+import Functions.BaseFunction;
 import GlobalConstants.ProbeTypes;
+import Interfaces.IFunction;
 import Probes.BaseProbe;
 import Probes.DiscoveryProbe;
 import Probes.HttpProbe;
@@ -21,6 +25,7 @@ public class RunnableProbe implements Runnable {
 	private BaseProbe probe;
 	private boolean isActive;
 	private boolean isRunning;
+	private ArrayList<BaseFunction> functions;
 
 	public RunnableProbe(Host host, BaseProbe probe) {
 		this.setHost(host);
@@ -70,6 +75,14 @@ public class RunnableProbe implements Runnable {
 		this.isRunning = isRunning;
 	}
 
+	public BaseFunction getTriggerFunction(Trigger trigger) {
+		for (int i = 0; i < this.functions.size(); i++) {
+			if (this.functions.get(i).getTriggerId().equals(trigger.getTriggerId()))
+				return this.functions.get(i);
+		}
+		return null;
+	}
+
 	public String getId() {
 		return this.getProbe().getTemplate_id().toString() + "@" + this.getHost().getHostId().toString() + "@"
 				+ this.getProbe().getProbe_id();
@@ -98,58 +111,67 @@ public class RunnableProbe implements Runnable {
 	}
 
 	public void run() {
-		//isRunning = false will stop the thread
+		// isRunning = false will stop the thread
 		while (isRunning()) {
 			BaseResult result = null;
 			try {
 				String rpStr = this.getId();
-				if (rpStr.contains("f1cec079-fc7d-448a-b1dd-793c8684a0cb@6b999cd6-fcbb-4ca8-9936-5529b4c66976@port_4213fefb-2fe7-484e-a25d-847f27ea3583"))
+				if (rpStr.contains(
+						"f1cec079-fc7d-448a-b1dd-793c8684a0cb@6b999cd6-fcbb-4ca8-9936-5529b4c66976@port_4213fefb-2fe7-484e-a25d-847f27ea3583"))
 					Logit.LogDebug("BREAKPOINT - RunnableProbe");
 
-				//isActive = false will pause the thread
+				// isActive = false will pause the thread
 				if (!isActive() || !getProbe().isActive())
 					continue;
 
 				long timeStamp = System.currentTimeMillis();
-				
+
 				try {
 					result = getProbe().getResult(this.getHost());
 				} catch (Exception e) {
 					result = new BaseResult(this.getId());
 					result.setErrorMessage("RESULT_EXCEPTION");
-					Logit.LogError("RunnableProbe - run()", "Error, getting runnable probe results from probe! getResult() throws exception " + this.getProbeType() + " "
-							+ this.getProbe().getName() + ", \nRunnabelProbeId: " + this.getId(), e);
+					Logit.LogError("RunnableProbe - run()",
+							"Error, getting runnable probe results from probe! getResult() throws exception "
+									+ this.getProbeType() + " " + this.getProbe().getName() + ", \nRunnabelProbeId: "
+									+ this.getId(),
+							e);
 				}
 
 				if (result == null) {
 					result = new BaseResult(this.getId());
 					result.setErrorMessage("RESULT_OBJECT_NULL");
-					Logit.LogError("RunnableProbe - run()", "Error, getting runnable probe results from probe! Returned object is null " + this.getProbeType() + " "
-							+ this.getProbe().getName() + ", \nRunnabelProbeId: " + this.getId());
+					Logit.LogError("RunnableProbe - run()",
+							"Error, getting runnable probe results from probe! Returned object is null "
+									+ this.getProbeType() + " " + this.getProbe().getName() + ", \nRunnabelProbeId: "
+									+ this.getId());
+				}
+
+				try {
+					// if (result.getLastTimestamp() == null) {
+					// Logit.LogError("RunnableProbe - run()",
+					// "Error getting runnable probe results! last timestamp is
+					// null! "
+					// + this.getProbe().getName() + ", \nRunnabelProbeId: " +
+					// this.getId());
+					// continue;
+					// }
+
+					// Set the timeStamp to the value before the probe.
+					result.setLastTimestamp(timeStamp);
+					ResultsContainer.getInstance().addResult(result);
+				} catch (Exception e) {
+					Logit.LogError("RunnableProbe - run()",
+							"Error processing runnable probe results to results container! " + this.getId());
 				}
 
 				try {
 					result.checkIfTriggerd(getProbe().getTriggers());
 				} catch (Exception e) {
-					Logit.LogError("RunnableProbe - run()", "Error triggering runnable probe results!  "+ this.getProbeType() + " "
-							+ this.getProbe().getName() + ", \nRunnabelProbeId: " + this.getId());
-//					continue;
-				}
-
-				try {
-//					if (result.getLastTimestamp() == null) {
-//						Logit.LogError("RunnableProbe - run()",
-//								"Error getting runnable probe results! last timestamp is null! "
-//										+ this.getProbe().getName() + ", \nRunnabelProbeId: " + this.getId());
-//						continue;
-//					}
-					
-					// Set the timeStamp to the value before the probe.
-					result.setLastTimestamp(timeStamp);  
-					ResultsContainer.getInstance().addResult(result);
-				} catch (Exception e) {
 					Logit.LogError("RunnableProbe - run()",
-							"Error processing runnable probe results to results container! " + this.getId());
+							"Error triggering runnable probe results!  " + this.getProbeType() + " "
+									+ this.getProbe().getName() + ", \nRunnabelProbeId: " + this.getId());
+					// continue;
 				}
 
 				try {

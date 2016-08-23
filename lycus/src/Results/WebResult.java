@@ -139,24 +139,15 @@ public class WebResult extends BaseResult {
 		boolean flag = false;
 		for (TriggerCondition condition : trigger.getCondtions()) {
 			long x = Long.parseLong(condition.getxValue());
-			Object[] lastValue =(RunnableProbeContainer.getInstanece().get(this.getRunnableProbeId())).getTriggerFunction(trigger).get();
+			Object[] lastValue = (RunnableProbeContainer.getInstanece().get(this.getRunnableProbeId()))
+					.getTriggerFunction(trigger).get();
 			switch (condition.getCode()) {
-			/*case 1:
-				if (lastValue > x)
-					flag = true;
-				break;
-			case 2:
-				if (lastValue < x)
-					flag = true;
-				break;
-			case 3:
-				if (lastValue == x)
-					flag = true;
-				break;
-			case 4:
-				if (lastValue != x)
-					flag = true;
-				break;*/
+			/*
+			 * case 1: if (lastValue > x) flag = true; break; case 2: if
+			 * (lastValue < x) flag = true; break; case 3: if (lastValue == x)
+			 * flag = true; break; case 4: if (lastValue != x) flag = true;
+			 * break;
+			 */
 			}
 			if (!flag)
 				return false;
@@ -179,8 +170,8 @@ public class WebResult extends BaseResult {
 	}
 
 	public Boolean isActive() {
-		if(statusCode==null)
+		if (statusCode == null)
 			return false;
-		 return statusCode < 400;
+		return statusCode < 400;
 	}
 }
