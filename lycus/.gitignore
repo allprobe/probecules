@@ -10,3 +10,14 @@
 
 # virtual machine crash logs, see http://www.java.com/en/download/help/error_hotspot.xml
 hs_err_pid*
+/lycus.iml
+/.idea/compiler.xml
+/.idea/misc.xml
+/.idea/modules.xml
+/.idea/uiDesigner.xml
+/.idea/workspace.xml
+/.idea/copyright/profiles_settings.xml
+
+# log4j
+/src/log4j2.xml
+/bin/log4j2.xml
