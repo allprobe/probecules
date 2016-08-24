@@ -10,6 +10,9 @@ import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
 import java.util.UUID;
+
+import javax.persistence.EnumType;
+
 import org.json.simple.JSONObject;
 import org.apache.log4j.BasicConfigurator;
 import org.json.simple.JSONArray;
@@ -448,8 +451,8 @@ public class UsersManager {
 						JSONObject trigger = (JSONObject) triggers.get(index);
 						DiscoveryTrigger discoveryTrigger = new DiscoveryTrigger();
 
-						discoveryTrigger.discovery_trigger_code = Integer
-								.parseInt(trigger.get("discovery_trigger_code").toString());
+						discoveryTrigger.discovery_trigger_function = Integer
+								.parseInt(trigger.get("discovery_trigger_function").toString());
 
 						discoveryTrigger.discovery_trigger_x_value = trigger.get("discovery_trigger_x_value")
 								.toString();
@@ -519,6 +522,7 @@ public class UsersManager {
 					Logit.LogWarn("Unable to get trigger severity for: " + triggerId);
 				boolean status = ((String) triggerJson.get("status")).equals("1") ? true : false;
 				String elementType = (String) triggerJson.get("results_vector_type");
+				Enums.ResultValueType elementTypeEnum = Enums.ResultValueType.valueOf(elementType);
 				String unitType = (String) triggerJson.get("xvalue_unit");
 				SnmpUnit trigValueUnit = SnmpUnit.valueOf(unitType);
 
@@ -535,7 +539,7 @@ public class UsersManager {
 					continue;
 				}
 
-				Trigger trigger = new Trigger(triggerId, name, probe, severity, status, elementType, trigValueUnit,
+				Trigger trigger = new Trigger(triggerId, name, probe, severity, status, elementTypeEnum, trigValueUnit,
 						conditions);
 
 				probe.addTrigger(trigger);
@@ -602,8 +606,7 @@ public class UsersManager {
 			String tValue = (String) conditionJson.get("tvalue");
 			int functionId = Integer.parseInt((String) conditionJson.get("condition"));
 
-			IFunction function = null;
-			TriggerCondition condition = new TriggerCondition(code, xValue, function);
+			TriggerCondition condition = new TriggerCondition(code, xValue, functionId);
 			conditions.add(condition);
 
 		}
@@ -619,9 +622,7 @@ public class UsersManager {
 			String xValue = (String) conditionUpdateModel.xvalue;
 			int functionId = Integer.parseInt((String) conditionUpdateModel.condition);
 
-			IFunction function = null;
-
-			TriggerCondition condition = new TriggerCondition(code, xValue, function);
+			TriggerCondition condition = new TriggerCondition(code, xValue, functionId);
 			conditions.add(condition);
 
 		}

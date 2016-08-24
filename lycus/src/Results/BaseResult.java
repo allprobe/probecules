@@ -4,6 +4,7 @@ import java.util.HashMap;
 
 import com.google.common.base.Enums;
 
+import GlobalConstants.Enums.ResultValueType;
 import GlobalConstants.ProbeTypes;
 import Interfaces.IResult;
 import Utils.Logit;
@@ -196,26 +197,26 @@ public class BaseResult implements IResult {
 		return false;
 	}
 
-	public Object getResultElementValue(String valueType) {
+	public Object getResultElementValue(ResultValueType valueType) {
 		switch (valueType) {
-		case "WRT":
+		case WRT:
 			return ((WebResult) this).getResponseTime();
-		case "PRT":
+		case PRT:
 			return ((PortResult) this).getResponseTime();
 
-		case "RC":
+		case RC:
 			return ((WebResult) this).getStatusCode();
 
-		case "PS":
+		case PS:
 			return ((WebResult) this).getPageSize();
 
-		case "ST":
+		case ST:
 			return ((PortResult) this).isActive();
 
-		case "RTA":
+		case RTA:
 			return ((PingResult) this).getRtt();
 
-		case "PL":
+		case PL:
 			return ((PingResult) this).getPacketLost();
 
 		// case "DFDS":

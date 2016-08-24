@@ -507,8 +507,8 @@ public class User {
 
 				for (DiscoveryTrigger discoveryTrigger : probeParams.discovery_triggers) {
 					ArrayList<TriggerCondition> conditions = new ArrayList<TriggerCondition>();
-					TriggerCondition condition = new TriggerCondition(discoveryTrigger.discovery_trigger_code,
-							discoveryTrigger.discovery_trigger_x_value, null);
+					TriggerCondition condition = new TriggerCondition(discoveryTrigger.discovery_trigger_function,
+							discoveryTrigger.discovery_trigger_x_value, discoveryTrigger.discovery_trigger_condition);
 					conditions.add(condition);
 					Trigger trigger = new Trigger(discoveryTrigger.discovery_trigger_id,
 							getDiscoveryTriggerName(probeParams), probe,
@@ -542,7 +542,7 @@ public class User {
 	private String getDiscoveryTriggerName(ProbeParams probeParams) throws Exception {
 		switch (probeParams.discovery_type) {
 		case Constants.bw:
-			switch (probeParams.discovery_triggers[0].discovery_trigger_code) {
+			switch (probeParams.discovery_triggers[0].discovery_trigger_function) {
 			case 1:
 				return "Bandwidth is bigger than trigger X value!";
 			case 2:
@@ -557,7 +557,7 @@ public class User {
 
 			break;
 		case Constants.ds:
-			switch (probeParams.discovery_triggers[0].discovery_trigger_code) {
+			switch (probeParams.discovery_triggers[0].discovery_trigger_function) {
 			case 1:
 				return "Disk is bigger than trigger X value!";
 			case 2:
@@ -580,17 +580,22 @@ public class User {
 			BaseProbe probe) {
 
 		for (DiscoveryTrigger trigger : probeParams.discovery_triggers) {
-			String triggerId = templateId.toString() + "@" + probeId + "@" + trigger;
-			ArrayList<TriggerCondition> conditions = new ArrayList<TriggerCondition>();
-			TriggerCondition triggerCondition = new TriggerCondition(trigger.discovery_trigger_code,
-					trigger.discovery_trigger_x_value, null);
-			conditions.add(triggerCondition);
-
-			TriggerSeverity sev = UsersManager.getTriggerSev(trigger.discovery_trigger_severity);
-			SnmpUnit un = SnmpUnit.valueOf(trigger.discovery_trigger_unit);
-
-			Trigger discoveryTrigger = new Trigger(triggerId, name, probe, sev, true, "", un, conditions);
-			probe.addTrigger(discoveryTrigger);
+			// String triggerId = templateId.toString() + "@" + probeId + "@" +
+			// trigger;
+			// ArrayList<TriggerCondition> conditions = new
+			// ArrayList<TriggerCondition>();
+			// TriggerCondition triggerCondition = new
+			// TriggerCondition(trigger.discovery_trigger_code,
+			// trigger.discovery_trigger_x_value, null);
+			// conditions.add(triggerCondition);
+			//
+			// TriggerSeverity sev =
+			// UsersManager.getTriggerSev(trigger.discovery_trigger_severity);
+			// SnmpUnit un = SnmpUnit.valueOf(trigger.discovery_trigger_unit);
+			//
+			// Trigger discoveryTrigger = new Trigger(triggerId, name, probe,
+			// sev, true, "", un, conditions);
+			// probe.addTrigger(discoveryTrigger);
 		}
 	}
 

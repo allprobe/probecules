@@ -50,88 +50,88 @@ public class PingResult extends BaseResult {
 		this.ttl = ttl;
 	}
 
-	@Override
-	public synchronized void checkIfTriggerd(HashMap<String, Trigger> triggers) throws Exception {
-		super.checkIfTriggerd(triggers);
-		for (Trigger trigger : triggers.values()) {
-			boolean triggered = false;
-			if (trigger.getElementType() == null)
-				return;
-			switch (trigger.getElementType()) {
-			case "pl":
-				triggered = checkForPacketLostTrigger(trigger);
-				break;
-			case "rta":
-				triggered = checkForRttTrigger(trigger);
-				break;
-			}
-			super.processTriggerResult(trigger, triggered);
-
-		}
-	}
+//	@Override
+//	public synchronized void checkIfTriggerd(HashMap<String, Trigger> triggers) throws Exception {
+//		super.checkIfTriggerd(triggers);
+//		for (Trigger trigger : triggers.values()) {
+//			boolean triggered = false;
+//			if (trigger.getElementType() == null)
+//				return;
+//			switch (trigger.getElementType()) {
+//			case "pl":
+//				triggered = checkForPacketLostTrigger(trigger);
+//				break;
+//			case "rta":
+//				triggered = checkForRttTrigger(trigger);
+//				break;
+//			}
+//			super.processTriggerResult(trigger, triggered);
+//
+//		}
+//	}
 
 	@Override
 	public String getName() {
 		return super.getName();
 	}
 
-	private boolean checkForPacketLostTrigger(Trigger trigger) {
-		boolean flag = false;
-		for (TriggerCondition condition : trigger.getCondtions()) {
-			int x = Integer.parseInt(condition.getxValue());
-			int lastValue = this.getPacketLost();
-			switch (condition.getCode()) {
-			case 1:
-				if (lastValue > x)
-					flag = true;
-				break;
-			case 2:
-				if (lastValue < x)
-					flag = true;
-				break;
-			case 3:
-				if (lastValue == x)
-					flag = true;
-				break;
-			case 4:
-				if (lastValue != x)
-					flag = true;
-				break;
-			}
-			if (!flag)
-				return false;
-		}
-		return flag;
-	}
-
-	private boolean checkForRttTrigger(Trigger trigger) {
-		boolean flag = false;
-		for (TriggerCondition condition : trigger.getCondtions()) {
-			long x = Long.parseLong(condition.getxValue());
-			double lastValue = this.getRtt();
-			switch (condition.getCode()) {
-			case 1:
-				if (lastValue > x)
-					flag = true;
-				break;
-			case 2:
-				if (lastValue < x)
-					flag = true;
-				break;
-			case 3:
-				if (lastValue == x)
-					flag = true;
-				break;
-			case 4:
-				if (lastValue != x)
-					flag = true;
-				break;
-			}
-			if (!flag)
-				return false;
-		}
-		return flag;
-	}
+//	private boolean checkForPacketLostTrigger(Trigger trigger) {
+//		boolean flag = false;
+//		for (TriggerCondition condition : trigger.getCondtions()) {
+//			int x = Integer.parseInt(condition.getxValue());
+//			int lastValue = this.getPacketLost();
+//			switch (condition.getCode()) {
+//			case 1:
+//				if (lastValue > x)
+//					flag = true;
+//				break;
+//			case 2:
+//				if (lastValue < x)
+//					flag = true;
+//				break;
+//			case 3:
+//				if (lastValue == x)
+//					flag = true;
+//				break;
+//			case 4:
+//				if (lastValue != x)
+//					flag = true;
+//				break;
+//			}
+//			if (!flag)
+//				return false;
+//		}
+//		return flag;
+//	}
+//
+//	private boolean checkForRttTrigger(Trigger trigger) {
+//		boolean flag = false;
+//		for (TriggerCondition condition : trigger.getCondtions()) {
+//			long x = Long.parseLong(condition.getxValue());
+//			double lastValue = this.getRtt();
+//			switch (condition.getCode()) {
+//			case 1:
+//				if (lastValue > x)
+//					flag = true;
+//				break;
+//			case 2:
+//				if (lastValue < x)
+//					flag = true;
+//				break;
+//			case 3:
+//				if (lastValue == x)
+//					flag = true;
+//				break;
+//			case 4:
+//				if (lastValue != x)
+//					flag = true;
+//				break;
+//			}
+//			if (!flag)
+//				return false;
+//		}
+//		return flag;
+//	}
 
 	// TODO: Oren ask ran what is true?
 	public Boolean isActive() {

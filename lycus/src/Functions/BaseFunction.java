@@ -4,11 +4,13 @@ import Results.BaseResult;
 
 import java.util.UUID;
 
+import GlobalConstants.Enums.ResultValueType;
+
 /**
  * Created by roi on 8/17/16.
  */
 public abstract class BaseFunction {
-	protected String valueType;
+	protected ResultValueType valueType;
 	protected String triggerId;
 	protected Object[] lastResults;
 
@@ -16,8 +18,9 @@ public abstract class BaseFunction {
 
 	public abstract void add(BaseResult result);
 
-	public BaseFunction(String valueType) {
+	public BaseFunction(ResultValueType valueType, String triggerId) {
 		this.valueType = valueType;
+		this.triggerId=triggerId;
 	}
 
 	public String getTriggerId() {

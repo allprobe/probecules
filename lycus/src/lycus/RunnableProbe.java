@@ -1,8 +1,11 @@
 package lycus;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 
 import Functions.BaseFunction;
+import Functions.LastFunction;
+import GlobalConstants.Enums.ResultValueType;
 import GlobalConstants.ProbeTypes;
 import Interfaces.IFunction;
 import Probes.BaseProbe;
@@ -36,6 +39,36 @@ public class RunnableProbe implements Runnable {
 			// Must be handled by Roi
 			return;
 		}
+		this.setFunctions(probe.getTriggers());
+	}
+
+	private void setFunctions(HashMap<String, Trigger> triggers) {
+		for (Trigger trigger : triggers.values()) {
+			for (TriggerCondition condition : trigger.getCondtions()) {
+				BaseFunction function = getFunctionOfCondition(condition, trigger.getElementType(),
+						trigger.getTriggerId());
+				if (isFunctionExists(function))
+					continue;
+
+			}
+		}
+	}
+
+	private boolean isFunctionExists(BaseFunction function) {
+		for (BaseFunction existing : this.functions) {
+			return true;
+		}
+		return false;
+	}
+
+	private BaseFunction getFunctionOfCondition(TriggerCondition condition, ResultValueType resultValue,
+			String triggerId) {
+		switch (condition.getFunction()) {
+		case 1:
+			return new LastFunction(resultValue, triggerId);
+
+		}
+		return null;
 	}
 
 	public Host getHost() {

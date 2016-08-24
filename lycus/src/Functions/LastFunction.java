@@ -1,11 +1,12 @@
 package Functions;
 
+import GlobalConstants.Enums.ResultValueType;
 import Interfaces.IFunction;
 import Results.*;
 
 public class LastFunction extends BaseFunction {
-	public LastFunction(String valueType) {
-		super(valueType);
+	public LastFunction(ResultValueType valueType,String triggerId) {
+		super(valueType,triggerId);
 		this.lastResults = new Object[1];
 	}
 

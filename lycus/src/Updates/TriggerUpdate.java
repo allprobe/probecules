@@ -5,6 +5,7 @@ import java.util.UUID;
 
 import GlobalConstants.Constants;
 import GlobalConstants.SnmpUnit;
+import GlobalConstants.Enums.ResultValueType;
 import Model.UpdateModel;
 import Probes.BaseProbe;
 import Utils.GeneralFunctions;
@@ -30,7 +31,7 @@ public class TriggerUpdate extends BaseUpdate {
 		// From SsmpUnit swap integer and string to none - Roi
 		Trigger trigger = new Trigger(getUpdate().update_value.key.trigger_id, getUpdate().update_value.name, probe,
 				UsersManager.getTriggerSev(getUpdate().update_value.severity),
-				getUpdate().update_value.status.equals(Constants._true), getUpdate().update_value.type,
+				getUpdate().update_value.status.equals(Constants._true), ResultValueType.valueOf(getUpdate().update_value.type),
 				SnmpUnit.valueOf(getUpdate().update_value.xvalue_unit), conditions);
 
 		probe.addTrigger(trigger);
@@ -48,11 +49,11 @@ public class TriggerUpdate extends BaseUpdate {
 			trigger.setCondtions(conditions);
 			Logit.LogCheck("Conditions for trigger : " + getUpdate().object_id + " has updated even when not changed");
 		}
-		if (GeneralFunctions.isChanged(trigger.getElementType(), getUpdate().update_value.type)) {
-			trigger.setElementType(getUpdate().update_value.type);
-			Logit.LogCheck(
-					"Type for trigger " + getUpdate().object_id + " has changed to " + getUpdate().update_value.type);
-		}
+//		if (GeneralFunctions.isChanged(trigger.getElementType(), getUpdate().update_value.type)) {
+//			trigger.setElementType(getUpdate().update_value.type);
+//			Logit.LogCheck(
+//					"Type for trigger " + getUpdate().object_id + " has changed to " + getUpdate().update_value.type);
+//		}
 		if (GeneralFunctions.isChanged(trigger.getName(), getUpdate().update_value.name)) {
 			trigger.setName(getUpdate().update_value.name);
 			Logit.LogCheck(
