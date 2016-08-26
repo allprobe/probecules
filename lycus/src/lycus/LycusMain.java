@@ -4,6 +4,7 @@
  */
 package lycus;
 
+import java.time.LocalDateTime;
 import java.util.Date;
 import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
@@ -27,8 +28,8 @@ import Utils.Logit;
 public class LycusMain {
 
 	public static void main(String[] args) {
-		System.out.println("Starting Probecules Version: 0.230");
-		Logit.LogCheck("Starting Probecules Version: 0.230");
+		System.out.println("Starting Probecules Version: 0.231");
+		Logit.LogCheck("Starting Probecules Version: 0.231");
 
 		System.setProperty("log4j.debug", "true");
 		if (args.length == 0 || args[0] == "")
@@ -67,8 +68,9 @@ public class LycusMain {
 		SlaTask slaTask = new SlaTask();
 		slaTask.setInterval(Constants.slaInterval);
 		ScheduledExecutorService slaThread = Executors.newSingleThreadScheduledExecutor();
-		Date currentTime = new Date();
-		long initialDelay = (60 - currentTime.getMinutes()) * 60 - (60 - currentTime.getSeconds());
+		
+		LocalDateTime currentTime = LocalDateTime.now();
+		long initialDelay = (60 - currentTime.getMinute()) * 60 - (60 - currentTime.getSecond());
 		slaThread.scheduleAtFixedRate(slaTask, initialDelay, slaTask.getInterval(), TimeUnit.SECONDS);
 
 		DiagnosticTask diagnosticTask = new DiagnosticTask();

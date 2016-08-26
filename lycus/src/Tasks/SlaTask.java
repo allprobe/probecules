@@ -2,6 +2,9 @@ package Tasks;
 
 import java.io.PrintWriter;
 import java.io.StringWriter;
+import java.time.LocalDateTime;
+import java.util.Date;
+
 import org.json.simple.JSONObject;
 import DAL.ApiRequest;
 import DAL.DAL;
@@ -26,7 +29,8 @@ public class SlaTask extends BaseTask {
 				FailedRequestsHandler.getInstance()
 						.addRequest(new ApiRequest(Enums.ApiAction.PutSlaBatches, sendJson));
 
-			if (hourCount++ > 23)
+			LocalDateTime currentTime = LocalDateTime.now();
+			if (currentTime.getHour() >= 0 && currentTime.getHour() <= 1)
 			{
 				JSONObject sendDailyJson = slaContainer.getDailySLA();
 
