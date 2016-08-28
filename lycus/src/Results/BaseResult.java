@@ -139,6 +139,8 @@ public class BaseResult implements IResult {
 	}
 
 	private boolean conditionByType(Object lastValue, String triggerValue, int code) {
+		if (lastValue == null || triggerValue == null)
+			return false;
 		switch (code) {
 		case 1:
 			if (lastValue.getClass().equals(Integer.class))

@@ -454,11 +454,14 @@ public class UsersManager {
 						discoveryTrigger.discovery_trigger_function = Integer
 								.parseInt(trigger.get("discovery_trigger_function").toString());
 
-						discoveryTrigger.discovery_trigger_x_value = trigger.get("discovery_trigger_x_value")
-								.toString();
+						discoveryTrigger.discovery_trigger_condition = Integer
+								.parseInt(trigger.get("discovery_trigger_condition").toString());
+
+						discoveryTrigger.discovery_trigger_xvalue = trigger.get("discovery_trigger_xvalue").toString();
 						discoveryTrigger.discovery_trigger_severity = trigger.get("discovery_trigger_severity")
 								.toString();
-						discoveryTrigger.discovery_trigger_unit = trigger.get("discovery_trigger_unit").toString();
+						discoveryTrigger.discovery_trigger_xvalue_unit = trigger.get("discovery_trigger_xvalue_unit")
+								.toString();
 						discoveryTrigger.discovery_trigger_id = trigger.get("discovery_trigger_id").toString();
 						discovery_triggers[index] = discoveryTrigger;
 
@@ -650,7 +653,7 @@ public class UsersManager {
 			UUID userID = rp.getValue();
 			String rpID = rp.getKey();
 
-			if (rpID.contains("01179751-b842-4dbb-a72e-30082c677249@snmp_0131348b-d562-4d0c-97e9-7e03c2fe587e"))
+			if (rpID.contains("bf4e7e1c-4c44-4e0f-bee5-871aadfe1174@rbl_619c9a8f-ceab-4e6f-8fe5-3b57da32fa52"))
 				Logit.LogDebug("BREAKPOINT");
 
 			User u = getUsers().get(userID);

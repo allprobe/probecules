@@ -39,6 +39,7 @@ public class RunnableProbe implements Runnable {
 			// Must be handled by Roi
 			return;
 		}
+		this.functions=new ArrayList<BaseFunction>();
 		this.setFunctions(probe.getTriggers());
 	}
 
@@ -49,7 +50,7 @@ public class RunnableProbe implements Runnable {
 						trigger.getTriggerId());
 				if (isFunctionExists(function))
 					continue;
-
+				this.functions.add(function);
 			}
 		}
 	}

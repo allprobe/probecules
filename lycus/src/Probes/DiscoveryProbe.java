@@ -82,7 +82,7 @@ public class DiscoveryProbe extends BaseProbe {
 		DiscoveryTrigger[] triggers = key.discovery_triggers;
 		for (int index = 0; index < triggers.length; index++) {
 			TriggerCondition condition = new TriggerCondition(triggers[index].discovery_trigger_function,
-					triggers[index].discovery_trigger_x_value, triggers[index].discovery_trigger_condition);
+					triggers[index].discovery_trigger_xvalue, triggers[index].discovery_trigger_condition);
 			ArrayList<TriggerCondition> conditions = new ArrayList<TriggerCondition>();
 			conditions.add(condition);
 
