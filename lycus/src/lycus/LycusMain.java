@@ -4,7 +4,6 @@
  */
 package lycus;
 
-import java.time.LocalDateTime;
 import java.util.Date;
 import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
@@ -39,8 +38,7 @@ public class LycusMain {
 		if (!GlobalConfig.Initialize())
 			return;
 
-
-		UsersManager.Initialize();    // setup initial config (InitServer)
+		UsersManager.Initialize(); // setup initial config (InitServer)
 
 		if (!UsersManager.isInitialized())
 			return;
@@ -68,15 +66,15 @@ public class LycusMain {
 		SlaTask slaTask = new SlaTask();
 		slaTask.setInterval(Constants.slaInterval);
 		ScheduledExecutorService slaThread = Executors.newSingleThreadScheduledExecutor();
-		
-		LocalDateTime currentTime = LocalDateTime.now();
-		long initialDelay = (60 - currentTime.getMinute()) * 60 - (60 - currentTime.getSecond());
+
+		Date currentTime = new Date();
+		long initialDelay = (60 - currentTime.getMinutes()) * 60 - (60 - currentTime.getSeconds());
 		slaThread.scheduleAtFixedRate(slaTask, initialDelay, slaTask.getInterval(), TimeUnit.SECONDS);
 
 		DiagnosticTask diagnosticTask = new DiagnosticTask();
 		ScheduledExecutorService DiagnosticThread = Executors.newSingleThreadScheduledExecutor();
 		rollupsThread.scheduleAtFixedRate(diagnosticTask, 0, 300, TimeUnit.SECONDS);
-		
+
 		return true;
 
 	}
