@@ -126,7 +126,7 @@ public class BaseResult implements IResult {
 		boolean flag = false;
 		for (TriggerCondition condition : trigger.getCondtions()) {
 			String x = condition.getxValue();
-			Double xNumber = Double.parseDouble(x);
+			// Double xNumber = Double.parseDouble(x);
 			Object[] lastValues = (RunnableProbeContainer.getInstanece().get(this.getRunnableProbeId()))
 					.getTriggerFunction(trigger).get();
 			for (int i = 0; i < lastValues.length; i++) {

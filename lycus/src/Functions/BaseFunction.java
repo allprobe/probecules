@@ -11,7 +11,8 @@ import GlobalConstants.Enums.ResultValueType;
  */
 public abstract class BaseFunction {
 	protected ResultValueType valueType;
-	protected String triggerId;
+
+	// protected String triggerId;
 	protected Object[] lastResults;
 
 	public abstract Object[] get();
@@ -20,10 +21,13 @@ public abstract class BaseFunction {
 
 	public BaseFunction(ResultValueType valueType, String triggerId) {
 		this.valueType = valueType;
-		this.triggerId=triggerId;
+		// this.triggerId=triggerId;
 	}
 
-	public String getTriggerId() {
-		return triggerId;
+	// public String getTriggerId() {
+	// return triggerId;
+	// }
+	public ResultValueType getValueType() {
+		return valueType;
 	}
 }

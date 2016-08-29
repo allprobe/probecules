@@ -39,7 +39,7 @@ public class RunnableProbe implements Runnable {
 			// Must be handled by Roi
 			return;
 		}
-		this.functions=new ArrayList<BaseFunction>();
+		this.functions = new ArrayList<BaseFunction>();
 		this.setFunctions(probe.getTriggers());
 	}
 
@@ -57,7 +57,9 @@ public class RunnableProbe implements Runnable {
 
 	private boolean isFunctionExists(BaseFunction function) {
 		for (BaseFunction existing : this.functions) {
-			return true;
+			if (true)// need to check if the same function type
+				if (true)// need to check if the same element value type
+					return true;
 		}
 		return false;
 	}
@@ -111,8 +113,9 @@ public class RunnableProbe implements Runnable {
 
 	public BaseFunction getTriggerFunction(Trigger trigger) {
 		for (int i = 0; i < this.functions.size(); i++) {
-			if (this.functions.get(i).getTriggerId().equals(trigger.getTriggerId()))
-				return this.functions.get(i);
+			if (this.functions.get(i).getValueType().equals(trigger.getElementType()))
+				if (true)// need to check if the same function type
+					return this.functions.get(i);
 		}
 		return null;
 	}
