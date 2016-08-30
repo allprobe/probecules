@@ -57,9 +57,8 @@ public class RunnableProbe implements Runnable {
 
 	private boolean isFunctionExists(BaseFunction function) {
 		for (BaseFunction existing : this.functions) {
-			if (true)// need to check if the same function type
-				if (true)// need to check if the same element value type
-					return true;
+			if (existing.isEqual(function))
+				return true;
 		}
 		return false;
 	}
@@ -111,10 +110,10 @@ public class RunnableProbe implements Runnable {
 		this.isRunning = isRunning;
 	}
 
-	public BaseFunction getTriggerFunction(Trigger trigger) {
+	public BaseFunction getConditionFunction(Trigger trigger, TriggerCondition condition) {
 		for (int i = 0; i < this.functions.size(); i++) {
 			if (this.functions.get(i).getValueType().equals(trigger.getElementType()))
-				if (true)// need to check if the same function type
+				if (this.functions.get(i).getFunctionId() == condition.getFunction())
 					return this.functions.get(i);
 		}
 		return null;

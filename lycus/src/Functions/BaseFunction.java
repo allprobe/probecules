@@ -11,23 +11,33 @@ import GlobalConstants.Enums.ResultValueType;
  */
 public abstract class BaseFunction {
 	protected ResultValueType valueType;
+	protected int functionId;
 
-	// protected String triggerId;
 	protected Object[] lastResults;
 
 	public abstract Object[] get();
 
 	public abstract void add(BaseResult result);
 
-	public BaseFunction(ResultValueType valueType, String triggerId) {
+	public BaseFunction(ResultValueType valueType, int functionId) {
 		this.valueType = valueType;
-		// this.triggerId=triggerId;
+		this.functionId = functionId;
+		this.lastResults = new Object[1];
 	}
 
-	// public String getTriggerId() {
-	// return triggerId;
-	// }
 	public ResultValueType getValueType() {
 		return valueType;
+	}
+
+	public int getFunctionId() {
+		return functionId;
+	}
+
+	public boolean isEqual(BaseFunction function) {
+		if (this.getValueType() != function.getValueType())
+			return false;
+		if (this.getFunctionId() != function.getFunctionId())
+			return false;
+		return true;
 	}
 }

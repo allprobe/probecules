@@ -6,8 +6,7 @@ import Results.*;
 
 public class LastFunction extends BaseFunction {
 	public LastFunction(ResultValueType valueType,String triggerId) {
-		super(valueType,triggerId);
-		this.lastResults = new Object[1];
+		super(valueType,1);
 	}
 
 	// private Double lastValue;

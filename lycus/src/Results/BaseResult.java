@@ -128,7 +128,7 @@ public class BaseResult implements IResult {
 			String x = condition.getxValue();
 			// Double xNumber = Double.parseDouble(x);
 			Object[] lastValues = (RunnableProbeContainer.getInstanece().get(this.getRunnableProbeId()))
-					.getTriggerFunction(trigger).get();
+					.getConditionFunction(trigger, condition).get();
 			for (int i = 0; i < lastValues.length; i++) {
 				flag = conditionByType(lastValues[i], x, condition.getCode());
 				if (!flag)
