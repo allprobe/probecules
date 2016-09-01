@@ -5,7 +5,7 @@ import Interfaces.IFunction;
 import Results.*;
 
 public class LastFunction extends BaseFunction {
-	public LastFunction(ResultValueType valueType,String triggerId) {
+	public LastFunction(ResultValueType valueType) {
 		super(valueType,1);
 	}
 

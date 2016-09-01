@@ -21,6 +21,7 @@ import Probes.DiskProbe;
 import Results.BaseResult;
 import Rollups.RollupsContainer;
 import SLA.SLAContainer;
+import Utils.GeneralFunctions;
 import Utils.Logit;
 
 public class RunnableProbe implements Runnable {
@@ -39,15 +40,20 @@ public class RunnableProbe implements Runnable {
 			// Must be handled by Roi
 			return;
 		}
+
+		if (probe.getProbe_id().contains("discovery_649644aa-c6b9-47cd-aa23-d103fe86ea67"))
+			Logit.LogDebug("BREAKPOINT - RunnableProbe");
+
 		this.functions = new ArrayList<BaseFunction>();
-		this.setFunctions(probe.getTriggers());
+
+		if (!(this.getProbe() instanceof DiscoveryProbe))
+			this.setFunctions(probe.getTriggers());
 	}
 
 	private void setFunctions(HashMap<String, Trigger> triggers) {
 		for (Trigger trigger : triggers.values()) {
 			for (TriggerCondition condition : trigger.getCondtions()) {
-				BaseFunction function = getFunctionOfCondition(condition, trigger.getElementType(),
-						trigger.getTriggerId());
+				BaseFunction function = getFunctionOfCondition(condition, trigger.getElementType());
 				if (isFunctionExists(function))
 					continue;
 				this.functions.add(function);
@@ -63,11 +69,10 @@ public class RunnableProbe implements Runnable {
 		return false;
 	}
 
-	private BaseFunction getFunctionOfCondition(TriggerCondition condition, ResultValueType resultValue,
-			String triggerId) {
+	private BaseFunction getFunctionOfCondition(TriggerCondition condition, ResultValueType resultValue) {
 		switch (condition.getFunction()) {
 		case 1:
-			return new LastFunction(resultValue, triggerId);
+			return new LastFunction(resultValue);
 
 		}
 		return null;
@@ -152,8 +157,7 @@ public class RunnableProbe implements Runnable {
 			BaseResult result = null;
 			try {
 				String rpStr = this.getId();
-				if (rpStr.contains(
-						"f1cec079-fc7d-448a-b1dd-793c8684a0cb@6b999cd6-fcbb-4ca8-9936-5529b4c66976@port_4213fefb-2fe7-484e-a25d-847f27ea3583"))
+				if (rpStr.contains("icmp_cc9a931c-6232-4b17-b2f9-be00b40ce02b"))
 					Logit.LogDebug("BREAKPOINT - RunnableProbe");
 
 				// isActive = false will pause the thread
@@ -195,6 +199,7 @@ public class RunnableProbe implements Runnable {
 
 					// Set the timeStamp to the value before the probe.
 					result.setLastTimestamp(timeStamp);
+					this.addToAllFunctions(result);
 					ResultsContainer.getInstance().addResult(result);
 				} catch (Exception e) {
 					Logit.LogError("RunnableProbe - run()",
@@ -202,7 +207,8 @@ public class RunnableProbe implements Runnable {
 				}
 
 				try {
-					result.checkIfTriggerd(getProbe().getTriggers());
+					if (!(this.getProbe() instanceof DiscoveryProbe))
+						result.checkIfTriggerd(getProbe().getTriggers());
 				} catch (Exception e) {
 					Logit.LogError("RunnableProbe - run()",
 							"Error triggering runnable probe results!  " + this.getProbeType() + " "
@@ -237,6 +243,12 @@ public class RunnableProbe implements Runnable {
 				}
 			}
 
+		}
+	}
+
+	private void addToAllFunctions(BaseResult result) {
+		for (BaseFunction function : this.functions) {
+			function.add(result);
 		}
 	}
 }

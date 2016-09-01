@@ -200,6 +200,8 @@ public class BaseResult implements IResult {
 	}
 
 	public Object getResultElementValue(ResultValueType valueType) {
+		// if(valueType==null)
+		// return null;
 		switch (valueType) {
 		case WRT:
 			return ((WebResult) this).getResponseTime();
