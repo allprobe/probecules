@@ -29,7 +29,7 @@ public class SlaTask extends BaseTask {
 						.addRequest(new ApiRequest(Enums.ApiAction.PutSlaBatches, sendJson));
 
 			Date currentTime = new Date();
-			if (currentTime.getHours() >= 0 && currentTime.getHours() <= 1)
+			if (currentTime.getHours() > 23)
 			{
 				JSONObject sendDailyJson = slaContainer.getDailySLA();
 

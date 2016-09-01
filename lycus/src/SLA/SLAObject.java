@@ -33,8 +33,9 @@ public class SLAObject {
 		this.sum = percentage;
 	}
 
-	private void addDailySum(int dailySum) {
+	private void addDailySum(double dailySum) {
 		this.dailySum += dailySum;
+		dailyCount++;
 	}
 
 	private double getDailyPercentage() {
@@ -46,11 +47,11 @@ public class SLAObject {
 //	}
 
 	public Double getResults() {
-		addDailySum(sum);
-		dailyCount++;
 		if (count == 0)
 			return null;
 		Double percentage = (double)(sum / count);
+		addDailySum(percentage);
+		
 		count = 0;
 		setSum(0);
 		return percentage;
