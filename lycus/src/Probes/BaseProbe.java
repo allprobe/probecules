@@ -131,7 +131,8 @@ public class BaseProbe {
 		this.getTriggers().put(trigger.getTriggerId(), trigger);
 	}
 
-	public void removeTrigger(UUID trigger_id) {
+	public void removeTrigger(String trigger_id) {
+		// Todo: Oren, remove all live events as well
 		this.getTriggers().remove(trigger_id);
 	}
 

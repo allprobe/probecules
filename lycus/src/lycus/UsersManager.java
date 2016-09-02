@@ -618,12 +618,12 @@ public class UsersManager {
 
 	public static ArrayList<TriggerCondition> getTriggerConds(ConditionUpdateModel[] conditionUpdateModels) {
 		ArrayList<TriggerCondition> conditions = new ArrayList<TriggerCondition>();
-
 		for (ConditionUpdateModel conditionUpdateModel : conditionUpdateModels) {
 			// JSONObject conditionJson = (JSONObject) jsonArray.get(i);
-			int code = Integer.parseInt((String) conditionUpdateModel.function);
+			
+			int code = Integer.parseInt((String) conditionUpdateModel.condition);
 			String xValue = (String) conditionUpdateModel.xvalue;
-			int functionId = Integer.parseInt((String) conditionUpdateModel.condition);
+			int functionId = Integer.parseInt((String) conditionUpdateModel.function);
 
 			TriggerCondition condition = new TriggerCondition(code, xValue, functionId);
 			conditions.add(condition);

@@ -32,5 +32,6 @@ public class UpdateValueModel
 	public String snmp_crypt_password;
 	public Integer timeout;
 	public Integer snmp_port;
+	public String results_vector_type;
 }
 
