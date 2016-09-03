@@ -2,6 +2,7 @@ package Updates;
 
 import java.util.ArrayList;
 import java.util.UUID;
+import java.util.concurrent.ConcurrentHashMap;
 
 import GlobalConstants.Constants;
 import GlobalConstants.SnmpUnit;
@@ -10,6 +11,8 @@ import Model.UpdateModel;
 import Probes.BaseProbe;
 import Utils.GeneralFunctions;
 import Utils.Logit;
+import lycus.RunnableProbe;
+import lycus.RunnableProbeContainer;
 import lycus.Trigger;
 import lycus.TriggerCondition;
 import lycus.UsersManager;
@@ -35,6 +38,10 @@ public class TriggerUpdate extends BaseUpdate {
 				SnmpUnit.valueOf(getUpdate().update_value.xvalue_unit), conditions);
 
 		probe.addTrigger(trigger);
+		ConcurrentHashMap<String, RunnableProbe> runnableProbes = RunnableProbeContainer.getInstanece().getByProbe(probe.getProbe_id());
+		for (RunnableProbe runnableProbe : runnableProbes.values()) {
+//			runnableProbe.setFunctions(conditions);
+		}
 		return true;
 	}
 
@@ -60,7 +67,7 @@ public class TriggerUpdate extends BaseUpdate {
 					"Name for trigger " + getUpdate().update_value.id + " has changed to " + getUpdate().update_value.name);
 		}
 
-		trigger.setProbe(probe); // Ran - Is it possible to change probe?
+		trigger.setProbe(probe);
 		if (getUpdate().update_value.status != null
 				&& trigger.getStatus() != getUpdate().update_value.status.equals(Constants._true)) {
 			trigger.setStatus(getUpdate().update_value.status.equals(Constants._true));

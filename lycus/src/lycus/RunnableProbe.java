@@ -50,6 +50,7 @@ public class RunnableProbe implements Runnable {
 			this.setFunctions(probe.getTriggers());
 	}
 
+	// Must remove the functions that are not there.
 	private void setFunctions(HashMap<String, Trigger> triggers) {
 		for (Trigger trigger : triggers.values()) {
 			for (TriggerCondition condition : trigger.getCondtions()) {
