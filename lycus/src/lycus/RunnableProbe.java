@@ -2,12 +2,10 @@ package lycus;
 
 import java.util.ArrayList;
 import java.util.HashMap;
-
 import Functions.BaseFunction;
 import Functions.LastFunction;
 import GlobalConstants.Enums.ResultValueType;
 import GlobalConstants.ProbeTypes;
-import Interfaces.IFunction;
 import Probes.BaseProbe;
 import Probes.DiscoveryProbe;
 import Probes.HttpProbe;
@@ -21,7 +19,6 @@ import Probes.DiskProbe;
 import Results.BaseResult;
 import Rollups.RollupsContainer;
 import SLA.SLAContainer;
-import Utils.GeneralFunctions;
 import Utils.Logit;
 
 public class RunnableProbe implements Runnable {
@@ -54,7 +51,7 @@ public class RunnableProbe implements Runnable {
 	private void setFunctions(HashMap<String, Trigger> triggers) {
 		for (Trigger trigger : triggers.values()) {
 			for (TriggerCondition condition : trigger.getCondtions()) {
-				BaseFunction function = getFunctionOfCondition(condition, trigger.getElementType());
+				BaseFunction function = getFunctionOfCondition(condition);
 				if (isFunctionExists(function))
 					continue;
 				this.functions.add(function);
@@ -70,10 +67,10 @@ public class RunnableProbe implements Runnable {
 		return false;
 	}
 
-	private BaseFunction getFunctionOfCondition(TriggerCondition condition, ResultValueType resultValue) {
+	private BaseFunction getFunctionOfCondition(TriggerCondition condition) {
 		switch (condition.getFunction()) {
 		case 1:
-			return new LastFunction(resultValue);
+			return new LastFunction(condition.getElementType());
 
 		}
 		return null;
@@ -118,7 +115,7 @@ public class RunnableProbe implements Runnable {
 
 	public BaseFunction getConditionFunction(Trigger trigger, TriggerCondition condition) {
 		for (int i = 0; i < this.functions.size(); i++) {
-			if (this.functions.get(i).getValueType().equals(trigger.getElementType()))
+			if (this.functions.get(i).getValueType().equals(condition.getElementType()))
 				if (this.functions.get(i).getFunctionId() == condition.getFunction())
 					return this.functions.get(i);
 		}

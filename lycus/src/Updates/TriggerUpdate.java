@@ -1,9 +1,7 @@
 package Updates;
 
 import java.util.ArrayList;
-import java.util.UUID;
 import java.util.concurrent.ConcurrentHashMap;
-
 import GlobalConstants.Constants;
 import GlobalConstants.SnmpUnit;
 import GlobalConstants.Enums.ResultValueType;
@@ -16,7 +14,6 @@ import lycus.RunnableProbeContainer;
 import lycus.Trigger;
 import lycus.TriggerCondition;
 import lycus.UsersManager;
-import GlobalConstants.Enums;
 
 public class TriggerUpdate extends BaseUpdate {
 
@@ -79,11 +76,11 @@ public class TriggerUpdate extends BaseUpdate {
 			Logit.LogCheck("Severity for trigger " + getUpdate().update_value.id + " has changed to "
 					+ getUpdate().update_value.severity);
 		}
-		if (GeneralFunctions.isChanged(trigger.getElementType().toString().toLowerCase(), getUpdate().update_value.type)) {
-			trigger.setElementType(ResultValueType.valueOf(getUpdate().update_value.type));
-			Logit.LogCheck("Element type for trigger " + getUpdate().object_id + " has changed to "
-					+ getUpdate().update_value.severity);
-		}
+//		if (GeneralFunctions.isChanged(trigger.getElementType().toString().toLowerCase(), getUpdate().update_value.type)) {
+//			trigger.setElementType(ResultValueType.valueOf(getUpdate().update_value.type));
+//			Logit.LogCheck("Element type for trigger " + getUpdate().object_id + " has changed to "
+//					+ getUpdate().update_value.severity);
+//		}
 		if (trigger.getUnit() != null
 				&& GeneralFunctions.isChanged(trigger.getUnit().toString(), getUpdate().update_value.xvalue_unit)
 				|| (trigger.getUnit() == null && getUpdate().update_value.xvalue_unit != null)) {
