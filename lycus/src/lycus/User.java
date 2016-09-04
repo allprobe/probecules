@@ -9,6 +9,7 @@ import org.snmp4j.smi.OID;
 
 import GlobalConstants.Constants;
 import GlobalConstants.Enums;
+import GlobalConstants.Enums.ResultValueType;
 import GlobalConstants.SnmpDataType;
 import GlobalConstants.SnmpUnit;
 import GlobalConstants.TriggerSeverity;
@@ -512,7 +513,7 @@ public class User {
 					conditions.add(condition);
 					Trigger trigger = new Trigger(discoveryTrigger.discovery_trigger_id,
 							getDiscoveryTriggerName(probeParams), probe,
-							getTriggerSev(discoveryTrigger.discovery_trigger_severity), true, null,
+							getTriggerSev(discoveryTrigger.discovery_trigger_severity), true, ResultValueType.valueOf(discoveryTrigger.discovery_trigger_results_vector_type),
 							SnmpUnit.valueOf(discoveryTrigger.discovery_trigger_xvalue_unit), conditions);
 					probe.addTrigger(trigger);
 				}

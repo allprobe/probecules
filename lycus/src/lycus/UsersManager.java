@@ -462,6 +462,9 @@ public class UsersManager {
 								.toString();
 						discoveryTrigger.discovery_trigger_xvalue_unit = trigger.get("discovery_trigger_xvalue_unit")
 								.toString();
+						discoveryTrigger.discovery_trigger_results_vector_type = trigger
+								.get("discovery_trigger_results_vector_type").toString();
+
 						discoveryTrigger.discovery_trigger_id = trigger.get("discovery_trigger_id").toString();
 						discovery_triggers[index] = discoveryTrigger;
 
@@ -620,7 +623,7 @@ public class UsersManager {
 		ArrayList<TriggerCondition> conditions = new ArrayList<TriggerCondition>();
 		for (ConditionUpdateModel conditionUpdateModel : conditionUpdateModels) {
 			// JSONObject conditionJson = (JSONObject) jsonArray.get(i);
-			
+
 			int code = Integer.parseInt((String) conditionUpdateModel.condition);
 			String xValue = (String) conditionUpdateModel.xvalue;
 			int functionId = Integer.parseInt((String) conditionUpdateModel.function);

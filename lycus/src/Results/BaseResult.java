@@ -1,5 +1,6 @@
 package Results;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 
 import com.google.common.base.Enums;
@@ -130,9 +131,11 @@ public class BaseResult implements IResult {
 			Object[] lastValues = (RunnableProbeContainer.getInstanece().get(this.getRunnableProbeId()))
 					.getConditionFunction(trigger, condition).get();
 			for (int i = 0; i < lastValues.length; i++) {
-				flag = conditionByType(lastValues[i], x, condition.getCode());
-				if (!flag)
-					return false;
+				for (Object oneValue : (ArrayList<Object>) lastValues[i]) {
+					flag = conditionByType(oneValue, x, condition.getCode());
+					if (!flag)
+						return false;
+				}
 			}
 		}
 		return flag;
@@ -150,9 +153,9 @@ public class BaseResult implements IResult {
 				if ((Double) lastValue > Double.parseDouble(triggerValue))
 					return true;
 			if (lastValue.getClass().equals(Long.class))
-				if ((Integer) lastValue > Integer.parseInt(triggerValue))
+				if ((Long) lastValue > Long.parseLong(triggerValue))
 					return true;
-
+			break;
 		case 2:
 			if (lastValue.getClass().equals(Integer.class))
 				if ((Integer) lastValue < Integer.parseInt(triggerValue))
@@ -161,8 +164,9 @@ public class BaseResult implements IResult {
 				if ((Double) lastValue < Double.parseDouble(triggerValue))
 					return true;
 			if (lastValue.getClass().equals(Long.class))
-				if ((Integer) lastValue < Integer.parseInt(triggerValue))
+				if ((Long) lastValue < Long.parseLong(triggerValue))
 					return true;
+			break;
 		case 3:
 			if (lastValue.getClass().equals(Integer.class))
 				if ((Integer) lastValue == Integer.parseInt(triggerValue))
@@ -171,7 +175,7 @@ public class BaseResult implements IResult {
 				if ((Double) lastValue == Double.parseDouble(triggerValue))
 					return true;
 			if (lastValue.getClass().equals(Long.class))
-				if ((Integer) lastValue == Integer.parseInt(triggerValue))
+				if ((Long) lastValue == Long.parseLong(triggerValue))
 					return true;
 			if (lastValue.getClass().equals(Boolean.class))
 				if ((Boolean) lastValue == Boolean.parseBoolean(triggerValue))
@@ -179,6 +183,7 @@ public class BaseResult implements IResult {
 			if (lastValue.getClass().equals(String.class))
 				if ((String) lastValue == triggerValue)
 					return true;
+			break;
 		case 4:
 			if (lastValue.getClass().equals(Integer.class))
 				if ((Integer) lastValue == Integer.parseInt(triggerValue))
@@ -187,7 +192,7 @@ public class BaseResult implements IResult {
 				if ((Double) lastValue == Double.parseDouble(triggerValue))
 					return true;
 			if (lastValue.getClass().equals(Long.class))
-				if ((Integer) lastValue == Integer.parseInt(triggerValue))
+				if ((Long) lastValue == Long.parseLong(triggerValue))
 					return true;
 			if (lastValue.getClass().equals(Boolean.class))
 				if ((Boolean) lastValue == Boolean.parseBoolean(triggerValue))
@@ -195,62 +200,74 @@ public class BaseResult implements IResult {
 			if (lastValue.getClass().equals(String.class))
 				if ((String) lastValue == triggerValue)
 					return true;
+			break;
 		}
 		return false;
 	}
 
-	public Object getResultElementValue(ResultValueType valueType) {
+	public ArrayList<Object> getResultElementValue(ResultValueType valueType) {
 		// if(valueType==null)
 		// return null;
+
+		ArrayList<Object> values = new ArrayList<Object>();
+
 		switch (valueType) {
 		case WRT:
-			return ((WebResult) this).getResponseTime();
+			values.add(((WebResult) this).getResponseTime());
+			break;
 		case PRT:
-			return ((PortResult) this).getResponseTime();
-
+			values.add(((PortResult) this).getResponseTime());
+			break;
 		case RC:
-			return ((WebResult) this).getStatusCode();
-
+			values.add(((WebResult) this).getStatusCode());
+			break;
 		case PS:
-			return ((WebResult) this).getPageSize();
-
+			values.add(((WebResult) this).getPageSize());
+			break;
 		case ST:
-			return ((PortResult) this).isActive();
-
+			values.add(((PortResult) this).isActive());
+			break;
 		case RTA:
-			return ((PingResult) this).getRtt();
-
+			values.add(((PingResult) this).getRtt());
+			break;
 		case PL:
-			return ((PingResult) this).getPacketLost();
-
-		// case "DFDS":
-		// this.lastResults[0] = null;
-		// break;
-		// case "DUDS":
-		// this.lastResults[0] = ((WebResult) result).getStatusCode();
-		// break;
-		// case "DBI":
-		// this.lastResults[0] = ((WebResult) result).getStatusCode();
-		// break;
-		// case "DBO":
-		// this.lastResults[0] = ((WebResult) result).getStatusCode();
-		// break;
-		// case "WSERT":
-		// this.lastResults[0] = ((WebResult) result).getStatusCode();
-		// break;
-		// case "WAERC":
-		// this.lastResults[0] = ((WebResult) result).getStatusCode();
-		// break;
-		// case "TRARHRT":
-		// this.lastResults[0] = ((WebResult) result).getStatusCode();
-		// break;
-		// case "TRDHRT":
-		// this.lastResults[0] = ((WebResult) result).getStatusCode();
-		// break;
-		// case "DTDS":
-		// this.lastResults[0] = ((WebResult) result).getStatusCode();
-		// break;
+			values.add(((PingResult) this).getPacketLost());
+			break;
+		case DFDS:
+			values.add(((DiskResult) this).getStorageFree());
+			break;
+		case DUDS:
+			values.add(((DiskResult) this).getStorageUsed());
+			break;
+		case DTDS:
+			values.add(((DiskResult) this).getStorageSize());
+			break;
+		case DBI:
+			values.add(((NicResult) this).getInBW());
+			break;
+		case DBO:
+			values.add(((NicResult) this).getOutBW());
+			break;
+		case WSERT:
+			for (DOMElement dome : ((WebExtendedResult) this).getAllElementsResults()) {
+				values.add(dome.getTime());
+			}
+			break;
+		case WAERC:
+			for (DOMElement dome : ((WebExtendedResult) this).getAllElementsResults()) {
+				values.add(dome.getResponseStatusCode());
+			}
+			break;
+		case TRARHRT:
+			for (ArrayList<Object> route : ((TraceRouteResult) this).getRoutes()) {
+				values.add((Double) route.get(1));
+			}
+			break;
+		case TRDHRT:
+			values.add((Double) ((TraceRouteResult) this).getRoutes()
+					.get(((TraceRouteResult) this).getRoutes().size() - 1).get(1));
+			break;
 		}
-		return null;
+		return values;
 	}
 }
