@@ -10,7 +10,7 @@ public class SLAObject {
 		count = 0;
 		dailyCount = 0;
 		dailySum = 0;
-		addDailySum(0);
+		dailySum = 0;
 	}
 
 	public boolean addResult(Boolean isActive) {
@@ -41,10 +41,6 @@ public class SLAObject {
 	private double getDailyPercentage() {
 		return dailySum / dailyCount;
 	}
-
-//	private double getPecentage() {
-//		return sum / count;
-//	}
 
 	public Double getResults() {
 		if (count == 0)

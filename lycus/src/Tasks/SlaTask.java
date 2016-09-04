@@ -15,7 +15,6 @@ import Utils.Logit;
 
 public class SlaTask extends BaseTask {
 	private long interval = 3600;
-	private int hourCount = 0;
 
 	public void run() {
 		try {
@@ -36,8 +35,6 @@ public class SlaTask extends BaseTask {
 				if (DAL.getInstanece().put(Enums.ApiAction.PutSlaBatches, sendDailyJson) == null)
 					FailedRequestsHandler.getInstance()
 							.addRequest(new ApiRequest(Enums.ApiAction.PutSlaBatches, sendDailyJson));
-				
-				hourCount = 0;  //todo: check if the sla was sent first before celaring the count.
 			}
 		} catch (Throwable thrown) {
 			Logit.LogError("ResultsTask - run()", "Sending collected SLA to API failed!");
