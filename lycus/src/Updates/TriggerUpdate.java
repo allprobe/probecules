@@ -80,13 +80,13 @@ public class TriggerUpdate extends BaseUpdate {
 //			Logit.LogCheck("Element type for trigger " + getUpdate().object_id + " has changed to "
 //					+ getUpdate().update_value.severity);
 //		}
-		if (trigger.getUnit() != null
-				&& GeneralFunctions.isChanged(trigger.getUnit().toString(), getUpdate().update_value.xvalue_unit)
-				|| (trigger.getUnit() == null && getUpdate().update_value.xvalue_unit != null)) {
-			trigger.setUnit(SnmpUnit.valueOf(getUpdate().update_value.xvalue_unit));
-			Logit.LogCheck("X value unit for trigger " + getUpdate().object_id + " has changed to "
-					+ getUpdate().update_value.xvalue_unit);
-		}
+//		if (trigger.getUnit() != null
+//				&& GeneralFunctions.isChanged(trigger.getUnit().toString(), getUpdate().update_value.xvalue_unit)
+//				|| (trigger.getUnit() == null && getUpdate().update_value.xvalue_unit != null)) {
+//			trigger.setUnit(SnmpUnit.valueOf(getUpdate().update_value.xvalue_unit));
+//			Logit.LogCheck("X value unit for trigger " + getUpdate().object_id + " has changed to "
+//					+ getUpdate().update_value.xvalue_unit);
+//		}
 
 		// trigger.setTriggered(isTriggered); // What is it - Roi
 
