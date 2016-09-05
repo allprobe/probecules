@@ -545,8 +545,7 @@ public class UsersManager {
 					continue;
 				}
 
-				Trigger trigger = new Trigger(triggerId, name, probe, severity, status, elementTypeEnum, trigValueUnit,
-						conditions);
+				Trigger trigger = new Trigger(triggerId, name, probe, severity, status, conditions);
 
 				probe.addTrigger(trigger);
 
@@ -609,11 +608,12 @@ public class UsersManager {
 			JSONObject conditionJson = (JSONObject) jsonArray.get(i);
 			int code = Integer.parseInt((String) conditionJson.get("condition"));
 			String xValue = (String) conditionJson.get("xvalue");
+			String xValueUnit = (String) conditionJson.get("xvalue_unit");
 			String tValue = (String) conditionJson.get("tvalue");
 			String elementType = (String) conditionJson.get("results_vector_type");
 			int functionId = Integer.parseInt((String) conditionJson.get("function"));
 			
-			TriggerCondition condition = new TriggerCondition(code, xValue, functionId, elementType);
+			TriggerCondition condition = new TriggerCondition(code, xValue, functionId, elementType, xValueUnit);
 			conditions.add(condition);
 
 		}
@@ -627,10 +627,11 @@ public class UsersManager {
 
 			int code = Integer.parseInt((String) conditionUpdateModel.condition);
 			String xValue = (String) conditionUpdateModel.xvalue;
+			String xValueUnit = (String) conditionUpdateModel.xValueUnit;
 			String elementType = (String) conditionUpdateModel.results_vector_type;
 			int functionId = Integer.parseInt((String) conditionUpdateModel.function);
 
-			TriggerCondition condition = new TriggerCondition(code, xValue, functionId, elementType);
+			TriggerCondition condition = new TriggerCondition(code, xValue, functionId, elementType, xValueUnit);
 			conditions.add(condition);
 
 		}

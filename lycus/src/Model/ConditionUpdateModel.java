@@ -8,4 +8,5 @@ public class ConditionUpdateModel {
 	public String xvalue;
 	public String results_vector_type;
 	public String tvalue;
+	public String xValueUnit;
 }

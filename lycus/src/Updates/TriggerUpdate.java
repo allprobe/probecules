@@ -31,8 +31,7 @@ public class TriggerUpdate extends BaseUpdate {
 		// From SsmpUnit swap integer and string to none - Roi
 		Trigger trigger = new Trigger(getUpdate().update_value.id, getUpdate().update_value.name, probe,
 				UsersManager.getTriggerSev(getUpdate().update_value.severity),
-				getUpdate().update_value.status.equals(Constants._true), ResultValueType.valueOf(getUpdate().update_value.trigger_type),
-				SnmpUnit.valueOf(getUpdate().update_value.xvalue_unit), conditions);
+				getUpdate().update_value.status.equals(Constants._true), conditions);
 
 		probe.addTrigger(trigger);
 		ConcurrentHashMap<String, RunnableProbe> runnableProbes = RunnableProbeContainer.getInstanece().getByProbe(probe.getProbe_id());

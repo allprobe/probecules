@@ -4,7 +4,6 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import Functions.BaseFunction;
 import Functions.LastFunction;
-import GlobalConstants.Enums.ResultValueType;
 import GlobalConstants.ProbeTypes;
 import Probes.BaseProbe;
 import Probes.DiscoveryProbe;

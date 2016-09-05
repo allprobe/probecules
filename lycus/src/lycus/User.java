@@ -509,12 +509,12 @@ public class User {
 				for (DiscoveryTrigger discoveryTrigger : probeParams.discovery_triggers) {
 					ArrayList<TriggerCondition> conditions = new ArrayList<TriggerCondition>();
 					TriggerCondition condition = new TriggerCondition(discoveryTrigger.discovery_trigger_condition,
-							discoveryTrigger.discovery_trigger_xvalue, discoveryTrigger.discovery_trigger_function, discoveryTrigger.discovery_trigger_results_vector_type);
+							discoveryTrigger.discovery_trigger_xvalue, discoveryTrigger.discovery_trigger_function, discoveryTrigger.discovery_trigger_results_vector_type, discoveryTrigger.discovery_trigger_xvalue_unit);
 					conditions.add(condition);
 					Trigger trigger = new Trigger(discoveryTrigger.discovery_trigger_id,
 							getDiscoveryTriggerName(probeParams), probe,
-							getTriggerSev(discoveryTrigger.discovery_trigger_severity), true, ResultValueType.valueOf(discoveryTrigger.discovery_trigger_results_vector_type),
-							SnmpUnit.valueOf(discoveryTrigger.discovery_trigger_xvalue_unit), conditions);
+							getTriggerSev(discoveryTrigger.discovery_trigger_severity), true,
+							conditions);
 					probe.addTrigger(trigger);
 				}
 

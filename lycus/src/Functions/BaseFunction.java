@@ -1,9 +1,6 @@
 package Functions;
 
 import Results.BaseResult;
-
-import java.util.UUID;
-
 import GlobalConstants.Enums.ResultValueType;
 
 /**
