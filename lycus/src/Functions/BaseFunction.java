@@ -19,7 +19,7 @@ public abstract class BaseFunction {
 	public BaseFunction(ResultValueType valueType, int functionId) {
 		this.valueType = valueType;
 		this.functionId = functionId;
-		this.lastResults = new Object[1];
+		this.lastResults = new Object[10];
 	}
 
 	public ResultValueType getValueType() {

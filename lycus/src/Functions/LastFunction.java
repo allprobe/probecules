@@ -9,8 +9,6 @@ public class LastFunction extends BaseFunction {
 		super(valueType,1);
 	}
 
-	// private Double lastValue;
-
 	@Override
 	public void add(BaseResult result) {
 		this.lastResults[0] = result.getResultElementValue(this.valueType);

@@ -48,3 +48,10 @@ CQL
 ----
 delete from allprobe_main.rollups where key = 'rd@74cda666-3d85-4e56-a804-9d53c4e16259@discovery_777938b0-e4b0-4ec6-b0f2-ea880a0c09ef';
 
+
+
+subjects to discuss
+-------------------
+- override checkForTriggerActivated() on SnmpResult for SnmpUnit options
+- implementation of SUM functions, need to know the value type which operation works on...
+

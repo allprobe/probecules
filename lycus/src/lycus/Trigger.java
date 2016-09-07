@@ -18,8 +18,7 @@ public class Trigger implements Cloneable {
 	private ArrayList<TriggerCondition> condtions;
 	private boolean isTriggered;
 
-	public Trigger(String triggerId, String name, BaseProbe probe, TriggerSeverity svrty, boolean status,
-			ArrayList<TriggerCondition> condtions) {
+	public Trigger(String triggerId, String name, BaseProbe probe, TriggerSeverity svrty, boolean status, ArrayList<TriggerCondition> condtions) {
 		this.triggerId = triggerId;
 		this.name = name;
 		this.probe = probe;

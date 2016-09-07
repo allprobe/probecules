@@ -519,7 +519,7 @@ public class UsersManager {
 				String triggerId = (String) triggerJson.get("trigger_id");
 
 				String rpStr = triggerId;
-				if (rpStr.contains("snmp_52caf27e-445b-4b8d-bfc6-0307fd4ef3eb"))
+				if (rpStr.contains("icmp_cc9a931c-6232-4b17-b2f9-be00b40ce02b"))
 					Logit.LogDebug("BREAKPOINT");
 
 				String name = (String) triggerJson.get("name");
@@ -528,9 +528,6 @@ public class UsersManager {
 					Logit.LogWarn("Unable to get trigger severity for: " + triggerId);
 				boolean status = ((String) triggerJson.get("status")).equals("1") ? true : false;
 				String elementType = (String) triggerJson.get("results_vector_type");
-				Enums.ResultValueType elementTypeEnum = Enums.ResultValueType.valueOf(elementType);
-				String unitType = (String) triggerJson.get("xvalue_unit");
-				SnmpUnit trigValueUnit = SnmpUnit.valueOf(unitType);
 
 				ArrayList<TriggerCondition> conditions = getTriggerConds((JSONArray) triggerJson.get("conditions"));
 
@@ -612,7 +609,7 @@ public class UsersManager {
 			String tValue = (String) conditionJson.get("tvalue");
 			String elementType = (String) conditionJson.get("results_vector_type");
 			int functionId = Integer.parseInt((String) conditionJson.get("function"));
-			
+
 			TriggerCondition condition = new TriggerCondition(code, xValue, functionId, elementType, xValueUnit);
 			conditions.add(condition);
 

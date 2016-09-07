@@ -4,6 +4,9 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import Functions.BaseFunction;
 import Functions.LastFunction;
+import Functions.LastTenFunction;
+import Functions.LastThreeFunction;
+import GlobalConstants.Enums.ResultValueType;
 import GlobalConstants.ProbeTypes;
 import Probes.BaseProbe;
 import Probes.DiscoveryProbe;
@@ -37,7 +40,7 @@ public class RunnableProbe implements Runnable {
 			return;
 		}
 
-		if (probe.getProbe_id().contains("discovery_649644aa-c6b9-47cd-aa23-d103fe86ea67"))
+		if (probe.getProbe_id().contains("icmp_cc9a931c-6232-4b17-b2f9-be00b40ce02b"))
 			Logit.LogDebug("BREAKPOINT - RunnableProbe");
 
 		this.functions = new ArrayList<BaseFunction>();
@@ -70,7 +73,10 @@ public class RunnableProbe implements Runnable {
 		switch (condition.getFunction()) {
 		case 1:
 			return new LastFunction(condition.getElementType());
-
+		case 2:
+			return new LastThreeFunction(condition.getElementType());
+		case 3:
+			return new LastTenFunction(condition.getElementType());
 		}
 		return null;
 	}
@@ -154,7 +160,7 @@ public class RunnableProbe implements Runnable {
 			BaseResult result = null;
 			try {
 				String rpStr = this.getId();
-				if (rpStr.contains("discovery_649644aa-c6b9-47cd-aa23-d103fe86ea67"))
+				if (rpStr.contains("icmp_cc9a931c-6232-4b17-b2f9-be00b40ce02b"))
 					Logit.LogDebug("BREAKPOINT - RunnableProbe");
 
 				// isActive = false will pause the thread
