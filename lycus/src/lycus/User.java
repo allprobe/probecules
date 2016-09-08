@@ -536,7 +536,8 @@ public class User {
 			this.getTemplateProbes().put(probeId, probe);
 			return probe;
 		} catch (Exception e) {
-			Logit.LogWarn("Creation of Probe Failed: " + probeParams + " , not added!\n" + e.getMessage());
+			Logit.LogError("User - addTemplateProbe()", "Creation of Probe Failed: " + probeParams + " , not added!\n",
+					e);
 			return null;
 		}
 	}

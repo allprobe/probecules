@@ -116,7 +116,7 @@ public class NetResults implements INetResults {
 			return null;
 
 		long timestamp = (long) rawResults.get(0);
-		boolean portState = (boolean) rawResults.get(1);
+		int portState = ((boolean) rawResults.get(1))?1:0;
 		long responseTime = (long) rawResults.get(2);
 
 		PortResult porterResult = new PortResult(getRunnableProbeId(probe, host), timestamp, portState, responseTime);
@@ -234,7 +234,7 @@ public class NetResults implements INetResults {
 			return null;
 
 		long timestamp = (long) rawResults.get(0);
-		boolean isListed = (boolean) rawResults.get(1);
+		int isListed = ((boolean) rawResults.get(1))?1:0;
 
 		RblResult rblResult = new RblResult(getRunnableProbeId(probe, host), timestamp, isListed);
 

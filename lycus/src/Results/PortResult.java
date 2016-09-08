@@ -8,10 +8,10 @@ import lycus.Trigger;
 import lycus.TriggerCondition;
 
 public class PortResult extends BaseResult {
-	private Boolean portStatus;
+	private Integer portStatus;
 	private Long responseTime;
 
-	public PortResult(String runnableProbeId, long timestamp, boolean portState, long responseTime2) {
+	public PortResult(String runnableProbeId, long timestamp, int portState, long responseTime2) {
 		super(runnableProbeId, timestamp);
 		this.probeType = ProbeTypes.PORT;
 		this.portStatus = portState;
@@ -22,11 +22,11 @@ public class PortResult extends BaseResult {
 		super(runnableProbeId);
 	}
 
-	public Boolean isActive() {
+	public int isActive() {
 		return portStatus;
 	}
 
-	public void setIsActive(Boolean portStatus) {
+	public void setIsActive(int portStatus) {
 		this.portStatus = portStatus;
 	}
 

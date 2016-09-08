@@ -25,6 +25,10 @@ public enum SnmpUnit {
 			return value * 1073741824;
 		case GB:
 			return value * 8589934592L;
+		case ms:
+			return value;
+		case s:
+			return value * 1000;
 		}
 
 		return value;
@@ -58,4 +62,13 @@ public enum SnmpUnit {
 	public static long getGBytes(long value) {
 		return value / 8589934592L;
 	}
+
+	public static long getSeconds(long value) {
+		return value / 1000;
+	}
+
+	public static long getMiliSeconds(long value) {
+		return value;
+	}
+
 }

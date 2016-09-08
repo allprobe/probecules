@@ -7,6 +7,7 @@ import com.google.common.base.Enums;
 
 import GlobalConstants.Enums.ResultValueType;
 import GlobalConstants.ProbeTypes;
+import GlobalConstants.SnmpUnit;
 import Interfaces.IResult;
 import Utils.Logit;
 import lycus.*;

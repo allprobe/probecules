@@ -395,7 +395,7 @@ public class UsersManager {
 				probeParams.template_id = (String) probeJson.get("template_id");
 				probeParams.probe_id = (String) probeJson.get("probe_id");
 				String rpStr = probeParams.probe_id;
-				if (rpStr.contains("snmp_1ea93ba7-8078-4880-8bc6-66c6b9ad9bdb"))
+				if (rpStr.contains("snmp_43c19a22-2569-4aa2-aba4-bc0aca2e38cd"))
 					Logit.LogDebug("BREAKPOINT");
 				probeParams.name = (String) probeJson.get("probe_name");
 				probeParams.interval = Long.parseLong(probeJson.get("probe_interval").toString());
@@ -554,49 +554,6 @@ public class UsersManager {
 		}
 	}
 
-	// public static SnmpUnit getSnmpUnit(String unitType) {
-	// SnmpUnit unit;
-	// switch (unitType) {
-	// case "b":
-	// unit = SnmpUnit.bits;
-	// break;
-	// case "B":
-	// unit = SnmpUnit.bytes;
-	// break;
-	// case "Kb":
-	// unit = SnmpUnit.kbits;
-	// break;
-	// case "KB":
-	// unit = SnmpUnit.kbytes;
-	// break;
-	// case "Mb":
-	// unit = SnmpUnit.mbits;
-	// break;
-	// case "MB":
-	// unit = SnmpUnit.mbytes;
-	// break;
-	// case "Gb":
-	// unit = SnmpUnit.gbits;
-	// break;
-	// case "GB":
-	// unit = SnmpUnit.gbytes;
-	// break;
-	// case "none":
-	// unit = SnmpUnit.none;
-	// break;
-	// case "":
-	// unit = null;
-	// break;
-	//
-	// default: {
-	// unit = null;
-	// // throw new IOException("Unable to create SnmpUnit unreadble value:
-	// // " + unitType);
-	// }
-	// }
-	// return unit;
-	//
-	// }
 
 	private static ArrayList<TriggerCondition> getTriggerConds(JSONArray jsonArray) {
 		ArrayList<TriggerCondition> conditions = new ArrayList<TriggerCondition>();
@@ -656,7 +613,7 @@ public class UsersManager {
 			UUID userID = rp.getValue();
 			String rpID = rp.getKey();
 
-			if (rpID.contains("bf4e7e1c-4c44-4e0f-bee5-871aadfe1174@rbl_619c9a8f-ceab-4e6f-8fe5-3b57da32fa52"))
+			if (rpID.contains("01179751-b842-4dbb-a72e-30082c677249@snmp_43c19a22-2569-4aa2-aba4-bc0aca2e38cd"))
 				Logit.LogDebug("BREAKPOINT");
 
 			User u = getUsers().get(userID);
