@@ -65,14 +65,14 @@ public class Enums {
 	}
 
 	public static enum Function {
-		nothing, avg, delta, max, 
+		nothing, avg, delta, max, delta_avg
 	}
 
 	public static enum LastType {
 		N, // Last-N
 		P, // Last-Period
-		H, // Last-Time interval
-
+		H, // Last-Hours
+		K
 	}
 
 	public static final String Action = null;

@@ -120,10 +120,7 @@ public class CheckTrigger {
 		case bigger:
 			return result > xvalueUnit.getBasic((long) xValue, xvalueUnit);
 		case equal:
-			return result == xvalueUnit.getBasic((long) xValue, xvalueUnit); // Make
-																				// more
-																				// accurate
-																				// double.long
+			return result == xvalueUnit.getBasic((long) xValue, xvalueUnit); 
 		case tinier:
 			return result < xvalueUnit.getBasic((long) xValue, xvalueUnit);
 		case not_equal:
