@@ -1,18 +1,11 @@
 package Results;
 
-import java.util.HashMap;
-
 import org.json.simple.JSONArray;
-
-import GlobalConstants.Constants;
 import GlobalConstants.Enums.SnmpError;
-import GlobalConstants.Enums.XValueUnit;
 import GlobalConstants.ProbeTypes;
-import GlobalConstants.SnmpUnit;
+import GlobalConstants.XvalueUnit;
 import Probes.SnmpProbe;
-import Utils.Logit;
 import lycus.Trigger;
-import lycus.DataPointsRollup;
 import lycus.RunnableProbeContainer;
 import lycus.TriggerCondition;
 
@@ -62,30 +55,30 @@ public class SnmpResult extends BaseResult {
 		return numData;
 	}
 
-	@Override
-	public void checkIfTriggerd(HashMap<String, Trigger> triggers) throws Exception {
-
-		if (this.getRunnableProbeId()
-				.contains("15a29f39-5baf-4672-8853-c08b4b247be0@snmp_52caf27e-445b-4b8d-bfc6-0307fd4ef3eb"))
-			Logit.LogDebug("BREAKPOINT");
-
-		super.checkIfTriggerd(triggers);
-		for (Trigger trigger : triggers.values()) {
-
-			boolean triggered = false;
-			switch (((SnmpProbe) trigger.getProbe()).getDataType()) {
-			case Numeric:
-				triggered = checkForNumberTrigger(trigger);
-				break;
-			case Text:
-				triggered = checkForTextTrigger(trigger);
-				break;
-			}
-
-			super.processTriggerResult(trigger, triggered);
-
-		}
-	}
+//	@Override
+//	public void checkIfTriggerd(HashMap<String, Trigger> triggers) throws Exception {
+//
+//		if (this.getRunnableProbeId()
+//				.contains("15a29f39-5baf-4672-8853-c08b4b247be0@snmp_52caf27e-445b-4b8d-bfc6-0307fd4ef3eb"))
+//			Logit.LogDebug("BREAKPOINT");
+//
+//		super.checkIfTriggerd(triggers);
+//		for (Trigger trigger : triggers.values()) {
+//
+//			boolean triggered = false;
+//			switch (((SnmpProbe) trigger.getProbe()).getDataType()) {
+//			case Numeric:
+//				triggered = checkForNumberTrigger(trigger);
+//				break;
+//			case Text:
+//				triggered = checkForTextTrigger(trigger);
+//				break;
+//			}
+//
+//			super.processTriggerResult(trigger, triggered);
+//
+//		}
+//	}
 
 	private boolean checkForNumberTrigger(Trigger trigger) {
 		boolean flag = false;
@@ -94,46 +87,45 @@ public class SnmpResult extends BaseResult {
 			Double lastValue = this.getNumData();
 			if (lastValue == null)
 				continue;
-			SnmpUnit resultUnit = ((SnmpProbe) RunnableProbeContainer.getInstanece().get(this.getRunnableProbeId())
+			XvalueUnit resultUnit = ((SnmpProbe) RunnableProbeContainer.getInstanece().get(this.getRunnableProbeId())
 					.getProbe()).getUnit();
-			SnmpUnit triggerUnit = trigger.getUnit();
-			if (resultUnit.equals(SnmpUnit.as_is)) {
-				switch (condition.getCode()) {
-				case 1:
+			if (resultUnit.equals(XvalueUnit.as_is)) {
+				switch (condition.getCondition()) {
+				case bigger:
 					if (lastValue > x)
 						flag = true;
 					break;
-				case 2:
+				case tinier:
 					if (lastValue < x)
 						flag = true;
 					break;
-				case 3:
+				case equal:
 					if (lastValue == x)
 						flag = true;
 					break;
-				case 4:
+				case not_equal:
 					if (lastValue != x)
 						flag = true;
 					break;
 				}
 			} else {
 
-				long resultInBits = SnmpUnit.getBasic(Math.round(lastValue), resultUnit);
-				long triggerInBits = SnmpUnit.getBasic(Long.parseLong(condition.getxValue()), trigger.getUnit());
-				switch (condition.getCode()) {
-				case 1:
+				long resultInBits = XvalueUnit.getBasic(Math.round(lastValue), resultUnit);
+				long triggerInBits = XvalueUnit.getBasic(Long.parseLong(condition.getxValue()), trigger.getUnit());
+				switch (condition.getCondition()) {
+				case bigger:
 					if (resultInBits > triggerInBits)
 						flag = true;
 					break;
-				case 2:
+				case tinier:
 					if (resultInBits < triggerInBits)
 						flag = true;
 					break;
-				case 3:
+				case equal:
 					if (resultInBits == triggerInBits)
 						flag = true;
 					break;
-				case 4:
+				case not_equal:
 					if (resultInBits != triggerInBits)
 						flag = true;
 					break;
@@ -150,12 +142,12 @@ public class SnmpResult extends BaseResult {
 		for (TriggerCondition condition : trigger.getCondtions()) {
 			String x = condition.getxValue();
 			String lastValue = this.getData();
-			switch (condition.getCode()) {
-			case 3:
+			switch (condition.getCondition()) {
+			case equal:
 				if (lastValue.equals(x))
 					flag = true;
 				break;
-			case 4:
+			case not_equal:
 				if (!lastValue.equals(x))
 					flag = true;
 				break;

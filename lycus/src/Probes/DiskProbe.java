@@ -45,7 +45,7 @@ public class DiskProbe extends BaseProbe {
 	}
 
 	@Override
-	public long getInterval() {
+	public int getInterval() {
 		return discoveryProbe.getElementInterval();
 	}
 

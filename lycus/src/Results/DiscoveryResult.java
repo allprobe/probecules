@@ -45,10 +45,10 @@ public class DiscoveryResult extends BaseResult {
 		return null;
 	}
 
-	@Override
-	public void checkIfTriggerd(HashMap<String, Trigger> triggers) throws Exception {
-		super.checkIfTriggerd(triggers);
-	}
+//	@Override
+//	public void checkIfTriggerd(HashMap<String, Trigger> triggers) throws Exception {
+//		super.checkIfTriggerd(triggers);
+//	}
 
 	@Override
 	public Object getResultObject() {

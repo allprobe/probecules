@@ -173,8 +173,8 @@ public class SnmpProbesBatch implements Runnable {
                                     "c3f052eb-d8e3-4672-9bab-cb25fc6e702f@snmp_239439df-4baa-44f4-b333-3ddfb7b028bd"))
                                 Logit.LogDebug("BREAKPOINT");
 
-                            result.checkIfTriggerd(RunnableProbeContainer.getInstanece()
-                                    .get(result.getRunnableProbeId()).getProbe().getTriggers());
+//                            result.checkIfTriggerd(RunnableProbeContainer.getInstanece()
+//                                    .get(result.getRunnableProbeId()).getProbe().getTriggers());
                             SnmpStoreAs storeAs = ((SnmpProbe) RunnableProbeContainer.getInstanece()
                                     .get(result.getRunnableProbeId()).getProbe()).getStoreAs();
                             if (storeAs == SnmpStoreAs.asIs) {

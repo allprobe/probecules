@@ -259,7 +259,7 @@ public class RunnableProbeContainer implements IRunnableProbeContainer {
 	}
 
 	@Override
-	public boolean changeInterval(RunnableProbe runnableProbe, Long interval) {
+	public boolean changeInterval(RunnableProbe runnableProbe, Integer interval) {
 		if (runnableProbe == null)
 			return false;
 
@@ -271,7 +271,7 @@ public class RunnableProbeContainer implements IRunnableProbeContainer {
 		return true;
 	}
 
-	private Boolean changeSnmpProbeInterval(RunnableProbe runnableProbe, Long interval) {
+	private Boolean changeSnmpProbeInterval(RunnableProbe runnableProbe, Integer interval) {
 		stopSnmpProbe(runnableProbe);
 		addSnmpRunnableProbeToBatches(runnableProbe);
 		return true;

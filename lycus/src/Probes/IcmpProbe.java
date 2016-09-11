@@ -28,7 +28,7 @@ public class IcmpProbe extends BaseProbe {
 	IcmpProbe() {
 	}
 
-	public IcmpProbe(User user, String probe_id, UUID template_id, String name, long interval, float multiplier,
+	public IcmpProbe(User user, String probe_id, UUID template_id, String name, int interval, float multiplier,
 			boolean status, int timeout, int count, int bytes) {
 		super(user, probe_id, template_id, name, interval, multiplier, status);
 		this.count = count;

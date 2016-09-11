@@ -93,15 +93,13 @@ public class ProbeUpdate extends BaseUpdate {
 
 				// Discovery
 				probeParams.discovery_type = getUpdate().update_value.key.discovery_type;
-				probeParams.discovery_triggers = getUpdate().update_value.key.discovery_triggers;
-				// probeParams.discovery_trigger_severity =
-				// getUpdate().update_value.key.trigger_severity;
-				// probeParams.discovery_trigger_code =
-				// getUpdate().update_value.key.discovery_trigger_code;
-				// probeParams.discovery_trigger_unit =
-				// getUpdate().update_value.key.discovery_trigger_unit;
-				// probeParams.discovery_trigger_x_value =
-				// getUpdate().update_value.key.discovery_trigger_x_value;
+				probeParams.triggers = getUpdate().update_value.conditions;
+				 probeParams.severity = getUpdate().update_value.severity;
+ 				 probeParams.triggerName = getUpdate().update_value.name;
+				 probeParams.tuple = getUpdate().update_value.tuple;
+				 probeParams.severity = getUpdate().update_value.severity;
+				 probeParams.severity = getUpdate().update_value.severity;
+				 probeParams.triggerId = getUpdate().update_value.id;
 
 				probe = getUser().addTemplateProbe(probeParams);
 				Logit.LogCheck("New probe was created");

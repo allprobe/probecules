@@ -10,15 +10,11 @@ import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
 import java.util.UUID;
-
-import javax.persistence.EnumType;
-
 import org.json.simple.JSONObject;
 import org.apache.log4j.BasicConfigurator;
 import org.json.simple.JSONArray;
 import org.json.simple.parser.JSONParser;
 import com.google.gson.Gson;
-import DAL.ApiInterface;
 import DAL.DAL;
 import Elements.BaseElement;
 import Elements.DiskElement;
@@ -26,15 +22,12 @@ import Elements.NicElement;
 import GlobalConstants.Constants;
 import GlobalConstants.Enums;
 import GlobalConstants.SnmpDataType;
-import GlobalConstants.SnmpUnit;
 import GlobalConstants.TriggerSeverity;
 import GlobalConstants.Enums.ApiAction;
-import GlobalConstants.Enums.XValueUnit;
 import Interfaces.IDAL;
 import Interfaces.IFunction;
 import Model.ConditionUpdateModel;
 import Model.DiscoveryElementParams;
-import Model.DiscoveryTrigger;
 import Model.HostParams;
 import Model.ProbeParams;
 import Model.SnmpTemplateParams;
@@ -395,10 +388,10 @@ public class UsersManager {
 				probeParams.template_id = (String) probeJson.get("template_id");
 				probeParams.probe_id = (String) probeJson.get("probe_id");
 				String rpStr = probeParams.probe_id;
-				if (rpStr.contains("snmp_43c19a22-2569-4aa2-aba4-bc0aca2e38cd"))
+				if (rpStr.contains("snmp_1ea93ba7-8078-4880-8bc6-66c6b9ad9bdb"))
 					Logit.LogDebug("BREAKPOINT");
 				probeParams.name = (String) probeJson.get("probe_name");
-				probeParams.interval = Long.parseLong(probeJson.get("probe_interval").toString());
+				probeParams.interval = Integer.parseInt(probeJson.get("probe_interval").toString());
 				probeParams.multiplier = GeneralFunctions.isNullOrEmpty(probeJson.get("probe_multiplier").toString())
 						? 1 : Float.parseFloat(probeJson.get("probe_multiplier").toString());
 
@@ -440,37 +433,36 @@ public class UsersManager {
 					break;
 				}
 				case Constants.discovery: {
+
+					// Roi - Please take a look here especially discovery_type
 					probeParams.element_interval = Integer.parseInt(probeKeyJson.get("element_interval").toString());
 					JSONParser jsonParser = new JSONParser();
-					JSONArray triggers = (JSONArray) jsonParser
-							.parse(probeKeyJson.get("discovery_triggers").toString());
-					DiscoveryTrigger[] discovery_triggers = new DiscoveryTrigger[triggers.size()];
+					JSONArray triggers = (JSONArray) jsonParser.parse(probeKeyJson.get("triggers").toString());
+					TriggerCondition[] discovery_triggers = new TriggerCondition[triggers.size()];
 					probeParams.discovery_type = probeKeyJson.get("discovery_type").toString();
+					probeParams.severity = probeKeyJson.get("severity").toString();
+					probeParams.tuple = probeKeyJson.get("tuple").toString();
+					probeParams.xvalue_unit = probeKeyJson.get("xvalue_unit").toString();
+					probeParams.triggerName = probeKeyJson.get("triggerName").toString();
+					probeParams.triggerId = probeKeyJson.get("triggerId").toString();
 
-					for (int index = 0; index < triggers.size(); index++) {
-						JSONObject trigger = (JSONObject) triggers.get(index);
-						DiscoveryTrigger discoveryTrigger = new DiscoveryTrigger();
+					ConditionUpdateModel[] discovertyTiggers = new ConditionUpdateModel[triggers.size()];
+					for (int tIndex = 0; tIndex < triggers.size(); tIndex++) {
+						ConditionUpdateModel discovertyTigger = new ConditionUpdateModel();
 
-						discoveryTrigger.discovery_trigger_function = Integer
-								.parseInt(trigger.get("discovery_trigger_function").toString());
+						JSONObject trigger = (JSONObject) triggers.get(tIndex);
+						discovertyTigger.andor = trigger.get("andor").toString();
+						discovertyTigger.condition = trigger.get("condition").toString();
+						discovertyTigger.function = trigger.get("function").toString();
+						discovertyTigger.index = trigger.get("index").toString();
+						discovertyTigger.xvalue = trigger.get("xvalue").toString();
+						discovertyTigger.results_vector_type = trigger.get("results_vector_type").toString();
+						discovertyTigger.nvalue = trigger.get("nvalue").toString();
 
-						discoveryTrigger.discovery_trigger_condition = Integer
-								.parseInt(trigger.get("discovery_trigger_condition").toString());
-
-						discoveryTrigger.discovery_trigger_xvalue = trigger.get("discovery_trigger_xvalue").toString();
-						discoveryTrigger.discovery_trigger_severity = trigger.get("discovery_trigger_severity")
-								.toString();
-						discoveryTrigger.discovery_trigger_xvalue_unit = trigger.get("discovery_trigger_xvalue_unit")
-								.toString();
-						discoveryTrigger.discovery_trigger_results_vector_type = trigger
-								.get("discovery_trigger_results_vector_type").toString();
-
-						discoveryTrigger.discovery_trigger_id = trigger.get("discovery_trigger_id").toString();
-						discovery_triggers[index] = discoveryTrigger;
-
+						discovertyTiggers[tIndex] = discovertyTigger;
 					}
 
-					probeParams.discovery_triggers = discovery_triggers;
+					probeParams.triggers = discovertyTiggers;
 					break;
 				}
 				case Constants.rbl: {
@@ -554,22 +546,22 @@ public class UsersManager {
 		}
 	}
 
-
 	private static ArrayList<TriggerCondition> getTriggerConds(JSONArray jsonArray) {
 		ArrayList<TriggerCondition> conditions = new ArrayList<TriggerCondition>();
 
 		for (int i = 0; i < jsonArray.size(); i++) {
 			JSONObject conditionJson = (JSONObject) jsonArray.get(i);
-			int code = Integer.parseInt((String) conditionJson.get("condition"));
-			String xValue = (String) conditionJson.get("xvalue");
-			String xValueUnit = (String) conditionJson.get("xvalue_unit");
-			String tValue = (String) conditionJson.get("tvalue");
-			String elementType = (String) conditionJson.get("results_vector_type");
-			int functionId = Integer.parseInt((String) conditionJson.get("function"));
+			String condition = conditionJson.get("condition").toString();
+			String xValue = conditionJson.get("xvalue").toString();
+			String xValueUnit = conditionJson.get("xvalue_unit").toString();
+			String nValue = conditionJson.get("nvalue").toString();
+			String elementType = conditionJson.get("results_vector_type").toString();
+			String function = conditionJson.get("function").toString();
+			String lastType = conditionJson.get("last_type").toString();
 
-			TriggerCondition condition = new TriggerCondition(code, xValue, functionId, elementType, xValueUnit);
-			conditions.add(condition);
-
+			TriggerCondition triggerCondition = new TriggerCondition(condition, xValue, function, elementType,
+					xValueUnit, nValue, lastType);
+			conditions.add(triggerCondition);
 		}
 		return conditions;
 	}
@@ -579,15 +571,17 @@ public class UsersManager {
 		for (ConditionUpdateModel conditionUpdateModel : conditionUpdateModels) {
 			// JSONObject conditionJson = (JSONObject) jsonArray.get(i);
 
-			int code = Integer.parseInt((String) conditionUpdateModel.condition);
-			String xValue = (String) conditionUpdateModel.xvalue;
-			String xValueUnit = (String) conditionUpdateModel.xValueUnit;
-			String elementType = (String) conditionUpdateModel.results_vector_type;
-			int functionId = Integer.parseInt((String) conditionUpdateModel.function);
+			String condition = conditionUpdateModel.condition.toString();
+			String xValue = conditionUpdateModel.xvalue.toString();
+			String xValueUnit = conditionUpdateModel.xvalue_unit.toString();
+			String elementType = conditionUpdateModel.results_vector_type.toString();
+			String function = conditionUpdateModel.function.toString();
+			String lastType = conditionUpdateModel.last_type.toString();
+			String nValue = conditionUpdateModel.nvalue.toString();
 
-			TriggerCondition condition = new TriggerCondition(code, xValue, functionId, elementType, xValueUnit);
-			conditions.add(condition);
-
+			TriggerCondition triggerCondition = new TriggerCondition(condition, xValue, function, elementType,
+					xValueUnit, nValue, lastType);
+			conditions.add(triggerCondition);
 		}
 		return conditions;
 	}
@@ -613,7 +607,7 @@ public class UsersManager {
 			UUID userID = rp.getValue();
 			String rpID = rp.getKey();
 
-			if (rpID.contains("01179751-b842-4dbb-a72e-30082c677249@snmp_43c19a22-2569-4aa2-aba4-bc0aca2e38cd"))
+			if (rpID.contains("bf4e7e1c-4c44-4e0f-bee5-871aadfe1174@rbl_619c9a8f-ceab-4e6f-8fe5-3b57da32fa52"))
 				Logit.LogDebug("BREAKPOINT");
 
 			User u = getUsers().get(userID);

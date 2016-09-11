@@ -1,13 +1,7 @@
 package lycus;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import Functions.BaseFunction;
-import Functions.LastFunction;
-import Functions.LastTenFunction;
-import Functions.LastThreeFunction;
-import GlobalConstants.Enums.ResultValueType;
 import GlobalConstants.ProbeTypes;
+import Model.ConditionUpdateModel;
 import Probes.BaseProbe;
 import Probes.DiscoveryProbe;
 import Probes.HttpProbe;
@@ -21,6 +15,7 @@ import Probes.DiskProbe;
 import Results.BaseResult;
 import Rollups.RollupsContainer;
 import SLA.SLAContainer;
+import Triggers.EventTrigger;
 import Utils.Logit;
 
 public class RunnableProbe implements Runnable {
@@ -28,7 +23,7 @@ public class RunnableProbe implements Runnable {
 	private BaseProbe probe;
 	private boolean isActive;
 	private boolean isRunning;
-	private ArrayList<BaseFunction> functions;
+	private EventTrigger eventTrigger;
 
 	public RunnableProbe(Host host, BaseProbe probe) {
 		this.setHost(host);
@@ -40,45 +35,10 @@ public class RunnableProbe implements Runnable {
 			return;
 		}
 
+		eventTrigger = new EventTrigger(probe, this.getId());
+		
 		if (probe.getProbe_id().contains("icmp_cc9a931c-6232-4b17-b2f9-be00b40ce02b"))
 			Logit.LogDebug("BREAKPOINT - RunnableProbe");
-
-		this.functions = new ArrayList<BaseFunction>();
-
-		if (!(this.getProbe() instanceof DiscoveryProbe))
-			this.setFunctions(probe.getTriggers());
-	}
-
-	// Must remove the functions that are not there.
-	private void setFunctions(HashMap<String, Trigger> triggers) {
-		for (Trigger trigger : triggers.values()) {
-			for (TriggerCondition condition : trigger.getCondtions()) {
-				BaseFunction function = getFunctionOfCondition(condition);
-				if (isFunctionExists(function))
-					continue;
-				this.functions.add(function);
-			}
-		}
-	}
-
-	private boolean isFunctionExists(BaseFunction function) {
-		for (BaseFunction existing : this.functions) {
-			if (existing.isEqual(function))
-				return true;
-		}
-		return false;
-	}
-
-	private BaseFunction getFunctionOfCondition(TriggerCondition condition) {
-		switch (condition.getFunction()) {
-		case 1:
-			return new LastFunction(condition.getElementType());
-		case 2:
-			return new LastThreeFunction(condition.getElementType());
-		case 3:
-			return new LastTenFunction(condition.getElementType());
-		}
-		return null;
 	}
 
 	public Host getHost() {
@@ -109,6 +69,7 @@ public class RunnableProbe implements Runnable {
 		return isRunning;
 	}
 
+	
 	public void setRunning(boolean isRunning) {
 		String rpStr3 = this.getId();
 		if (rpStr3.contains(
@@ -118,14 +79,14 @@ public class RunnableProbe implements Runnable {
 		this.isRunning = isRunning;
 	}
 
-	public BaseFunction getConditionFunction(Trigger trigger, TriggerCondition condition) {
-		for (int i = 0; i < this.functions.size(); i++) {
-			if (this.functions.get(i).getValueType().equals(condition.getElementType()))
-				if (this.functions.get(i).getFunctionId() == condition.getFunction())
-					return this.functions.get(i);
-		}
-		return null;
-	}
+//	public BaseFunction getConditionFunction(Trigger trigger, TriggerCondition condition) {
+//		for (int i = 0; i < this.functions.size(); i++) {
+//			if (this.functions.get(i).getValueType().equals(condition.getElementType()))
+//				if (this.functions.get(i).getFunctionId() == condition.getFunctionId())
+//					return this.functions.get(i);
+//		}
+//		return null;
+//	}
 
 	public String getId() {
 		return this.getProbe().getTemplate_id().toString() + "@" + this.getHost().getHostId().toString() + "@"
@@ -160,7 +121,7 @@ public class RunnableProbe implements Runnable {
 			BaseResult result = null;
 			try {
 				String rpStr = this.getId();
-				if (rpStr.contains("01179751-b842-4dbb-a72e-30082c677249@snmp_43c19a22-2569-4aa2-aba4-bc0aca2e38cd"))
+				if (rpStr.contains("icmp_cc9a931c-6232-4b17-b2f9-be00b40ce02b"))
 					Logit.LogDebug("BREAKPOINT - RunnableProbe");
 
 				// isActive = false will pause the thread
@@ -202,7 +163,7 @@ public class RunnableProbe implements Runnable {
 
 					// Set the timeStamp to the value before the probe.
 					result.setLastTimestamp(timeStamp);
-					this.addToAllFunctions(result);
+//					this.addToAllFunctions(result);
 					ResultsContainer.getInstance().addResult(result);
 				} catch (Exception e) {
 					Logit.LogError("RunnableProbe - run()",
@@ -210,14 +171,22 @@ public class RunnableProbe implements Runnable {
 				}
 
 				try {
-					if (!(this.getProbe() instanceof DiscoveryProbe))
-						result.checkIfTriggerd(getProbe().getTriggers());
+					if (probe.getTriggers().size() > 0)
+						eventTrigger.addResult(result);
 				} catch (Exception e) {
 					Logit.LogError("RunnableProbe - run()",
-							"Error triggering runnable probe results!  " + this.getProbeType() + " "
-									+ this.getProbe().getName() + ", \nRunnabelProbeId: " + this.getId());
-					// continue;
+							"Error Adding result to eventTrigger! " + this.getId());
 				}
+				
+//				try {
+//					if (!(this.getProbe() instanceof DiscoveryProbe))
+//						result.checkIfTriggerd(getProbe().getTriggers());
+//				} catch (Exception e) {
+//					Logit.LogError("RunnableProbe - run()",
+//							"Error triggering runnable probe results!  " + this.getProbeType() + " "
+//									+ this.getProbe().getName() + ", \nRunnabelProbeId: " + this.getId());
+//					// continue;
+//				}
 
 				try {
 					RollupsContainer.getInstance().addResult(result);
@@ -249,9 +218,9 @@ public class RunnableProbe implements Runnable {
 		}
 	}
 
-	private void addToAllFunctions(BaseResult result) {
-		for (BaseFunction function : this.functions) {
-			function.add(result);
-		}
-	}
+//	private void addToAllFunctions(BaseResult result) {
+//		for (BaseFunction function : this.functions) {
+//			function.add(result);
+//		}
+//	}
 }

@@ -7,7 +7,6 @@ import com.google.common.base.Enums;
 
 import GlobalConstants.Enums.ResultValueType;
 import GlobalConstants.ProbeTypes;
-import GlobalConstants.SnmpUnit;
 import Interfaces.IResult;
 import Utils.Logit;
 import lycus.*;
@@ -68,13 +67,13 @@ public class BaseResult implements IResult {
 		return null;
 	}
 
-	public void checkIfTriggerd(HashMap<String, Trigger> triggers) throws Exception {
-		for (Trigger trigger : triggers.values()) {
-			boolean triggered = checkForTriggerActivated(trigger);
-			processTriggerResult(trigger, triggered);
-
-		}
-	}
+//	public void checkIfTriggerd(HashMap<String, Trigger> triggers) throws Exception {
+//		for (Trigger trigger : triggers.values()) {
+//			boolean triggered = checkForTriggerActivated(trigger);
+//			processTriggerResult(trigger, triggered);
+//
+//		}
+//	}
 
 	public void processTriggerResult(Trigger trigger, boolean triggered) {
 		Event lastEvent = ResultsContainer.getInstance().getEvent(getRunnableProbeId(), trigger.getTriggerId());
@@ -124,23 +123,23 @@ public class BaseResult implements IResult {
 		this.errorMessage = errorMessage;
 	}
 
-	private boolean checkForTriggerActivated(Trigger trigger) {
-		boolean flag = false;
-		for (TriggerCondition condition : trigger.getCondtions()) {
-			String x = condition.getxValue();
-			// Double xNumber = Double.parseDouble(x);
-			Object[] lastValues = (RunnableProbeContainer.getInstanece().get(this.getRunnableProbeId()))
-					.getConditionFunction(trigger, condition).get();
-			for (int i = 0; i < lastValues.length; i++) {
-				for (Object oneValue : (ArrayList<Object>) lastValues[i]) {
-					flag = conditionByType(oneValue, x, condition.getCode());
-					if (!flag)
-						return false;
-				}
-			}
-		}
-		return flag;
-	}
+//	private boolean checkForTriggerActivated(Trigger trigger) {
+//		boolean flag = false;
+//		for (TriggerCondition condition : trigger.getCondtions()) {
+//			String x = condition.getxValue();
+//			// Double xNumber = Double.parseDouble(x);
+//			Object[] lastValues = (RunnableProbeContainer.getInstanece().get(this.getRunnableProbeId()))
+//					.getConditionFunction(trigger, condition).get();
+//			for (int i = 0; i < lastValues.length; i++) {
+//				for (Object oneValue : (ArrayList<Object>) lastValues[i]) {
+//					flag = conditionByType(oneValue, x, condition.getCode());
+//					if (!flag)
+//						return false;
+//				}
+//			}
+//		}
+//		return flag;
+//	}
 
 	private boolean conditionByType(Object lastValue, String triggerValue, int code) {
 		if (lastValue == null || triggerValue == null)
@@ -206,10 +205,8 @@ public class BaseResult implements IResult {
 		return false;
 	}
 
-	public ArrayList<Object> getResultElementValue(ResultValueType valueType) {
-		// if(valueType==null)
-		// return null;
-
+	public ArrayList<Object> getResultElementValue(String elementType) {
+		ResultValueType valueType = ResultValueType.valueOf(elementType);
 		ArrayList<Object> values = new ArrayList<Object>();
 
 		switch (valueType) {

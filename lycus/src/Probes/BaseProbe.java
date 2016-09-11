@@ -4,9 +4,12 @@
  */
 package Probes;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.UUID;
 import GlobalConstants.Constants;
+import GlobalConstants.TriggerSeverity;
+import Model.ConditionUpdateModel;
 import Model.UpdateModel;
 import Model.UpdateValueModel;
 import Results.BaseResult;
@@ -15,6 +18,7 @@ import Utils.Logit;
 import lycus.Host;
 import lycus.RunnableProbeContainer;
 import lycus.Trigger;
+import lycus.TriggerCondition;
 import lycus.User;
 
 /**
@@ -26,7 +30,7 @@ public class BaseProbe {
 	private String probe_id;
 	private UUID template_id;
 	private String name;
-	private long interval;
+	private int interval;
 	private float multiplier;
 	private boolean isActive;
 	private HashMap<String, Trigger> triggers;
@@ -34,7 +38,7 @@ public class BaseProbe {
 	public BaseProbe() {
 	}
 
-	public BaseProbe(User user, String probe_id, UUID template_id, String name, long interval, float multiplier,
+	public BaseProbe(User user, String probe_id, UUID template_id, String name, int interval, float multiplier,
 			boolean status) {
 		this.setUser(user);
 		this.setProbe_id(probe_id);
@@ -79,7 +83,7 @@ public class BaseProbe {
 		this.template_id = template_id;
 	}
 
-	public long getInterval() {
+	public int getInterval() {
 		return interval;
 	}
 
@@ -87,7 +91,7 @@ public class BaseProbe {
 	 * @param interval
 	 *            the interval to set
 	 */
-	public void setInterval(long interval) {
+	public void setInterval(int interval) {
 		this.interval = interval;
 	}
 
@@ -178,6 +182,26 @@ public class BaseProbe {
 			Logit.LogCheck("Interval " + getProbe_id() + " has changed to " + interval);
 		}
 
+		return true;
+	}
+
+	public boolean updateTriggers(UpdateValueModel updateValue, String triggerId) {
+		ConditionUpdateModel[] conditions = updateValue.conditions;
+		ArrayList<TriggerCondition> triggerConditions = new ArrayList<>();
+		Trigger trigger = getTrigger(triggerId);
+
+		for (ConditionUpdateModel condition : conditions) {
+			if (triggers.keySet().contains(condition.index)) {
+				TriggerCondition triggerCondition = new TriggerCondition(condition.condition, condition.xvalue,
+						condition.function, condition.results_vector_type, condition.xvalue_unit, condition.nvalue,
+						condition.last_type);
+				
+			
+				triggerConditions.add(triggerCondition);
+
+			}
+			trigger.setCondtions(triggerConditions);
+		}
 		return true;
 	}
 }

@@ -56,8 +56,23 @@ public class Enums {
 
 	}
 
-	public static enum XValueUnit {
-		as_is, b, B, Kb, KB, Mb, MB, Gb, GB
+	// public static enum XValueUnit {
+	// as_is, b, B, Kb, KB, Mb, MB, Gb, GB
+	// }
+
+	public static enum Condition {
+		no_trigger, bigger, tinier, equal, not_equal
+	}
+
+	public static enum Function {
+		nothing, avg, delta, max, 
+	}
+
+	public static enum LastType {
+		N, // Last-N
+		P, // Last-Period
+		H, // Last-Time interval
+
 	}
 
 	public static final String Action = null;

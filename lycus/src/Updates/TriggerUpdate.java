@@ -3,7 +3,7 @@ package Updates;
 import java.util.ArrayList;
 import java.util.concurrent.ConcurrentHashMap;
 import GlobalConstants.Constants;
-import GlobalConstants.SnmpUnit;
+import GlobalConstants.XvalueUnit;
 import GlobalConstants.Enums.ResultValueType;
 import Model.UpdateModel;
 import Probes.BaseProbe;

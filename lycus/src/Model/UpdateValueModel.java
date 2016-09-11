@@ -5,7 +5,7 @@ public class UpdateValueModel
 	public String user_id;
 	public Float multiplier;
 	public String name;
-	public Long interval;
+	public Integer interval;
 	public String type;
 	public KeyUpdateModel key;
 	public String status;
@@ -21,6 +21,7 @@ public class UpdateValueModel
 	public String severity;
 	public String xvalue_unit;
 	public String probe_id;
+	public String tuple;
 	public ConditionUpdateModel[] conditions;
 	public Integer snmp_version;
 	public String snmp_community;

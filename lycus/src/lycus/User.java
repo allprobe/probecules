@@ -5,15 +5,15 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.UUID;
 
+import org.apache.logging.log4j.core.net.Severity;
 import org.snmp4j.smi.OID;
-
 import GlobalConstants.Constants;
 import GlobalConstants.Enums;
 import GlobalConstants.Enums.ResultValueType;
 import GlobalConstants.SnmpDataType;
-import GlobalConstants.SnmpUnit;
 import GlobalConstants.TriggerSeverity;
-import Model.DiscoveryTrigger;
+import GlobalConstants.XvalueUnit;
+import Model.ConditionUpdateModel;
 import Model.HostParams;
 import Model.ProbeParams;
 import Model.SnmpTemplateParams;
@@ -401,13 +401,17 @@ public class User {
 		return true;
 	}
 
+	/**
+	 * @param probeParams
+	 * @return
+	 */
 	public BaseProbe addTemplateProbe(ProbeParams probeParams) {
 		try {
 			UUID templateId = UUID.fromString(probeParams.template_id);
 			String probeId = probeParams.probe_id;
 
 			String name = probeParams.name;
-			long interval = probeParams.interval;
+			int interval = probeParams.interval;
 			float multiplier = probeParams.multiplier;
 			boolean status = probeParams.is_active;
 			String type = probeParams.type;
@@ -468,7 +472,7 @@ public class User {
 					return null;
 				}
 
-				SnmpUnit unit = SnmpUnit.valueOf(valueUnit);
+				XvalueUnit unit = XvalueUnit.valueOf(valueUnit);
 				if (unit == null) {
 					Logit.LogWarn("Probe: " + probeId + " Wrong Unit Type, Doesn't Added!");
 					return null;
@@ -478,7 +482,7 @@ public class User {
 				break;
 			}
 			case Constants.discovery: {
-				long elementsInterval = probeParams.element_interval;
+				int elementsInterval = probeParams.element_interval;
 				// int triggerCode = probeParams.discovery_trigger_code;
 				// String triggerXValue = probeParams.discovery_trigger_x_value;
 				// String unitType = probeParams.snmp_unit;
@@ -503,24 +507,18 @@ public class User {
 					throw new Exception("Unable to determine discovery type --- " + probeParams.probe_id);
 				}
 
-				probe = new DiscoveryProbe(this, probeId, templateId, name, interval, multiplier, status, discoveryType,
-						elementsInterval);
-
-				for (DiscoveryTrigger discoveryTrigger : probeParams.discovery_triggers) {
-					ArrayList<TriggerCondition> conditions = new ArrayList<TriggerCondition>();
-					TriggerCondition condition = new TriggerCondition(discoveryTrigger.discovery_trigger_condition,
-							discoveryTrigger.discovery_trigger_xvalue, discoveryTrigger.discovery_trigger_function,
-							discoveryTrigger.discovery_trigger_results_vector_type,
-							discoveryTrigger.discovery_trigger_xvalue_unit);
+				ArrayList<TriggerCondition> conditions = new ArrayList<TriggerCondition>();
+				for (ConditionUpdateModel consition : probeParams.triggers) {
+					TriggerCondition condition = new TriggerCondition(consition.condition,consition.xvalue,
+							consition.function, consition.results_vector_type,
+							consition.xvalue_unit,
+							consition.nvalue, consition.last_type);
 					conditions.add(condition);
-					Trigger trigger = new Trigger(discoveryTrigger.discovery_trigger_id,
-							getDiscoveryTriggerName(probeParams), probe,
-							getTriggerSev(discoveryTrigger.discovery_trigger_severity), true, conditions);
-					probe.addTrigger(trigger);
 				}
-
-				// updateTriggers(probeParams, templateId, probeId, name,
-				// probe);
+				
+				probe = new DiscoveryProbe(this, probeId, templateId, name, interval, multiplier, status, discoveryType, elementsInterval);
+				Trigger trigger = new Trigger(probeParams.triggerId, probeParams.triggerName, probe, TriggerSeverity.valueOf(probeParams.severity), true, conditions);
+				probe.addTrigger(trigger);
 				break;
 			}
 			case Constants.rbl: {
@@ -536,8 +534,7 @@ public class User {
 			this.getTemplateProbes().put(probeId, probe);
 			return probe;
 		} catch (Exception e) {
-			Logit.LogError("User - addTemplateProbe()", "Creation of Probe Failed: " + probeParams + " , not added!\n",
-					e);
+			Logit.LogWarn("Creation of Probe Failed: " + probeParams + " , not added!\n" + e.getMessage());
 			return null;
 		}
 	}
@@ -545,31 +542,30 @@ public class User {
 	private String getDiscoveryTriggerName(ProbeParams probeParams) throws Exception {
 		switch (probeParams.discovery_type) {
 		case Constants.bw:
-			switch (probeParams.discovery_triggers[0].discovery_trigger_function) {
-			case 1:
+			switch (probeParams.triggers[0].condition) {
+			case "1":
 				return "Bandwidth is bigger than trigger X value!";
-			case 2:
+			case "2":
 				return "Bandwidth is less than trigger X value!";
 
-			case 3:
+			case "3":
 				return "Bandwidth is equal to trigger X value!";
 
-			case 4:
+			case "4":
 				return "Bandwidth is different from trigger X value!";
 			}
 
 			break;
 		case Constants.ds:
-			switch (probeParams.discovery_triggers[0].discovery_trigger_function) {
-			case 1:
+			switch (probeParams.triggers[0].condition) {
+			case "1":
 				return "Disk is bigger than trigger X value!";
-			case 2:
+			case "2":
 				return "Disk is less than trigger X value!";
 
-			case 3:
+			case "3":
 				return "Disk is equal to trigger X value!";
-
-			case 4:
+			case "4":
 				return "Disk is different from trigger X value!";
 			}
 			break;
@@ -582,7 +578,7 @@ public class User {
 	private void updateTriggers(ProbeParams probeParams, UUID templateId, String probeId, String name,
 			BaseProbe probe) {
 
-		for (DiscoveryTrigger trigger : probeParams.discovery_triggers) {
+		for (ConditionUpdateModel trigger : probeParams.triggers) {
 			// String triggerId = templateId.toString() + "@" + probeId + "@" +
 			// trigger;
 			// ArrayList<TriggerCondition> conditions = new

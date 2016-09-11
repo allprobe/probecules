@@ -1,30 +1,36 @@
 package lycus;
 
+import GlobalConstants.Enums.Condition;
+import GlobalConstants.Enums.LastType;
 import GlobalConstants.Enums.ResultValueType;
-import GlobalConstants.SnmpUnit;
+import GlobalConstants.XvalueUnit;
+import GlobalConstants.Enums.Function;
 
 public class TriggerCondition {
-	private int code;// 0 no trigger, 1 bigger, 2 tinier, 3 equal, 4 is not
+	private Condition condition; 
 	private String xValue;
-	private int function;
 	private ResultValueType elementType;
-	private SnmpUnit xvalueUnit;
+	private XvalueUnit xvalueUnit;
+	private Function function;
+	private Integer nValue;
+	private LastType last_type;
 	
-	
-	public TriggerCondition(int code, String xValue, int function, String elementType, String xvalueUnit) {
-		this.code = code;
-		this.xValue = xValue;
-		this.setElementType(ResultValueType.valueOf(elementType));
-		this.setXvalueUnit(SnmpUnit.valueOf(xvalueUnit));
-		this.setFunction(function);
+	public TriggerCondition(String condition, String xValue, String function, String elementType, String xvalueUnit, String nVlaue, String lastType) {
+		setCondition(Condition.valueOf(condition));
+		setElementType(ResultValueType.valueOf(elementType));
+		setXvalueUnit(XvalueUnit.valueOf(xvalueUnit));
+		setFunction(Function.valueOf(function));
+		setLast_type(LastType.valueOf(lastType));
+		setnValue(Integer.parseInt(nVlaue));
+		setxValue(xValue);
+	}	
+
+	public Condition getCondition() {
+		return condition;
 	}
 
-	public int getCode() {
-		return code;
-	}
-
-	public void setCode(int code) {
-		this.code = code;
+	public void setCondition(Condition condition) {
+		this.condition = condition;
 	}
 
 	public String getxValue() {
@@ -35,11 +41,11 @@ public class TriggerCondition {
 		this.xValue = xValue;
 	}
 
-	public int getFunction() {
+	public Function getFunction() {
 		return function;
 	}
 
-	public void setFunction(int function) {
+	public void setFunction(Function function) {
 		this.function = function;
 	}
 
@@ -51,12 +57,28 @@ public class TriggerCondition {
 		this.elementType = elementType;
 	}
 
-	public SnmpUnit getXvalueUnit() {
+	public XvalueUnit getXvalueUnit() {
 		return xvalueUnit;
 	}
 
-	public void setXvalueUnit(SnmpUnit xvalueUnit) {
+	public void setXvalueUnit(XvalueUnit xvalueUnit) {
 		this.xvalueUnit = xvalueUnit;
+	}
+
+	public Integer getnValue() {
+		return nValue;
+	}
+
+	public void setnValue(Integer nValue) {
+		this.nValue = nValue;
+	}
+
+	public LastType getLast_type() {
+		return last_type;
+	}
+
+	public void setLast_type(LastType last_type) {
+		this.last_type = last_type;
 	}
 
 }

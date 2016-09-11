@@ -146,14 +146,14 @@ public class NicResult extends BaseResult {
 		this.error = error;
 	}
 
-	@Override
-	public void checkIfTriggerd(HashMap<String, Trigger> triggers) throws Exception {
-		super.checkIfTriggerd(triggers);
-		for (Trigger trigger : triggers.values()) {
-			boolean triggered = false;
-
-			super.processTriggerResult(trigger, triggered);
-		}
-
-	}
+//	@Override
+//	public void checkIfTriggerd(HashMap<String, Trigger> triggers) throws Exception {
+//		super.checkIfTriggerd(triggers);
+//		for (Trigger trigger : triggers.values()) {
+//			boolean triggered = false;
+//
+//			super.processTriggerResult(trigger, triggered);
+//		}
+//
+//	}
 }

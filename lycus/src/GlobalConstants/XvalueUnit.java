@@ -1,11 +1,11 @@
 package GlobalConstants;
 
-public enum SnmpUnit {
+public enum XvalueUnit {
 	// b(1L), B(8L), kb(1024L), KB(8192L), mb(1048576L), MB(8388608L),
 	// gb(1073741824L), GB(8589934592L), as_is(1);
 	b, B, Kb, KB, Mb, MB, Gb, GB, as_is, s, ms;
 
-	public static long getBasic(long value, SnmpUnit unit) {
+	public static long getBasic(long value, XvalueUnit unit) {
 		switch (unit) {
 		case as_is:
 			return value;

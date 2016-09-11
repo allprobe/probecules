@@ -14,7 +14,7 @@ public class TracerouteProbe extends BaseProbe {
 
 	private int timeout;
 
-	public TracerouteProbe(User user, String probe_id, UUID template_id, String name, long interval, float multiplier,
+	public TracerouteProbe(User user, String probe_id, UUID template_id, String name, int interval, float multiplier,
 			boolean status, int timeout) {
 		super(user, probe_id, template_id, name, interval, multiplier, status);
 		this.setTimeout(timeout);

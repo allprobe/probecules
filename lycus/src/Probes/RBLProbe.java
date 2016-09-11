@@ -13,7 +13,7 @@ import lycus.User;
 
 public class RBLProbe extends BaseProbe {
 	private String RBL;
-	public RBLProbe(User user,String probe_id,UUID template_id,String name, long interval,float multiplier,boolean status,String rbl)
+	public RBLProbe(User user,String probe_id,UUID template_id,String name, int interval,float multiplier,boolean status,String rbl)
 	{
 		super(user,probe_id,template_id,name,interval,multiplier,status);
 		this.RBL=rbl;

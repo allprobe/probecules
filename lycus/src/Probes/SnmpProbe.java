@@ -4,9 +4,8 @@ import java.util.UUID;
 import org.snmp4j.smi.OID;
 
 import GlobalConstants.SnmpDataType;
-import GlobalConstants.SnmpUnit;
+import GlobalConstants.XvalueUnit;
 import GlobalConstants.Enums.SnmpStoreAs;
-import GlobalConstants.Enums.XValueUnit;
 import Model.UpdateModel;
 import Model.UpdateValueModel;
 import Results.BaseResult;
@@ -19,11 +18,11 @@ import lycus.UsersManager;
 public class SnmpProbe extends BaseProbe {
 	private OID oid;
 	private SnmpDataType dataType;
-	private SnmpUnit unit;
+	private XvalueUnit unit;
 	private SnmpStoreAs storeAs;
 
-	public SnmpProbe(User user, String probe_id, UUID template_id, String name, long interval, float multiplier,
-			boolean status, OID oid, SnmpDataType dataType, SnmpUnit unit, SnmpStoreAs storeAs) {
+	public SnmpProbe(User user, String probe_id, UUID template_id, String name, int interval, float multiplier,
+			boolean status, OID oid, SnmpDataType dataType, XvalueUnit unit, SnmpStoreAs storeAs) {
 		super(user, probe_id, template_id, name, interval, multiplier, status);
 		this.setOid(oid);
 		this.setDataType(dataType);
@@ -57,11 +56,11 @@ public class SnmpProbe extends BaseProbe {
 		this.storeAs = storeAs;
 	}
 
-	public SnmpUnit getUnit() {
+	public XvalueUnit getUnit() {
 		return unit;
 	}
 
-	public void setUnit(SnmpUnit unit) {
+	public void setUnit(XvalueUnit unit) {
 		this.unit = unit;
 	}
 
@@ -89,7 +88,7 @@ public class SnmpProbe extends BaseProbe {
 		if ((unit == null && updateValue.key.value_unit != null)
 				|| !GeneralFunctions.isNullOrEmpty(updateValue.key.value_unit)
 						&& !updateValue.key.value_unit.equals(unit.toString())) {
-			unit = SnmpUnit.valueOf(updateValue.key.value_unit);
+			unit = XvalueUnit.valueOf(updateValue.key.value_unit);
 			Logit.LogCheck("Snmp unit for " + getName() + " has changed to " + updateValue.key.value_unit);
 		}
 

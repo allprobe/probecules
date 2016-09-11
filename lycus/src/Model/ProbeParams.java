@@ -5,7 +5,7 @@ public class ProbeParams {
 	public String probe_id;
 	public String template_id;
 	public String name;
-	public Long interval;
+	public Integer interval;
 	public Float multiplier;
 	public boolean is_active;
 	public String type;
@@ -31,9 +31,11 @@ public class ProbeParams {
 	public int http_deep;
 	// Discovery
 	public String discovery_type;
-	public DiscoveryTrigger[] discovery_triggers;
-
+	public String severity;
+	public String tuple;
+	public String xvalue_unit;
+	public String triggerName;
+	public String triggerId;
 	
-
-
+	public ConditionUpdateModel[] triggers;
 }

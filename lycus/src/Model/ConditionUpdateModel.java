@@ -7,6 +7,8 @@ public class ConditionUpdateModel {
 	public String index;
 	public String xvalue;
 	public String results_vector_type;
-	public String tvalue;
-	public String xValueUnit;
+	public String nvalue;
+	public String xvalue_unit;
+	public String last_type;
+	
 }

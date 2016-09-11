@@ -31,7 +31,7 @@ public class PortProbe extends BaseProbe {
 	PortProbe() {
 	}
 
-	public PortProbe(User user, String probe_id, UUID template_id, String name, long interval, float multiplier,
+	public PortProbe(User user, String probe_id, UUID template_id, String name, int interval, float multiplier,
 			boolean status, int timeout, String type, int port, String sendString, String acceptString) {
 		super(user, probe_id, template_id, name, interval, multiplier, status);
 		this.proto = type;
@@ -41,7 +41,7 @@ public class PortProbe extends BaseProbe {
 		this.receiveString = acceptString;
 	}
 
-	public PortProbe(User user, String probe_id, UUID template_id, String name, long interval, float multiplier,
+	public PortProbe(User user, String probe_id, UUID template_id, String name, int interval, float multiplier,
 			boolean status, int timeout, String type, int port) {
 		super(user, probe_id, template_id, name, interval, multiplier, status);
 		this.proto = type;
