@@ -105,12 +105,12 @@ public class TriggerUpdate extends BaseUpdate {
 		super.Delete();
 		BaseProbe probe = null;
 		if (!GeneralFunctions.isNullOrEmpty(getUpdate().probe_id)
-				&& !GeneralFunctions.isNullOrEmpty(getUpdate().update_value.id)) {
+				&& !GeneralFunctions.isNullOrEmpty(getUpdate().object_id)) {
 			probe = getUser().getProbeFor(getUpdate().probe_id);
-			probe.removeTrigger(getUpdate().update_value.id);
+			probe.removeTrigger(getUpdate().object_id);
 
 			// Trigger trigger = probe.getTriggers().get(getUpdate().object_id);
-			Logit.LogCheck("Trigger: " + getUpdate().update_value.id + " was removed");
+			Logit.LogCheck("Trigger: " + getUpdate().object_id + " was removed");
 			return true;
 		}
 		return false;

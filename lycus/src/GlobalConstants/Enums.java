@@ -61,11 +61,11 @@ public class Enums {
 	// }
 
 	public static enum Condition {
-		no_trigger, bigger, tinier, equal, not_equal
+		no_condition, bigger, tinier, equal, not_equal
 	}
 
 	public static enum Function {
-		nothing, avg, delta, max, delta_avg
+		none, avg, delta, max, delta_avg
 	}
 
 	public static enum LastType {
@@ -73,6 +73,21 @@ public class Enums {
 		P, // Last-Period
 		H, // Last-Hours
 		K
+	}
+
+	public static Condition getCondition(String value)
+	{
+		switch (Integer.parseInt(value)) {
+		case 1:
+			return Condition.bigger;
+		case 2:
+			return Condition.tinier;
+		case 3:
+			return Condition.equal;
+		case 4:
+			return Condition.not_equal;
+		}
+		return Condition.no_condition;
 	}
 
 	public static final String Action = null;

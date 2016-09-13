@@ -77,7 +77,7 @@ public class CheckTrigger {
 
 	public boolean isConditionMet(Trigger trigger) {
 		for (TriggerCondition triggerCondition : trigger.getCondtions()) {
-			if (triggerCondition.getFunction() == Function.nothing) {
+			if (triggerCondition.getFunction() == Function.none) {
 				LastN lastN = getLast(triggerCondition);
 				Object result = null;
 				do {

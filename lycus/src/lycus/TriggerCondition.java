@@ -3,6 +3,7 @@ package lycus;
 import GlobalConstants.Enums.Condition;
 import GlobalConstants.Enums.LastType;
 import GlobalConstants.Enums.ResultValueType;
+import GlobalConstants.Enums;
 import GlobalConstants.XvalueUnit;
 import GlobalConstants.Enums.Function;
 
@@ -16,12 +17,19 @@ public class TriggerCondition {
 	private LastType last_type;
 	
 	public TriggerCondition(String condition, String xValue, String function, String elementType, String xvalueUnit, String nVlaue, String lastType) {
-		setCondition(Condition.valueOf(condition));
+		setCondition(Enums.getCondition(condition));
 		setElementType(ResultValueType.valueOf(elementType));
 		setXvalueUnit(XvalueUnit.valueOf(xvalueUnit));
-		setFunction(Function.valueOf(function));
+		if (function != null)
+			setFunction(Function.valueOf(function));
+		else
+			setFunction(null);
+		if (nVlaue != null)
+			setnValue(Integer.parseInt(nVlaue));
+		else
+			setnValue(null);
 		setLast_type(LastType.valueOf(lastType));
-		setnValue(Integer.parseInt(nVlaue));
+		
 		setxValue(xValue);
 	}	
 
