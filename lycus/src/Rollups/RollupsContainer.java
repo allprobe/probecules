@@ -3,13 +3,11 @@ package Rollups;
 import java.lang.reflect.Type;
 import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.Iterator;
 import java.util.Map;
 
 import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
 import org.json.simple.parser.JSONParser;
-import org.json.simple.parser.ParseException;
 
 import com.google.common.reflect.TypeToken;
 import com.google.gson.Gson;
@@ -17,9 +15,7 @@ import com.google.gson.GsonBuilder;
 import com.google.gson.JsonArray;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonParser;
-import com.google.gson.internal.LinkedTreeMap;
 
-import DAL.ApiInterface;
 import DAL.DAL;
 import GlobalConstants.DataPointsRollupSize;
 import GlobalConstants.Enums;
@@ -35,8 +31,6 @@ import Results.WebResult;
 import Utils.GeneralFunctions;
 import Utils.JsonUtil;
 import Utils.Logit;
-import lycus.DataPointsRollup;
-import lycus.ResultsContainer;
 import lycus.RunnableProbeContainer;
 
 public class RollupsContainer implements IRollupsContainer {
@@ -325,7 +319,7 @@ public class RollupsContainer implements IRollupsContainer {
 				snmpDataRollup = new DataPointsRollup(result.getRunnableProbeId(), this.getRollupSize(i));
 				snmpDataRollups.get(result.getRunnableProbeId())[i] = snmpDataRollup;
 			}
-			if (snmpResults.getNumData() == null)
+			if (snmpResults.getNumData() == null || snmpResults.getLastTimestamp() == null)
 				break;
 			snmpDataRollup.add(snmpResults.getLastTimestamp(), snmpResults.getNumData());
 

@@ -13,7 +13,7 @@ import GlobalConstants.Enums;
 import Rollups.RollupsContainer;
 import Utils.GeneralFunctions;
 import Utils.Logit;
-import lycus.DataPointsRollup;
+import Rollups.DataPointsRollup;
 
 public class RollupsDumpTask extends BaseTask {
 	private long interval = 30;

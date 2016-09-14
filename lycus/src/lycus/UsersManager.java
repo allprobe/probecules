@@ -25,7 +25,6 @@ import GlobalConstants.SnmpDataType;
 import GlobalConstants.TriggerSeverity;
 import GlobalConstants.Enums.ApiAction;
 import Interfaces.IDAL;
-import Interfaces.IFunction;
 import Model.ConditionUpdateModel;
 import Model.DiscoveryElementParams;
 import Model.HostParams;
@@ -34,7 +33,7 @@ import Model.SnmpTemplateParams;
 import Probes.BaseProbe;
 import Utils.GeneralFunctions;
 import Utils.Logit;
-import lycus.DataPointsRollup;
+import Rollups.DataPointsRollup;
 
 /**
  * 
