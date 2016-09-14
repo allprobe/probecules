@@ -63,7 +63,17 @@ public class Enums {
 	public static enum Condition {
 		no_condition, bigger, tinier, equal, not_equal
 	}
-
+	public static Condition parseCondition(int i)
+	{
+		switch(i)
+		{
+			case 1:return Condition.bigger;
+			case 2: return Condition.tinier;
+			case 3: return Condition.equal;
+			case 4: return Condition.not_equal;
+		}
+		return null;
+	}
 	public static enum Function {
 		none, avg, delta, max, delta_avg
 	}

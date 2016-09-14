@@ -507,18 +507,18 @@ public class User {
 					throw new Exception("Unable to determine discovery type --- " + probeParams.probe_id);
 				}
 
-				ArrayList<TriggerCondition> conditions = new ArrayList<TriggerCondition>();
-				for (ConditionUpdateModel consition : probeParams.triggers) {
-					TriggerCondition condition = new TriggerCondition(consition.condition,consition.xvalue,
-							consition.function, consition.results_vector_type,
-							consition.xvalue_unit,
-							consition.nvalue, consition.last_type);
-					conditions.add(condition);
-				}
+//				ArrayList<TriggerCondition> conditions = new ArrayList<TriggerCondition>();
+//				for (ConditionUpdateModel consition : probeParams.triggers) {
+//					TriggerCondition condition = new TriggerCondition(consition.condition,consition.xvalue,
+//							consition.function, consition.results_vector_type,
+//							consition.xvalue_unit,
+//							consition.nvalue, consition.last_type);
+//					conditions.add(condition);
+//				}
 				
 				probe = new DiscoveryProbe(this, probeId, templateId, name, interval, multiplier, status, discoveryType, elementsInterval);
-				Trigger trigger = new Trigger(probeParams.triggerId, probeParams.triggerName, probe, TriggerSeverity.valueOf(probeParams.severity), true, conditions);
-				probe.addTrigger(trigger);
+//				Trigger trigger = new Trigger(probeParams.triggerId, probeParams.triggerName, probe, TriggerSeverity.valueOf(probeParams.severity), true, conditions);
+//				probe.addTrigger(trigger);
 				break;
 			}
 			case Constants.rbl: {

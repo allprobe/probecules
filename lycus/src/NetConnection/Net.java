@@ -26,6 +26,7 @@ import java.util.StringTokenizer;
 
 import org.apache.bcel.Constants;
 import org.apache.commons.io.IOUtils;
+import org.apache.http.impl.conn.SystemDefaultDnsResolver;
 import org.json.simple.JSONObject;
 import org.json.simple.parser.JSONParser;
 import org.jsoup.Jsoup;
@@ -315,6 +316,7 @@ public class Net {
     public static ArrayList<Object> Weber(String url, String requestType, String user, String pass, int timeout) {
         HttpRequest request;
         String UserPass;
+        int response_state=0;
         ArrayList<Object> webResults = new ArrayList<Object>();
 
         webResults.add(System.currentTimeMillis());
@@ -330,12 +332,11 @@ public class Net {
         request.Execute();
 
         if (request.getIsTimeOut()) {
-            webResults.add(0);
-            webResults.add(0L);
-            webResults.add(0L);
-            return webResults;
-        } else {
-
+                webResults.add(0);
+                webResults.add(0L);
+                webResults.add(0L);
+                webResults.add(1);
+        }
             String contentType = request.getResponseEntity().getContentType().getValue().toString().split(";")[0]
                     .toString();
             String contentType1 = contentType.split("/")[0].toString();
@@ -346,7 +347,21 @@ public class Net {
                     Arrays.asList("jason", "javascript", "x-javascript", "xml", "xhtml+xml", "rss+xml", "soap+xml"));
             mimeTypes.put("text", Arrays.asList("x-json", "html", "javascript", "plain", "xml"));
 
+
+
             if (mimeTypes.get(contentType1).contains(contentType2)) {
+
+                if(request.getResponseStatusCode()>=400) {
+                    long pageSize = GeneralFunctions.fromStringToBytes(request.getResponsePageContent(), "UTF-8").length;
+                    // status code
+                    webResults.add(request.getResponseStatusCode());
+                    // query time
+                    webResults.add(request.getResponseQueryTime());
+                    // page size in bytes
+                    webResults.add(pageSize);
+                    webResults.add(2);
+                    return webResults;
+                }
                 long pageSize = GeneralFunctions.fromStringToBytes(request.getResponsePageContent(), "UTF-8").length;
                 // status code
                 webResults.add(request.getResponseStatusCode());
@@ -354,17 +369,18 @@ public class Net {
                 webResults.add(request.getResponseQueryTime());
                 // page size in bytes
                 webResults.add(pageSize);
+                webResults.add(3);
                 return webResults;
             } else {
                 webResults.add(-1);
                 webResults.add(-1L);
                 webResults.add(-1L);
+                webResults.add(2);
+
                 return webResults;
             }
 
         }
-
-    }
 
     public static JSONObject ExtendedWeber(String url, String requestType, String user, String pass, int timeout) {
         Process p = null;

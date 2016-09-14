@@ -15,21 +15,24 @@ public class WebResult extends BaseResult {
 	private Integer statusCode;
 	private Long responseTime;
 	private Long pageSize;
+	private Integer stateCode;
 
-	public WebResult(String runnableProbeId, long timestamp, int responseCode, long responseTime2, long responseSize) {
+	public WebResult(String runnableProbeId, long timestamp, int responseCode, long responseTime2, long responseSize,int stateCode) {
 		super(runnableProbeId, timestamp);
 		this.probeType = ProbeTypes.HTTP;
 		this.statusCode = responseCode;
 		this.responseTime = responseTime2;
 		this.pageSize = responseSize;
+		this.stateCode=stateCode;
 	}
 
 	public WebResult(String runnableProbeId) {
 		super(runnableProbeId);
 	}
 
-	public WebResult(String runnableProbeId, long timestamp) {
+	public WebResult(String runnableProbeId, long timestamp,int stateCode) {
 		super(runnableProbeId, timestamp);
+		this.stateCode=stateCode;
 	}
 
 	public Integer getStatusCode() {

@@ -135,9 +135,11 @@ public class NetResults implements INetResults {
 		int responseCode = (int) rawResults.get(1);
 		long responseTime = (long) rawResults.get(2);
 		long responseSize = (long) rawResults.get(3);
+		int stateCode = (int) rawResults.get(4);
+
 
 		WebResult weberResult = new WebResult(getRunnableProbeId(probe, host), timestamp, responseCode, responseTime,
-				responseSize);
+				responseSize,stateCode);
 
 		return weberResult;
 	}
@@ -146,9 +148,11 @@ public class NetResults implements INetResults {
 	public WebExtendedResult getWebExtendedResult(Host host, HttpProbe probe) {
 		JSONObject rawResults = Net.ExtendedWeber(probe.getUrl(), probe.getHttpRequestType(), probe.getAuthUsername(),
 				probe.getAuthPassword(), probe.getTimeout());
+
+
+
 		if (rawResults == null || rawResults.size() == 0) {
-			WebExtendedResult result = new WebExtendedResult(
-					GeneralFunctions.getRunnableProbeId(probe.getTemplate_id(), host.getHostId(), probe.getProbe_id()));
+			WebExtendedResult result = new WebExtendedResult(GeneralFunctions.getRunnableProbeId(probe.getTemplate_id(), host.getHostId(), probe.getProbe_id()),System.currentTimeMillis(),1);
 			result.setErrorMessage("Issue while running extended http probe - might be timeout");
 			return result;
 		}
@@ -166,8 +170,15 @@ public class NetResults implements INetResults {
 		ArrayList<DOMElement> allElements = convertDOMElementsResult(
 				((JSONArray) ((JSONObject) rawResults.get("log")).get("entries")));
 
-		WebExtendedResult result = new WebExtendedResult(getRunnableProbeId(probe, host), timestamp, responseTime,
-				responseCode, responseSize);
+		WebExtendedResult result;
+				
+		if(responseCode>=400)
+		result = new WebExtendedResult(getRunnableProbeId(probe, host), timestamp, responseTime,
+				responseCode, responseSize,2);
+		else
+			result = new WebExtendedResult(getRunnableProbeId(probe, host), timestamp, responseTime,
+					responseCode, responseSize,3);
+
 		result.setAllElementsResults(allElements);
 
 		return result;

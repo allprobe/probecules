@@ -38,6 +38,8 @@ public class LycusMain {
 		if (!GlobalConfig.Initialize())
 			return;
 
+		Net.Weber("http://fvgjwoudwdfgw.com","get",null,null,3000);
+
 		UsersManager.Initialize(); // setup initial config (InitServer)
 
 		if (!UsersManager.isInitialized())

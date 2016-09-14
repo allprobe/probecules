@@ -19,7 +19,6 @@ public class BaseResult implements IResult {
 	private String errorMessage;
 
 	public BaseResult(String runnableProbeId, long timestamp) {
-
 		this.runnableProbeId = runnableProbeId;
 		this.lastTimestamp = timestamp;
 		errorMessage = "";

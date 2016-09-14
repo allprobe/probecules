@@ -67,7 +67,6 @@ public class HttpRequest {
 		// initialize request
 		this.request = (type == RequestTypes.POST) ? new HttpPost(url) : new HttpGet(url);
 		this.request.setHeader("Authorization", "Basic " + GeneralFunctions.Base64Encode(credentials));
-
 	}
 
 	// #region Getters/Setters
