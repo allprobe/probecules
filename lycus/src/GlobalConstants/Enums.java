@@ -72,7 +72,7 @@ public class Enums {
 		N, // Last-N
 		P, // Last-Period
 		H, // Last-Hours
-		K
+		K  // No last type
 	}
 
 	public static Condition getCondition(String value)

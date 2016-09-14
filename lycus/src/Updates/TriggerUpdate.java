@@ -34,10 +34,10 @@ public class TriggerUpdate extends BaseUpdate {
 				getUpdate().update_value.status.equals(Constants._true), conditions);
 
 		probe.addTrigger(trigger);
-		ConcurrentHashMap<String, RunnableProbe> runnableProbes = RunnableProbeContainer.getInstanece().getByProbe(probe.getProbe_id());
-		for (RunnableProbe runnableProbe : runnableProbes.values()) {
-//			runnableProbe.setFunctions(conditions);
-		}
+//		ConcurrentHashMap<String, RunnableProbe> runnableProbes = RunnableProbeContainer.getInstanece().getByProbe(probe.getProbe_id());
+//		for (RunnableProbe runnableProbe : runnableProbes.values()) {
+////			runnableProbe.setFunctions(conditions);
+//		}
 		return true;
 	}
 

@@ -96,17 +96,17 @@ public class CheckTrigger {
 
 			} else if (triggerCondition.getFunction() == Function.avg) {
 				LastN lastN = getLast(triggerCondition);
-				Object result = null;
+				Object result = lastN.getNextResult(triggerCondition.getElementType().toString());
 				Double xValue = null;
 				double sum = 0;
-				do {
-					result = lastN.getNextResult(triggerCondition.getElementType().toString());
+				while (result != null) {
 					xValue = getDouble(triggerCondition.getxValue());
-					if (result == null || !(result instanceof Double) || xValue == null)
+					if (result == null || (!(result instanceof Double) && !(result instanceof Integer) )|| xValue == null)
 						return false;
 
 					sum += Double.parseDouble(result.toString());
-				} while (result != null);
+					result = lastN.getNextResult(triggerCondition.getElementType().toString());
+				} 
 
 				return isCondition(sum / lastN.getElementCount(), triggerCondition.getCondition(), xValue,
 						triggerCondition.getXvalueUnit());
@@ -239,7 +239,9 @@ class LastN {
 			return null;
 
 		this.elementsPopped--;
-		return queue[cur].getResultElementValue(elementType);
+		if (queue[cur] == null)
+			return null;
+		return queue[cur].getResultElementValue(elementType).get(0);
 	}
 
 	public int getElementCount() {
