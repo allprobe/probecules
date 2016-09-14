@@ -336,6 +336,7 @@ public class Net {
                 webResults.add(0L);
                 webResults.add(0L);
                 webResults.add(1);
+            return webResults;
         }
             String contentType = request.getResponseEntity().getContentType().getValue().toString().split(";")[0]
                     .toString();
