@@ -15,7 +15,7 @@ public class CheckTrigger {
 	private int tail = 0;
 	private boolean empty = true;
 	private int actualSize = 0;
-	
+
 	public CheckTrigger(int interval) {
 		this.setSize(Math.round(86400 / interval));
 		this.setQueue(new BaseResult[getSize()]);
@@ -42,8 +42,10 @@ public class CheckTrigger {
 				if (!isNoFunctionConditionMet(triggerCondition, xValue))
 					return false;
 			} else if (triggerCondition.getFunction() == Function.delta) {
-				if (!isCondition(getDelta(triggerCondition.getElementType().toString()), triggerCondition.getCondition(), xValue,
-						triggerCondition.getXvalueUnit()))
+				Double delta = getDelta(triggerCondition.getElementType().toString());
+				if (delta == null)
+					return false;
+				if (!isCondition(delta, triggerCondition.getCondition(), xValue, triggerCondition.getXvalueUnit()))
 					return false;
 			} else if (triggerCondition.getFunction() == Function.max) {
 				if (!isMaxConditionMet(triggerCondition, xValue))
@@ -61,6 +63,8 @@ public class CheckTrigger {
 
 	private boolean isMaxConditionMet(TriggerCondition triggerCondition, Double xValue) {
 		LastN lastN = getLast(triggerCondition);
+		if (!lastN.isEnoughElements())
+			return false;
 		Object result = lastN.getNextResult(triggerCondition.getElementType().toString());
 		double max = 0;
 
@@ -79,6 +83,8 @@ public class CheckTrigger {
 
 	private boolean isAvgConditionMet(TriggerCondition triggerCondition, Double xValue) {
 		LastN lastN = getLast(triggerCondition);
+		if (!lastN.isEnoughElements())
+			return false;
 		Object result = lastN.getNextResult(triggerCondition.getElementType().toString());
 		double sum = 0;
 		while (result != null) {
@@ -95,6 +101,8 @@ public class CheckTrigger {
 
 	private boolean isDeltaAvgConditionMet(TriggerCondition triggerCondition, Double xValue) {
 		LastN lastN = getLast(triggerCondition);
+		if (!lastN.isEnoughElements())
+			return false;
 		Object result = lastN.getNextResult(triggerCondition.getElementType().toString());
 		double sum = 0;
 		while (result != null) {
@@ -105,14 +113,15 @@ public class CheckTrigger {
 			result = lastN.getNextResult(triggerCondition.getElementType().toString());
 		}
 
-		double delta_avg = sum / lastN.getElementCount() - (double) getQueue()[getTail()].getResultElementValue(triggerCondition.getElementType().toString()).get(0);
-		return isCondition(delta_avg, triggerCondition.getCondition(), xValue,
-				triggerCondition.getXvalueUnit());
+		double delta_avg = sum / lastN.getElementCount() - (double) getQueue()[getTail()]
+				.getResultElementValue(triggerCondition.getElementType().toString()).get(0);
+		return isCondition(delta_avg, triggerCondition.getCondition(), xValue, triggerCondition.getXvalueUnit());
 	}
 
-	
 	private boolean isNoFunctionConditionMet(TriggerCondition triggerCondition, Double xValue) {
 		LastN lastN = getLast(triggerCondition);
+		if (!lastN.isEnoughElements())
+			return false;
 		Object result = lastN.getNextResult(triggerCondition.getElementType().toString());
 		int nValue = lastN.getElementCount();
 
@@ -186,13 +195,16 @@ public class CheckTrigger {
 		return null;
 	}
 
-	private double getDelta(String elementType) {
-		if (getTail() == 0)
-			return (double) getQueue()[getTail()].getResultElementValue(elementType).get(0)
-					- (double) getQueue()[getSize() - 1].getResultElementValue(elementType).get(0);
-		else
-			return (double) getQueue()[getTail()].getResultElementValue(elementType).get(0)
-					- (double) getQueue()[getTail() - 1].getResultElementValue(elementType).get(0);
+	private Double getDelta(String elementType) {
+		if (getTail() > 1 && getQueue()[0] != null && getQueue()[1] != null) {
+			if (getTail() == 0)
+				return (double) getQueue()[getTail()].getResultElementValue(elementType).get(0)
+						- (double) getQueue()[getSize() - 1].getResultElementValue(elementType).get(0);
+			else
+				return (double) getQueue()[getTail()].getResultElementValue(elementType).get(0)
+						- (double) getQueue()[getTail() - 1].getResultElementValue(elementType).get(0);
+		}
+		return null;
 	}
 
 	private double getAverage(LastN lastN, String elementType) {
@@ -210,7 +222,7 @@ public class CheckTrigger {
 
 		return sum / Math.abs(lastN.getTail() - lastN.getHead() + 1);
 	}
-	
+
 	public int getSize() {
 		return size;
 	}
@@ -258,7 +270,7 @@ class LastN {
 		this.setSize(checkTrigger.getSize());
 		this.queue = checkTrigger.getQueue();
 		this.setTail(checkTrigger.getTail());
-		if(checkTrigger.getTail() > nValue - 1)
+		if (checkTrigger.getTail() > nValue - 1)
 			this.setHead(checkTrigger.getTail() - nValue + 1);
 		if (checkTrigger.getHead() > checkTrigger.getTail()) {
 			int start = checkTrigger.getTail() - nValue + 1;
@@ -269,6 +281,13 @@ class LastN {
 		elenemtCount = nValue;
 		this.current = head;
 		this.elementsPopped = nValue;
+	}
+
+	public boolean isEnoughElements() {
+		if (tail > head)
+			return elenemtCount <= tail - head + 1;
+
+		return true;
 	}
 
 	// Implement
