@@ -23,7 +23,6 @@ public class ResultsContainer implements IResultsContainer {
 	private static ResultsContainer instance;
 	private List<BaseResult> results;
 	private ConcurrentHashMap<String, ConcurrentHashMap<String, Event>> events; // HashMap<runnableProbeId,
-	// private SLAContainer slaContainer;
 
 	private Object lockResults = new Object();
 	private Object lockEvents = new Object();
@@ -61,6 +60,17 @@ public class ResultsContainer implements IResultsContainer {
 		runnableProbeEvents.put(triggerId, event);
 		synchronized (lockEvents) {
 			events.put(runnableProbeId, runnableProbeEvents);
+		}
+		return true;
+	}
+
+	public boolean removeEvent(String runnableProbeId, String triggerId) {
+		ConcurrentHashMap<String, Event> runnableProbeEvents = null;
+		if (events.containsKey(runnableProbeId))
+			runnableProbeEvents = events.get(runnableProbeId);
+		 
+		synchronized (lockEvents) {
+			runnableProbeEvents.remove(triggerId);
 		}
 		return true;
 	}

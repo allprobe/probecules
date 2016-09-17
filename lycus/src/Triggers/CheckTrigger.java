@@ -1,10 +1,8 @@
 package Triggers;
 
 import java.util.Date;
-
 import GlobalConstants.Enums.Condition;
 import GlobalConstants.Enums.Function;
-import GlobalConstants.Enums.LastType;
 import GlobalConstants.XvalueUnit;
 import Results.BaseResult;
 import lycus.Trigger;
@@ -16,7 +14,8 @@ public class CheckTrigger {
 	private int head = 0;
 	private int tail = 0;
 	private boolean empty = true;
-
+	private int actualSize = 0;
+	
 	public CheckTrigger(int interval) {
 		this.setSize(Math.round(86400 / interval));
 		this.setQueue(new BaseResult[getSize()]);
@@ -30,89 +29,113 @@ public class CheckTrigger {
 			if (getHead() > getSize())
 				setHead(0);
 		}
-
+		if (actualSize < size)
+			actualSize++;
 		empty = false;
-	}
-
-	// private LastN getLastN(int n) {
-	// int head = this.getTail() - n;
-	// if (head < 0)
-	// head += getSize();
-	// LastN lastN = new LastN(this);
-	// return lastN;
-	// }
-
-	private double getDelta(String elementType) {
-		if (getTail() == 0)
-			return (double) getQueue()[getTail()].getResultElementValue(elementType).get(0)
-					- (double) getQueue()[getSize() - 1].getResultElementValue(elementType).get(0);
-		else
-			return (double) getQueue()[getTail()].getResultElementValue(elementType).get(0)
-					- (double) getQueue()[getTail() - 1].getResultElementValue(elementType).get(0);
-	}
-
-	// private LastN getLastNSeconds(int n) {
-	// return null;
-	// }
-	//
-	// private LastN getTimePeriod(Date time1, Date time2) {
-	// return null;
-	// }
-
-	private double getAvarage(LastN lastN, String elementType) {
-		double sum = 0;
-		int start = lastN.getHead();
-		int end = lastN.getTail();
-		if (lastN.getHead() > lastN.getTail()) {
-			start = lastN.getTail();
-			end = lastN.getHead();
-		}
-
-		while (start <= end) {
-			sum += (double) getQueue()[start++].getResultElementValue(elementType).get(0);
-		}
-
-		return sum / Math.abs(lastN.getTail() - lastN.getHead() + 1);
 	}
 
 	public boolean isConditionMet(Trigger trigger) {
 		for (TriggerCondition triggerCondition : trigger.getCondtions()) {
+			Double xValue = getDouble(triggerCondition.getxValue());
+
 			if (triggerCondition.getFunction() == Function.none) {
-				LastN lastN = getLast(triggerCondition);
-				Object result = null;
-				do {
-					result = lastN.getNextResult(triggerCondition.getElementType().toString());
-					if (result == null)
-						break;
-					
-					
-					
-				} while (result != null);
+				if (!isNoFunctionConditionMet(triggerCondition, xValue))
+					return false;
 			} else if (triggerCondition.getFunction() == Function.delta) {
-//				double  lastValue = 
-
-				
+				if (!isCondition(getDelta(triggerCondition.getElementType().toString()), triggerCondition.getCondition(), xValue,
+						triggerCondition.getXvalueUnit()))
+					return false;
 			} else if (triggerCondition.getFunction() == Function.max) {
-
+				if (!isMaxConditionMet(triggerCondition, xValue))
+					return false;
 			} else if (triggerCondition.getFunction() == Function.avg) {
-				LastN lastN = getLast(triggerCondition);
-				Object result = lastN.getNextResult(triggerCondition.getElementType().toString());
-				Double xValue = null;
-				double sum = 0;
-				while (result != null) {
-					xValue = getDouble(triggerCondition.getxValue());
-					if (result == null || (!(result instanceof Double) && !(result instanceof Integer) )|| xValue == null)
-						return false;
-
-					sum += Double.parseDouble(result.toString());
-					result = lastN.getNextResult(triggerCondition.getElementType().toString());
-				} 
-
-				return isCondition(sum / lastN.getElementCount(), triggerCondition.getCondition(), xValue,
-						triggerCondition.getXvalueUnit());
+				if (!isAvgConditionMet(triggerCondition, xValue))
+					return false;
+			} else if (triggerCondition.getFunction() == Function.deltaavg) {
+				if (!isDeltaAvgConditionMet(triggerCondition, xValue))
+					return false;
 			}
 		}
-		return false;
+		return true;
+	}
+
+	private boolean isMaxConditionMet(TriggerCondition triggerCondition, Double xValue) {
+		LastN lastN = getLast(triggerCondition);
+		Object result = lastN.getNextResult(triggerCondition.getElementType().toString());
+		double max = 0;
+
+		while (result != null) {
+			if (result == null || (!(result instanceof Double) && !(result instanceof Integer)) || xValue == null)
+				return false;
+
+			Double current = Double.parseDouble(result.toString());
+			if (max < current)
+				max = current;
+			result = lastN.getNextResult(triggerCondition.getElementType().toString());
+		}
+
+		return isCondition(max, triggerCondition.getCondition(), xValue, triggerCondition.getXvalueUnit());
+	}
+
+	private boolean isAvgConditionMet(TriggerCondition triggerCondition, Double xValue) {
+		LastN lastN = getLast(triggerCondition);
+		Object result = lastN.getNextResult(triggerCondition.getElementType().toString());
+		double sum = 0;
+		while (result != null) {
+			if (result == null || (!(result instanceof Double) && !(result instanceof Integer)) || xValue == null)
+				return false;
+
+			sum += Double.parseDouble(result.toString());
+			result = lastN.getNextResult(triggerCondition.getElementType().toString());
+		}
+
+		return isCondition(sum / lastN.getElementCount(), triggerCondition.getCondition(), xValue,
+				triggerCondition.getXvalueUnit());
+	}
+
+	private boolean isDeltaAvgConditionMet(TriggerCondition triggerCondition, Double xValue) {
+		LastN lastN = getLast(triggerCondition);
+		Object result = lastN.getNextResult(triggerCondition.getElementType().toString());
+		double sum = 0;
+		while (result != null) {
+			if (result == null || (!(result instanceof Double) && !(result instanceof Integer)) || xValue == null)
+				return false;
+
+			sum += Double.parseDouble(result.toString());
+			result = lastN.getNextResult(triggerCondition.getElementType().toString());
+		}
+
+		double delta_avg = sum / lastN.getElementCount() - (double) getQueue()[getTail()].getResultElementValue(triggerCondition.getElementType().toString()).get(0);
+		return isCondition(delta_avg, triggerCondition.getCondition(), xValue,
+				triggerCondition.getXvalueUnit());
+	}
+
+	
+	private boolean isNoFunctionConditionMet(TriggerCondition triggerCondition, Double xValue) {
+		LastN lastN = getLast(triggerCondition);
+		Object result = lastN.getNextResult(triggerCondition.getElementType().toString());
+		int nValue = lastN.getElementCount();
+
+		while (result != null && nValue > 0) {
+			if (result == null || xValue == null)
+				return false;
+
+			if (!(result instanceof Double) && !(result instanceof Integer)) {
+				if (!isCondition(result.toString(), triggerCondition.getCondition(), triggerCondition.getxValue(),
+						triggerCondition.getXvalueUnit()))
+					return false;
+
+			} else {
+				if (!isCondition(Double.parseDouble(result.toString()), triggerCondition.getCondition(), xValue,
+						triggerCondition.getXvalueUnit()))
+					return false;
+			}
+
+			nValue--;
+			result = lastN.getNextResult(triggerCondition.getElementType().toString());
+		}
+
+		return true;
 	}
 
 	private boolean isCondition(Double result, Condition condition, double xValue, XvalueUnit xvalueUnit) {
@@ -120,11 +143,25 @@ public class CheckTrigger {
 		case bigger:
 			return result > xvalueUnit.getBasic((long) xValue, xvalueUnit);
 		case equal:
-			return result == xvalueUnit.getBasic((long) xValue, xvalueUnit); 
+			return result == xvalueUnit.getBasic((long) xValue, xvalueUnit);
 		case tinier:
 			return result < xvalueUnit.getBasic((long) xValue, xvalueUnit);
 		case not_equal:
 			return result != xvalueUnit.getBasic((long) xValue, xvalueUnit);
+		}
+		return false;
+	}
+
+	private boolean isCondition(String result, Condition condition, String xValue, XvalueUnit xvalueUnit) {
+		switch (condition) {
+		case bigger:
+			return result.compareTo(xValue) > 0;
+		case equal:
+			return result.equals(xValue);
+		case tinier:
+			return result.compareTo(xValue) < 0;
+		case not_equal:
+			return !result.equals(xValue);
 		}
 		return false;
 	}
@@ -149,6 +186,31 @@ public class CheckTrigger {
 		return null;
 	}
 
+	private double getDelta(String elementType) {
+		if (getTail() == 0)
+			return (double) getQueue()[getTail()].getResultElementValue(elementType).get(0)
+					- (double) getQueue()[getSize() - 1].getResultElementValue(elementType).get(0);
+		else
+			return (double) getQueue()[getTail()].getResultElementValue(elementType).get(0)
+					- (double) getQueue()[getTail() - 1].getResultElementValue(elementType).get(0);
+	}
+
+	private double getAverage(LastN lastN, String elementType) {
+		double sum = 0;
+		int start = lastN.getHead();
+		int end = lastN.getTail();
+		if (lastN.getHead() > lastN.getTail()) {
+			start = lastN.getTail();
+			end = lastN.getHead();
+		}
+
+		while (start <= end) {
+			sum += (double) getQueue()[start++].getResultElementValue(elementType).get(0);
+		}
+
+		return sum / Math.abs(lastN.getTail() - lastN.getHead() + 1);
+	}
+	
 	public int getSize() {
 		return size;
 	}

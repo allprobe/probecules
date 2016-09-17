@@ -75,7 +75,7 @@ public class Enums {
 		return null;
 	}
 	public static enum Function {
-		none, avg, delta, max, delta_avg
+		none, avg, delta, max, deltaavg
 	}
 
 	public static enum LastType {
