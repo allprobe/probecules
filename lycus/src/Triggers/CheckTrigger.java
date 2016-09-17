@@ -258,7 +258,7 @@ class LastN {
 		this.setSize(checkTrigger.getSize());
 		this.queue = checkTrigger.getQueue();
 		this.setTail(checkTrigger.getTail());
-		this.setHead(checkTrigger.getTail() - nValue + 1);
+//		this.setHead(checkTrigger.getTail() - nValue + 1);
 		if (checkTrigger.getHead() > checkTrigger.getTail()) {
 			int start = checkTrigger.getTail() - nValue + 1;
 			if (start < 0)
