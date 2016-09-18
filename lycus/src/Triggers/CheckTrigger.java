@@ -13,8 +13,10 @@ public class CheckTrigger {
 	private int tail = 0;
 	private boolean empty = true;
 	private int actualSize = 0;
-
+	private int interval;
+	
 	public CheckTrigger(int interval) {
+		this.setInterval(interval);
 		this.setSize(Math.round(86400 / interval));
 		this.setQueue(new BaseResult[getSize()]);
 	}
@@ -201,7 +203,7 @@ public class CheckTrigger {
 		case H:
 			return new LastN(this, triggerondition.getnValue());
 		case P:
-			// return getTimePeriod((triggerondition.getnValue());
+//			return new LastN(this, triggerondition.getnValue());
 		}
 		return null;
 	}
@@ -265,6 +267,14 @@ public class CheckTrigger {
 	public void setQueue(BaseResult[] queue) {
 		this.queue = queue;
 	}
+
+	public int getInterval() {
+		return interval;
+	}
+
+	public void setInterval(int interval) {
+		this.interval = interval;
+	}
 }
 
 class LastN {
@@ -304,7 +314,7 @@ class LastN {
 	// Implement
 	// Gets the set of indexes for last N hours
 	public LastN(CheckTrigger checkTrigger, int pValue) {
-		this.setSize(checkTrigger.getSize());
+		this.setSize(pValue * 60 * 60 / checkTrigger.getInterval());
 		this.setHead(checkTrigger.getHead());
 		this.setTail(checkTrigger.getTail());
 		this.queue = checkTrigger.getQueue();

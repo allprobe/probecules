@@ -3,27 +3,17 @@ package lycus;
 import Triggers.Trigger;
 
 public class Event {
-//	private RunnableProbe rp;
 	private Trigger trigger;
 	private boolean status;
 	private long time;
-	private boolean sent;
+	private boolean isSent;
 
 	public Event(Trigger trigger, boolean status) {
-		// this.rp = rp;
 		this.trigger = trigger;
 		this.status = status;
 		this.time = System.currentTimeMillis();
-		this.sent = false;
+		this.isSent = false;
 	}
-
-	// public RunnableProbe getRp() {
-	// return rp;
-	// }
-	//
-	// public void setRp(RunnableProbe rp) {
-	// this.rp = rp;
-	// }
 
 	public Trigger getTrigger() {
 		return trigger;
@@ -50,11 +40,10 @@ public class Event {
 	}
 
 	public synchronized boolean isSent() {
-		return sent;
+		return isSent;
 	}
 
 	public synchronized void setSent(boolean sent) {
-		this.sent = sent;
+		this.isSent = sent;
 	}
-
 }
