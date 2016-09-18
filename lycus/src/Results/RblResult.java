@@ -1,12 +1,8 @@
 package Results;
 
-import java.util.HashMap;
-
 import org.json.simple.JSONArray;
 
 import GlobalConstants.ProbeTypes;
-import lycus.Trigger;
-import lycus.TriggerCondition;
 
 public class RblResult extends BaseResult {
 

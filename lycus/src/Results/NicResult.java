@@ -1,13 +1,10 @@
 package Results;
 
-import java.util.HashMap;
-
 import org.json.simple.JSONArray;
 
 import GlobalConstants.Enums;
 import GlobalConstants.Enums.SnmpError;
 import lycus.RunnableProbeContainer;
-import lycus.Trigger;
 
 public class NicResult extends BaseResult {
 	private long previousInterfaceInOctets;

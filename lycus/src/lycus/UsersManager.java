@@ -10,6 +10,9 @@ import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
 import java.util.UUID;
+
+import Triggers.Trigger;
+import Triggers.TriggerCondition;
 import org.json.simple.JSONObject;
 import org.apache.log4j.BasicConfigurator;
 import org.json.simple.JSONArray;

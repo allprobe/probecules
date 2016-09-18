@@ -4,21 +4,18 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
 
-import GlobalConstants.Constants;
 import GlobalConstants.Enums;
 import GlobalConstants.Enums.DiscoveryElementType;
 import Model.ConditionUpdateModel;
-import Model.KeyUpdateModel;
 import Model.UpdateModel;
 import Model.UpdateValueModel;
 import NetConnection.NetResults;
 import Results.BaseResult;
 import Results.DiscoveryResult;
 import lycus.Host;
-import lycus.Trigger;
-import lycus.TriggerCondition;
+import Triggers.Trigger;
+import Triggers.TriggerCondition;
 import lycus.User;
-import lycus.UsersManager;
 
 public class DiscoveryProbe extends BaseProbe {
 	private Enums.DiscoveryElementType type;

@@ -1,5 +1,7 @@
 package lycus;
 
+import Triggers.Trigger;
+
 public class Event {
 //	private RunnableProbe rp;
 	private Trigger trigger;

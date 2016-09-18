@@ -1,15 +1,7 @@
 package Results;
 
-import java.util.Arrays;
-import java.util.HashMap;
-
-import Probes.HttpProbe;
-import lycus.RunnableProbeContainer;
 import org.json.simple.JSONArray;
-import GlobalConstants.Constants;
 import GlobalConstants.ProbeTypes;
-import lycus.Trigger;
-import lycus.TriggerCondition;
 
 public class WebResult extends BaseResult {
 	private Integer statusCode;

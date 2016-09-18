@@ -2,8 +2,6 @@ package Results;
 
 import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.Iterator;
-import java.util.List;
 
 import org.json.simple.JSONArray;
 import org.json.simple.parser.JSONParser;
@@ -12,11 +10,9 @@ import org.json.simple.parser.ParseException;
 import Elements.BaseElement;
 import Elements.DiskElement;
 import Elements.NicElement;
-import GlobalConstants.Enums;
 import GlobalConstants.Enums.DiscoveryElementType;
 import Utils.JsonUtil;
 import Utils.Logit;
-import lycus.Trigger;
 
 public class DiscoveryResult extends BaseResult {
 

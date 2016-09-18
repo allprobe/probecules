@@ -12,7 +12,7 @@ import Results.BaseResult;
 import Results.NicResult;
 import Utils.GeneralFunctions;
 import lycus.Host;
-import lycus.Trigger;
+import Triggers.Trigger;
 import lycus.User;
 
 public class NicProbe extends BaseProbe {

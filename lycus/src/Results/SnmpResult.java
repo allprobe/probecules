@@ -5,9 +5,9 @@ import GlobalConstants.Enums.SnmpError;
 import GlobalConstants.ProbeTypes;
 import GlobalConstants.XvalueUnit;
 import Probes.SnmpProbe;
-import lycus.Trigger;
+import Triggers.Trigger;
 import lycus.RunnableProbeContainer;
-import lycus.TriggerCondition;
+import Triggers.TriggerCondition;
 
 public class SnmpResult extends BaseResult {
 

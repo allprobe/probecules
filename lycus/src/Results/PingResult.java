@@ -1,12 +1,9 @@
 package Results;
 
-import java.util.HashMap;
 import org.json.simple.JSONArray;
 
 import GlobalConstants.Constants;
 import GlobalConstants.ProbeTypes;
-import lycus.Trigger;
-import lycus.TriggerCondition;
 
 public class PingResult extends BaseResult {
 

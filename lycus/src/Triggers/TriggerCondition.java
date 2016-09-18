@@ -1,4 +1,4 @@
-package lycus;
+package Triggers;
 
 import GlobalConstants.Enums;
 import GlobalConstants.Enums.Condition;

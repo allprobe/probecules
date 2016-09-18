@@ -74,19 +74,19 @@ public class BaseResult implements IResult {
 //		}
 //	}
 
-	public void processTriggerResult(Trigger trigger, boolean triggered) {
-		Event lastEvent = ResultsContainer.getInstance().getEvent(getRunnableProbeId(), trigger.getTriggerId());
-		if (lastEvent != null && !triggered) {
-			// if trigger event became true and normal again send event to api
-			lastEvent.setStatus(true);
-			lastEvent.setSent(false);
-			Logit.LogInfo("Trigger " + trigger.getTriggerId() + " of Runnable Probe: " + getRunnableProbeId()
-					+ " deactivated, will send event to API...");
-		} else if (lastEvent == null && triggered) {
-			Event event = new Event(trigger, false);
-			ResultsContainer.getInstance().addEvent(runnableProbeId, trigger.getTriggerId(), event);
-		}
-	}
+//	public void processTriggerResult(Trigger trigger, boolean triggered) {
+//		Event lastEvent = ResultsContainer.getInstance().getEvent(getRunnableProbeId(), trigger.getTriggerId());
+//		if (lastEvent != null && !triggered) {
+//			// if trigger event became true and normal again send event to api
+//			lastEvent.setStatus(true);
+//			lastEvent.setSent(false);
+//			Logit.LogInfo("Trigger " + trigger.getTriggerId() + " of Runnable Probe: " + getRunnableProbeId()
+//					+ " deactivated, will send event to API...");
+//		} else if (lastEvent == null && triggered) {
+//			Event event = new Event(trigger, false);
+//			ResultsContainer.getInstance().addEvent(runnableProbeId, trigger.getTriggerId(), event);
+//		}
+//	}
 
 	public boolean isSent() {
 		return isSent;

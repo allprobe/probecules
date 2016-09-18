@@ -4,7 +4,6 @@ import Probes.BaseProbe;
 import Results.BaseResult;
 import lycus.Event;
 import lycus.ResultsContainer;
-import lycus.Trigger;
 
 public class EventTrigger {
 	private CheckTrigger lastResults;

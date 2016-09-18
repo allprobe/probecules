@@ -1,11 +1,7 @@
 package Results;
 
-import java.util.HashMap;
 import org.json.simple.JSONArray;
 import GlobalConstants.ProbeTypes;
-import Utils.Logit;
-import lycus.Trigger;
-import lycus.TriggerCondition;
 
 public class PortResult extends BaseResult {
 	private Integer portStatus;

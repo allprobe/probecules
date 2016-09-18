@@ -1,8 +1,7 @@
-package lycus;
+package Triggers;
 
 import java.util.ArrayList;
 
-import GlobalConstants.Enums.ResultValueType;
 import GlobalConstants.XvalueUnit;
 import GlobalConstants.TriggerSeverity;
 import Probes.BaseProbe;

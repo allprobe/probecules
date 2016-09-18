@@ -8,7 +8,6 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.UUID;
 import GlobalConstants.Constants;
-import GlobalConstants.TriggerSeverity;
 import Model.ConditionUpdateModel;
 import Model.UpdateModel;
 import Model.UpdateValueModel;
@@ -16,9 +15,8 @@ import Results.BaseResult;
 import Utils.GeneralFunctions;
 import Utils.Logit;
 import lycus.Host;
-import lycus.RunnableProbeContainer;
-import lycus.Trigger;
-import lycus.TriggerCondition;
+import Triggers.Trigger;
+import Triggers.TriggerCondition;
 import lycus.User;
 
 /**
