@@ -224,6 +224,8 @@ public class CheckTrigger {
 
 	private LastN getLast(TriggerCondition triggerondition) {
 		switch (triggerondition.getLast_type()) {
+		case K:
+			return new LastN(triggerondition.getnValue(), this);
 		case N:
 			return new LastN(triggerondition.getnValue(), this);
 		case H:

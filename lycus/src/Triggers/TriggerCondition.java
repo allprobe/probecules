@@ -25,10 +25,16 @@ public class TriggerCondition {
 			setFunction(Function.valueOf(function));
 		else
 			setFunction(null);
-		if (nVlaue != null)
-			setnValue(Integer.parseInt(nVlaue));
-		else
+		if (nVlaue != null) {
+			if (!nVlaue.isEmpty())
+				setnValue(Integer.parseInt(nVlaue));
+			else
+				setnValue(1);
+		}
+
+		else {
 			setnValue(null);
+		}
 		setLast_type(LastType.valueOf(lastType));
 		
 		setxValue(xValue);

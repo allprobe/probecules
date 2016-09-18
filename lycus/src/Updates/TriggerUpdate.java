@@ -66,7 +66,7 @@ public class TriggerUpdate extends BaseUpdate {
 			Logit.LogCheck("Status for trigger " + getUpdate().update_value.id + " has changed to "
 					+ getUpdate().update_value.status);
 		}
-		if (GeneralFunctions.isChanged(trigger.getSvrty().toString(), getUpdate().update_value.severity)) {
+		if (GeneralFunctions.isChanged(trigger.getSvrty().toString().toLowerCase(), getUpdate().update_value.severity)) {
 			trigger.setSvrty(UsersManager.getTriggerSev(getUpdate().update_value.severity));
 			Logit.LogCheck("Severity for trigger " + getUpdate().update_value.id + " has changed to "
 					+ getUpdate().update_value.severity);
