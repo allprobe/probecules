@@ -171,7 +171,7 @@ public class ResultsContainer implements IResultsContainer {
 					Trigger trigger = runnableProbe.getProbe().getTriggers()
 							.get(templateId.toString() + "@" + probeId + "@" + triggerId.toString());
 
-					Event event = new Event(trigger, false);
+					Event event = new Event(trigger);
 					event.setTime(timestamp);
 					event.setSent(true);
 

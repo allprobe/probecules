@@ -35,7 +35,7 @@ public class EventTrigger {
 	private boolean triggerEvent(Trigger trigger) {
 		Event eventExist = ResultsContainer.getInstance().getEvent(runnableProbeId, trigger.getTriggerId());
 		if (eventExist == null) {
-			Event event = new Event(trigger, false);
+			Event event = new Event(trigger);
 			ResultsContainer.getInstance().addEvent(runnableProbeId, trigger.getTriggerId(), event);
 		}
 		return true;
@@ -44,7 +44,8 @@ public class EventTrigger {
 	private boolean cancelEvent(Trigger trigger) {
 		Event eventExist = ResultsContainer.getInstance().getEvent(runnableProbeId, trigger.getTriggerId());
 		if (eventExist != null) {
-			ResultsContainer.getInstance().removeEvent(runnableProbeId, trigger.getTriggerId());
+			eventExist.setStatus(true);
+//			ResultsContainer.getInstance().removeEvent(runnableProbeId, trigger.getTriggerId());
 		}
 		return true;
 	}
