@@ -27,8 +27,8 @@ import Utils.Logit;
 public class LycusMain {
 
 	public static void main(String[] args) {
-		System.out.println("Starting Probecules Version: 0.231");
-		Logit.LogCheck("Starting Probecules Version: 0.231");
+		System.out.println("Starting Probecules Version: 0.232");
+		Logit.LogCheck("Starting Probecules Version: 0.232");
 
 		System.setProperty("log4j.debug", "true");
 		if (args.length == 0 || args[0] == "")
