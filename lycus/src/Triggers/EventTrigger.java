@@ -19,10 +19,12 @@ public class EventTrigger {
 	public boolean addResult(BaseResult result) {
 		lastResults.enqueue(result);
 		for (Trigger trigger : probe.getTriggers().values()) {
-			if (isConditionMet(trigger))
-				triggerEvent(trigger);
-			else
-				cancelEvent(trigger);
+			if (!trigger.getStatus()) {
+				if (isConditionMet(trigger))
+					triggerEvent(trigger);
+				else
+					cancelEvent(trigger);
+			}
 		}
 
 		return true;
@@ -45,7 +47,8 @@ public class EventTrigger {
 		Event eventExist = ResultsContainer.getInstance().getEvent(runnableProbeId, trigger.getTriggerId());
 		if (eventExist != null) {
 			eventExist.setStatus(true);
-//			ResultsContainer.getInstance().removeEvent(runnableProbeId, trigger.getTriggerId());
+			// ResultsContainer.getInstance().removeEvent(runnableProbeId,
+			// trigger.getTriggerId());
 		}
 		return true;
 	}

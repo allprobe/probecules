@@ -12,7 +12,6 @@ public class Trigger implements Cloneable {
 	private BaseProbe probe;
 	private TriggerSeverity svrty;
 	private boolean status;
-	// private ResultValueType elementType;
 	private XvalueUnit unit;
 	private ArrayList<TriggerCondition> condtions;
 	private boolean isTriggered;
