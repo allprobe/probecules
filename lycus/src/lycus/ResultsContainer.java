@@ -92,7 +92,7 @@ public class ResultsContainer implements IResultsContainer {
 			for (Map.Entry<String, Event> triggerEvent : runnableProbeEvents.getValue().entrySet()) {
 				String triggerId = triggerEvent.getKey();
 				Event event = triggerEvent.getValue();
-				if (event.isStatus() && event.isSent()) {
+				if (event.getIsTriggered() && event.isSent()) {
 					runnableProbeEvents.getValue().remove(triggerId);
 				}
 			}
@@ -310,13 +310,15 @@ public class ResultsContainer implements IResultsContainer {
 							"ff00ff2c-0f40-4616-9ac4-a71447b22431@inner_33695a83-654d-4177-b90d-0a89c5f0120d"))
 						Logit.LogDebug("BREAKPOINT");
 
-					HashMap<String, HashMap<String, String>> sendingEvents = eventDBFormat(triggerId, event,
-							runnableProbe, trigger);
+					if (!event.isSent() || (event.isSent() && !event.getIsTriggered())) {
+						HashMap<String, HashMap<String, String>> sendingEvents = eventDBFormat(triggerId, event,
+								runnableProbe, trigger);
 
-					eventsToSend.add(sendingEvents);
-					event.setSent(true);
+						eventsToSend.add(sendingEvents);
+						event.setSent(true);
+					}
 				} catch (Exception e) {
-					Logit.LogError(null, "Unable to process event for triggerId: " + triggerId + ", RunnableProbeId: "
+					Logit.LogError(null, "Unable to process evsent for triggerId: " + triggerId + ", RunnableProbeId: "
 							+ runnableProbeId);
 					continue;
 				}
@@ -329,7 +331,7 @@ public class ResultsContainer implements IResultsContainer {
 			ConcurrentHashMap<String, Event> runnableProbeEvents = runnableProbeEventsEntry.getValue();
 			for (Map.Entry<String, Event> triggerEvent : runnableProbeEvents.entrySet()) {
 				Event event = triggerEvent.getValue();
-				if (event.isSent() && event.isStatus()) {
+				if (event.isSent() && !event.getIsTriggered()) {
 					synchronized (lockEvents) {
 						this.events.get(runnableProbeId).remove(triggerEvent.getKey());
 					}
@@ -352,7 +354,7 @@ public class ResultsContainer implements IResultsContainer {
 		eventValues.put("trigger_name", trigger.getName());
 		eventValues.put("trigger_severity", trigger.getSvrty().toString());
 		eventValues.put("event_timestamp", String.valueOf(event.getTime()));
-		eventValues.put("event_status", String.valueOf(event.isStatus()));
+		eventValues.put("event_status", String.valueOf(event.getIsTriggered()));
 		eventValues.put("host_bucket", runnableProbe.getHost().getBucket());
 		if (runnableProbe.getHost().getNotificationGroups() != null)
 			eventValues.put("host_notifs_groups", runnableProbe.getHost().getNotificationGroups().toString());
