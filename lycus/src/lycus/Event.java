@@ -4,13 +4,13 @@ import Triggers.Trigger;
 
 public class Event {
 	private Trigger trigger;
-	private boolean isTriggered;   // The trigger is triggered / false - when trigger is no longer active.
+	private boolean isStatus;   // false -The trigger is triggered /  true - when trigger is no longer active.
 	private long time;
 	private boolean isSent;
 
 	public Event(Trigger trigger) {
 		this.trigger = trigger;
-		this.isTriggered = false;
+		this.isStatus = false;
 		this.time = System.currentTimeMillis();
 		this.isSent = false;
 	}
@@ -23,12 +23,12 @@ public class Event {
 		this.trigger = trigger;
 	}
 
-	public synchronized boolean getIsTriggered() {
-		return isTriggered;
+	public synchronized boolean getIsStatus() {
+		return isStatus;
 	}
 
-	public synchronized void setIsTriggered(boolean status) {
-		this.isTriggered = status;
+	public synchronized void setIsStatus(boolean status) {
+		this.isStatus = status;
 	}
 
 	public long getTime() {

@@ -92,7 +92,7 @@ public class ResultsContainer implements IResultsContainer {
 			for (Map.Entry<String, Event> triggerEvent : runnableProbeEvents.getValue().entrySet()) {
 				String triggerId = triggerEvent.getKey();
 				Event event = triggerEvent.getValue();
-				if (event.getIsTriggered() && event.isSent()) {
+				if (event.getIsStatus() && event.isSent()) {
 					runnableProbeEvents.getValue().remove(triggerId);
 				}
 			}
@@ -310,7 +310,7 @@ public class ResultsContainer implements IResultsContainer {
 							"ff00ff2c-0f40-4616-9ac4-a71447b22431@inner_33695a83-654d-4177-b90d-0a89c5f0120d"))
 						Logit.LogDebug("BREAKPOINT");
 
-					if (!event.isSent() || (event.isSent() && !event.getIsTriggered())) {
+					if (!event.isSent() || (event.isSent() && event.getIsStatus())) {
 						HashMap<String, HashMap<String, String>> sendingEvents = eventDBFormat(triggerId, event,
 								runnableProbe, trigger);
 
@@ -331,7 +331,7 @@ public class ResultsContainer implements IResultsContainer {
 			ConcurrentHashMap<String, Event> runnableProbeEvents = runnableProbeEventsEntry.getValue();
 			for (Map.Entry<String, Event> triggerEvent : runnableProbeEvents.entrySet()) {
 				Event event = triggerEvent.getValue();
-				if (event.isSent() && !event.getIsTriggered()) {
+				if (event.isSent() && event.getIsStatus()) {
 					synchronized (lockEvents) {
 						this.events.get(runnableProbeId).remove(triggerEvent.getKey());
 					}
@@ -354,7 +354,7 @@ public class ResultsContainer implements IResultsContainer {
 		eventValues.put("trigger_name", trigger.getName());
 		eventValues.put("trigger_severity", trigger.getSvrty().toString());
 		eventValues.put("event_timestamp", String.valueOf(event.getTime()));
-		eventValues.put("event_status", String.valueOf(event.getIsTriggered()));
+		eventValues.put("event_status", String.valueOf(event.getIsStatus()));
 		eventValues.put("host_bucket", runnableProbe.getHost().getBucket());
 		if (runnableProbe.getHost().getNotificationGroups() != null)
 			eventValues.put("host_notifs_groups", runnableProbe.getHost().getNotificationGroups().toString());
