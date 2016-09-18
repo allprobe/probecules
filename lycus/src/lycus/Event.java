@@ -4,7 +4,7 @@ import Triggers.Trigger;
 
 public class Event {
 	private Trigger trigger;
-	private boolean status;   // The trigger is triggered / false - when trigger is no longet active.
+	private boolean status;   // The trigger is triggered / false - when trigger is no longer active.
 	private long time;
 	private boolean isSent;
 
