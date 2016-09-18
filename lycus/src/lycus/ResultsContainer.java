@@ -53,13 +53,11 @@ public class ResultsContainer implements IResultsContainer {
 
 	public boolean addEvent(String runnableProbeId, String triggerId, Event event) {
 		ConcurrentHashMap<String, Event> runnableProbeEvents = null;
-		if (events.containsKey(runnableProbeId))
-		{
+		if (events.containsKey(runnableProbeId)) {
 			runnableProbeEvents = events.get(runnableProbeId);
 			if (!runnableProbeEvents.containsKey(triggerId))
 				runnableProbeEvents.put(triggerId, event);
-		}
-		else {
+		} else {
 			runnableProbeEvents = new ConcurrentHashMap<String, Event>();
 			runnableProbeEvents.put(triggerId, event);
 			synchronized (lockEvents) {
@@ -307,19 +305,16 @@ public class ResultsContainer implements IResultsContainer {
 				RunnableProbe runnableProbe = RunnableProbeContainer.getInstanece().get(runnableProbeId);
 				Trigger trigger = runnableProbe.getProbe().getTrigger(triggerId);
 				try {
-					if (!event.isSent()) {
+					String rpStr = runnableProbeId;
+					if (rpStr.contains(
+							"ff00ff2c-0f40-4616-9ac4-a71447b22431@inner_33695a83-654d-4177-b90d-0a89c5f0120d"))
+						Logit.LogDebug("BREAKPOINT");
 
-						String rpStr = runnableProbeId;
-						if (rpStr.contains(
-								"ff00ff2c-0f40-4616-9ac4-a71447b22431@inner_33695a83-654d-4177-b90d-0a89c5f0120d"))
-							Logit.LogDebug("BREAKPOINT");
+					HashMap<String, HashMap<String, String>> sendingEvents = eventDBFormat(triggerId, event,
+							runnableProbe, trigger);
 
-						HashMap<String, HashMap<String, String>> sendingEvents = eventDBFormat(triggerId, event,
-								runnableProbe, trigger);
-
-						eventsToSend.add(sendingEvents);
-						event.setSent(true);
-					}
+					eventsToSend.add(sendingEvents);
+					event.setSent(true);
 				} catch (Exception e) {
 					Logit.LogError(null, "Unable to process event for triggerId: " + triggerId + ", RunnableProbeId: "
 							+ runnableProbeId);
@@ -336,7 +331,7 @@ public class ResultsContainer implements IResultsContainer {
 				Event event = triggerEvent.getValue();
 				if (event.isSent() && event.isStatus()) {
 					synchronized (lockEvents) {
-						event.setSent(true);;
+						this.events.get(runnableProbeId).remove(triggerEvent.getKey());
 					}
 				}
 			}
