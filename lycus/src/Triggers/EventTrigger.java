@@ -47,8 +47,6 @@ public class EventTrigger {
 		Event eventExist = ResultsContainer.getInstance().getEvent(runnableProbeId, trigger.getTriggerId());
 		if (eventExist != null) {
 			eventExist.setStatus(true);
-			// ResultsContainer.getInstance().removeEvent(runnableProbeId,
-			// trigger.getTriggerId());
 		}
 		return true;
 	}

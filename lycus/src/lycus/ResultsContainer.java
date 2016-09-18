@@ -54,14 +54,17 @@ public class ResultsContainer implements IResultsContainer {
 	public boolean addEvent(String runnableProbeId, String triggerId, Event event) {
 		ConcurrentHashMap<String, Event> runnableProbeEvents = null;
 		if (events.containsKey(runnableProbeId))
+		{
 			runnableProbeEvents = events.get(runnableProbeId);
+			if (!runnableProbeEvents.containsKey(triggerId))
+				runnableProbeEvents.put(triggerId, event);
+		}
 		else {
 			runnableProbeEvents = new ConcurrentHashMap<String, Event>();
-		}
-
-		runnableProbeEvents.put(triggerId, event);
-		synchronized (lockEvents) {
-			events.put(runnableProbeId, runnableProbeEvents);
+			runnableProbeEvents.put(triggerId, event);
+			synchronized (lockEvents) {
+				events.put(runnableProbeId, runnableProbeEvents);
+			}
 		}
 		return true;
 	}
@@ -70,7 +73,7 @@ public class ResultsContainer implements IResultsContainer {
 		ConcurrentHashMap<String, Event> runnableProbeEvents = null;
 		if (events.containsKey(runnableProbeId))
 			runnableProbeEvents = events.get(runnableProbeId);
-		 
+
 		synchronized (lockEvents) {
 			runnableProbeEvents.remove(triggerId);
 		}
@@ -285,10 +288,10 @@ public class ResultsContainer implements IResultsContainer {
 		}
 	}
 
-//	@Override
-//	public String getRollups() {
-//		return RollupsContainer.getInstance().getAllFinsihedRollups();
-//	}
+	// @Override
+	// public String getRollups() {
+	// return RollupsContainer.getInstance().getAllFinsihedRollups();
+	// }
 
 	@Override
 	public String getEvents() {
@@ -330,9 +333,10 @@ public class ResultsContainer implements IResultsContainer {
 
 			ConcurrentHashMap<String, Event> runnableProbeEvents = runnableProbeEventsEntry.getValue();
 			for (Map.Entry<String, Event> triggerEvent : runnableProbeEvents.entrySet()) {
-				if (triggerEvent.getValue().isSent()) {
+				Event event = triggerEvent.getValue();
+				if (event.isSent() && event.isStatus()) {
 					synchronized (lockEvents) {
-						this.events.get(runnableProbeId).remove(triggerEvent.getKey());
+						event.setSent(true);;
 					}
 				}
 			}
