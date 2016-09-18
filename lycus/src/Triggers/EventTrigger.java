@@ -19,7 +19,7 @@ public class EventTrigger {
 	public boolean addResult(BaseResult result) {
 		lastResults.enqueue(result);
 		for (Trigger trigger : probe.getTriggers().values()) {
-			if (!trigger.getStatus()) {
+			if (trigger.getStatus()) {
 				if (isConditionMet(trigger))
 					triggerEvent(trigger);
 				else
