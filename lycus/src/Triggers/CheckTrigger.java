@@ -93,7 +93,7 @@ public class CheckTrigger {
 			} else if (triggerCondition.getFunction() == Function.avg) {
 				if (!isAvgConditionMet(triggerCondition, xValue))
 					return false;
-			} else if (triggerCondition.getFunction() == Function.deltaavg) {
+			} else if (triggerCondition.getFunction() == Function.delta_avg) {
 				if (!isDeltaAvgConditionMet(triggerCondition, xValue))
 					return false;
 			}
