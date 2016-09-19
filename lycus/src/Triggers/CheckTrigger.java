@@ -168,7 +168,7 @@ public class CheckTrigger {
 			if (result == null || xValue == null)
 				return false;
 
-			if (!(result instanceof Double) && !(result instanceof Integer)) {
+			if (!(result instanceof Double) && !(result instanceof Integer)) {// result always Object - need to convert to inherited object
 				if (!isCondition(result.toString(), triggerCondition.getCondition(), triggerCondition.getxValue(),
 						triggerCondition.getXvalueUnit()))
 					return false;
@@ -370,7 +370,7 @@ class LastN {
 			return null;
 
 		this.elementsPopped--;
-		if (queue[cur] == null)
+		if (queue[cur] == null) // cur is the new pointer to the array index that havent been intialized yet
 			return null;
 		return queue[cur].getResultElementValue(elementType).get(0);
 	}

@@ -116,7 +116,7 @@ public class NetResults implements INetResults {
 			return null;
 
 		long timestamp = (long) rawResults.get(0);
-		int portState = ((boolean) rawResults.get(1))?1:0;
+		int portState = ((boolean) rawResults.get(1)) ? 1 : 0;
 		long responseTime = (long) rawResults.get(2);
 
 		PortResult porterResult = new PortResult(getRunnableProbeId(probe, host), timestamp, portState, responseTime);
@@ -137,9 +137,8 @@ public class NetResults implements INetResults {
 		long responseSize = (long) rawResults.get(3);
 		int stateCode = (int) rawResults.get(4);
 
-
 		WebResult weberResult = new WebResult(getRunnableProbeId(probe, host), timestamp, responseCode, responseTime,
-				responseSize,stateCode);
+				responseSize, stateCode);
 
 		return weberResult;
 	}
@@ -149,10 +148,10 @@ public class NetResults implements INetResults {
 		JSONObject rawResults = Net.ExtendedWeber(probe.getUrl(), probe.getHttpRequestType(), probe.getAuthUsername(),
 				probe.getAuthPassword(), probe.getTimeout());
 
-
-
 		if (rawResults == null || rawResults.size() == 0) {
-			WebExtendedResult result = new WebExtendedResult(GeneralFunctions.getRunnableProbeId(probe.getTemplate_id(), host.getHostId(), probe.getProbe_id()),System.currentTimeMillis(),1);
+			WebExtendedResult result = new WebExtendedResult(
+					GeneralFunctions.getRunnableProbeId(probe.getTemplate_id(), host.getHostId(), probe.getProbe_id()),
+					System.currentTimeMillis(), 1);
 			result.setErrorMessage("Issue while running extended http probe - might be timeout");
 			return result;
 		}
@@ -171,13 +170,13 @@ public class NetResults implements INetResults {
 				((JSONArray) ((JSONObject) rawResults.get("log")).get("entries")));
 
 		WebExtendedResult result;
-				
-		if(responseCode>=400)
-		result = new WebExtendedResult(getRunnableProbeId(probe, host), timestamp, responseTime,
-				responseCode, responseSize,2);
+
+		if (responseCode >= 400)
+			result = new WebExtendedResult(getRunnableProbeId(probe, host), timestamp, responseTime, responseCode,
+					responseSize, 2);
 		else
-			result = new WebExtendedResult(getRunnableProbeId(probe, host), timestamp, responseTime,
-					responseCode, responseSize,3);
+			result = new WebExtendedResult(getRunnableProbeId(probe, host), timestamp, responseTime, responseCode,
+					responseSize, 3);
 
 		result.setAllElementsResults(allElements);
 
@@ -245,7 +244,7 @@ public class NetResults implements INetResults {
 			return null;
 
 		long timestamp = (long) rawResults.get(0);
-		int isListed = ((boolean) rawResults.get(1))?1:0;
+		int isListed = ((boolean) rawResults.get(1)) ? 1 : 0;
 
 		RblResult rblResult = new RblResult(getRunnableProbeId(probe, host), timestamp, isListed);
 
@@ -574,9 +573,12 @@ public class NetResults implements INetResults {
 			break;
 		}
 
-		if (rawResults == null || rawResults.size() == 0)
-			return null;
-
+		if (rawResults == null || rawResults.size() == 0) {
+			DiskResult result = new DiskResult(
+					GeneralFunctions.getRunnableProbeId(probe.getTemplate_id(), host.getHostId(), probe.getProbe_id()));
+			result.setErrorMessage("Unable to retrieve disks information or number of disks is zero.");
+			return result;
+		}
 		long hrstorageallocationunitsoid = Long
 				.parseLong(rawResults.get(probe.getHrstorageallocationunitsoid().toString()));
 		long hrstoragesizeoid = Long.parseLong(rawResults.get(probe.getHrstoragesizeoid().toString()));
