@@ -168,7 +168,7 @@ public class CheckTrigger {
 			if (result == null || xValue == null)
 				return false;
 
-			if (!(result instanceof Double) && !(result instanceof Integer)) {// result always Object - need to convert to inherited object
+			if (!(result instanceof Double) && !(result instanceof Integer)) {
 				if (!isCondition(result.toString(), triggerCondition.getCondition(), triggerCondition.getxValue(),
 						triggerCondition.getXvalueUnit()))
 					return false;
@@ -320,7 +320,7 @@ class LastN {
 		this.queue = checkTrigger.getQueue();
 		this.setTail(checkTrigger.getTail());
 		if (checkTrigger.getTail() > nValue - 1)
-			this.setHead(checkTrigger.getTail() - nValue + 1);
+			this.setHead(checkTrigger.getTail() - nValue);
 		if (checkTrigger.getHead() > checkTrigger.getTail()) {
 			int start = checkTrigger.getTail() - nValue + 1;
 			if (start < 0)

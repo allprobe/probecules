@@ -149,14 +149,16 @@ public class ResultsContainer implements IResultsContainer {
 			for (Iterator iterator = events.keySet().iterator(); iterator.hasNext();) {
 				String it = (String) iterator.next();
 
-				if (it.contains(
-						"	721feef6-504b-4fe3-81e3-089ab33d53a1@6b999cd6-fcbb-4ca8-9936-5529b4c66976@snmp_986e5c7a-5382-44ce-8421-dea5c02ae6aa"))
-					Logit.LogDebug("BREAKPOINT");
 				try {
 					UUID hostId = UUID.fromString(it.split("@")[0]);
 					UUID templateId = UUID.fromString(it.split("@")[1]);
 					String probeId = it.split("@")[2];
 					UUID triggerId = UUID.fromString(it.split("@")[3]);
+
+					String runnableProbeId=GeneralFunctions.getRunnableProbeId(templateId,hostId,probeId);
+					if(runnableProbeId.contains("e339d292-e724-4098-897e-758eeb075978@icmp_91b0eac5-d25c-4d93-a061-66572942ad7f"))
+						Logit.LogDebug("BREAKPOINT");
+
 					long timestamp = Long.parseLong((String) events.get(it));
 
 					RunnableProbe runnableProbe = RunnableProbeContainer.getInstanece()
