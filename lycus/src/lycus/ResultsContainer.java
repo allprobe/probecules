@@ -313,8 +313,7 @@ public class ResultsContainer implements IResultsContainer {
 						Logit.LogDebug("BREAKPOINT");
 
 					if (!event.isSent() || (event.isSent() && event.getIsStatus())) {
-						HashMap<String, HashMap<String, String>> sendingEvents = eventDBFormat(triggerId, event,
-								runnableProbe, trigger);
+						HashMap<String, HashMap<String, String>> sendingEvents = eventDBFormat(triggerId, event, runnableProbe, trigger);
 
 						eventsToSend.add(sendingEvents);
 						event.setSent(true);
@@ -327,6 +326,12 @@ public class ResultsContainer implements IResultsContainer {
 			}
 		}
 
+		Gson gson = new GsonBuilder().setPrettyPrinting().create();
+		return (gson.toJson(eventsToSend));
+	}
+
+	public void cleanEvents()
+	{
 		for (Map.Entry<String, ConcurrentHashMap<String, Event>> runnableProbeEventsEntry : events.entrySet()) {
 			String runnableProbeId = runnableProbeEventsEntry.getKey();
 
@@ -340,11 +345,8 @@ public class ResultsContainer implements IResultsContainer {
 				}
 			}
 		}
-
-		Gson gson = new GsonBuilder().setPrettyPrinting().create();
-		return (gson.toJson(eventsToSend));
 	}
-
+	
 	private HashMap<String, HashMap<String, String>> eventDBFormat(String triggerId, Event event,
 			RunnableProbe runnableProbe, Trigger trigger) {
 		HashMap<String, HashMap<String, String>> sendingEvents = new HashMap<String, HashMap<String, String>>();

@@ -1,8 +1,6 @@
 package Tasks;
 
 import org.json.simple.JSONObject;
-
-import DAL.ApiInterface;
 import DAL.ApiRequest;
 import DAL.FailedRequestsHandler;
 import GlobalConstants.Enums;
@@ -34,6 +32,7 @@ public class EventTask extends BaseTask {
 					if(DAL.DAL.getInstanece().put(Enums.ApiAction.PutEvents, eventsJson)==null)
 						FailedRequestsHandler.getInstance().addRequest(new ApiRequest(ApiAction.PutEvents,eventsJson));
 
+					resultsContainer.cleanEvents();
 				}
 			} else {
 				Logit.LogError("EventHandler - run()", "Unable to process events! events did not sent to API...");
