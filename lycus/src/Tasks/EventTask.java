@@ -17,7 +17,7 @@ public class EventTask extends BaseTask {
 			ResultsContainer resultsContainer = ResultsContainer.getInstance();
 			String events = resultsContainer.getEvents();
 
-			if (events != null) {
+			if (events != null && events.length() > 2) {
 				Logit.LogInfo("Sending events to API...");
 				
 				if (!events.equals("[]")) {
@@ -35,7 +35,7 @@ public class EventTask extends BaseTask {
 					resultsContainer.cleanEvents();
 				}
 			} else {
-				Logit.LogError("EventHandler - run()", "Unable to process events! events did not sent to API...");
+				Logit.LogInfo("No Events changed! events did not sent to API...");
 			}
 		} catch (Exception e) {
 			e.printStackTrace();
