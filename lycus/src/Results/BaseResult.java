@@ -221,7 +221,7 @@ public class BaseResult implements IResult {
 		case PS:
 			values.add(((WebResult) this).getPageSize());
 			break;
-		case ST:
+		case PST:
 			values.add(((PortResult) this).isActive());
 			break;
 		case RTA:

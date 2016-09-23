@@ -52,7 +52,7 @@ public class Enums {
 	}
 
 	public static enum ResultValueType {
-		PRT, WRT, RC, PS, ST, RTA, PL, DFDS, DUDS, DBI, DBO, WSERT, WAERC, TRARHRT, TRDHRT, DTDS
+		PRT, WRT, RC, PS, PST, RTA, PL, DFDS, DUDS, DBI, DBO, WSERT, WAERC, TRARHRT, TRDHRT, DTDS
 
 	}
 
