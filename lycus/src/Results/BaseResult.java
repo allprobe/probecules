@@ -267,8 +267,11 @@ public class BaseResult implements IResult {
 		case SNMP:
 			values.add(((SnmpResult) this).getData());
 			break;
+		case RBL:
+			values.add(((RblResult) this).isIsListed());
+			break;
 		}
-		
+	
 		return values;
 	}
 }

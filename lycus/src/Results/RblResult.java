@@ -27,42 +27,6 @@ public class RblResult extends BaseResult {
 		IsListed = isListed;
 	}
 
-	// @Override
-	// public void checkIfTriggerd(HashMap<String, Trigger> triggers) throws
-	// Exception {
-	// super.checkIfTriggerd(triggers);
-	// for (Trigger trigger : triggers.values()) {
-	// boolean triggered = false;
-	// triggered = checkForRblTrigger(trigger);
-	//
-	// super.processTriggerResult(trigger, triggered);
-	//
-	// }
-	// }
-	//
-	// private boolean checkForRblTrigger(Trigger trigger) throws Exception {
-	// boolean flag = false;
-	// for (TriggerCondition condition : trigger.getCondtions()) {
-	// boolean x = Boolean.parseBoolean(condition.getxValue());
-	// boolean lastValue = this.isIsListed();
-	//
-	// switch (condition.getCode()) {
-	// case 3:
-	// if (lastValue == x)
-	// flag = true;
-	// break;
-	// case 4:
-	// if (lastValue != x)
-	// flag = true;
-	// break;
-	// }
-	//
-	// if (!flag)
-	// return false;
-	// }
-	// return flag;
-	// }
-
 	@Override
 	public Object getResultObject() {
 		JSONArray result = new JSONArray();
