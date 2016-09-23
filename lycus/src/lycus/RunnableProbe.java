@@ -1,7 +1,6 @@
 package lycus;
 
 import GlobalConstants.ProbeTypes;
-import Model.ConditionUpdateModel;
 import Probes.BaseProbe;
 import Probes.DiscoveryProbe;
 import Probes.HttpProbe;
@@ -36,7 +35,7 @@ public class RunnableProbe implements Runnable {
 		}
 
 		eventTrigger = new EventTrigger(probe, this.getId());
-		
+
 		if (probe.getProbe_id().contains("icmp_cc9a931c-6232-4b17-b2f9-be00b40ce02b"))
 			Logit.LogDebug("BREAKPOINT - RunnableProbe");
 	}
@@ -69,7 +68,6 @@ public class RunnableProbe implements Runnable {
 		return isRunning;
 	}
 
-	
 	public void setRunning(boolean isRunning) {
 		String rpStr3 = this.getId();
 		if (rpStr3.contains(
@@ -78,15 +76,6 @@ public class RunnableProbe implements Runnable {
 
 		this.isRunning = isRunning;
 	}
-
-//	public BaseFunction getConditionFunction(Trigger trigger, TriggerCondition condition) {
-//		for (int i = 0; i < this.functions.size(); i++) {
-//			if (this.functions.get(i).getValueType().equals(condition.getElementType()))
-//				if (this.functions.get(i).getFunctionId() == condition.getFunctionId())
-//					return this.functions.get(i);
-//		}
-//		return null;
-//	}
 
 	public String getId() {
 		return this.getProbe().getTemplate_id().toString() + "@" + this.getHost().getHostId().toString() + "@"
@@ -130,77 +119,13 @@ public class RunnableProbe implements Runnable {
 
 				long timeStamp = System.currentTimeMillis();
 
-				try {
-					result = getProbe().getResult(this.getHost());
-				} catch (Exception e) {
-					result = new BaseResult(this.getId());
-					result.setErrorMessage("RESULT_EXCEPTION");
-					Logit.LogError("RunnableProbe - run()",
-							"Error, getting runnable probe results from probe! getResult() throws exception "
-									+ this.getProbeType() + " " + this.getProbe().getName() + ", \nRunnabelProbeId: "
-									+ this.getId(),
-							e);
-				}
+				result = getResult();
+				result = buildErrorResultWhenEmpty(result);
 
-				if (result == null) {
-					result = new BaseResult(this.getId());
-					result.setErrorMessage("RESULT_OBJECT_NULL");
-					Logit.LogError("RunnableProbe - run()",
-							"Error, getting runnable probe results from probe! Returned object is null "
-									+ this.getProbeType() + " " + this.getProbe().getName() + ", \nRunnabelProbeId: "
-									+ this.getId());
-				}
-
-				try {
-					// if (result.getLastTimestamp() == null) {
-					// Logit.LogError("RunnableProbe - run()",
-					// "Error getting runnable probe results! last timestamp is
-					// null! "
-					// + this.getProbe().getName() + ", \nRunnabelProbeId: " +
-					// this.getId());
-					// continue;
-					// }
-
-					// Set the timeStamp to the value before the probe.
-					result.setLastTimestamp(timeStamp);
-//					this.addToAllFunctions(result);
-					ResultsContainer.getInstance().addResult(result);
-				} catch (Exception e) {
-					Logit.LogError("RunnableProbe - run()",
-							"Error processing runnable probe results to results container! " + this.getId());
-				}
-
-				try {
-					if (probe.getTriggers().size() > 0)
-						eventTrigger.addResult(result);
-				} catch (Exception e) {
-					Logit.LogError("RunnableProbe - run()",
-							"Error Adding result to eventTrigger! " + this.getId());
-				}
-				
-//				try {
-//					if (!(this.getProbe() instanceof DiscoveryProbe))
-//						result.checkIfTriggerd(getProbe().getTriggers());
-//				} catch (Exception e) {
-//					Logit.LogError("RunnableProbe - run()",
-//							"Error triggering runnable probe results!  " + this.getProbeType() + " "
-//									+ this.getProbe().getName() + ", \nRunnabelProbeId: " + this.getId());
-//					// continue;
-//				}
-
-				try {
-					RollupsContainer.getInstance().addResult(result);
-				} catch (Exception e) {
-					Logit.LogError("RunnableProbe - run()",
-							"Error processing runnable probe results to rollups container!" + this.getId(), e);
-				}
-
-				try {
-					SLAContainer.getInstance().addToSLA(result);
-				} catch (Exception e) {
-					Logit.LogError("RunnableProbe - run()",
-							"Error processing runnable probe results to SLA container!" + this.getId(), e);
-				}
+				addResult(result, timeStamp);
+				addResultToTrigger(result);
+				addResultToRollups(result);
+				addResultToSLA(result);
 
 			} finally {
 				try {
@@ -214,13 +139,72 @@ public class RunnableProbe implements Runnable {
 					e.printStackTrace();
 				}
 			}
-
 		}
 	}
 
-//	private void addToAllFunctions(BaseResult result) {
-//		for (BaseFunction function : this.functions) {
-//			function.add(result);
-//		}
-//	}
+	private BaseResult getResult() {
+		BaseResult result;
+		try {
+			result = getProbe().getResult(this.getHost());
+		} catch (Exception e) {
+			result = new BaseResult(this.getId());
+			result.setErrorMessage("RESULT_EXCEPTION");
+			Logit.LogError("RunnableProbe - run()",
+					"Error, getting runnable probe results from probe! getResult() throws exception "
+							+ this.getProbeType() + " " + this.getProbe().getName() + ", \nRunnabelProbeId: "
+							+ this.getId(),
+					e);
+		}
+		return result;
+	}
+
+	private BaseResult buildErrorResultWhenEmpty(BaseResult result) {
+		if (result == null) {
+			result = new BaseResult(this.getId());
+			result.setErrorMessage("RESULT_OBJECT_NULL");
+			Logit.LogError("RunnableProbe - run()",
+					"Error, getting runnable probe results from probe! Returned object is null " + this.getProbeType()
+							+ " " + this.getProbe().getName() + ", \nRunnabelProbeId: " + this.getId());
+		}
+		return result;
+	}
+
+	private void addResultToSLA(BaseResult result) {
+		try {
+			SLAContainer.getInstance().addToSLA(result);
+		} catch (Exception e) {
+			Logit.LogError("RunnableProbe - run()",
+					"Error processing runnable probe results to SLA container!" + this.getId(), e);
+		}
+	}
+
+	private void addResultToRollups(BaseResult result) {
+		try {
+			RollupsContainer.getInstance().addResult(result);
+		} catch (Exception e) {
+			Logit.LogError("RunnableProbe - run()",
+					"Error processing runnable probe results to rollups container!" + this.getId(), e);
+		}
+	}
+
+	private void addResult(BaseResult result, long timeStamp) {
+		try {
+			result.setLastTimestamp(timeStamp);
+			ResultsContainer.getInstance().addResult(result);
+		} catch (Exception e) {
+			Logit.LogError("RunnableProbe - run()",
+					"Error processing runnable probe results to results container! " + this.getId());
+		}
+	}
+
+	public boolean addResultToTrigger(BaseResult result) {
+		try {
+			if (probe.getTriggers().size() > 0)
+				eventTrigger.addResult(result);
+		} catch (Exception e) {
+			Logit.LogError("RunnableProbe - run()", "Error Adding result to eventTrigger! " + this.getId());
+			return false;
+		}
+		return true;
+	}
 }
