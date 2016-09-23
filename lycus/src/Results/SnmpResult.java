@@ -137,26 +137,26 @@ public class SnmpResult extends BaseResult {
 		return flag;
 	}
 
-	private boolean checkForTextTrigger(Trigger trigger) {
-		boolean flag = false;
-		for (TriggerCondition condition : trigger.getCondtions()) {
-			String x = condition.getxValue();
-			String lastValue = this.getData();
-			switch (condition.getCondition()) {
-			case equal:
-				if (lastValue.equals(x))
-					flag = true;
-				break;
-			case not_equal:
-				if (!lastValue.equals(x))
-					flag = true;
-				break;
-			}
-			if (!flag)
-				return false;
-		}
-		return flag;
-	}
+//	private boolean checkForTextTrigger(Trigger trigger) {
+//		boolean flag = false;
+//		for (TriggerCondition condition : trigger.getCondtions()) {
+//			String x = condition.getxValue();
+//			String lastValue = this.getData();
+//			switch (condition.getCondition()) {
+//			case equal:
+//				if (lastValue.equals(x))
+//					flag = true;
+//				break;
+//			case not_equal:
+//				if (!lastValue.equals(x))
+//					flag = true;
+//				break;
+//			}
+//			if (!flag)
+//				return false;
+//		}
+//		return flag;
+//	}
 
 	public String getOid() {
 		return oid;

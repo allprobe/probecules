@@ -264,7 +264,11 @@ public class BaseResult implements IResult {
 			values.add((Double) ((TraceRouteResult) this).getRoutes()
 					.get(((TraceRouteResult) this).getRoutes().size() - 1).get(1));
 			break;
+		case SNMP:
+			values.add(((SnmpResult) this).getData());
+			break;
 		}
+		
 		return values;
 	}
 }
