@@ -149,7 +149,7 @@ public class RunnableProbe implements Runnable {
 		} catch (Exception e) {
 			result = new BaseResult(this.getId());
 			result.setErrorMessage("RESULT_EXCEPTION");
-			Logit.LogError("RunnableProbe - run()",
+			Logit.LogError("RunnableProbe - getResult()",
 					"Error, getting runnable probe results from probe! getResult() throws exception "
 							+ this.getProbeType() + " " + this.getProbe().getName() + ", \nRunnabelProbeId: "
 							+ this.getId(),
@@ -162,7 +162,7 @@ public class RunnableProbe implements Runnable {
 		if (result == null) {
 			result = new BaseResult(this.getId());
 			result.setErrorMessage("RESULT_OBJECT_NULL");
-			Logit.LogError("RunnableProbe - run()",
+			Logit.LogError("RunnableProbe - buildErrorResultWhenEmpty()",
 					"Error, getting runnable probe results from probe! Returned object is null " + this.getProbeType()
 							+ " " + this.getProbe().getName() + ", \nRunnabelProbeId: " + this.getId());
 		}
@@ -173,7 +173,7 @@ public class RunnableProbe implements Runnable {
 		try {
 			SLAContainer.getInstance().addToSLA(result);
 		} catch (Exception e) {
-			Logit.LogError("RunnableProbe - run()",
+			Logit.LogError("RunnableProbe - addResultToSLA()",
 					"Error processing runnable probe results to SLA container!" + this.getId(), e);
 		}
 	}
@@ -182,7 +182,7 @@ public class RunnableProbe implements Runnable {
 		try {
 			RollupsContainer.getInstance().addResult(result);
 		} catch (Exception e) {
-			Logit.LogError("RunnableProbe - run()",
+			Logit.LogError("RunnableProbe - addResultToRollups()",
 					"Error processing runnable probe results to rollups container!" + this.getId(), e);
 		}
 	}
@@ -192,7 +192,7 @@ public class RunnableProbe implements Runnable {
 			result.setLastTimestamp(timeStamp);
 			ResultsContainer.getInstance().addResult(result);
 		} catch (Exception e) {
-			Logit.LogError("RunnableProbe - run()",
+			Logit.LogError("RunnableProbe - addResult()",
 					"Error processing runnable probe results to results container! " + this.getId());
 		}
 	}
@@ -202,7 +202,17 @@ public class RunnableProbe implements Runnable {
 			if (probe.getTriggers().size() > 0)
 				eventTrigger.addResult(result);
 		} catch (Exception e) {
-			Logit.LogError("RunnableProbe - run()", "Error Adding result to eventTrigger! " + this.getId());
+			Logit.LogError("RunnableProbe - addResultToTrigger()", "Error Adding result to eventTrigger! " + this.getId());
+			return false;
+		}
+		return true;
+	}
+	
+	public boolean removeEvents(String triggerId) {
+		try {
+			eventTrigger.removeEvent(triggerId);
+		} catch (Exception e) {
+			Logit.LogError("RunnableProbe - removeEvents()", "Error Removing event of trigger! " + triggerId);
 			return false;
 		}
 		return true;

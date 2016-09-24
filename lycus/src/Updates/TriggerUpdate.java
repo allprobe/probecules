@@ -1,6 +1,8 @@
 package Updates;
 
 import java.util.ArrayList;
+import java.util.concurrent.ConcurrentHashMap;
+
 import GlobalConstants.Constants;
 import Model.UpdateModel;
 import Probes.BaseProbe;
@@ -8,6 +10,8 @@ import Utils.GeneralFunctions;
 import Utils.Logit;
 import Triggers.Trigger;
 import Triggers.TriggerCondition;
+import lycus.RunnableProbe;
+import lycus.RunnableProbeContainer;
 import lycus.UsersManager;
 
 public class TriggerUpdate extends BaseUpdate {
@@ -74,6 +78,10 @@ public class TriggerUpdate extends BaseUpdate {
 		if (!GeneralFunctions.isNullOrEmpty(getUpdate().probe_id)
 				&& !GeneralFunctions.isNullOrEmpty(getUpdate().object_id)) {
 			probe = getUser().getProbeFor(getUpdate().probe_id);
+			ConcurrentHashMap<String, RunnableProbe> runnbaleProbes = RunnableProbeContainer.getInstanece().getByProbe(getUpdate().probe_id);
+			for (RunnableProbe runnbleProbe : runnbaleProbes.values())
+				runnbleProbe.removeEvents(getUpdate().object_id);
+			
 			probe.removeTrigger(getUpdate().object_id);
 
 			Logit.LogCheck("Trigger: " + getUpdate().object_id + " was removed");

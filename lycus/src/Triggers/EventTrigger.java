@@ -2,7 +2,6 @@ package Triggers;
 
 import Probes.BaseProbe;
 import Results.BaseResult;
-import Utils.Logit;
 import lycus.Event;
 import lycus.ResultsContainer;
 
@@ -45,11 +44,16 @@ public class EventTrigger {
 	}
 
 	private boolean cancelEvent(Trigger trigger) {
-		
 		Event eventExist = ResultsContainer.getInstance().getEvent(runnableProbeId, trigger.getTriggerId());
 		if (eventExist != null) {
 			eventExist.setIsStatus(true);
 		}
+		return true;
+	}
+
+	public boolean removeEvent(String triggerId) {
+		Trigger trigger = probe.getTrigger(triggerId);
+		cancelEvent(trigger);
 		return true;
 	}
 }
