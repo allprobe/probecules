@@ -10,7 +10,7 @@ import Utils.Logit;
 import lycus.ResultsContainer;
 
 public class EventTask extends BaseTask {
-	private long interval = 300; 
+	private long interval = 300;
 
 	public void run() {
 		try {
@@ -19,18 +19,18 @@ public class EventTask extends BaseTask {
 
 			if (events != null && events.length() > 2) {
 				Logit.LogInfo("Sending events to API...");
-				
+
 				if (!events.equals("[]")) {
 					String eventsEncoded = GeneralFunctions.Base64Encode(events);
-//					String sendString = "{\"events\" : \"" + eventsEncoded + "\"}";
-					JSONObject eventsJson=new JSONObject();
+					// String sendString = "{\"events\" : \"" + eventsEncoded +
+					// "\"}";
+					JSONObject eventsJson = new JSONObject();
 					eventsJson.put("events", eventsEncoded);
-					
-					
-					if(FailedRequestsHandler.getInstance().getNumberOfFailedRequests()!=0)
+
+					if (FailedRequestsHandler.getInstance().getNumberOfFailedRequests() != 0)
 						FailedRequestsHandler.getInstance().executeRequests();
-					if(DAL.DAL.getInstanece().put(Enums.ApiAction.PutEvents, eventsJson)==null)
-						FailedRequestsHandler.getInstance().addRequest(new ApiRequest(ApiAction.PutEvents,eventsJson));
+					if (DAL.DAL.getInstanece().put(Enums.ApiAction.PutEvents, eventsJson) == null)
+						FailedRequestsHandler.getInstance().addRequest(new ApiRequest(ApiAction.PutEvents, eventsJson));
 
 					resultsContainer.cleanEvents();
 				}
