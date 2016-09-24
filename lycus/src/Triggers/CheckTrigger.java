@@ -5,6 +5,7 @@ import GlobalConstants.Enums.Condition;
 import GlobalConstants.Enums.Function;
 import GlobalConstants.XvalueUnit;
 import Results.BaseResult;
+import Results.SnmpResult;
 
 public class CheckTrigger {
 	private BaseResult[] queue;
@@ -356,7 +357,8 @@ class LastN {
 			return null;
 
 		this.elementsPopped--;
-		if (queue[cur] == null) // cur is the new pointer to the array index
+		if (queue[cur] == null || 
+				(queue[cur] instanceof SnmpResult && ((SnmpResult)queue[cur]).getData().startsWith("WRONG_"))) // cur is the new pointer to the array index
 								// that havent been intialized yet
 			return null;
 		return queue[cur].getResultElementValue(elementType).get(0);

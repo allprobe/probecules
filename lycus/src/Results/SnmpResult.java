@@ -55,31 +55,6 @@ public class SnmpResult extends BaseResult {
 		return numData;
 	}
 
-//	@Override
-//	public void checkIfTriggerd(HashMap<String, Trigger> triggers) throws Exception {
-//
-//		if (this.getRunnableProbeId()
-//				.contains("15a29f39-5baf-4672-8853-c08b4b247be0@snmp_52caf27e-445b-4b8d-bfc6-0307fd4ef3eb"))
-//			Logit.LogDebug("BREAKPOINT");
-//
-//		super.checkIfTriggerd(triggers);
-//		for (Trigger trigger : triggers.values()) {
-//
-//			boolean triggered = false;
-//			switch (((SnmpProbe) trigger.getProbe()).getDataType()) {
-//			case Numeric:
-//				triggered = checkForNumberTrigger(trigger);
-//				break;
-//			case Text:
-//				triggered = checkForTextTrigger(trigger);
-//				break;
-//			}
-//
-//			super.processTriggerResult(trigger, triggered);
-//
-//		}
-//	}
-
 	private boolean checkForNumberTrigger(Trigger trigger) {
 		boolean flag = false;
 		for (TriggerCondition condition : trigger.getCondtions()) {
@@ -136,27 +111,6 @@ public class SnmpResult extends BaseResult {
 		}
 		return flag;
 	}
-
-//	private boolean checkForTextTrigger(Trigger trigger) {
-//		boolean flag = false;
-//		for (TriggerCondition condition : trigger.getCondtions()) {
-//			String x = condition.getxValue();
-//			String lastValue = this.getData();
-//			switch (condition.getCondition()) {
-//			case equal:
-//				if (lastValue.equals(x))
-//					flag = true;
-//				break;
-//			case not_equal:
-//				if (!lastValue.equals(x))
-//					flag = true;
-//				break;
-//			}
-//			if (!flag)
-//				return false;
-//		}
-//		return flag;
-//	}
 
 	public String getOid() {
 		return oid;
