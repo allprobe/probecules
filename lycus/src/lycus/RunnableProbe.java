@@ -1,5 +1,7 @@
 package lycus;
 
+import java.util.HashMap;
+
 import GlobalConstants.ProbeTypes;
 import Probes.BaseProbe;
 import Probes.DiscoveryProbe;
@@ -15,6 +17,7 @@ import Results.BaseResult;
 import Rollups.RollupsContainer;
 import SLA.SLAContainer;
 import Triggers.EventTrigger;
+import Triggers.Trigger;
 import Utils.Logit;
 
 public class RunnableProbe implements Runnable {
@@ -215,6 +218,14 @@ public class RunnableProbe implements Runnable {
 			Logit.LogError("RunnableProbe - removeEvents()", "Error Removing event of trigger! " + triggerId);
 			return false;
 		}
+		return true;
+	}
+	
+	public boolean removeAllEvents()
+	{
+		HashMap<String, Trigger> triggers = getProbe().getTriggers();
+		for (Trigger trigger : triggers.values())
+			removeEvents(trigger.getTriggerId());
 		return true;
 	}
 }

@@ -58,7 +58,6 @@ public class LycusMain {
 		ScheduledExecutorService resultsThread = Executors.newSingleThreadScheduledExecutor();
 		resultsThread.scheduleAtFixedRate(resultsTask, 0, resultsTask.getInterval(), TimeUnit.SECONDS);
 
-
 		ResultsContainer.getInstance().pullCurrentLiveEvents();
 
 		EventTask eventHandler = new EventTask();

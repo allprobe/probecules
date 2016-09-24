@@ -126,9 +126,11 @@ public class RunnableProbeContainer implements IRunnableProbeContainer {
 	}
 
 	@Override
-	public boolean remove(RunnableProbe runnableProbe) { // Stop the probe and
+	public boolean remove(RunnableProbe runnableProbe) {    // Stop the probe and
 															// removes it from
 															// the system
+		
+		runnableProbe.removeAllEvents();
 		runnableProbes.get(runnableProbe.getId()).setRunning(false);
 		runnableProbe.setRunning(false);
 		runnableProbes.remove(runnableProbe.getId());
