@@ -54,7 +54,7 @@ public class Updates implements Runnable {
 				}
 			}
 		} catch (Exception ex) {
-			Logit.LogError("Updates - runUpdates1()", "Failed to retrieve updates ", ex);
+			Logit.LogError("Updates - runUpdates1()", "Failed to retrieve updates " + "\n" + jsonObject, ex);
 		}
 
 		return true;

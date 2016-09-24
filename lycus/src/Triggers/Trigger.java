@@ -22,9 +22,7 @@ public class Trigger implements Cloneable {
 		this.probe = probe;
 		this.svrty = svrty;
 		this.status = status;
-		// this.elementType = elementType;
 		this.condtions = condtions;
-//		this.unit = unit;
 	}
 
 	public boolean isTriggered() {
@@ -74,14 +72,6 @@ public class Trigger implements Cloneable {
 	public void setStatus(boolean status) {
 		this.status = status;
 	}
-
-	// public ResultValueType getElementType() {
-	// return elementType;
-	// }
-	//
-	// public void setElementType(ResultValueType elementType) {
-	// this.elementType = elementType;
-	// }
 
 	public XvalueUnit getUnit() {
 		return unit;

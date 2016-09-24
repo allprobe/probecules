@@ -86,9 +86,7 @@ public class UsersManager {
 	public static boolean addUser(UUID userId) {
 		User user = new User(userId);
 		if (!getUsers().containsKey(userId)) {
-
 			getUsers().put(userId, user);
-
 		}
 		User u = getUsers().get(userId);
 		if (u == null)

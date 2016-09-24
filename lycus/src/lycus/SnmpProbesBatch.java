@@ -18,7 +18,7 @@ import Triggers.EventTrigger;
 import Utils.Logit;
 
 public class SnmpProbesBatch implements Runnable {
-    private String batchId;// hostId@templateId@interval@batchUUID
+    private String batchId;                              // hostId@templateId@interval@batchUUID
     private ConcurrentHashMap<String, RunnableProbe> snmpProbes;
     private Host host;
     private long interval;
