@@ -5,8 +5,6 @@ package Updates;
 
 import org.apache.log4j.Logger;
 import org.json.simple.JSONObject;
-
-import DAL.ApiInterface;
 import DAL.DAL;
 import GlobalConstants.Enums;
 import Interfaces.IDAL;
