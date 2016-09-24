@@ -85,7 +85,7 @@ public class SLAContainer implements ISLAContainer {
 				if (slaWeb == null)
 					continue;
 				RunnableProbe runnableProbe =  RunnableProbeContainer.getInstanece().get(runnableProbeId);
-				String userId = runnableProbe != null ? runnableProbe.getHost().getHostId().toString() : "";
+				String userId = runnableProbe != null ? runnableProbe.getProbe().getUser().getUserId().toString() : "";
 				String BucketId =  runnableProbe != null ? runnableProbe.getHost().getBucket() : "";
 				JSONObject jsonItem = new JSONObject();
 				jsonItem.put("RUNNABLE_PROBE_ID", runnableProbeId);
@@ -102,7 +102,7 @@ public class SLAContainer implements ISLAContainer {
 				if (slaPing == null)
 					continue;
 				RunnableProbe runnableProbe =  RunnableProbeContainer.getInstanece().get(runnableProbeId);
-				String userId = runnableProbe != null ? runnableProbe.getHost().getHostId().toString() : "";
+				String userId = runnableProbe != null ? runnableProbe.getProbe().getUser().getUserId().toString() : "";
 				String BucketId =  runnableProbe != null ? runnableProbe.getHost().getBucket() : "";
 				JSONObject jsonItem = new JSONObject();
 				jsonItem.put("RUNNABLE_PROBE_ID", runnableProbeId);
@@ -119,7 +119,7 @@ public class SLAContainer implements ISLAContainer {
 				if (slaPort == null)
 					continue;
 				RunnableProbe runnableProbe =  RunnableProbeContainer.getInstanece().get(runnableProbeId);
-				String userId = runnableProbe != null ? runnableProbe.getHost().getHostId().toString() : "";
+				String userId = runnableProbe != null ? runnableProbe.getProbe().getUser().getUserId().toString() : "";
 				String BucketId =  runnableProbe != null ? runnableProbe.getHost().getBucket() : "";
 				JSONObject jsonItem = new JSONObject();
 				jsonItem.put("RUNNABLE_PROBE_ID", runnableProbeId);

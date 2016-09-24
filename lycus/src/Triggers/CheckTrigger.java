@@ -358,7 +358,7 @@ class LastN {
 
 		this.elementsPopped--;
 		if (queue[cur] == null || 
-				(queue[cur] != null && queue[cur] instanceof SnmpResult && ((SnmpResult)queue[cur]).getData().startsWith("WRONG_"))) // cur is the new pointer to the array index
+				(queue[cur] != null && queue[cur] instanceof SnmpResult && ((SnmpResult)queue[cur]).getData() != null && ((SnmpResult)queue[cur]).getData().startsWith("WRONG_"))) // cur is the new pointer to the array index
 								// that havent been intialized yet
 			return null;
 		return queue[cur].getResultElementValue(elementType).get(0);
