@@ -15,7 +15,7 @@ public class WebResult extends BaseResult {
 		this.statusCode = responseCode;
 		this.responseTime = responseTime2;
 		this.pageSize = responseSize;
-		this.stateCode=stateCode;
+		this.setStateCode(stateCode);
 	}
 
 	public WebResult(String runnableProbeId) {
@@ -24,7 +24,7 @@ public class WebResult extends BaseResult {
 
 	public WebResult(String runnableProbeId, long timestamp,int stateCode) {
 		super(runnableProbeId, timestamp);
-		this.stateCode=stateCode;
+		this.setStateCode(stateCode);
 	}
 
 	public Integer getStatusCode() {
@@ -158,6 +158,7 @@ public class WebResult extends BaseResult {
 			result.add(statusCode);
 			result.add(responseTime);
 			result.add(pageSize);
+			result.add(getStateCode());
 		} else
 			result.add(this.getErrorMessage());
 
@@ -168,5 +169,13 @@ public class WebResult extends BaseResult {
 		if (statusCode == null)
 			return false;
 		return statusCode < 400;
+	}
+
+	public Integer getStateCode() {
+		return stateCode;
+	}
+
+	public void setStateCode(Integer stateCode) {
+		this.stateCode = stateCode;
 	}
 }

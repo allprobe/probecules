@@ -320,7 +320,7 @@ public class ResultsContainer implements IResultsContainer {
 					}
 				} catch (Exception e) {
 					Logit.LogError(null, "Unable to process evsent for triggerId: " + triggerId + ", RunnableProbeId: "
-							+ runnableProbeId);
+							+ runnableProbeId,e);
 					continue;
 				}
 			}

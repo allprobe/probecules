@@ -47,7 +47,7 @@ public class WebExtendedResult extends WebResult {
 		result.add(this.getStatusCode());
 		result.add(this.getResponseTime());
 		result.add(this.getPageSize());
-
+		result.add(this.getStateCode());
 		Gson gson = new GsonBuilder().disableHtmlEscaping().create();
 
 		try {
