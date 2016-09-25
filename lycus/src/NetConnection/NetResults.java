@@ -126,10 +126,16 @@ public class NetResults implements INetResults {
 
 	@Override
 	public WebResult getWebResult(Host host, HttpProbe probe) {
+
+		if(probe.getProbe_id().contains("http_c1fc4f98-8c31-44a5-99e8-004ba5dfc73e"))
+			Logit.LogDebug("BREAKPOINT");
+
 		ArrayList<Object> rawResults = Net.Weber(probe.getUrl(), probe.getHttpRequestType(), probe.getAuthUsername(),
 				probe.getAuthPassword(), probe.getTimeout());
 		if (rawResults == null || rawResults.size() == 0)
 			return null;
+
+
 
 		long timestamp = (long) rawResults.get(0);
 		int responseCode = (int) rawResults.get(1);
@@ -145,8 +151,15 @@ public class NetResults implements INetResults {
 
 	@Override
 	public WebExtendedResult getWebExtendedResult(Host host, HttpProbe probe) {
+
+		if(probe.getProbe_id().contains("http_c1fc4f98-8c31-44a5-99e8-004ba5dfc73e"))
+			Logit.LogDebug("BREAKPOINT");
+
 		JSONObject rawResults = Net.ExtendedWeber(probe.getUrl(), probe.getHttpRequestType(), probe.getAuthUsername(),
 				probe.getAuthPassword(), probe.getTimeout());
+
+		if(probe.getProbe_id().contains("http_c1fc4f98-8c31-44a5-99e8-004ba5dfc73e"))
+			Logit.LogDebug("BREAKPOINT");
 
 		if (rawResults == null || rawResults.size() == 0) {
 			WebExtendedResult result = new WebExtendedResult(

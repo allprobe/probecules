@@ -385,7 +385,7 @@ public class Net {
 
     public static JSONObject ExtendedWeber(String url, String requestType, String user, String pass, int timeout) {
         Process p = null;
-
+        StringBuilder sb= new StringBuilder();
         try {
 
             StringBuilder b = new StringBuilder();
@@ -401,8 +401,6 @@ public class Net {
             // String[]{"bash","-c",b.toString()});
 
             BufferedReader stdInput = new BufferedReader(new InputStreamReader(p.getInputStream()));
-
-            StringBuilder sb = new StringBuilder();
 
             String line;
             while ((line = stdInput.readLine()) != null) {
@@ -464,7 +462,7 @@ public class Net {
             // Logit.LogError("Net - ExtendedWeber", "current working dir: " +
             // System.getProperty("user.dir"), e);
 
-            Logit.LogError("Net - ExtendedWeber", "Error while running http extended check! URL: " + url, e);
+            Logit.LogError("Net - ExtendedWeber", "Error while running http extended check! URL: " + url+", phantomjs output: "+sb.toString(), e);
         } finally {
             if (p != null)
                 p.destroy();

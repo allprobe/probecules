@@ -132,11 +132,13 @@ public class UsersManager {
 		JSONArray allTemplateProbesJson = (JSONArray) initServer.get("probes");
 		addTemplates(allTemplateProbesJson, probeByUser);
 
-		JSONArray allDiscoveryElementsJson = (JSONArray) initServer.get("discovery_elements");
-		addDiscoveryElements(allDiscoveryElementsJson);
-
 		JSONArray allTemplateTriggersJson = (JSONArray) initServer.get("triggers");
 		addTriggers(allTemplateTriggersJson, probeByUser);
+
+		ResultsContainer.getInstance().pullCurrentLiveEvents();
+
+		JSONArray allDiscoveryElementsJson = (JSONArray) initServer.get("discovery_elements");
+		addDiscoveryElements(allDiscoveryElementsJson);
 
 		addRunnableProbes(runnableProbesIds);
 
@@ -388,7 +390,7 @@ public class UsersManager {
 				probeParams.template_id = (String) probeJson.get("template_id");
 				probeParams.probe_id = (String) probeJson.get("probe_id");
 				String rpStr = probeParams.probe_id;
-				if (rpStr.contains("discovery_17b6eece-59dc-4b77-9706-7a1ef641e05a"))
+				if (rpStr.contains("http_c1fc4f98-8c31-44a5-99e8-004ba5dfc73e"))
 					Logit.LogDebug("BREAKPOINT");
 				probeParams.name = (String) probeJson.get("probe_name");
 				probeParams.interval = Integer.parseInt(probeJson.get("probe_interval").toString());
@@ -437,31 +439,43 @@ public class UsersManager {
 					// Roi - Please take a look here especially discovery_type
 					probeParams.element_interval = Integer.parseInt(probeKeyJson.get("element_interval").toString());
 					JSONParser jsonParser = new JSONParser();
-					JSONArray triggers = (JSONArray) jsonParser.parse(probeKeyJson.get("discovery_triggers").toString());
+					JSONArray triggers = (JSONArray) jsonParser
+							.parse(probeKeyJson.get("discovery_triggers").toString());
 					TriggerCondition[] discovery_triggers = new TriggerCondition[triggers.size()];
 					probeParams.discovery_type = probeKeyJson.get("discovery_type").toString();
-//					probeParams.tuple = probeKeyJson.get("tuple").toString();
-//					probeParams.xvalue_unit = probeKeyJson.get("xvalue_unit").toString();
-//					probeParams.triggerName = probeKeyJson.get("triggerName").toString();
-//					probeParams.triggerId = probeKeyJson.get("triggerId").toString();
-//
-//					ConditionUpdateModel[] discovertyTiggers = new ConditionUpdateModel[triggers.size()];
-//					for (int tIndex = 0; tIndex < triggers.size(); tIndex++) {
-//						ConditionUpdateModel discovertyTigger = new ConditionUpdateModel();
-//
-//						JSONObject trigger = (JSONObject) triggers.get(tIndex);
-//						discovertyTigger.andor = trigger.get("andor").toString();
-//						discovertyTigger.condition = trigger.get("condition").toString();
-//						discovertyTigger.function = trigger.get("function").toString();
-//						discovertyTigger.index = trigger.get("index").toString();
-//						discovertyTigger.xvalue = trigger.get("xvalue").toString();
-//						discovertyTigger.results_vector_type = trigger.get("results_vector_type").toString();
-//						discovertyTigger.nvalue = trigger.get("nvalue").toString();
-//
-//						discovertyTiggers[tIndex] = discovertyTigger;
-//					}
-//
-//					probeParams.triggers = discovertyTiggers;
+					// probeParams.tuple = probeKeyJson.get("tuple").toString();
+					// probeParams.xvalue_unit =
+					// probeKeyJson.get("xvalue_unit").toString();
+					// probeParams.triggerName =
+					// probeKeyJson.get("triggerName").toString();
+					// probeParams.triggerId =
+					// probeKeyJson.get("triggerId").toString();
+					//
+					// ConditionUpdateModel[] discovertyTiggers = new
+					// ConditionUpdateModel[triggers.size()];
+					// for (int tIndex = 0; tIndex < triggers.size(); tIndex++)
+					// {
+					// ConditionUpdateModel discovertyTigger = new
+					// ConditionUpdateModel();
+					//
+					// JSONObject trigger = (JSONObject) triggers.get(tIndex);
+					// discovertyTigger.andor = trigger.get("andor").toString();
+					// discovertyTigger.condition =
+					// trigger.get("condition").toString();
+					// discovertyTigger.function =
+					// trigger.get("function").toString();
+					// discovertyTigger.index = trigger.get("index").toString();
+					// discovertyTigger.xvalue =
+					// trigger.get("xvalue").toString();
+					// discovertyTigger.results_vector_type =
+					// trigger.get("results_vector_type").toString();
+					// discovertyTigger.nvalue =
+					// trigger.get("nvalue").toString();
+					//
+					// discovertyTiggers[tIndex] = discovertyTigger;
+					// }
+					//
+					// probeParams.triggers = discovertyTiggers;
 					break;
 				}
 				case Constants.rbl: {

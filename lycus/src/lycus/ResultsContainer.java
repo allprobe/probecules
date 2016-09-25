@@ -155,8 +155,9 @@ public class ResultsContainer implements IResultsContainer {
 					String probeId = it.split("@")[2];
 					UUID triggerId = UUID.fromString(it.split("@")[3]);
 
-					String runnableProbeId=GeneralFunctions.getRunnableProbeId(templateId,hostId,probeId);
-					if(runnableProbeId.contains("e339d292-e724-4098-897e-758eeb075978@icmp_91b0eac5-d25c-4d93-a061-66572942ad7f"))
+					String runnableProbeId = GeneralFunctions.getRunnableProbeId(templateId, hostId, probeId);
+					if (runnableProbeId
+							.contains("e339d292-e724-4098-897e-758eeb075978@icmp_91b0eac5-d25c-4d93-a061-66572942ad7f"))
 						Logit.LogDebug("BREAKPOINT");
 
 					long timestamp = Long.parseLong((String) events.get(it));
@@ -313,14 +314,15 @@ public class ResultsContainer implements IResultsContainer {
 						Logit.LogDebug("BREAKPOINT");
 
 					if (!event.isSent() || (event.isSent() && event.getIsStatus())) {
-						HashMap<String, HashMap<String, String>> sendingEvents = eventDBFormat(triggerId, event, runnableProbe, trigger);
+						HashMap<String, HashMap<String, String>> sendingEvents = eventDBFormat(triggerId, event,
+								runnableProbe, trigger);
 
 						eventsToSend.add(sendingEvents);
 						event.setSent(true);
 					}
 				} catch (Exception e) {
 					Logit.LogError(null, "Unable to process evsent for triggerId: " + triggerId + ", RunnableProbeId: "
-							+ runnableProbeId,e);
+							+ runnableProbeId, e);
 					continue;
 				}
 			}
@@ -330,8 +332,7 @@ public class ResultsContainer implements IResultsContainer {
 		return (gson.toJson(eventsToSend));
 	}
 
-	public void cleanEvents()
-	{
+	public void cleanEvents() {
 		for (Map.Entry<String, ConcurrentHashMap<String, Event>> runnableProbeEventsEntry : events.entrySet()) {
 			String runnableProbeId = runnableProbeEventsEntry.getKey();
 
@@ -346,7 +347,7 @@ public class ResultsContainer implements IResultsContainer {
 			}
 		}
 	}
-	
+
 	private HashMap<String, HashMap<String, String>> eventDBFormat(String triggerId, Event event,
 			RunnableProbe runnableProbe, Trigger trigger) {
 		HashMap<String, HashMap<String, String>> sendingEvents = new HashMap<String, HashMap<String, String>>();

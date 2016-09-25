@@ -38,10 +38,6 @@ public class LycusMain {
 		if (!GlobalConfig.Initialize())
 			return;
 
-		Net.Weber("http://fvgjwoudwdfgw.com","get",null,null,3000);
-
-
-
 		UsersManager.Initialize(); // setup initial config (InitServer)
 
 		if (!UsersManager.isInitialized())
@@ -57,8 +53,6 @@ public class LycusMain {
 		ResultsTask resultsTask = new ResultsTask();
 		ScheduledExecutorService resultsThread = Executors.newSingleThreadScheduledExecutor();
 		resultsThread.scheduleAtFixedRate(resultsTask, 0, resultsTask.getInterval(), TimeUnit.SECONDS);
-
-		ResultsContainer.getInstance().pullCurrentLiveEvents();
 
 		EventTask eventHandler = new EventTask();
 		ScheduledExecutorService eventsThread = Executors.newSingleThreadScheduledExecutor();

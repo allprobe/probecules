@@ -205,12 +205,13 @@ public class RunnableProbe implements Runnable {
 			if (probe.getTriggers().size() > 0)
 				eventTrigger.addResult(result);
 		} catch (Exception e) {
-			Logit.LogError("RunnableProbe - addResultToTrigger()", "Error Adding result to eventTrigger! " + this.getId());
+			Logit.LogError("RunnableProbe - addResultToTrigger()",
+					"Error Adding result to eventTrigger! " + this.getId());
 			return false;
 		}
 		return true;
 	}
-	
+
 	public boolean removeEvents(String triggerId) {
 		try {
 			eventTrigger.removeEvent(triggerId);
@@ -220,9 +221,8 @@ public class RunnableProbe implements Runnable {
 		}
 		return true;
 	}
-	
-	public boolean removeAllEvents()
-	{
+
+	public boolean removeAllEvents() {
 		HashMap<String, Trigger> triggers = getProbe().getTriggers();
 		for (Trigger trigger : triggers.values())
 			removeEvents(trigger.getTriggerId());

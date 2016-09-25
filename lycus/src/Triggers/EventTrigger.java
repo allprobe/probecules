@@ -44,7 +44,9 @@ public class EventTrigger {
 	}
 
 	private boolean cancelEvent(Trigger trigger) {
-		Event eventExist = ResultsContainer.getInstance().getEvent(runnableProbeId, trigger.getTriggerId());
+
+		Event eventExist = ResultsContainer.getInstance().getEvent(runnableProbeId,
+				trigger.getTriggerId().split("@")[2]);
 		if (eventExist != null) {
 			eventExist.setIsStatus(true);
 		}
