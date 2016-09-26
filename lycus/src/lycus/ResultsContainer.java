@@ -179,7 +179,7 @@ public class ResultsContainer implements IResultsContainer {
 					event.setTime(timestamp);
 					event.setSent(true);
 
-					addEvent(runnableProbe.getId(), triggerId.toString(), event);
+					addEvent(runnableProbe.getId(), templateId+"@"+probeId+"@"+triggerId, event);
 					// result.getEvents().put(trigger, event);
 				} catch (Exception e) {
 					Logit.LogError("ResultsContainer - pullCurrentLiveEvents()", "Unable to process live event: " + it);
