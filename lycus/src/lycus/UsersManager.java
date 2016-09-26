@@ -559,6 +559,19 @@ public class UsersManager {
 		}
 	}
 
+	public static Trigger getTrigger(String triggerId)
+    {
+        for(User user:users.values())
+        {
+            for(BaseProbe probe:user.getTemplateProbes().values())
+            {
+                if(probe.getTrigger(triggerId)!=null)
+                    return probe.getTrigger(triggerId);
+            }
+        }
+    return null;
+    }
+
 	private static ArrayList<TriggerCondition> getTriggerConds(JSONArray jsonArray) {
 		ArrayList<TriggerCondition> conditions = new ArrayList<TriggerCondition>();
 

@@ -49,6 +49,7 @@ public class EventTrigger {
 				trigger.getTriggerId());
 		if (eventExist != null) {
 			eventExist.setIsStatus(true);
+			eventExist.setTime(System.currentTimeMillis());
 		}
 		return true;
 	}
