@@ -5,7 +5,7 @@ public enum XvalueUnit {
 	// gb(1073741824L), GB(8589934592L), as_is(1);
 	b, B, Kb, KB, Mb, MB, Gb, GB, as_is, s, ms;
 
-	public static long getBasic(long value, XvalueUnit unit) {
+	public static double getBasic(double value, XvalueUnit unit) {
 		switch (unit) {
 		case as_is:
 			return value;

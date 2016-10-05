@@ -35,34 +35,36 @@ public class CheckTrigger {
 		empty = false;
 	}
 
-	public boolean isConditionMet(Trigger trigger) {
+	public boolean isConditionMet(BaseResult result,Trigger trigger) {
 		for (TriggerCondition triggerCondition : trigger.getCondtions()) {
 			Double xValue = getDouble(triggerCondition.getxValue());
 
+			XvalueUnit resultUnit=result.getResultUnit(triggerCondition.getElementType().toString());
+
 			if (triggerCondition.getFunction() == Function.none) {
-				if (!isNoFunctionConditionMet(triggerCondition, xValue))
+				if (!isNoFunctionConditionMet(resultUnit,triggerCondition, xValue))
 					return false;
 			} else if (triggerCondition.getFunction() == Function.delta) {
 				Double delta = getDelta(triggerCondition.getElementType().toString());
 				if (delta == null)
 					return false;
-				if (!isCondition(delta, triggerCondition.getCondition(), xValue, triggerCondition.getXvalueUnit()))
+				if (!isCondition(delta,resultUnit, triggerCondition.getCondition(), xValue, triggerCondition.getXvalueUnit()))
 					return false;
 			} else if (triggerCondition.getFunction() == Function.max) {
-				if (!isMaxConditionMet(triggerCondition, xValue))
+				if (!isMaxConditionMet(resultUnit,triggerCondition, xValue))
 					return false;
 			} else if (triggerCondition.getFunction() == Function.avg) {
-				if (!isAvgConditionMet(triggerCondition, xValue))
+				if (!isAvgConditionMet(resultUnit,triggerCondition, xValue))
 					return false;
 			} else if (triggerCondition.getFunction() == Function.delta_avg) {
-				if (!isDeltaAvgConditionMet(triggerCondition, xValue))
+				if (!isDeltaAvgConditionMet(resultUnit,triggerCondition, xValue))
 					return false;
 			}
 		}
 		return true;
 	}
 
-	private boolean isMaxConditionMet(TriggerCondition triggerCondition, Double xValue) {
+	private boolean isMaxConditionMet(XvalueUnit resultUnit,TriggerCondition triggerCondition, Double xValue) {
 		LastN lastN = getLast(triggerCondition);
 		if (!lastN.isEnoughElements())
 			return false;
@@ -81,10 +83,10 @@ public class CheckTrigger {
 			nValue--;
 		}
 
-		return isCondition(max, triggerCondition.getCondition(), xValue, triggerCondition.getXvalueUnit());
+		return isCondition(max,resultUnit, triggerCondition.getCondition(), xValue, triggerCondition.getXvalueUnit());
 	}
 
-	private boolean isAvgConditionMet(TriggerCondition triggerCondition, Double xValue) {
+	private boolean isAvgConditionMet(XvalueUnit resultUnit,TriggerCondition triggerCondition, Double xValue) {
 		LastN lastN = getLast(triggerCondition);
 		if (!lastN.isEnoughElements())
 			return false;
@@ -101,11 +103,11 @@ public class CheckTrigger {
 			nValue--;
 		}
 
-		return isCondition(sum / lastN.getElementCount(), triggerCondition.getCondition(), xValue,
+		return isCondition(sum / lastN.getElementCount(),resultUnit, triggerCondition.getCondition(), xValue,
 				triggerCondition.getXvalueUnit());
 	}
 
-	private boolean isDeltaAvgConditionMet(TriggerCondition triggerCondition, Double xValue) {
+	private boolean isDeltaAvgConditionMet(XvalueUnit resultUnit,TriggerCondition triggerCondition, Double xValue) {
 		LastN lastN = getLast(triggerCondition);
 		if (!lastN.isEnoughElements())
 			return false;
@@ -124,10 +126,10 @@ public class CheckTrigger {
 
 		double delta_avg = sum / lastN.getElementCount() - (double) getQueue()[getTail()]
 				.getResultElementValue(triggerCondition.getElementType().toString()).get(0);
-		return isCondition(delta_avg, triggerCondition.getCondition(), xValue, triggerCondition.getXvalueUnit());
+		return isCondition(delta_avg,resultUnit, triggerCondition.getCondition(), xValue, triggerCondition.getXvalueUnit());
 	}
 
-	private boolean isNoFunctionConditionMet(TriggerCondition triggerCondition, Double xValue) {
+	private boolean isNoFunctionConditionMet(XvalueUnit resultUnit,TriggerCondition triggerCondition, Double xValue) {
 		LastN lastN = getLast(triggerCondition);
 		if (!lastN.isEnoughElements())
 			return false;
@@ -144,7 +146,7 @@ public class CheckTrigger {
 					return false;
 
 			} else {
-				if (!isCondition(Double.parseDouble(result.toString()), triggerCondition.getCondition(), xValue,
+				if (!isCondition(Double.parseDouble(result.toString()),resultUnit, triggerCondition.getCondition(), xValue,
 						triggerCondition.getXvalueUnit()))
 					return false;
 			}
@@ -156,16 +158,16 @@ public class CheckTrigger {
 		return true;
 	}
 
-	private boolean isCondition(Double result, Condition condition, double xValue, XvalueUnit xvalueUnit) {
+	private boolean isCondition(Double result,XvalueUnit resultUnit, Condition condition, double xValue, XvalueUnit xvalueUnit) {
 		switch (condition) {
 		case bigger:
-			return result > xvalueUnit.getBasic((long) xValue, xvalueUnit);
+			return xvalueUnit.getBasic(result,resultUnit) > xvalueUnit.getBasic( xValue, xvalueUnit);
 		case equal:
-			return result == xvalueUnit.getBasic((long) xValue, xvalueUnit);
+			return xvalueUnit.getBasic(result,resultUnit) == xvalueUnit.getBasic( xValue, xvalueUnit);
 		case tinier:
-			return result < xvalueUnit.getBasic((long) xValue, xvalueUnit);
+			return xvalueUnit.getBasic(result,resultUnit) < xvalueUnit.getBasic(xValue, xvalueUnit);
 		case not_equal:
-			return result != xvalueUnit.getBasic((long) xValue, xvalueUnit);
+			return xvalueUnit.getBasic(result,resultUnit) != xvalueUnit.getBasic( xValue, xvalueUnit);
 		}
 		return false;
 	}
@@ -250,6 +252,8 @@ public class CheckTrigger {
 	//
 	// return sum / Math.abs(lastN.getTail() - lastN.getHead() + 1);
 	// }
+
+
 
 	public int getSize() {
 		return size;

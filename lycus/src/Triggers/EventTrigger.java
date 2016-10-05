@@ -1,9 +1,11 @@
 package Triggers;
 
+import GlobalConstants.XvalueUnit;
 import Probes.BaseProbe;
 import Results.BaseResult;
 import lycus.Event;
 import lycus.ResultsContainer;
+import lycus.RunnableProbeContainer;
 
 public class EventTrigger {
 	private CheckTrigger lastResults;
@@ -20,7 +22,7 @@ public class EventTrigger {
 		lastResults.enqueue(result);
 		for (Trigger trigger : probe.getTriggers().values()) {
 			if (trigger.getStatus()) {
-				if (isConditionMet(trigger))
+				if (isConditionMet(result,trigger))
 					triggerEvent(trigger);
 				else
 					cancelEvent(trigger);
@@ -30,8 +32,8 @@ public class EventTrigger {
 		return true;
 	}
 
-	private boolean isConditionMet(Trigger trigger) {
-		return lastResults.isConditionMet(trigger);
+	private boolean isConditionMet(BaseResult result,Trigger trigger) {
+		return lastResults.isConditionMet(result,trigger);
 	}
 
 	private boolean triggerEvent(Trigger trigger) {

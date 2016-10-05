@@ -3,6 +3,8 @@ package Results;
 import java.util.ArrayList;
 import java.util.HashMap;
 
+import GlobalConstants.XvalueUnit;
+import Probes.SnmpProbe;
 import com.google.common.base.Enums;
 
 import GlobalConstants.Enums.ResultValueType;
@@ -273,5 +275,52 @@ public class BaseResult implements IResult {
 		}
 	
 		return values;
+	}
+	public XvalueUnit getResultUnit(String elementType)
+	{
+		ResultValueType valueType = ResultValueType.valueOf(elementType);
+		switch (valueType) {
+			case WRT:
+				return XvalueUnit.ms;
+			case PRT:
+				return XvalueUnit.ms;
+			case RC:
+				return XvalueUnit.as_is;
+			case PS:
+				return XvalueUnit.B;
+			case PST:
+				return XvalueUnit.as_is;
+			case RTA:
+				return XvalueUnit.ms;
+			case PL:
+				return XvalueUnit.as_is;
+			case DFDS:
+				return XvalueUnit.B;
+			case DUDS:
+				return XvalueUnit.B;
+			case DTDS:
+				return XvalueUnit.B;
+			case DBI:
+				return XvalueUnit.b;
+			case DBO:
+				return XvalueUnit.b;
+			case WSERT:
+				return XvalueUnit.ms;
+			case WAERC:
+				return XvalueUnit.as_is;
+			case TRARHRT:
+				return XvalueUnit.ms;
+			case TRDHRT:
+				return XvalueUnit.ms;
+			case SNMP:
+				RunnableProbe rp=RunnableProbeContainer.getInstanece().get(this.getRunnableProbeId());
+				return ((SnmpProbe)(rp.getProbe())).getUnit();
+//				return XvalueUnit.as_is;
+
+			case RBL:
+				return XvalueUnit.as_is;
+		}
+
+		return null;
 	}
 }
