@@ -3,6 +3,7 @@ package Results;
 import java.util.ArrayList;
 import java.util.HashMap;
 
+import GlobalConstants.SnmpDataType;
 import GlobalConstants.XvalueUnit;
 import Probes.SnmpProbe;
 import com.google.common.base.Enums;
@@ -267,6 +268,9 @@ public class BaseResult implements IResult {
 					.get(((TraceRouteResult) this).getRoutes().size() - 1).get(1));
 			break;
 		case SNMP:
+			if(((SnmpProbe)RunnableProbeContainer.getInstanece().get(this.getRunnableProbeId()).getProbe()).getDataType() == SnmpDataType.Numeric)
+				values.add(((SnmpResult) this).getNumData());
+			else
 			values.add(((SnmpResult) this).getData());
 			break;
 		case RBL:
