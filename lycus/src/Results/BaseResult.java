@@ -292,6 +292,8 @@ public class BaseResult implements IResult {
 				return XvalueUnit.as_is;
 			case PS:
 				return XvalueUnit.B;
+			case WSC:
+				return XvalueUnit.as_is;
 			case PST:
 				return XvalueUnit.as_is;
 			case RTA:

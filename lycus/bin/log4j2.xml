@@ -14,7 +14,7 @@
         <AppenderRef ref="syslog"/>
     </logger>
     <logger name="syslog-debug" level="debug">
-        <AppenderRef ref="console"/>
+        <AppenderRef ref="syslog"/>
         
     </logger>
     </Loggers>

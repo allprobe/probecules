@@ -48,7 +48,8 @@ public class RollupsContainer implements IRollupsContainer {
 	private HashMap<String, DataPointsRollup[]> diskFreeDataRollups = new HashMap<String, DataPointsRollup[]>();
 
 	private JSONArray finishedRollups = new JSONArray();
-
+	private Object lockFinishedRollups = new Object();
+	
 	public static RollupsContainer getInstance() {
 		if (instance == null) {
 			instance = new RollupsContainer();
@@ -80,10 +81,13 @@ public class RollupsContainer implements IRollupsContainer {
 
 	@Override
 	public synchronized String getAllFinsihedRollups() {
-
+		String allRollups;
 		try {
-			String allRollups = finishedRollups.toString();
-			finishedRollups = new JSONArray();
+			synchronized (lockFinishedRollups) {
+				allRollups = finishedRollups.toString();
+				finishedRollups = new JSONArray();
+			}
+
 			return allRollups;
 		} catch (Exception e) {
 			Logit.LogFatal("RollupsContainer - getAllFinsihedRollups()",
