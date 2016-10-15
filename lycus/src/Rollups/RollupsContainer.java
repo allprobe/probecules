@@ -49,7 +49,7 @@ public class RollupsContainer implements IRollupsContainer {
 
 	private JSONArray finishedRollups = new JSONArray();
 	private Object lockFinishedRollups = new Object();
-	
+
 	public static RollupsContainer getInstance() {
 		if (instance == null) {
 			instance = new RollupsContainer();
@@ -401,7 +401,7 @@ public class RollupsContainer implements IRollupsContainer {
 				diskUsedDataRollups.get(result.getRunnableProbeId())[i] = diskUsedRollup;
 				diskFreeDataRollups.get(result.getRunnableProbeId())[i] = diskFreeRollup;
 			}
-			
+
 			Logit.LogDebug("BREAKPOINT");
 			if (diskResults.getStorageSize() == null || diskResults.getStorageUsed() == null
 					|| diskResults.getStorageFree() == null)
@@ -593,9 +593,9 @@ public class RollupsContainer implements IRollupsContainer {
 			}
 		}
 	}
- 
-//	public void clear() {
-//		// TODO Auto-generated method stub
-//		finishedRollups.clear();
-//	}
+
+	// public void clear() {
+	// // TODO Auto-generated method stub
+	// finishedRollups.clear();
+	// }
 }

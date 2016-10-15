@@ -52,7 +52,7 @@ public class Enums {
 	}
 
 	public static enum ResultValueType {
-		PRT, WRT, RC, PS, PST, RTA, PL, DFDS, DUDS, DBI, DBO, WSERT, WAERC, TRARHRT, TRDHRT, DTDS, SNMP, RBL, WSC
+		PRT, WRT, RC, PS, PST, RTA, PL, DFDS, DUDS, DBI, DBO, WSERT, WAERC, TRARHRT, TRDHRT, DTDS, SNMP, RBL, WSC, DPFDS, DPUDS
 
 	}
 
@@ -63,17 +63,21 @@ public class Enums {
 	public static enum Condition {
 		no_condition, bigger, tinier, equal, not_equal
 	}
-	public static Condition parseCondition(int i)
-	{
-		switch(i)
-		{
-			case 1:return Condition.bigger;
-			case 2: return Condition.tinier;
-			case 3: return Condition.equal;
-			case 4: return Condition.not_equal;
+
+	public static Condition parseCondition(int i) {
+		switch (i) {
+		case 1:
+			return Condition.bigger;
+		case 2:
+			return Condition.tinier;
+		case 3:
+			return Condition.equal;
+		case 4:
+			return Condition.not_equal;
 		}
 		return null;
 	}
+
 	public static enum Function {
 		none, avg, delta, max, delta_avg
 	}
@@ -82,11 +86,10 @@ public class Enums {
 		N, // Last-N
 		P, // Last-Period
 		H, // Last-Hours
-		K  // No last type
+		K // No last type
 	}
 
-	public static Condition getCondition(String value)
-	{
+	public static Condition getCondition(String value) {
 		switch (Integer.parseInt(value)) {
 		case 1:
 			return Condition.bigger;

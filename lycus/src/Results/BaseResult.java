@@ -69,27 +69,32 @@ public class BaseResult implements IResult {
 		return null;
 	}
 
-//	public void checkIfTriggerd(HashMap<String, Trigger> triggers) throws Exception {
-//		for (Trigger trigger : triggers.values()) {
-//			boolean triggered = checkForTriggerActivated(trigger);
-//			processTriggerResult(trigger, triggered);
-//
-//		}
-//	}
+	// public void checkIfTriggerd(HashMap<String, Trigger> triggers) throws
+	// Exception {
+	// for (Trigger trigger : triggers.values()) {
+	// boolean triggered = checkForTriggerActivated(trigger);
+	// processTriggerResult(trigger, triggered);
+	//
+	// }
+	// }
 
-//	public void processTriggerResult(Trigger trigger, boolean triggered) {
-//		Event lastEvent = ResultsContainer.getInstance().getEvent(getRunnableProbeId(), trigger.getTriggerId());
-//		if (lastEvent != null && !triggered) {
-//			// if trigger event became true and normal again send event to api
-//			lastEvent.setStatus(true);
-//			lastEvent.setSent(false);
-//			Logit.LogInfo("Trigger " + trigger.getTriggerId() + " of Runnable Probe: " + getRunnableProbeId()
-//					+ " deactivated, will send event to API...");
-//		} else if (lastEvent == null && triggered) {
-//			Event event = new Event(trigger, false);
-//			ResultsContainer.getInstance().addEvent(runnableProbeId, trigger.getTriggerId(), event);
-//		}
-//	}
+	// public void processTriggerResult(Trigger trigger, boolean triggered) {
+	// Event lastEvent =
+	// ResultsContainer.getInstance().getEvent(getRunnableProbeId(),
+	// trigger.getTriggerId());
+	// if (lastEvent != null && !triggered) {
+	// // if trigger event became true and normal again send event to api
+	// lastEvent.setStatus(true);
+	// lastEvent.setSent(false);
+	// Logit.LogInfo("Trigger " + trigger.getTriggerId() + " of Runnable Probe:
+	// " + getRunnableProbeId()
+	// + " deactivated, will send event to API...");
+	// } else if (lastEvent == null && triggered) {
+	// Event event = new Event(trigger, false);
+	// ResultsContainer.getInstance().addEvent(runnableProbeId,
+	// trigger.getTriggerId(), event);
+	// }
+	// }
 
 	public boolean isSent() {
 		return isSent;
@@ -125,23 +130,24 @@ public class BaseResult implements IResult {
 		this.errorMessage = errorMessage;
 	}
 
-//	private boolean checkForTriggerActivated(Trigger trigger) {
-//		boolean flag = false;
-//		for (TriggerCondition condition : trigger.getCondtions()) {
-//			String x = condition.getxValue();
-//			// Double xNumber = Double.parseDouble(x);
-//			Object[] lastValues = (RunnableProbeContainer.getInstanece().get(this.getRunnableProbeId()))
-//					.getConditionFunction(trigger, condition).get();
-//			for (int i = 0; i < lastValues.length; i++) {
-//				for (Object oneValue : (ArrayList<Object>) lastValues[i]) {
-//					flag = conditionByType(oneValue, x, condition.getCode());
-//					if (!flag)
-//						return false;
-//				}
-//			}
-//		}
-//		return flag;
-//	}
+	// private boolean checkForTriggerActivated(Trigger trigger) {
+	// boolean flag = false;
+	// for (TriggerCondition condition : trigger.getCondtions()) {
+	// String x = condition.getxValue();
+	// // Double xNumber = Double.parseDouble(x);
+	// Object[] lastValues =
+	// (RunnableProbeContainer.getInstanece().get(this.getRunnableProbeId()))
+	// .getConditionFunction(trigger, condition).get();
+	// for (int i = 0; i < lastValues.length; i++) {
+	// for (Object oneValue : (ArrayList<Object>) lastValues[i]) {
+	// flag = conditionByType(oneValue, x, condition.getCode());
+	// if (!flag)
+	// return false;
+	// }
+	// }
+	// }
+	// return flag;
+	// }
 
 	private boolean conditionByType(Object lastValue, String triggerValue, int code) {
 		if (lastValue == null || triggerValue == null)
@@ -242,6 +248,12 @@ public class BaseResult implements IResult {
 		case DTDS:
 			values.add(((DiskResult) this).getStorageSize());
 			break;
+		case DPFDS:
+			values.add(((DiskResult) this).getStorageFreePercentage());
+			break;
+		case DPUDS:
+			values.add(((DiskResult) this).getStorageUsedPercentage());
+			break;
 		case DBI:
 			values.add(((NicResult) this).getInBW());
 			break;
@@ -268,63 +280,64 @@ public class BaseResult implements IResult {
 					.get(((TraceRouteResult) this).getRoutes().size() - 1).get(1));
 			break;
 		case SNMP:
-			if(((SnmpProbe)RunnableProbeContainer.getInstanece().get(this.getRunnableProbeId()).getProbe()).getDataType() == SnmpDataType.Numeric)
+			if (((SnmpProbe) RunnableProbeContainer.getInstanece().get(this.getRunnableProbeId()).getProbe())
+					.getDataType() == SnmpDataType.Numeric)
 				values.add(((SnmpResult) this).getNumData());
 			else
-			values.add(((SnmpResult) this).getData());
+				values.add(((SnmpResult) this).getData());
 			break;
 		case RBL:
 			values.add(((RblResult) this).isIsListed());
 			break;
 		}
-	
+
 		return values;
 	}
-	public XvalueUnit getResultUnit(String elementType)
-	{
+
+	public XvalueUnit getResultUnit(String elementType) {
 		ResultValueType valueType = ResultValueType.valueOf(elementType);
 		switch (valueType) {
-			case WRT:
-				return XvalueUnit.ms;
-			case PRT:
-				return XvalueUnit.ms;
-			case RC:
-				return XvalueUnit.as_is;
-			case PS:
-				return XvalueUnit.B;
-			case WSC:
-				return XvalueUnit.as_is;
-			case PST:
-				return XvalueUnit.as_is;
-			case RTA:
-				return XvalueUnit.ms;
-			case PL:
-				return XvalueUnit.as_is;
-			case DFDS:
-				return XvalueUnit.B;
-			case DUDS:
-				return XvalueUnit.B;
-			case DTDS:
-				return XvalueUnit.B;
-			case DBI:
-				return XvalueUnit.b;
-			case DBO:
-				return XvalueUnit.b;
-			case WSERT:
-				return XvalueUnit.ms;
-			case WAERC:
-				return XvalueUnit.as_is;
-			case TRARHRT:
-				return XvalueUnit.ms;
-			case TRDHRT:
-				return XvalueUnit.ms;
-			case SNMP:
-				RunnableProbe rp=RunnableProbeContainer.getInstanece().get(this.getRunnableProbeId());
-				return ((SnmpProbe)(rp.getProbe())).getUnit();
-//				return XvalueUnit.as_is;
+		case WRT:
+			return XvalueUnit.ms;
+		case PRT:
+			return XvalueUnit.ms;
+		case RC:
+			return XvalueUnit.as_is;
+		case PS:
+			return XvalueUnit.B;
+		case WSC:
+			return XvalueUnit.as_is;
+		case PST:
+			return XvalueUnit.as_is;
+		case RTA:
+			return XvalueUnit.ms;
+		case PL:
+			return XvalueUnit.as_is;
+		case DFDS:
+			return XvalueUnit.B;
+		case DUDS:
+			return XvalueUnit.B;
+		case DTDS:
+			return XvalueUnit.B;
+		case DBI:
+			return XvalueUnit.b;
+		case DBO:
+			return XvalueUnit.b;
+		case WSERT:
+			return XvalueUnit.ms;
+		case WAERC:
+			return XvalueUnit.as_is;
+		case TRARHRT:
+			return XvalueUnit.ms;
+		case TRDHRT:
+			return XvalueUnit.ms;
+		case SNMP:
+			RunnableProbe rp = RunnableProbeContainer.getInstanece().get(this.getRunnableProbeId());
+			return ((SnmpProbe) (rp.getProbe())).getUnit();
+		// return XvalueUnit.as_is;
 
-			case RBL:
-				return XvalueUnit.as_is;
+		case RBL:
+			return XvalueUnit.as_is;
 		}
 
 		return null;

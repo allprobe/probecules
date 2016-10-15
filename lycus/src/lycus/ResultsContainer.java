@@ -153,7 +153,7 @@ public class ResultsContainer implements IResultsContainer {
 					UUID hostId = UUID.fromString(it.split("@")[0]);
 					UUID templateId = UUID.fromString(it.split("@")[1]);
 					String probeId = it.split("@")[2];
-					String triggerId = templateId+"@"+probeId+"@"+UUID.fromString(it.split("@")[3]);
+					String triggerId = templateId + "@" + probeId + "@" + UUID.fromString(it.split("@")[3]);
 
 					String runnableProbeId = GeneralFunctions.getRunnableProbeId(templateId, hostId, probeId);
 					if (runnableProbeId
@@ -162,15 +162,20 @@ public class ResultsContainer implements IResultsContainer {
 
 					long timestamp = Long.parseLong((String) events.get(it));
 
-//					RunnableProbe runnableProbe = RunnableProbeContainer.getInstanece()
-//							.get(GeneralFunctions.getRunnableProbeId(templateId, hostId, probeId));
-//
-//					if (runnableProbe == null) {
-//						Logit.LogWarn(
-//								"Runnable Probe: " + GeneralFunctions.getRunnableProbeId(templateId, hostId, probeId)
-//										+ " for existing live event doesnt exists so doesnt added!");
-//						continue;
-//					}
+					// RunnableProbe runnableProbe =
+					// RunnableProbeContainer.getInstanece()
+					// .get(GeneralFunctions.getRunnableProbeId(templateId,
+					// hostId, probeId));
+					//
+					// if (runnableProbe == null) {
+					// Logit.LogWarn(
+					// "Runnable Probe: " +
+					// GeneralFunctions.getRunnableProbeId(templateId, hostId,
+					// probeId)
+					// + " for existing live event doesnt exists so doesnt
+					// added!");
+					// continue;
+					// }
 
 					Trigger trigger = UsersManager.getTrigger(triggerId);
 
@@ -178,7 +183,8 @@ public class ResultsContainer implements IResultsContainer {
 					event.setTime(timestamp);
 					event.setSent(true);
 
-					addEvent(GeneralFunctions.getRunnableProbeId(templateId.toString(),hostId.toString(),probeId), triggerId, event);
+					addEvent(GeneralFunctions.getRunnableProbeId(templateId.toString(), hostId.toString(), probeId),
+							triggerId, event);
 					// result.getEvents().put(trigger, event);
 				} catch (Exception e) {
 					Logit.LogError("ResultsContainer - pullCurrentLiveEvents()", "Unable to process live event: " + it);
