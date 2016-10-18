@@ -218,22 +218,22 @@ public class RollupsContainer implements IRollupsContainer {
 	}
 
 	private boolean addFinishedRollup(DataPointsRollup dataPointsRollup) {
-
+		synchronized (lockFinishedRollups) {
 		finishedRollups.add(rollupResultsDBFormat(dataPointsRollup));
-		return true;
+		}return true;
 	}
 
 	private boolean addFinishedRollup(DataPointsRollup dataPointsRollup1, DataPointsRollup dataPointsRollup2) {
-
+		synchronized (lockFinishedRollups) {
 		finishedRollups.add(rollupResultsDBFormat(dataPointsRollup1, dataPointsRollup2));
-		return true;
+		}return true;
 	}
 
 	private boolean addFinishedRollup(DataPointsRollup dataPointsRollup1, DataPointsRollup dataPointsRollup2,
 			DataPointsRollup dataPointsRollup3) {
-
+		synchronized (lockFinishedRollups) {
 		finishedRollups.add(rollupResultsDBFormat(dataPointsRollup1, dataPointsRollup2, dataPointsRollup3));
-		return true;
+		}return true;
 	}
 
 	private JSONObject rollupResultsDBFormat(DataPointsRollup dataPointsRollup1, DataPointsRollup dataPointsRollup2) {
