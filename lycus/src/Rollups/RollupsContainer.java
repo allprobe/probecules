@@ -309,6 +309,9 @@ public class RollupsContainer implements IRollupsContainer {
 	private void addSnmpResult(BaseResult result) {
 		SnmpResult snmpResults = (SnmpResult) result;
 
+		if(result.getRunnableProbeId()==null)
+			return;
+		
 		if (result.getRunnableProbeId()
 				.contains("788b1b9e-d753-4dfa-ac46-61c4374eeb84@inner_7be55137-c5d8-438e-bca7-325f56656071"))
 			Logit.LogDebug("BREAKPOINT");
