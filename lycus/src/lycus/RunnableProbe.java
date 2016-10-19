@@ -113,7 +113,7 @@ public class RunnableProbe implements Runnable {
 			BaseResult result = null;
 			try {
 				String rpStr = this.getId();
-				if (rpStr.contains("e339d292-e724-4098-897e-758eeb075978@icmp_91b0eac5-d25c-4d93-a061-66572942ad7f"))
+				if (rpStr.contains("traceroute_0556f87f-6015-498d-8a27-a02086ff521a"))
 					Logit.LogDebug("BREAKPOINT - RunnableProbe");
 
 				// isActive = false will pause the thread

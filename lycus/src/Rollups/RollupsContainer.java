@@ -219,21 +219,24 @@ public class RollupsContainer implements IRollupsContainer {
 
 	private boolean addFinishedRollup(DataPointsRollup dataPointsRollup) {
 		synchronized (lockFinishedRollups) {
-		finishedRollups.add(rollupResultsDBFormat(dataPointsRollup));
-		}return true;
+			finishedRollups.add(rollupResultsDBFormat(dataPointsRollup));
+		}
+		return true;
 	}
 
 	private boolean addFinishedRollup(DataPointsRollup dataPointsRollup1, DataPointsRollup dataPointsRollup2) {
 		synchronized (lockFinishedRollups) {
-		finishedRollups.add(rollupResultsDBFormat(dataPointsRollup1, dataPointsRollup2));
-		}return true;
+			finishedRollups.add(rollupResultsDBFormat(dataPointsRollup1, dataPointsRollup2));
+		}
+		return true;
 	}
 
 	private boolean addFinishedRollup(DataPointsRollup dataPointsRollup1, DataPointsRollup dataPointsRollup2,
 			DataPointsRollup dataPointsRollup3) {
 		synchronized (lockFinishedRollups) {
-		finishedRollups.add(rollupResultsDBFormat(dataPointsRollup1, dataPointsRollup2, dataPointsRollup3));
-		}return true;
+			finishedRollups.add(rollupResultsDBFormat(dataPointsRollup1, dataPointsRollup2, dataPointsRollup3));
+		}
+		return true;
 	}
 
 	private JSONObject rollupResultsDBFormat(DataPointsRollup dataPointsRollup1, DataPointsRollup dataPointsRollup2) {
@@ -309,9 +312,9 @@ public class RollupsContainer implements IRollupsContainer {
 	private void addSnmpResult(BaseResult result) {
 		SnmpResult snmpResults = (SnmpResult) result;
 
-		if(result.getRunnableProbeId()==null)
+		if (result.getRunnableProbeId() == null)
 			return;
-		
+
 		if (result.getRunnableProbeId()
 				.contains("788b1b9e-d753-4dfa-ac46-61c4374eeb84@inner_7be55137-c5d8-438e-bca7-325f56656071"))
 			Logit.LogDebug("BREAKPOINT");

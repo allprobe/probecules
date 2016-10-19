@@ -22,7 +22,7 @@ public class EventTrigger {
 		lastResults.enqueue(result);
 		for (Trigger trigger : probe.getTriggers().values()) {
 			if (trigger.getStatus()) {
-				if (isConditionMet(result,trigger))
+				if (isConditionMet(result, trigger))
 					triggerEvent(trigger);
 				else
 					cancelEvent(trigger);
@@ -32,8 +32,8 @@ public class EventTrigger {
 		return true;
 	}
 
-	private boolean isConditionMet(BaseResult result,Trigger trigger) {
-		return lastResults.isConditionMet(result,trigger);
+	private boolean isConditionMet(BaseResult result, Trigger trigger) {
+		return lastResults.isConditionMet(result, trigger);
 	}
 
 	private boolean triggerEvent(Trigger trigger) {
@@ -47,8 +47,7 @@ public class EventTrigger {
 
 	private boolean cancelEvent(Trigger trigger) {
 
-		Event eventExist = ResultsContainer.getInstance().getEvent(runnableProbeId,
-				trigger.getTriggerId());
+		Event eventExist = ResultsContainer.getInstance().getEvent(runnableProbeId, trigger.getTriggerId());
 		if (eventExist != null) {
 			eventExist.setIsStatus(true);
 			eventExist.setTime(System.currentTimeMillis());

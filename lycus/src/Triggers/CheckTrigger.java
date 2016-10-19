@@ -1,5 +1,6 @@
 package Triggers;
 
+import java.util.ArrayList;
 import java.util.Date;
 import GlobalConstants.Enums.Condition;
 import GlobalConstants.Enums.Function;
@@ -35,36 +36,37 @@ public class CheckTrigger {
 		empty = false;
 	}
 
-	public boolean isConditionMet(BaseResult result,Trigger trigger) {
+	public boolean isConditionMet(BaseResult result, Trigger trigger) {
 		for (TriggerCondition triggerCondition : trigger.getCondtions()) {
 			Double xValue = getDouble(triggerCondition.getxValue());
 
-			XvalueUnit resultUnit=result.getResultUnit(triggerCondition.getElementType().toString());
+			XvalueUnit resultUnit = result.getResultUnit(triggerCondition.getElementType().toString());
 
 			if (triggerCondition.getFunction() == Function.none) {
-				if (!isNoFunctionConditionMet(resultUnit,triggerCondition, xValue))
+				if (!isNoFunctionConditionMet(resultUnit, triggerCondition, xValue))
 					return false;
 			} else if (triggerCondition.getFunction() == Function.delta) {
 				Double delta = getDelta(triggerCondition.getElementType().toString());
 				if (delta == null)
 					return false;
-				if (!isCondition(delta,resultUnit, triggerCondition.getCondition(), xValue, triggerCondition.getXvalueUnit()))
+				if (!isCondition(delta, resultUnit, triggerCondition.getCondition(), xValue,
+						triggerCondition.getXvalueUnit()))
 					return false;
 			} else if (triggerCondition.getFunction() == Function.max) {
-				if (!isMaxConditionMet(resultUnit,triggerCondition, xValue))
+				if (!isMaxConditionMet(resultUnit, triggerCondition, xValue))
 					return false;
 			} else if (triggerCondition.getFunction() == Function.avg) {
-				if (!isAvgConditionMet(resultUnit,triggerCondition, xValue))
+				if (!isAvgConditionMet(resultUnit, triggerCondition, xValue))
 					return false;
 			} else if (triggerCondition.getFunction() == Function.delta_avg) {
-				if (!isDeltaAvgConditionMet(resultUnit,triggerCondition, xValue))
+				if (!isDeltaAvgConditionMet(resultUnit, triggerCondition, xValue))
 					return false;
 			}
 		}
 		return true;
 	}
 
-	private boolean isMaxConditionMet(XvalueUnit resultUnit,TriggerCondition triggerCondition, Double xValue) {
+	private boolean isMaxConditionMet(XvalueUnit resultUnit, TriggerCondition triggerCondition, Double xValue) {
 		LastN lastN = getLast(triggerCondition);
 		if (!lastN.isEnoughElements())
 			return false;
@@ -83,10 +85,10 @@ public class CheckTrigger {
 			nValue--;
 		}
 
-		return isCondition(max,resultUnit, triggerCondition.getCondition(), xValue, triggerCondition.getXvalueUnit());
+		return isCondition(max, resultUnit, triggerCondition.getCondition(), xValue, triggerCondition.getXvalueUnit());
 	}
 
-	private boolean isAvgConditionMet(XvalueUnit resultUnit,TriggerCondition triggerCondition, Double xValue) {
+	private boolean isAvgConditionMet(XvalueUnit resultUnit, TriggerCondition triggerCondition, Double xValue) {
 		LastN lastN = getLast(triggerCondition);
 		if (!lastN.isEnoughElements())
 			return false;
@@ -103,11 +105,11 @@ public class CheckTrigger {
 			nValue--;
 		}
 
-		return isCondition(sum / lastN.getElementCount(),resultUnit, triggerCondition.getCondition(), xValue,
+		return isCondition(sum / lastN.getElementCount(), resultUnit, triggerCondition.getCondition(), xValue,
 				triggerCondition.getXvalueUnit());
 	}
 
-	private boolean isDeltaAvgConditionMet(XvalueUnit resultUnit,TriggerCondition triggerCondition, Double xValue) {
+	private boolean isDeltaAvgConditionMet(XvalueUnit resultUnit, TriggerCondition triggerCondition, Double xValue) {
 		LastN lastN = getLast(triggerCondition);
 		if (!lastN.isEnoughElements())
 			return false;
@@ -126,48 +128,75 @@ public class CheckTrigger {
 
 		double delta_avg = sum / lastN.getElementCount() - (double) getQueue()[getTail()]
 				.getResultElementValue(triggerCondition.getElementType().toString()).get(0);
-		return isCondition(delta_avg,resultUnit, triggerCondition.getCondition(), xValue, triggerCondition.getXvalueUnit());
+		return isCondition(delta_avg, resultUnit, triggerCondition.getCondition(), xValue,
+				triggerCondition.getXvalueUnit());
 	}
 
-	private boolean isNoFunctionConditionMet(XvalueUnit resultUnit,TriggerCondition triggerCondition, Double xValue) {
+	private boolean isNoFunctionConditionMet(XvalueUnit resultUnit, TriggerCondition triggerCondition, Double xValue) {
 		LastN lastN = getLast(triggerCondition);
 		if (!lastN.isEnoughElements())
 			return false;
 		Object result = lastN.getNextResult(triggerCondition.getElementType().toString());
 		int nValue = lastN.getElementCount();
 
-		while (nValue > 0) {
-			if (result == null || xValue == null)
-				return false;
-
-			if (!(result instanceof Double) && !(result instanceof Integer)) {
-				if (!isCondition(result.toString(), triggerCondition.getCondition(), triggerCondition.getxValue(),
-						triggerCondition.getXvalueUnit()))
+		if (!(result instanceof ArrayList)) {
+			while (nValue > 0) {
+				if (result == null || xValue == null)
 					return false;
 
-			} else {
-				if (!isCondition(Double.parseDouble(result.toString()),resultUnit, triggerCondition.getCondition(), xValue,
-						triggerCondition.getXvalueUnit()))
-					return false;
+				if (!(result instanceof Double) && !(result instanceof Integer)) {
+					if (!isCondition(result.toString(), triggerCondition.getCondition(), triggerCondition.getxValue(),
+							triggerCondition.getXvalueUnit()))
+						return false;
+
+				} else {
+					if (!isCondition(Double.parseDouble(result.toString()), resultUnit, triggerCondition.getCondition(),
+							xValue, triggerCondition.getXvalueUnit()))
+						return false;
+				}
+
+				nValue--;
+				result = lastN.getNextResult(triggerCondition.getElementType().toString());
 			}
+		} else {
+			while (nValue > 0) {
+				if (result == null || xValue == null)
+					return false;
 
-			nValue--;
-			result = lastN.getNextResult(triggerCondition.getElementType().toString());
+				ArrayList<Object> resultsArray = (ArrayList<Object>) result;
+				for (Object oneResult : resultsArray) {
+
+					if (!(oneResult instanceof Double) && !(oneResult instanceof Integer)) {
+						if (isCondition(oneResult.toString(), triggerCondition.getCondition(),
+								triggerCondition.getxValue(), triggerCondition.getXvalueUnit()))
+							return true;
+
+					} else {
+						if (isCondition(Double.parseDouble(oneResult.toString()), resultUnit,
+								triggerCondition.getCondition(), xValue, triggerCondition.getXvalueUnit()))
+							return true;
+					}
+
+				}
+				nValue--;
+				result = lastN.getNextResult(triggerCondition.getElementType().toString());
+			}
 		}
-
 		return true;
+
 	}
 
-	private boolean isCondition(Double result,XvalueUnit resultUnit, Condition condition, double xValue, XvalueUnit xvalueUnit) {
+	private boolean isCondition(Double result, XvalueUnit resultUnit, Condition condition, double xValue,
+			XvalueUnit xvalueUnit) {
 		switch (condition) {
 		case bigger:
-			return xvalueUnit.getBasic(result,resultUnit) > xvalueUnit.getBasic( xValue, xvalueUnit);
+			return xvalueUnit.getBasic(result, resultUnit) > xvalueUnit.getBasic(xValue, xvalueUnit);
 		case equal:
-			return xvalueUnit.getBasic(result,resultUnit) == xvalueUnit.getBasic( xValue, xvalueUnit);
+			return xvalueUnit.getBasic(result, resultUnit) == xvalueUnit.getBasic(xValue, xvalueUnit);
 		case tinier:
-			return xvalueUnit.getBasic(result,resultUnit) < xvalueUnit.getBasic(xValue, xvalueUnit);
+			return xvalueUnit.getBasic(result, resultUnit) < xvalueUnit.getBasic(xValue, xvalueUnit);
 		case not_equal:
-			return xvalueUnit.getBasic(result,resultUnit) != xvalueUnit.getBasic( xValue, xvalueUnit);
+			return xvalueUnit.getBasic(result, resultUnit) != xvalueUnit.getBasic(xValue, xvalueUnit);
 		}
 		return false;
 	}
@@ -227,7 +256,7 @@ public class CheckTrigger {
 				previousResult = getQueue()[getTail() - 1];
 				if (lastResult == null || previousResult == null)
 					return null;
-				
+
 				return (double) lastResult.getResultElementValue(elementType).get(0)
 						- (double) previousResult.getResultElementValue(elementType).get(0);
 			}
@@ -252,8 +281,6 @@ public class CheckTrigger {
 	//
 	// return sum / Math.abs(lastN.getTail() - lastN.getHead() + 1);
 	// }
-
-
 
 	public int getSize() {
 		return size;
@@ -361,11 +388,20 @@ class LastN {
 			return null;
 
 		this.elementsPopped--;
-		if (queue[cur] == null || 
-				(queue[cur] != null && queue[cur] instanceof SnmpResult && ((SnmpResult)queue[cur]).getData() != null && ((SnmpResult)queue[cur]).getData().startsWith("WRONG_"))) // cur is the new pointer to the array index
-								// that havent been intialized yet
+		if (queue[cur] == null || (queue[cur] != null && queue[cur] instanceof SnmpResult
+				&& ((SnmpResult) queue[cur]).getData() != null
+				&& ((SnmpResult) queue[cur]).getData().startsWith("WRONG_"))) // cur
+																				// is
+																				// the
+																				// new
+																				// pointer
+																				// to
+																				// the
+																				// array
+																				// index
+			// that havent been intialized yet
 			return null;
-		return queue[cur].getResultElementValue(elementType).get(0);
+		return queue[cur].getResultElementValue(elementType);
 	}
 
 	public int getElementCount() {
