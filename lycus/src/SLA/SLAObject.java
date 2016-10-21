@@ -2,8 +2,8 @@ package SLA;
 
 public class SLAObject {
 	private int count;
-	private int sum;
-	private int dailySum;
+	private double sum;
+	private double dailySum;
 	private int dailyCount;
 
 	public SLAObject() {
@@ -25,11 +25,11 @@ public class SLAObject {
 		return true;
 	}
 
-	private int getSum() {
+	private double getSum() {
 		return sum;
 	}
 
-	private void setSum(int percentage) {
+	private void setSum(double percentage) {
 		this.sum = percentage;
 	}
 
