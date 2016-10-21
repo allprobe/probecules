@@ -1,12 +1,9 @@
 package Updates;
 
-import java.util.HashMap;
 import java.util.UUID;
 import java.util.concurrent.ConcurrentHashMap;
-
 import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
-
 import DAL.DAL;
 import GlobalConstants.Constants;
 import GlobalConstants.Enums.ApiAction;
@@ -123,25 +120,6 @@ public class ProbeUpdate extends BaseUpdate {
 		}
 		return true;
 	}
-
-	// private boolean ChangeInterval(long currentInterval) {
-	// try {
-	// if (currentInterval != getUpdate().update_value.interval) {
-	// HashMap<String, RunnableProbe> runnableProbes =
-	// RunnableProbeContainer.getInstanece()
-	// .getByProbe(getUpdate().probe_id);
-	// if (runnableProbes == null)
-	// return false;
-	// for (RunnableProbe runnableProbe : runnableProbes.values()) {
-	// RunnableProbeContainer.getInstanece().changeInterval(runnableProbe.getId(),
-	// currentInterval);
-	// }
-	// }
-	// return true;
-	// } catch (Exception e) {
-	// return false;
-	// }
-	// }
 
 	@Override
 	public Boolean Update() {

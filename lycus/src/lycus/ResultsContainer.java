@@ -311,6 +311,8 @@ public class ResultsContainer implements IResultsContainer {
 				String triggerId = triggerEvent.getKey();
 				Event event = triggerEvent.getValue();
 				RunnableProbe runnableProbe = RunnableProbeContainer.getInstanece().get(runnableProbeId);
+				if (runnableProbe == null)
+					continue;
 				Trigger trigger = runnableProbe.getProbe().getTrigger(triggerId);
 				try {
 					String rpStr = runnableProbeId;
