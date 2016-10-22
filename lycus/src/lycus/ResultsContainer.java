@@ -162,21 +162,6 @@ public class ResultsContainer implements IResultsContainer {
 
 					long timestamp = Long.parseLong((String) events.get(it));
 
-					// RunnableProbe runnableProbe =
-					// RunnableProbeContainer.getInstanece()
-					// .get(GeneralFunctions.getRunnableProbeId(templateId,
-					// hostId, probeId));
-					//
-					// if (runnableProbe == null) {
-					// Logit.LogWarn(
-					// "Runnable Probe: " +
-					// GeneralFunctions.getRunnableProbeId(templateId, hostId,
-					// probeId)
-					// + " for existing live event doesnt exists so doesnt
-					// added!");
-					// continue;
-					// }
-
 					Trigger trigger = UsersManager.getTrigger(triggerId);
 
 					Event event = new Event(trigger);
@@ -310,10 +295,11 @@ public class ResultsContainer implements IResultsContainer {
 			for (Map.Entry<String, Event> triggerEvent : runnableProbeEvents.entrySet()) {
 				String triggerId = triggerEvent.getKey();
 				Event event = triggerEvent.getValue();
+				
+				Trigger trigger = null;
 				RunnableProbe runnableProbe = RunnableProbeContainer.getInstanece().get(runnableProbeId);
-				if (runnableProbe == null)
-					continue;
-				Trigger trigger = runnableProbe.getProbe().getTrigger(triggerId);
+				if (runnableProbe != null)
+					trigger = runnableProbe.getProbe().getTrigger(triggerId);
 				try {
 					String rpStr = runnableProbeId;
 					if (rpStr.contains(
@@ -321,7 +307,7 @@ public class ResultsContainer implements IResultsContainer {
 						Logit.LogDebug("BREAKPOINT");
 
 					if (!event.isSent() || (event.isSent() && event.getIsStatus())) {
-						HashMap<String, HashMap<String, String>> sendingEvents = eventDBFormat(triggerId, event,
+						HashMap<String, HashMap<String, String>> sendingEvents = eventDBFormat(runnableProbeId, triggerId, event,
 								runnableProbe, trigger);
 
 						eventsToSend.add(sendingEvents);
@@ -355,24 +341,33 @@ public class ResultsContainer implements IResultsContainer {
 		}
 	}
 
-	private HashMap<String, HashMap<String, String>> eventDBFormat(String triggerId, Event event,
+	private HashMap<String, HashMap<String, String>> eventDBFormat(String runnableProbeId, String triggerId, Event event,
 			RunnableProbe runnableProbe, Trigger trigger) {
 		HashMap<String, HashMap<String, String>> sendingEvents = new HashMap<String, HashMap<String, String>>();
 		HashMap<String, String> eventValues = new HashMap<String, String>();
 		eventValues.put("trigger_id", triggerId);
-		eventValues.put("host_id", runnableProbe.getHost().getHostId().toString());
-		eventValues.put("host_name", runnableProbe.getHost().getName());
-		eventValues.put("user_id", runnableProbe.getProbe().getUser().getUserId().toString());
-		eventValues.put("trigger_name", trigger.getName());
-		eventValues.put("trigger_severity", trigger.getSvrty().toString());
 		eventValues.put("event_timestamp", String.valueOf(event.getTime()));
 		eventValues.put("event_status", String.valueOf(event.getIsStatus()));
-		eventValues.put("host_bucket", runnableProbe.getHost().getBucket());
-		if (runnableProbe.getHost().getNotificationGroups() != null)
-			eventValues.put("host_notifs_groups", runnableProbe.getHost().getNotificationGroups().toString());
-		else
-			eventValues.put("host_notifs_groups", null);
-		sendingEvents.put(runnableProbe.getId(), eventValues);
+		
+		if (trigger != null)
+		{
+			eventValues.put("trigger_name", trigger.getName());
+			eventValues.put("trigger_severity", trigger.getSvrty().toString());
+		}
+		
+		if (runnableProbe != null)
+		{
+			eventValues.put("host_id", runnableProbe.getHost().getHostId().toString());
+			eventValues.put("host_name", runnableProbe.getHost().getName());
+			eventValues.put("user_id", runnableProbe.getProbe().getUser().getUserId().toString());
+			eventValues.put("host_bucket", runnableProbe.getHost().getBucket());
+			if (runnableProbe.getHost().getNotificationGroups() != null)
+				eventValues.put("host_notifs_groups", runnableProbe.getHost().getNotificationGroups().toString());
+			else
+				eventValues.put("host_notifs_groups", null);
+		}
+		
+		sendingEvents.put(runnableProbeId, eventValues);
 		return sendingEvents;
 	}
 }
