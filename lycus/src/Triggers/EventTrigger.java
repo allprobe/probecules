@@ -5,6 +5,7 @@ import Probes.BaseProbe;
 import Results.BaseResult;
 import lycus.Event;
 import lycus.ResultsContainer;
+import lycus.RunnableProbe;
 import lycus.RunnableProbeContainer;
 
 public class EventTrigger {
@@ -39,7 +40,8 @@ public class EventTrigger {
 	private boolean triggerEvent(Trigger trigger) {
 		Event eventExist = ResultsContainer.getInstance().getEvent(runnableProbeId, trigger.getTriggerId());
 		if (eventExist == null) {
-			Event event = new Event(trigger);
+			RunnableProbe runnableProbe = RunnableProbeContainer.getInstanece().get(runnableProbeId);
+			Event event = new Event(trigger.getTriggerId(), runnableProbe.getProbe().getUser().getUserId().toString(), runnableProbe.getHost().getBucket());
 			ResultsContainer.getInstance().addEvent(runnableProbeId, trigger.getTriggerId(), event);
 		}
 		return true;

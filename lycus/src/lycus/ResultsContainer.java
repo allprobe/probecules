@@ -150,9 +150,11 @@ public class ResultsContainer implements IResultsContainer {
 				String it = (String) iterator.next();
 
 				try {
-					UUID hostId = UUID.fromString(it.split("@")[0]);
-					UUID templateId = UUID.fromString(it.split("@")[1]);
-					String probeId = it.split("@")[2];
+					String userId = it.split("@")[0];
+					String bucketId = it.split("@")[1];
+					UUID hostId = UUID.fromString(it.split("@")[2]);
+					UUID templateId = UUID.fromString(it.split("@")[3]);
+					String probeId = it.split("@")[4];
 					String triggerId = templateId + "@" + probeId + "@" + UUID.fromString(it.split("@")[3]);
 
 					String runnableProbeId = GeneralFunctions.getRunnableProbeId(templateId, hostId, probeId);
@@ -160,14 +162,20 @@ public class ResultsContainer implements IResultsContainer {
 							.contains("e339d292-e724-4098-897e-758eeb075978@icmp_91b0eac5-d25c-4d93-a061-66572942ad7f"))
 						Logit.LogDebug("BREAKPOINT");
 
+					RunnableProbe runnableProbe = RunnableProbeContainer.getInstanece().get(runnableProbeId);
 					long timestamp = Long.parseLong((String) events.get(it));
+//					Trigger trigger = UsersManager.getTrigger(triggerId);
 
-					Trigger trigger = UsersManager.getTrigger(triggerId);
-
-					Event event = new Event(trigger);
+					Event event = new Event(triggerId, userId, bucketId);
 					event.setTime(timestamp);
 					event.setSent(true);
 
+					if (runnableProbe == null)
+					{
+						event.setIsStatus(true);
+						event.setDeleted(true);
+					}
+					
 					addEvent(GeneralFunctions.getRunnableProbeId(templateId.toString(), hostId.toString(), probeId),
 							triggerId, event);
 					// result.getEvents().put(trigger, event);
@@ -348,6 +356,11 @@ public class ResultsContainer implements IResultsContainer {
 		eventValues.put("trigger_id", triggerId);
 		eventValues.put("event_timestamp", String.valueOf(event.getTime()));
 		eventValues.put("event_status", String.valueOf(event.getIsStatus()));
+		eventValues.put("user_id", event.getUserId());
+		eventValues.put("host_bucket", event.getBucketId());
+		
+		if (event.isDeleted())
+			eventValues.put("remove_object", "true");
 		
 		if (trigger != null)
 		{
@@ -359,8 +372,8 @@ public class ResultsContainer implements IResultsContainer {
 		{
 			eventValues.put("host_id", runnableProbe.getHost().getHostId().toString());
 			eventValues.put("host_name", runnableProbe.getHost().getName());
-			eventValues.put("user_id", runnableProbe.getProbe().getUser().getUserId().toString());
-			eventValues.put("host_bucket", runnableProbe.getHost().getBucket());
+//			eventValues.put("user_id", runnableProbe.getProbe().getUser().getUserId().toString());
+//			eventValues.put("host_bucket", runnableProbe.getHost().getBucket());
 			if (runnableProbe.getHost().getNotificationGroups() != null)
 				eventValues.put("host_notifs_groups", runnableProbe.getHost().getNotificationGroups().toString());
 			else
