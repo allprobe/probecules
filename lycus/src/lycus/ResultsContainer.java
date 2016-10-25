@@ -155,7 +155,7 @@ public class ResultsContainer implements IResultsContainer {
 					UUID hostId = UUID.fromString(it.split("@")[2]);
 					UUID templateId = UUID.fromString(it.split("@")[3]);
 					String probeId = it.split("@")[4];
-					String triggerId = templateId + "@" + probeId + "@" + UUID.fromString(it.split("@")[3]);
+					String triggerId = templateId + "@" + probeId + "@" + it.split("@")[5];
 
 					String runnableProbeId = GeneralFunctions.getRunnableProbeId(templateId, hostId, probeId);
 					if (runnableProbeId
@@ -176,8 +176,7 @@ public class ResultsContainer implements IResultsContainer {
 						event.setDeleted(true);
 					}
 					
-					addEvent(GeneralFunctions.getRunnableProbeId(templateId.toString(), hostId.toString(), probeId),
-							triggerId, event);
+					addEvent(runnableProbeId, triggerId, event);
 					 
 				} catch (Exception e) {
 					Logit.LogError("ResultsContainer - pullCurrentLiveEvents()", "Unable to process live event: " + it);
