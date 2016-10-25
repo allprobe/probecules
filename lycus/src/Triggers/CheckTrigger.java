@@ -139,50 +139,25 @@ public class CheckTrigger {
 		Object result = lastN.getNextResult(triggerCondition.getElementType().toString());
 		int nValue = lastN.getElementCount();
 
-		if (!(result instanceof ArrayList)) {
-			while (nValue > 0) {
-				if (result == null || xValue == null)
-					return false;
-
-				if (!(result instanceof Double) && !(result instanceof Integer)) {
-					if (!isCondition(result.toString(), triggerCondition.getCondition(), triggerCondition.getxValue(),
+		while (nValue > 0) {
+			if (result == null || xValue == null)
+				return false;
+			for (Object oneResult : (ArrayList<Object>) result) {
+				if (!(oneResult instanceof Double) && !(oneResult instanceof Integer)) {
+					if (isCondition(oneResult.toString(), triggerCondition.getCondition(), triggerCondition.getxValue(),
 							triggerCondition.getXvalueUnit()))
-						return false;
+						return true;
 
 				} else {
-					if (!isCondition(Double.parseDouble(result.toString()), resultUnit, triggerCondition.getCondition(),
-							xValue, triggerCondition.getXvalueUnit()))
-						return false;
+					if (isCondition(Double.parseDouble(oneResult.toString()), resultUnit,
+							triggerCondition.getCondition(), xValue, triggerCondition.getXvalueUnit()))
+						return true;
 				}
-
-				nValue--;
-				result = lastN.getNextResult(triggerCondition.getElementType().toString());
 			}
-		} else {
-			while (nValue > 0) {
-				if (result == null || xValue == null)
-					return false;
-
-				ArrayList<Object> resultsArray = (ArrayList<Object>) result;
-				for (Object oneResult : resultsArray) {
-
-					if (!(oneResult instanceof Double) && !(oneResult instanceof Integer)) {
-						if (isCondition(oneResult.toString(), triggerCondition.getCondition(),
-								triggerCondition.getxValue(), triggerCondition.getXvalueUnit()))
-							return true;
-
-					} else {
-						if (isCondition(Double.parseDouble(oneResult.toString()), resultUnit,
-								triggerCondition.getCondition(), xValue, triggerCondition.getXvalueUnit()))
-							return true;
-					}
-
-				}
-				nValue--;
-				result = lastN.getNextResult(triggerCondition.getElementType().toString());
-			}
+			nValue--;
+			result = lastN.getNextResult(triggerCondition.getElementType().toString());
 		}
-		return true;
+		return false;
 
 	}
 
