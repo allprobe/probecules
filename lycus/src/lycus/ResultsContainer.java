@@ -356,6 +356,7 @@ public class ResultsContainer implements IResultsContainer {
 		eventValues.put("event_timestamp", String.valueOf(event.getTime()));
 		eventValues.put("event_status", String.valueOf(event.getIsStatus()));
 		eventValues.put("user_id", event.getUserId());
+		eventValues.put("host_id", runnableProbeId.split("@")[1]);
 		eventValues.put("host_bucket", event.getBucketId());
 		
 		if (event.isDeleted())
@@ -372,7 +373,6 @@ public class ResultsContainer implements IResultsContainer {
 		
 		if (runnableProbe != null)
 		{
-			eventValues.put("host_id", runnableProbe.getHost().getHostId().toString());
 			eventValues.put("host_name", runnableProbe.getHost().getName());
 //			eventValues.put("user_id", runnableProbe.getProbe().getUser().getUserId().toString());
 //			eventValues.put("host_bucket", runnableProbe.getHost().getBucket());
