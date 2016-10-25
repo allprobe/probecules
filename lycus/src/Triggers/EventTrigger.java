@@ -52,7 +52,7 @@ public class EventTrigger {
 		Event eventExist = ResultsContainer.getInstance().getEvent(runnableProbeId, trigger.getTriggerId());
 		if (eventExist != null) {
 			eventExist.setIsStatus(true);
-			eventExist.setTime(System.currentTimeMillis());
+//			eventExist.setTime(System.currentTimeMillis());
 		}
 		return true;
 	}

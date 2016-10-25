@@ -178,7 +178,7 @@ public class ResultsContainer implements IResultsContainer {
 					
 					addEvent(GeneralFunctions.getRunnableProbeId(templateId.toString(), hostId.toString(), probeId),
 							triggerId, event);
-					// result.getEvents().put(trigger, event);
+					 
 				} catch (Exception e) {
 					Logit.LogError("ResultsContainer - pullCurrentLiveEvents()", "Unable to process live event: " + it);
 					Logit.LogError("ResultsContainer - pullCurrentLiveEvents()", "E: " + e.getMessage());
@@ -360,7 +360,10 @@ public class ResultsContainer implements IResultsContainer {
 		eventValues.put("host_bucket", event.getBucketId());
 		
 		if (event.isDeleted())
+		{
 			eventValues.put("remove_object", "true");
+			eventValues.put("origin_timestamp", String.valueOf(event.getOriginalTimeStamp()));
+		}
 		
 		if (trigger != null)
 		{
