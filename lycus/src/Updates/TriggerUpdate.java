@@ -10,6 +10,7 @@ import Utils.GeneralFunctions;
 import Utils.Logit;
 import Triggers.Trigger;
 import Triggers.TriggerCondition;
+import lycus.ResultsContainer;
 import lycus.RunnableProbe;
 import lycus.RunnableProbeContainer;
 import lycus.UsersManager;
@@ -50,6 +51,7 @@ public class TriggerUpdate extends BaseUpdate {
 		
 		if (GeneralFunctions.isChanged(trigger.getName(), getUpdate().update_value.name)) {
 			trigger.setName(getUpdate().update_value.name);
+			ResultsContainer.getInstance().resendEvents(trigger.getTriggerId());
 			Logit.LogCheck(
 					"Name for trigger " + getUpdate().update_value.id + " has changed to " + getUpdate().update_value.name);
 		}
@@ -64,6 +66,7 @@ public class TriggerUpdate extends BaseUpdate {
 		
 		if (GeneralFunctions.isChanged(trigger.getSvrty().toString().toLowerCase(), getUpdate().update_value.severity)) {
 			trigger.setSvrty(UsersManager.getTriggerSev(getUpdate().update_value.severity));
+			ResultsContainer.getInstance().resendEvents(trigger.getTriggerId());
 			Logit.LogCheck("Severity for trigger " + getUpdate().update_value.id + " has changed to "
 					+ getUpdate().update_value.severity);
 		}

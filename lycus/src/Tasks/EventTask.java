@@ -15,7 +15,7 @@ public class EventTask extends BaseTask {
 	public void run() {
 		try {
 			ResultsContainer resultsContainer = ResultsContainer.getInstance();
-			String events = resultsContainer.getEvents();
+			String events = resultsContainer.getEventsPerRunnableProbe();
 
 			if (events != null && events.length() > 2) {
 				Logit.LogInfo("Sending events to API...");

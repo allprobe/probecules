@@ -24,14 +24,14 @@ import Utils.Logit;
 public class ResultsContainer implements IResultsContainer {
 	private static ResultsContainer instance;
 	private List<BaseResult> results;
-	private ConcurrentHashMap<String, ConcurrentHashMap<String, Event>> events; // HashMap<runnableProbeId,
-
+	private ConcurrentHashMap<String, ConcurrentHashMap<String, Event>> eventsPerRunnableProbe; // HashMap<runnableProbeId,HashMap<triggerId,event>>
+//	private ConcurrentHashMap<String, ConcurrentHashMap<String, Event>> eventsPerTrigger; // HashMap<triggerId,HashMap<runnableProbeId,event>>
 	private Object lockResults = new Object();
 	private Object lockEvents = new Object();
 
 	private ResultsContainer() {
 		results = new ArrayList<BaseResult>();
-		events = new ConcurrentHashMap<String, ConcurrentHashMap<String, Event>>();
+		eventsPerRunnableProbe = new ConcurrentHashMap<String, ConcurrentHashMap<String, Event>>();
 	}
 
 	public static ResultsContainer getInstance() {
@@ -41,27 +41,27 @@ public class ResultsContainer implements IResultsContainer {
 	}
 
 	public Event getEvent(String runnableProbeId, String triggerId) {
-		ConcurrentHashMap<String, Event> runnableProbeEvents = events.get(runnableProbeId);
+		ConcurrentHashMap<String, Event> runnableProbeEvents = eventsPerRunnableProbe.get(runnableProbeId);
 		if (runnableProbeEvents == null)
 			return null;
 		return runnableProbeEvents.get(triggerId);
 	}
 
 	public ConcurrentHashMap<String, Event> getEvent(String runnableProbeId) {
-		return events.get(runnableProbeId);
+		return eventsPerRunnableProbe.get(runnableProbeId);
 	}
 
 	public boolean addEvent(String runnableProbeId, String triggerId, Event event) {
 		ConcurrentHashMap<String, Event> runnableProbeEvents = null;
-		if (events.containsKey(runnableProbeId)) {
-			runnableProbeEvents = events.get(runnableProbeId);
+		if (eventsPerRunnableProbe.containsKey(runnableProbeId)) {
+			runnableProbeEvents = eventsPerRunnableProbe.get(runnableProbeId);
 			if (!runnableProbeEvents.containsKey(triggerId))
 				runnableProbeEvents.put(triggerId, event);
 		} else {
 			runnableProbeEvents = new ConcurrentHashMap<String, Event>();
 			runnableProbeEvents.put(triggerId, event);
 			synchronized (lockEvents) {
-				events.put(runnableProbeId, runnableProbeEvents);
+				eventsPerRunnableProbe.put(runnableProbeId, runnableProbeEvents);
 			}
 		}
 		return true;
@@ -69,8 +69,8 @@ public class ResultsContainer implements IResultsContainer {
 
 	public boolean removeEvent(String runnableProbeId, String triggerId) {
 		ConcurrentHashMap<String, Event> runnableProbeEvents = null;
-		if (events.containsKey(runnableProbeId))
-			runnableProbeEvents = events.get(runnableProbeId);
+		if (eventsPerRunnableProbe.containsKey(runnableProbeId))
+			runnableProbeEvents = eventsPerRunnableProbe.get(runnableProbeId);
 
 		synchronized (lockEvents) {
 			runnableProbeEvents.remove(triggerId);
@@ -87,7 +87,7 @@ public class ResultsContainer implements IResultsContainer {
 	}
 
 	private void eventsClear() {
-		for (Map.Entry<String, ConcurrentHashMap<String, Event>> runnableProbeEvents : events.entrySet()) {
+		for (Map.Entry<String, ConcurrentHashMap<String, Event>> runnableProbeEvents : eventsPerRunnableProbe.entrySet()) {
 			// String runnableProbeId = runnableProbeEvents.getKey();
 			for (Map.Entry<String, Event> triggerEvent : runnableProbeEvents.getValue().entrySet()) {
 				String triggerId = triggerEvent.getKey();
@@ -291,10 +291,9 @@ public class ResultsContainer implements IResultsContainer {
 	// return RollupsContainer.getInstance().getAllFinsihedRollups();
 	// }
 
-	@Override
-	public String getEvents() {
+	public String getEventsPerRunnableProbe() {
 		ArrayList<HashMap<String, HashMap<String, String>>> eventsToSend = new ArrayList<HashMap<String, HashMap<String, String>>>();
-		for (Map.Entry<String, ConcurrentHashMap<String, Event>> runnableProbeEventsEntry : events.entrySet()) {
+		for (Map.Entry<String, ConcurrentHashMap<String, Event>> runnableProbeEventsEntry : eventsPerRunnableProbe.entrySet()) {
 			String runnableProbeId = runnableProbeEventsEntry.getKey();
 
 			ConcurrentHashMap<String, Event> runnableProbeEvents = runnableProbeEventsEntry.getValue();
@@ -333,7 +332,7 @@ public class ResultsContainer implements IResultsContainer {
 	}
 
 	public void cleanEvents() {
-		for (Map.Entry<String, ConcurrentHashMap<String, Event>> runnableProbeEventsEntry : events.entrySet()) {
+		for (Map.Entry<String, ConcurrentHashMap<String, Event>> runnableProbeEventsEntry : eventsPerRunnableProbe.entrySet()) {
 			String runnableProbeId = runnableProbeEventsEntry.getKey();
 
 			ConcurrentHashMap<String, Event> runnableProbeEvents = runnableProbeEventsEntry.getValue();
@@ -341,7 +340,7 @@ public class ResultsContainer implements IResultsContainer {
 				Event event = triggerEvent.getValue();
 				if (event.isSent() && event.getIsStatus()) {
 					synchronized (lockEvents) {
-						this.events.get(runnableProbeId).remove(triggerEvent.getKey());
+						this.eventsPerRunnableProbe.get(runnableProbeId).remove(triggerEvent.getKey());
 					}
 				}
 			}
@@ -385,4 +384,15 @@ public class ResultsContainer implements IResultsContainer {
 		sendingEvents.put(runnableProbeId, eventValues);
 		return sendingEvents;
 	}
+
+    public void resendEvents(String triggerId) {
+		for(ConcurrentHashMap<String,Event> events:eventsPerRunnableProbe.values())
+		{
+			if(events.containsKey(triggerId))
+			{
+				events.get(triggerId).setTime(System.currentTimeMillis());
+				events.get(triggerId).setSent(false);
+			}
+		}
+    }
 }
