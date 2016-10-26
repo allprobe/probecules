@@ -357,7 +357,8 @@ public class ResultsContainer implements IResultsContainer {
 		eventValues.put("user_id", event.getUserId());
 		eventValues.put("host_id", runnableProbeId.split("@")[1]);
 		eventValues.put("host_bucket", event.getBucketId());
-		
+		eventValues.put("extra_info", event.getExtraInfo());
+
 		if (event.isDeleted())
 		{
 			eventValues.put("remove_object", "true");
@@ -385,13 +386,14 @@ public class ResultsContainer implements IResultsContainer {
 		return sendingEvents;
 	}
 
-    public void resendEvents(String triggerId) {
+    public void resendEvents(String triggerId,String eventInfo) {
 		for(ConcurrentHashMap<String,Event> events:eventsPerRunnableProbe.values())
 		{
 			if(events.containsKey(triggerId))
 			{
-				events.get(triggerId).setTime(System.currentTimeMillis());
+//				events.get(triggerId).setTime(System.currentTimeMillis());
 				events.get(triggerId).setSent(false);
+				events.get(triggerId).setExtraInfo(eventInfo);
 			}
 		}
     }

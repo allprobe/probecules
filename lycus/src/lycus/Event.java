@@ -9,7 +9,7 @@ public class Event {
 	private String bucketId;
 	private boolean isDeleted;
 	private long originalTimeStamp;     
-	
+	private String extraInfo;
 	
 	public Event(String triggerId, String userId, String bucketId) {
 		this.triggerId = triggerId;
@@ -84,5 +84,13 @@ public class Event {
 
 	public Long getOriginalTimeStamp() {
 		return originalTimeStamp;
+	}
+
+	public String getExtraInfo() {
+		return extraInfo;
+	}
+
+	public void setExtraInfo(String extraInfo) {
+		this.extraInfo = extraInfo;
 	}
 }
