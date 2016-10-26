@@ -69,6 +69,8 @@ public class Constants {
 	public static final String ds = "ds";
 	public static final String inBW = "inBW";
 	public static final String outBW = "outBW";
+	public static final String object_changed="object_changed";
+	public static final String object_removed="object_removed";
 
 	public static final String WRONG_OID = "WRONG_OID";
 	public static final String WRONG_VALUE_FORMAT = "WRONG_VALUE_FORMAT";

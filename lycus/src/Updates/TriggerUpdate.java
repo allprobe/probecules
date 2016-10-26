@@ -51,7 +51,7 @@ public class TriggerUpdate extends BaseUpdate {
 		
 		if (GeneralFunctions.isChanged(trigger.getName(), getUpdate().update_value.name)) {
 			trigger.setName(getUpdate().update_value.name);
-			ResultsContainer.getInstance().resendEvents(trigger.getTriggerId(),"name_changed");
+			ResultsContainer.getInstance().resendEvents(trigger.getTriggerId(),Constants.object_changed);
 			Logit.LogCheck(
 					"Name for trigger " + getUpdate().update_value.id + " has changed to " + getUpdate().update_value.name);
 		}
@@ -66,7 +66,7 @@ public class TriggerUpdate extends BaseUpdate {
 		
 		if (GeneralFunctions.isChanged(trigger.getSvrty().toString().toLowerCase(), getUpdate().update_value.severity)) {
 			trigger.setSvrty(UsersManager.getTriggerSev(getUpdate().update_value.severity));
-			ResultsContainer.getInstance().resendEvents(trigger.getTriggerId(),"severity_changed");
+			ResultsContainer.getInstance().resendEvents(trigger.getTriggerId(),Constants.object_changed);
 			Logit.LogCheck("Severity for trigger " + getUpdate().update_value.id + " has changed to "
 					+ getUpdate().update_value.severity);
 		}
@@ -86,7 +86,7 @@ public class TriggerUpdate extends BaseUpdate {
 				runnbleProbe.removeEvents(getUpdate().object_id);
 			
 			probe.removeTrigger(getUpdate().object_id);
-			ResultsContainer.getInstance().resendEvents(getUpdate().object_id,"trigger_deleted");
+			ResultsContainer.getInstance().resendEvents(getUpdate().object_id,Constants.object_removed);
 
 			Logit.LogCheck("Trigger: " + getUpdate().object_id + " was removed");
 			return true;
