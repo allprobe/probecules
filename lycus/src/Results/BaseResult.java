@@ -255,10 +255,14 @@ public class BaseResult implements IResult {
 			values.add(((DiskResult) this).getStorageUsedPercentage());
 			break;
 		case DBI:
-			values.add(((NicResult) this).getInBW());
+			Long inBW = ((NicResult) this).getInBW();
+			if(inBW != null)
+			values.add(inBW);
 			break;
 		case DBO:
-			values.add(((NicResult) this).getOutBW());
+			Long outBW = ((NicResult) this).getOutBW();
+			if(outBW != null)
+				values.add(outBW);
 			break;
 		case WSERT:
 			for (DOMElement dome : ((WebExtendedResult) this).getAllElementsResults()) {
