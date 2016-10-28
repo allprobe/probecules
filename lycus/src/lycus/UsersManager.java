@@ -135,13 +135,12 @@ public class UsersManager {
 		JSONArray allTemplateTriggersJson = (JSONArray) initServer.get("triggers");
 		addTriggers(allTemplateTriggersJson, probeByUser);
 
-		ResultsContainer.getInstance().pullCurrentLiveEvents();
-
 		JSONArray allDiscoveryElementsJson = (JSONArray) initServer.get("discovery_elements");
 		addDiscoveryElements(allDiscoveryElementsJson);
 
 		addRunnableProbes(runnableProbesIds);
 
+		ResultsContainer.getInstance().pullCurrentLiveEvents();
 		return true;
 	}
 
