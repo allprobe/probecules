@@ -60,14 +60,6 @@ public class DiskResult extends BaseResult {
 		return this.getStorageSize() - this.getStorageUsed();
 	}
 
-	// public long getHrStorageUnits() {
-	// return hrStorageUnits;
-	// }
-	//
-	// public void setHrStorageUnits(long hrStorageUnits) {
-	// this.hrStorageUnits = hrStorageUnits;
-	// }
-
 	public Object getResultObject() {
 		if (this.getLastTimestamp() == null)
 			return null;
@@ -100,40 +92,4 @@ public class DiskResult extends BaseResult {
 	public int getStorageUsedPercentage() {
 		return ((int) ((100 * this.getStorageUsed()) / this.getStorageSize()));
 	}
-	// @Override
-	// public void checkIfTriggerd(HashMap<String, Trigger> triggers) throws
-	// Exception {
-	// boolean flag = false;
-	// super.checkIfTriggerd(triggers);
-	// for (Trigger trigger : triggers.values()) {
-	// TriggerCondition condition = trigger.getCondtions().get(0);
-	// SnmpUnit resultUnit = SnmpUnit.B;
-	// SnmpUnit triggerUnit = trigger.getUnit();
-	// long usedInBits = SnmpUnit.getBasic(this.getHrStorageUsed(), resultUnit);
-	// long freeInBits = SnmpUnit.getBasic(this.getHrStorageSize() -
-	// this.getHrStorageUsed(), resultUnit);
-	// long triggerInBits =
-	// SnmpUnit.getBasic(Long.parseLong(condition.getxValue()), triggerUnit);
-	// switch (condition.getCode()) {
-	// case 11:// free disk is less than
-	// if (freeInBits < triggerInBits)
-	// flag = true;
-	// break;
-	// case 12:// free disk is larger than
-	// if (freeInBits > triggerInBits)
-	// flag = true;
-	// break;
-	// case 13:// used disk is less than
-	// if (usedInBits < triggerInBits)
-	// flag = true;
-	// break;
-	// case 14:// used disk is larger than
-	// if (usedInBits > triggerInBits)
-	// flag = true;
-	// break;
-	// }
-	// super.processTriggerResult(trigger, flag);
-	// }
-	//
-	// }
 }

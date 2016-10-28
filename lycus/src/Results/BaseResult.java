@@ -2,12 +2,9 @@ package Results;
 
 import java.util.ArrayList;
 import java.util.HashMap;
-
 import GlobalConstants.SnmpDataType;
 import GlobalConstants.XvalueUnit;
 import Probes.SnmpProbe;
-import com.google.common.base.Enums;
-
 import GlobalConstants.Enums.ResultValueType;
 import GlobalConstants.ProbeTypes;
 import Interfaces.IResult;
@@ -69,33 +66,6 @@ public class BaseResult implements IResult {
 		return null;
 	}
 
-	// public void checkIfTriggerd(HashMap<String, Trigger> triggers) throws
-	// Exception {
-	// for (Trigger trigger : triggers.values()) {
-	// boolean triggered = checkForTriggerActivated(trigger);
-	// processTriggerResult(trigger, triggered);
-	//
-	// }
-	// }
-
-	// public void processTriggerResult(Trigger trigger, boolean triggered) {
-	// Event lastEvent =
-	// ResultsContainer.getInstance().getEvent(getRunnableProbeId(),
-	// trigger.getTriggerId());
-	// if (lastEvent != null && !triggered) {
-	// // if trigger event became true and normal again send event to api
-	// lastEvent.setStatus(true);
-	// lastEvent.setSent(false);
-	// Logit.LogInfo("Trigger " + trigger.getTriggerId() + " of Runnable Probe:
-	// " + getRunnableProbeId()
-	// + " deactivated, will send event to API...");
-	// } else if (lastEvent == null && triggered) {
-	// Event event = new Event(trigger, false);
-	// ResultsContainer.getInstance().addEvent(runnableProbeId,
-	// trigger.getTriggerId(), event);
-	// }
-	// }
-
 	public boolean isSent() {
 		return isSent;
 	}
@@ -129,25 +99,6 @@ public class BaseResult implements IResult {
 	public void setErrorMessage(String errorMessage) {
 		this.errorMessage = errorMessage;
 	}
-
-	// private boolean checkForTriggerActivated(Trigger trigger) {
-	// boolean flag = false;
-	// for (TriggerCondition condition : trigger.getCondtions()) {
-	// String x = condition.getxValue();
-	// // Double xNumber = Double.parseDouble(x);
-	// Object[] lastValues =
-	// (RunnableProbeContainer.getInstanece().get(this.getRunnableProbeId()))
-	// .getConditionFunction(trigger, condition).get();
-	// for (int i = 0; i < lastValues.length; i++) {
-	// for (Object oneValue : (ArrayList<Object>) lastValues[i]) {
-	// flag = conditionByType(oneValue, x, condition.getCode());
-	// if (!flag)
-	// return false;
-	// }
-	// }
-	// }
-	// return flag;
-	// }
 
 	private boolean conditionByType(Object lastValue, String triggerValue, int code) {
 		if (lastValue == null || triggerValue == null)
@@ -231,7 +182,7 @@ public class BaseResult implements IResult {
 			values.add(((WebResult) this).getPageSize());
 			break;
 		case PST:
-			values.add(((PortResult) this).isActive());
+			values.add(((PortResult) this).getPortStatus());
 			break;
 		case RTA:
 			values.add(((PingResult) this).getRtt());

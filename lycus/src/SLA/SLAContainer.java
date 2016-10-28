@@ -48,7 +48,7 @@ public class SLAContainer implements ISLAContainer {
 			{
 				slaObject = new SLAObject();
 			}
-//			slaObject.addResult(((PortResult) result).isActive());
+			slaObject.addResult(((PortResult) result).isActive());
 			portSLA.put(result.getRunnableProbeId(), slaObject);
 			
 		} else if (result instanceof PingResult) {

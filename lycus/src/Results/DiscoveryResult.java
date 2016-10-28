@@ -28,10 +28,10 @@ public class DiscoveryResult extends BaseResult {
 	}
 
 	public DiscoveryElementType getElementsType() {
-		
-		if(this.elements==null)
+
+		if (this.elements == null)
 			return DiscoveryElementType.unknown;
-		
+
 		for (BaseElement element : getElements().values()) {
 			if (element instanceof NicElement)
 				return DiscoveryElementType.bw;
@@ -40,11 +40,6 @@ public class DiscoveryResult extends BaseResult {
 		}
 		return null;
 	}
-
-//	@Override
-//	public void checkIfTriggerd(HashMap<String, Trigger> triggers) throws Exception {
-//		super.checkIfTriggerd(triggers);
-//	}
 
 	@Override
 	public Object getResultObject() {
@@ -60,7 +55,6 @@ public class DiscoveryResult extends BaseResult {
 								+ " to json! ",
 						e);
 			}
-
 		} else {
 			result.add(0);
 			result.add(this.getErrorMessage());

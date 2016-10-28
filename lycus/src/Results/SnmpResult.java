@@ -3,11 +3,6 @@ package Results;
 import org.json.simple.JSONArray;
 import GlobalConstants.Enums.SnmpError;
 import GlobalConstants.ProbeTypes;
-import GlobalConstants.XvalueUnit;
-import Probes.SnmpProbe;
-import Triggers.Trigger;
-import lycus.RunnableProbeContainer;
-import Triggers.TriggerCondition;
 
 public class SnmpResult extends BaseResult {
 
@@ -54,63 +49,6 @@ public class SnmpResult extends BaseResult {
 
 		return numData;
 	}
-
-//	private boolean checkForNumberTrigger(Trigger trigger) {
-//		boolean flag = false;
-//		for (TriggerCondition condition : trigger.getCondtions()) {
-//			int x = Integer.parseInt(condition.getxValue());
-//			Double lastValue = this.getNumData();
-//			if (lastValue == null)
-//				continue;
-//			XvalueUnit resultUnit = ((SnmpProbe) RunnableProbeContainer.getInstanece().get(this.getRunnableProbeId())
-//					.getProbe()).getUnit();
-//			if (resultUnit.equals(XvalueUnit.as_is)) {
-//				switch (condition.getCondition()) {
-//				case bigger:
-//					if (lastValue > x)
-//						flag = true;
-//					break;
-//				case tinier:
-//					if (lastValue < x)
-//						flag = true;
-//					break;
-//				case equal:
-//					if (lastValue == x)
-//						flag = true;
-//					break;
-//				case not_equal:
-//					if (lastValue != x)
-//						flag = true;
-//					break;
-//				}
-//			} else {
-//
-//				long resultInBits = XvalueUnit.getBasic(Math.round(lastValue), resultUnit);
-//				long triggerInBits = XvalueUnit.getBasic(Long.parseLong(condition.getxValue()), trigger.getUnit());
-//				switch (condition.getCondition()) {
-//				case bigger:
-//					if (resultInBits > triggerInBits)
-//						flag = true;
-//					break;
-//				case tinier:
-//					if (resultInBits < triggerInBits)
-//						flag = true;
-//					break;
-//				case equal:
-//					if (resultInBits == triggerInBits)
-//						flag = true;
-//					break;
-//				case not_equal:
-//					if (resultInBits != triggerInBits)
-//						flag = true;
-//					break;
-//				}
-//			}
-//			if (!flag)
-//				return false;
-//		}
-//		return flag;
-//	}
 
 	public String getOid() {
 		return oid;

@@ -41,10 +41,6 @@ public class NicResult extends BaseResult {
 	public NicResult(String runnableProbeId) {
 		super(runnableProbeId);
 	}
-	// public NicResult(String runnableProbeId,long timestamp) {
-	// super(runnableProbeId);
-	// super.setLastTimestamp(timestamp);
-	// }
 
 	public long getPreviousInterfaceInOctets() {
 		return previousInterfaceInOctets;
@@ -142,16 +138,4 @@ public class NicResult extends BaseResult {
 	public void setError(Enums.SnmpError error) {
 		this.error = error;
 	}
-
-	// @Override
-	// public void checkIfTriggerd(HashMap<String, Trigger> triggers) throws
-	// Exception {
-	// super.checkIfTriggerd(triggers);
-	// for (Trigger trigger : triggers.values()) {
-	// boolean triggered = false;
-	//
-	// super.processTriggerResult(trigger, triggered);
-	// }
-	//
-	// }
 }

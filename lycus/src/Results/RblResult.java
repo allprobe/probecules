@@ -1,7 +1,6 @@
 package Results;
 
 import org.json.simple.JSONArray;
-
 import GlobalConstants.ProbeTypes;
 
 public class RblResult extends BaseResult {
