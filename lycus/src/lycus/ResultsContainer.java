@@ -176,6 +176,12 @@ public class ResultsContainer implements IResultsContainer {
 						event.setDeleted(true);
 					}
 					
+					if (!runnableProbe.getProbe().getTriggers().containsKey(triggerId))
+					{
+						event.setIsStatus(true);
+						event.setDeleted(true);
+					}
+					
 					addEvent(runnableProbeId, triggerId, event);
 					 
 				} catch (Exception e) {
