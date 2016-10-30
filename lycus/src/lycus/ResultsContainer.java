@@ -175,15 +175,15 @@ public class ResultsContainer implements IResultsContainer {
 						event.setIsStatus(true);
 						event.setDeleted(true);
 					}
-					
+
 					if (!runnableProbe.getProbe().getTriggers().containsKey(triggerId))
 					{
 						event.setIsStatus(true);
 						event.setDeleted(true);
 					}
-					
+
 					addEvent(runnableProbeId, triggerId, event);
-					 
+ 
 				} catch (Exception e) {
 					Logit.LogError("ResultsContainer - pullCurrentLiveEvents()", "Unable to process live event: " + it);
 					Logit.LogError("ResultsContainer - pullCurrentLiveEvents()", "E: " + e.getMessage());
@@ -307,7 +307,7 @@ public class ResultsContainer implements IResultsContainer {
 			for (Map.Entry<String, Event> triggerEvent : runnableProbeEvents.entrySet()) {
 				String triggerId = triggerEvent.getKey();
 				Event event = triggerEvent.getValue();
-				
+
 				Trigger trigger = null;
 				RunnableProbe runnableProbe = RunnableProbeContainer.getInstanece().get(runnableProbeId);
 				if (runnableProbe != null)
@@ -370,13 +370,13 @@ public class ResultsContainer implements IResultsContainer {
 			eventValues.put("remove_object", "true");
 			eventValues.put("origin_timestamp", String.valueOf(event.getOriginalTimeStamp()));
 		}
-		
+
 		if (trigger != null)
 		{
 			eventValues.put("trigger_name", trigger.getName());
 			eventValues.put("trigger_severity", trigger.getSvrty().toString());
 		}
-		
+
 		if (runnableProbe != null)
 		{
 			eventValues.put("host_name", runnableProbe.getHost().getName());
@@ -387,7 +387,7 @@ public class ResultsContainer implements IResultsContainer {
 			else
 				eventValues.put("host_notifs_groups", null);
 		}
-		
+
 		sendingEvents.put(runnableProbeId, eventValues);
 		return sendingEvents;
 	}
