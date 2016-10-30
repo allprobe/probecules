@@ -170,13 +170,7 @@ public class ResultsContainer implements IResultsContainer {
 					event.setTime(timestamp);
 					event.setSent(true);
 
-					if (runnableProbe == null)
-					{
-						event.setIsStatus(true);
-						event.setDeleted(true);
-					}
-
-					if (!runnableProbe.getProbe().getTriggers().containsKey(triggerId))
+					if (runnableProbe == null || !runnableProbe.getProbe().getTriggers().containsKey(triggerId))
 					{
 						event.setIsStatus(true);
 						event.setDeleted(true);
