@@ -178,6 +178,9 @@ public class BaseResult implements IResult {
 		case RC:
 			values.add(((WebResult) this).getStatusCode());
 			break;
+		case WSC:
+			values.add(((WebResult) this).getStateCode());
+			break;
 		case PS:
 			values.add(((WebResult) this).getPageSize());
 			break;
