@@ -39,6 +39,9 @@ public class UpdateFactory {
 				case Constants.updateSnmp:
 				case Constants.deleteSnmp:
 					return new SnmpUpdate(update);
+					
+				case Constants.deleteEvent:
+					return new EventUpdate(update);
 			}
 	      
 	      return null;
