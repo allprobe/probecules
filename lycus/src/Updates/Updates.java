@@ -50,7 +50,7 @@ public class Updates implements Runnable {
 				try {
 					baseUpdate.Run();
 				} catch (Exception ex) {
-					Logit.LogError("Updates - runUpdates0()", "Failed to retrieve updates ", ex);
+					Logit.LogError("Updates - runUpdates0()", "Failed to run update " + "\n" + jsonObject, ex);
 				}
 			}
 		} catch (Exception ex) {

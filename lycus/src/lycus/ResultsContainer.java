@@ -25,7 +25,8 @@ public class ResultsContainer implements IResultsContainer {
 	private static ResultsContainer instance;
 	private List<BaseResult> results;
 	private ConcurrentHashMap<String, ConcurrentHashMap<String, Event>> eventsPerRunnableProbe; // HashMap<runnableProbeId,HashMap<triggerId,event>>
-//	private ConcurrentHashMap<String, ConcurrentHashMap<String, Event>> eventsPerTrigger; // HashMap<triggerId,HashMap<runnableProbeId,event>>
+	// private ConcurrentHashMap<String, ConcurrentHashMap<String, Event>>
+	// eventsPerTrigger; // HashMap<triggerId,HashMap<runnableProbeId,event>>
 	private Object lockResults = new Object();
 	private Object lockEvents = new Object();
 
@@ -49,6 +50,40 @@ public class ResultsContainer implements IResultsContainer {
 
 	public ConcurrentHashMap<String, Event> getEvent(String runnableProbeId) {
 		return eventsPerRunnableProbe.get(runnableProbeId);
+	}
+
+	// userId@bucket@hostId@trigger_id
+	public Boolean removeEventsById(String eventId) {
+		String[] splittedId = eventId.split("@");
+		String userId = splittedId[0];
+		String bucketId = splittedId[1];
+		String hostd = splittedId[2];
+		String triggerId = splittedId[3];
+
+		ConcurrentHashMap<String, RunnableProbe> runnableProbes = RunnableProbeContainer.getInstanece()
+				.getByUser(userId);
+
+		for (RunnableProbe runnableProbe : runnableProbes.values()) {
+			if (runnableProbe.getHost().getHostId().toString().equals(hostd)
+					&& runnableProbe.getProbe().getTrigger(triggerId) != null) {
+				ConcurrentHashMap<String, Event> runnableProbeEvents = eventsPerRunnableProbe.get(runnableProbe.getId());
+
+				List<String> triggersIds = new ArrayList();
+				for (Event event : runnableProbeEvents.values()) {
+					if (event.getBucketId().equals(bucketId))
+						triggersIds.add(event.getTriggerId());
+				}
+
+				for (String triggId :triggersIds )
+				{
+					synchronized (lockEvents) {
+						runnableProbeEvents.remove(triggId);
+					}
+				}
+			}
+		}
+
+		return true;
 	}
 
 	public boolean addEvent(String runnableProbeId, String triggerId, Event event) {
@@ -80,15 +115,13 @@ public class ResultsContainer implements IResultsContainer {
 
 	public boolean clear() {
 		eventsClear();
-		// TODO: Leave 10 last results from each kind on the list
-		// results.clear();
 		removeSentResults();
 		return true;
 	}
 
 	private void eventsClear() {
-		for (Map.Entry<String, ConcurrentHashMap<String, Event>> runnableProbeEvents : eventsPerRunnableProbe.entrySet()) {
-			// String runnableProbeId = runnableProbeEvents.getKey();
+		for (Map.Entry<String, ConcurrentHashMap<String, Event>> runnableProbeEvents : eventsPerRunnableProbe
+				.entrySet()) {
 			for (Map.Entry<String, Event> triggerEvent : runnableProbeEvents.getValue().entrySet()) {
 				String triggerId = triggerEvent.getKey();
 				Event event = triggerEvent.getValue();
@@ -164,20 +197,19 @@ public class ResultsContainer implements IResultsContainer {
 
 					RunnableProbe runnableProbe = RunnableProbeContainer.getInstanece().get(runnableProbeId);
 					long timestamp = Long.parseLong((String) events.get(it));
-//					Trigger trigger = UsersManager.getTrigger(triggerId);
+					// Trigger trigger = UsersManager.getTrigger(triggerId);
 
 					Event event = new Event(triggerId, userId, bucketId);
 					event.setTime(timestamp);
 					event.setSent(true);
 
-					if (runnableProbe == null || !runnableProbe.getProbe().getTriggers().containsKey(triggerId))
-					{
+					if (runnableProbe == null || !runnableProbe.getProbe().getTriggers().containsKey(triggerId)) {
 						event.setIsStatus(true);
 						event.setDeleted(true);
 					}
 
 					addEvent(runnableProbeId, triggerId, event);
- 
+
 				} catch (Exception e) {
 					Logit.LogError("ResultsContainer - pullCurrentLiveEvents()", "Unable to process live event: " + it);
 					Logit.LogError("ResultsContainer - pullCurrentLiveEvents()", "E: " + e.getMessage());
@@ -293,7 +325,8 @@ public class ResultsContainer implements IResultsContainer {
 
 	public String getEventsPerRunnableProbe() {
 		ArrayList<HashMap<String, HashMap<String, String>>> eventsToSend = new ArrayList<HashMap<String, HashMap<String, String>>>();
-		for (Map.Entry<String, ConcurrentHashMap<String, Event>> runnableProbeEventsEntry : eventsPerRunnableProbe.entrySet()) {
+		for (Map.Entry<String, ConcurrentHashMap<String, Event>> runnableProbeEventsEntry : eventsPerRunnableProbe
+				.entrySet()) {
 			String runnableProbeId = runnableProbeEventsEntry.getKey();
 
 			ConcurrentHashMap<String, Event> runnableProbeEvents = runnableProbeEventsEntry.getValue();
@@ -313,8 +346,8 @@ public class ResultsContainer implements IResultsContainer {
 						Logit.LogDebug("BREAKPOINT");
 
 					if (!event.isSent() || (event.isSent() && event.getIsStatus())) {
-						HashMap<String, HashMap<String, String>> sendingEvents = eventDBFormat(runnableProbeId, triggerId, event,
-								runnableProbe, trigger);
+						HashMap<String, HashMap<String, String>> sendingEvents = eventDBFormat(runnableProbeId,
+								triggerId, event, runnableProbe, trigger);
 
 						eventsToSend.add(sendingEvents);
 						event.setSent(true);
@@ -332,7 +365,8 @@ public class ResultsContainer implements IResultsContainer {
 	}
 
 	public void cleanEvents() {
-		for (Map.Entry<String, ConcurrentHashMap<String, Event>> runnableProbeEventsEntry : eventsPerRunnableProbe.entrySet()) {
+		for (Map.Entry<String, ConcurrentHashMap<String, Event>> runnableProbeEventsEntry : eventsPerRunnableProbe
+				.entrySet()) {
 			String runnableProbeId = runnableProbeEventsEntry.getKey();
 
 			ConcurrentHashMap<String, Event> runnableProbeEvents = runnableProbeEventsEntry.getValue();
@@ -347,8 +381,8 @@ public class ResultsContainer implements IResultsContainer {
 		}
 	}
 
-	private HashMap<String, HashMap<String, String>> eventDBFormat(String runnableProbeId, String triggerId, Event event,
-			RunnableProbe runnableProbe, Trigger trigger) {
+	private HashMap<String, HashMap<String, String>> eventDBFormat(String runnableProbeId, String triggerId,
+			Event event, RunnableProbe runnableProbe, Trigger trigger) {
 		HashMap<String, HashMap<String, String>> sendingEvents = new HashMap<String, HashMap<String, String>>();
 		HashMap<String, String> eventValues = new HashMap<String, String>();
 		eventValues.put("trigger_id", triggerId);
@@ -359,23 +393,22 @@ public class ResultsContainer implements IResultsContainer {
 		eventValues.put("host_bucket", event.getBucketId());
 		eventValues.put("extra_info", event.getExtraInfo());
 
-		if (event.isDeleted())
-		{
+		if (event.isDeleted()) {
 			eventValues.put("remove_object", "true");
 			eventValues.put("origin_timestamp", String.valueOf(event.getOriginalTimeStamp()));
 		}
 
-		if (trigger != null)
-		{
+		if (trigger != null) {
 			eventValues.put("trigger_name", trigger.getName());
 			eventValues.put("trigger_severity", trigger.getSvrty().toString());
 		}
 
-		if (runnableProbe != null)
-		{
+		if (runnableProbe != null) {
 			eventValues.put("host_name", runnableProbe.getHost().getName());
-//			eventValues.put("user_id", runnableProbe.getProbe().getUser().getUserId().toString());
-//			eventValues.put("host_bucket", runnableProbe.getHost().getBucket());
+			// eventValues.put("user_id",
+			// runnableProbe.getProbe().getUser().getUserId().toString());
+			// eventValues.put("host_bucket",
+			// runnableProbe.getHost().getBucket());
 			if (runnableProbe.getHost().getNotificationGroups() != null)
 				eventValues.put("host_notifs_groups", runnableProbe.getHost().getNotificationGroups().toString());
 			else
@@ -386,15 +419,13 @@ public class ResultsContainer implements IResultsContainer {
 		return sendingEvents;
 	}
 
-    public void resendEvents(String triggerId,String eventInfo) {
-		for(ConcurrentHashMap<String,Event> events:eventsPerRunnableProbe.values())
-		{
-			if(events.containsKey(triggerId))
-			{
-//				events.get(triggerId).setTime(System.currentTimeMillis());
+	public void resendEvents(String triggerId, String eventInfo) {
+		for (ConcurrentHashMap<String, Event> events : eventsPerRunnableProbe.values()) {
+			if (events.containsKey(triggerId)) {
+				// events.get(triggerId).setTime(System.currentTimeMillis());
 				events.get(triggerId).setSent(false);
 				events.get(triggerId).setExtraInfo(eventInfo);
 			}
 		}
-    }
+	}
 }

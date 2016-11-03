@@ -22,11 +22,11 @@ public class Event {
 		this.setDeleted(false);
 	}
 
-	public String getTrigger() {
+	public String getTriggerId() {
 		return triggerId;
 	}
 
-	public void setTrigger(String triggerId) {
+	public void setTriggerId(String triggerId) {
 		this.triggerId = triggerId;
 	}
 

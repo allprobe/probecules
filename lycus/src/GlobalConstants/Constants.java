@@ -17,6 +17,7 @@ public class Constants {
 	public final static String newTrigger = "ntrig";
 	public final static String updateTrigger = "utrig";
 	public final static String deleteTrigger = "dtrig";
+	public final static String deleteEvent = "rle";
 	public final static String updateHost = "updh";
 	public final static String deleteHost = "delh";
 	public final static String updateTemplate = "updt";

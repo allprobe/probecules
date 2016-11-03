@@ -39,7 +39,8 @@ public abstract class BaseUpdate implements IUpdate{
 			case Constants.deleteProbe:
 			case Constants.deleteSnmp:
 			case Constants.deleteTemplate:
-			case Constants.deleteTrigger:	
+			case Constants.deleteTrigger:
+			case Constants.deleteEvent:	
 				action = Action.Delete;
 				break;
 		}

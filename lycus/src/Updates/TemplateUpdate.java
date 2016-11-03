@@ -1,18 +1,11 @@
 package Updates;
 
-import java.util.Map;
-import java.util.Set;
-import java.util.UUID;
 import java.util.concurrent.ConcurrentHashMap;
-
 import GlobalConstants.Constants;
 import Model.UpdateModel;
 import Utils.Logit;
-import lycus.Host;
 import lycus.RunnableProbe;
 import lycus.RunnableProbeContainer;
-import lycus.User;
-import lycus.UsersManager;
 
 public class TemplateUpdate extends BaseUpdate {
 
