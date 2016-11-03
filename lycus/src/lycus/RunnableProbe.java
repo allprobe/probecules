@@ -113,7 +113,7 @@ public class RunnableProbe implements Runnable {
 			BaseResult result = null;
 			try {
 				String rpStr = this.getId();
-				if (rpStr.contains("traceroute_0556f87f-6015-498d-8a27-a02086ff521a"))
+				if (rpStr.contains("f84b117c-03fb-40aa-8003-4283a72c35e4@bf4e7e1c-4c44-4e0f-bee5-871aadfe1174@discovery_3ee653fc-adaa-468e-9430-b1793b1d1c7d"))
 					Logit.LogDebug("BREAKPOINT - RunnableProbe");
 
 				// isActive = false will pause the thread
@@ -201,6 +201,18 @@ public class RunnableProbe implements Runnable {
 	}
 
 	public boolean addResultToTrigger(BaseResult result) {
+
+		try {
+			if ((this.getProbe() instanceof DiscoveryProbe))
+				return true;
+		} catch (Exception e) {
+			Logit.LogError("RunnableProbe - run()",
+					"Error triggering runnable probe results!  " + this.getProbeType() + " "
+							+ this.getProbe().getName() + ", \nRunnabelProbeId: " + this.getId());
+			return false;
+		}
+
+
 		try {
 			if (probe.getTriggers().size() > 0)
 				eventTrigger.addResult(result);

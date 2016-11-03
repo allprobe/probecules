@@ -143,6 +143,8 @@ public class CheckTrigger {
 			if (result == null || xValue == null)
 				return false;
 			for (Object oneResult : (ArrayList<Object>) result) {
+				if(oneResult==null)
+					continue;
 				if (!(oneResult instanceof Double) && !(oneResult instanceof Integer) && !(oneResult instanceof Long)) {
 					if (isCondition(oneResult.toString(), triggerCondition.getCondition(), triggerCondition.getxValue(),
 							triggerCondition.getXvalueUnit()))
