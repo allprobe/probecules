@@ -393,11 +393,12 @@ public class ResultsContainer implements IResultsContainer {
 		eventValues.put("host_bucket", event.getBucketId());
 		eventValues.put("extra_info", event.getExtraInfo());
 
-		if (event.isDeleted()) {
+		if (event.isDeleted()) 
 			eventValues.put("remove_object", "true");
-			eventValues.put("origin_timestamp", String.valueOf(event.getOriginalTimeStamp()));
-		}
 
+		if (event.getIsStatus())
+			eventValues.put("origin_timestamp", String.valueOf(event.getOriginalTimeStamp()));
+		
 		if (trigger != null) {
 			eventValues.put("trigger_name", trigger.getName());
 			eventValues.put("trigger_severity", trigger.getSvrty().toString());
