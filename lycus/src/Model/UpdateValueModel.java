@@ -15,6 +15,7 @@ public class UpdateValueModel
 	public String notifications_group;
 	
 	//Trigger
+	public TriggerModel[] triggers;
 	
 	public String id;
 	public String trigger_type;
@@ -22,7 +23,7 @@ public class UpdateValueModel
 	public String xvalue_unit;
 	public String probe_id;
 	public String tuple;
-	public ConditionUpdateModel[] conditions;
+//	public ConditionUpdateModel[] conditions;
 	public Integer snmp_version;
 	public String snmp_community;
 	public String snmp_user;

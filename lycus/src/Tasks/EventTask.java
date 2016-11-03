@@ -22,8 +22,6 @@ public class EventTask extends BaseTask {
 
 				if (!events.equals("[]")) {
 					String eventsEncoded = GeneralFunctions.Base64Encode(events);
-					// String sendString = "{\"events\" : \"" + eventsEncoded +
-					// "\"}";
 					JSONObject eventsJson = new JSONObject();
 					eventsJson.put("events", eventsEncoded);
 
@@ -39,7 +37,7 @@ public class EventTask extends BaseTask {
 			}
 		} catch (Exception e) {
 			e.printStackTrace();
-			Logit.LogError("EventHandler - run()", "Error retrieving all runnable probe events!");
+			Logit.LogError("EventHandler - run()", "Error prepairing/seding all runnable probe events!");
 		}
 	}
 }

@@ -8,7 +8,8 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.UUID;
 import GlobalConstants.Constants;
-import Model.ConditionUpdateModel;
+import Model.ConditionModel;
+import Model.TriggerModel;
 import Model.UpdateModel;
 import Model.UpdateValueModel;
 import Results.BaseResult;
@@ -18,6 +19,7 @@ import lycus.Host;
 import Triggers.Trigger;
 import Triggers.TriggerCondition;
 import lycus.User;
+import lycus.UsersManager;
 
 /**
  *
@@ -138,6 +140,12 @@ public class BaseProbe {
 		this.getTriggers().remove(trigger_id);
 	}
 
+	public Boolean clearTriggers()
+	{
+		this.getTriggers().clear();
+		return true;
+	}
+	
 	public String getProbeKey() {
 		return this.getTemplate_id().toString() + "@" + this.getProbe_id();
 	}
@@ -162,8 +170,6 @@ public class BaseProbe {
 		if (updateValue.status != null && isActive() != updateValue.status.equals(Constants._true)) {
 			boolean isActive = updateValue.status.equals(Constants._true);
 			setActive(isActive);
-			// RunnableProbeContainer.getInstanece().pause(Utils.GeneralFunctions.getRunnableProbeId(updateModel.template_id,
-			// updateModel.host_id, updateModel.probe_id), isActive);
 			Logit.LogCheck("Is active for " + getName() + " Is " + isActive + "Update_id: " + updateModel.update_id
 					+ ", probe_id: " + updateModel.probe_id);
 		}
@@ -183,23 +189,24 @@ public class BaseProbe {
 		return true;
 	}
 
-	public boolean updateTriggers(UpdateValueModel updateValue, String triggerId) {
-		ConditionUpdateModel[] conditions = updateValue.conditions;
-		ArrayList<TriggerCondition> triggerConditions = new ArrayList<>();
-		Trigger trigger = getTrigger(triggerId);
-
-		for (ConditionUpdateModel condition : conditions) {
-			if (triggers.keySet().contains(condition.index)) {
-				TriggerCondition triggerCondition = new TriggerCondition(condition.condition, condition.xvalue,
-						condition.function, condition.results_vector_type, condition.xvalue_unit, condition.nvalue,
-						condition.last_type);
+	public Boolean addTriggers(TriggerModel[] triggers) {
+		if (triggers != null && triggers.length > 0) {
+			ArrayList<TriggerCondition> condtions = new ArrayList<>();
+			for (TriggerModel triggerModel : triggers) {
+				for (ConditionModel ConditionModel : triggerModel.conditions) {
+					TriggerCondition condition = new TriggerCondition(ConditionModel.condition,
+							ConditionModel.xvalue, ConditionModel.function, ConditionModel.results_vector_type, ConditionModel.xvalue_unit, 
+							ConditionModel.nvalue, ConditionModel.last_type);
+					condtions.add(condition);
+				}
 				
-			
-				triggerConditions.add(triggerCondition);
-
+				Trigger trigger = new Trigger(triggerModel.id, triggerModel.name, this, UsersManager.getTriggerSev(triggerModel.severity),
+						triggerModel.status.equals(Constants._true), condtions);
+				
+				addTrigger(trigger);
 			}
-			trigger.setCondtions(triggerConditions);
 		}
+		
 		return true;
 	}
 }

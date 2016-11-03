@@ -75,13 +75,6 @@ public class DiscoveryProbe extends BaseProbe {
 			// Todo: implement
 		}
 
-		ConditionUpdateModel[] conditions = updateValue.conditions;
-		for (int index = 0; index < conditions.length; index++) {
-			TriggerCondition condition = new TriggerCondition(conditions[index].condition,
-					conditions[index].xvalue, conditions[index].function, conditions[index].results_vector_type, conditions[index].xvalue_unit, conditions[index].nvalue, conditions[index].last_type);
-			ArrayList<TriggerCondition> triggerConditions = new ArrayList<TriggerCondition>();
-			triggerConditions.add(condition);
-
-		}
+		addTriggers(updateValue.triggers);
 	}
 }

@@ -13,10 +13,12 @@ import GlobalConstants.Enums.ResultValueType;
 import GlobalConstants.SnmpDataType;
 import GlobalConstants.TriggerSeverity;
 import GlobalConstants.XvalueUnit;
+import Model.ConditionModel;
 import Model.ConditionUpdateModel;
 import Model.HostParams;
 import Model.ProbeParams;
 import Model.SnmpTemplateParams;
+import Model.TriggerModel;
 import Probes.BaseProbe;
 import Probes.DiscoveryProbe;
 import Probes.HttpProbe;
@@ -25,6 +27,8 @@ import Probes.PortProbe;
 import Probes.RBLProbe;
 import Probes.SnmpProbe;
 import Probes.TracerouteProbe;
+import Triggers.Trigger;
+import Triggers.TriggerCondition;
 import Utils.GeneralFunctions;
 import Utils.Logit;
 
@@ -460,7 +464,6 @@ public class User {
 			}
 
 			case Constants.snmp: {
-
 				OID oid = new OID(probeParams.oid);
 				Enums.SnmpStoreAs storeValue = probeParams.snmp_store_as == 0 ? Enums.SnmpStoreAs.asIs
 						: Enums.SnmpStoreAs.delta;
@@ -507,18 +510,8 @@ public class User {
 					throw new Exception("Unable to determine discovery type --- " + probeParams.probe_id);
 				}
 
-//				ArrayList<TriggerCondition> conditions = new ArrayList<TriggerCondition>();
-//				for (ConditionUpdateModel consition : probeParams.triggers) {
-//					TriggerCondition condition = new TriggerCondition(consition.condition,consition.xvalue,
-//							consition.function, consition.results_vector_type,
-//							consition.xvalue_unit,
-//							consition.nvalue, consition.last_type);
-//					conditions.add(condition);
-//				}
-				
-				probe = new DiscoveryProbe(this, probeId, templateId, name, interval, multiplier, status, discoveryType, elementsInterval);
-//				Trigger trigger = new Trigger(probeParams.triggerId, probeParams.triggerName, probe, TriggerSeverity.valueOf(probeParams.severity), true, conditions);
-//				probe.addTrigger(trigger);
+				probe = new DiscoveryProbe(this, probeId, templateId, name, interval, multiplier, status, discoveryType,
+						elementsInterval);
 				break;
 			}
 			case Constants.rbl: {
@@ -531,6 +524,8 @@ public class User {
 				Logit.LogWarn("Creation of Probe: " + probeParams.probe_id + " failed, skipping!");
 				throw new Exception("Error parsing one of probe elements!");
 			}
+
+			probe.addTriggers(probeParams.triggers);
 			this.getTemplateProbes().put(probeId, probe);
 			return probe;
 		} catch (Exception e) {
@@ -539,64 +534,64 @@ public class User {
 		}
 	}
 
-	private String getDiscoveryTriggerName(ProbeParams probeParams) throws Exception {
-		switch (probeParams.discovery_type) {
-		case Constants.bw:
-			switch (probeParams.triggers[0].condition) {
-			case "1":
-				return "Bandwidth is bigger than trigger X value!";
-			case "2":
-				return "Bandwidth is less than trigger X value!";
+//	private String getDiscoveryTriggerName(ProbeParams probeParams) throws Exception {
+//		switch (probeParams.discovery_type) {
+//		case Constants.bw:
+//			switch (probeParams.triggers[0].condition) {
+//			case "1":
+//				return "Bandwidth is bigger than trigger X value!";
+//			case "2":
+//				return "Bandwidth is less than trigger X value!";
+//
+//			case "3":
+//				return "Bandwidth is equal to trigger X value!";
+//
+//			case "4":
+//				return "Bandwidth is different from trigger X value!";
+//			}
+//
+//			break;
+//		case Constants.ds:
+//			switch (probeParams.triggers[0].condition) {
+//			case "1":
+//				return "Disk is bigger than trigger X value!";
+//			case "2":
+//				return "Disk is less than trigger X value!";
+//
+//			case "3":
+//				return "Disk is equal to trigger X value!";
+//			case "4":
+//				return "Disk is different from trigger X value!";
+//			}
+//			break;
+//		default:
+//			throw new Exception("Unable to determine discovery type --- " + probeParams.probe_id);
+//		}
+//		return null;
+//	}
 
-			case "3":
-				return "Bandwidth is equal to trigger X value!";
-
-			case "4":
-				return "Bandwidth is different from trigger X value!";
-			}
-
-			break;
-		case Constants.ds:
-			switch (probeParams.triggers[0].condition) {
-			case "1":
-				return "Disk is bigger than trigger X value!";
-			case "2":
-				return "Disk is less than trigger X value!";
-
-			case "3":
-				return "Disk is equal to trigger X value!";
-			case "4":
-				return "Disk is different from trigger X value!";
-			}
-			break;
-		default:
-			throw new Exception("Unable to determine discovery type --- " + probeParams.probe_id);
-		}
-		return null;
-	}
-
-	private void updateTriggers(ProbeParams probeParams, UUID templateId, String probeId, String name,
-			BaseProbe probe) {
-
-		for (ConditionUpdateModel trigger : probeParams.triggers) {
-			// String triggerId = templateId.toString() + "@" + probeId + "@" +
-			// trigger;
-			// ArrayList<TriggerCondition> conditions = new
-			// ArrayList<TriggerCondition>();
-			// TriggerCondition triggerCondition = new
-			// TriggerCondition(trigger.discovery_trigger_code,
-			// trigger.discovery_trigger_x_value, null);
-			// conditions.add(triggerCondition);
-			//
-			// TriggerSeverity sev =
-			// UsersManager.getTriggerSev(trigger.discovery_trigger_severity);
-			// SnmpUnit un = SnmpUnit.valueOf(trigger.discovery_trigger_unit);
-			//
-			// Trigger discoveryTrigger = new Trigger(triggerId, name, probe,
-			// sev, true, "", un, conditions);
-			// probe.addTrigger(discoveryTrigger);
-		}
-	}
+//	private void updateTriggers(ProbeParams probeParams, UUID templateId, String probeId, String name,
+//			BaseProbe probe) {
+//
+//		for (ConditionUpdateModel trigger : probeParams.triggers) {
+//			// String triggerId = templateId.toString() + "@" + probeId + "@" +
+//			// trigger;
+//			// ArrayList<TriggerCondition> conditions = new
+//			// ArrayList<TriggerCondition>();
+//			// TriggerCondition triggerCondition = new
+//			// TriggerCondition(trigger.discovery_trigger_code,
+//			// trigger.discovery_trigger_x_value, null);
+//			// conditions.add(triggerCondition);
+//			//
+//			// TriggerSeverity sev =
+//			// UsersManager.getTriggerSev(trigger.discovery_trigger_severity);
+//			// SnmpUnit un = SnmpUnit.valueOf(trigger.discovery_trigger_unit);
+//			//
+//			// Trigger discoveryTrigger = new Trigger(triggerId, name, probe,
+//			// sev, true, "", un, conditions);
+//			// probe.addTrigger(discoveryTrigger);
+//		}
+//	}
 
 	private SnmpDataType getSnmpDataType(String valueType) {
 		SnmpDataType dataType;

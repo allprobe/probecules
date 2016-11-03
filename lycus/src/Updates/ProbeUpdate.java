@@ -8,7 +8,9 @@ import DAL.DAL;
 import GlobalConstants.Constants;
 import GlobalConstants.Enums.ApiAction;
 import Interfaces.IDAL;
+import Model.ConditionModel;
 import Model.ProbeParams;
+import Model.TriggerModel;
 import Model.UpdateModel;
 import Probes.BaseProbe;
 import Utils.Logit;
@@ -55,9 +57,6 @@ public class ProbeUpdate extends BaseUpdate {
 			}
 
 			if (!getUser().isProbeExist(getUpdate().probe_id)) {
-
-				// host =
-				// getUser().getHost(UUID.fromString(getUpdate().host_id));
 				ProbeParams probeParams = new ProbeParams();
 				probeParams.template_id = getUpdate().template_id;
 				probeParams.bytes = getUpdate().update_value.key.bytes;
@@ -85,32 +84,55 @@ public class ProbeUpdate extends BaseUpdate {
 				probeParams.snmp_datatype = getUpdate().update_value.key.value_type;
 				probeParams.snmp_unit = getUpdate().update_value.key.value_unit;
 				probeParams.snmp_store_as = getUpdate().update_value.key.store_value_as;
-				// todo: take care, also update
-				probeParams.trigger_id = getUpdate().update_value.key.trigger_id;
+
+				// Trigger
+//				if (getUpdate().update_value.triggers != null && getUpdate().update_value.triggers.length > 0) {
+//					probeParams.triggers = new TriggerModel[getUpdate().update_value.triggers.length];
+//					for (TriggerModel triggerModel : getUpdate().update_value.triggers) {
+//						TriggerModel trigger = new TriggerModel();
+//						trigger.id = triggerModel.id;
+//						trigger.name = triggerModel.name;
+//						trigger.probe_id = triggerModel.probe_id;
+//						trigger.severity = triggerModel.severity;
+//						trigger.user_id = triggerModel.user_id;
+//						trigger.status = triggerModel.status;
+//						trigger.tuple = triggerModel.tuple;
+//						
+//						trigger.conditions = new ConditionModel[triggerModel.conditions.length];
+//						for (ConditionModel ConditionModel : triggerModel.conditions) {
+//							ConditionModel condition = new ConditionModel();
+//							condition.andor = ConditionModel.andor;
+//							condition.condition = ConditionModel.condition;
+//							condition.function = ConditionModel.function;
+//							condition.index = ConditionModel.index;
+//							condition.last_type = ConditionModel.last_type;
+//							condition.nvalue = ConditionModel.nvalue;
+//							condition.results_vector_type = ConditionModel.results_vector_type;
+//							condition.xvalue = ConditionModel.xvalue;
+//							condition.xvalue_unit = ConditionModel.xvalue_unit;
+//						}
+//					}
+//				}
 
 				// Discovery
 				probeParams.discovery_type = getUpdate().update_value.key.discovery_type;
-				probeParams.triggers = getUpdate().update_value.conditions;
-				 probeParams.severity = getUpdate().update_value.severity;
- 				 probeParams.triggerName = getUpdate().update_value.name;
-				 probeParams.tuple = getUpdate().update_value.tuple;
-				 probeParams.severity = getUpdate().update_value.severity;
-				 probeParams.severity = getUpdate().update_value.severity;
-				 probeParams.triggerId = getUpdate().update_value.id;
+				probeParams.severity = getUpdate().update_value.severity;
 
 				probe = getUser().addTemplateProbe(probeParams);
+				probe.addTriggers(getUpdate().update_value.triggers);
 				Logit.LogCheck("New probe was created");
 
 			} else {
 				probe = getUser().getProbeFor(getUpdate().probe_id);
-				// ChangeInterval(probe.getInterval());
 				probe.updateKeyValues(getUpdate());
+				probe.clearTriggers();
+				probe.addTriggers(getUpdate().update_value.triggers);
 				Logit.LogCheck("New probe was updated,  probe was already exist");
 			}
 
 			RunnableProbe runnableProbe = new RunnableProbe(host, probe);
 			RunnableProbeContainer.getInstanece().add(runnableProbe);
-			// getUser().addRunnableProbe(runnableProbe);
+			 
 			Logit.LogCheck("New Runnable probe was created: " + runnableProbe.getId());
 
 		} catch (Exception e) {

@@ -26,7 +26,7 @@ public class TriggerUpdate extends BaseUpdate {
 	public Boolean New() {
 		super.New();
 		BaseProbe probe = getUser().getProbeFor(getUpdate().probe_id);
-		ArrayList<TriggerCondition> conditions = UsersManager.getTriggerConds(getUpdate().update_value.conditions);
+		ArrayList<TriggerCondition> conditions = UsersManager.getTriggerConds(getUpdate().update_value.triggers[0].conditions);
 
 		// From SsmpUnit swap integer and string to none - Roi
 		Trigger trigger = new Trigger(getUpdate().update_value.id, getUpdate().update_value.name, probe,
@@ -42,7 +42,7 @@ public class TriggerUpdate extends BaseUpdate {
 		super.Update();
 		BaseProbe probe = getUser().getProbeFor(getUpdate().probe_id);
 		Trigger trigger = probe.getTriggers().get(getUpdate().update_value.id);
-		ArrayList<TriggerCondition> conditions = UsersManager.getTriggerConds(getUpdate().update_value.conditions);
+		ArrayList<TriggerCondition> conditions = UsersManager.getTriggerConds(getUpdate().update_value.triggers[0].conditions);
 
 		if (conditions != null && !conditions.isEmpty()) {
 			trigger.setCondtions(conditions);

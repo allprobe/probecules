@@ -27,8 +27,9 @@ public class ProbeParams {
 	public String http_auth_password;
 	public String url;
 	public Integer element_interval;
-	public String trigger_id;;
+//	public String trigger_id;;
 	public int http_deep;
+	
 	// Discovery
 	public String discovery_type;
 	public String severity;
@@ -37,5 +38,5 @@ public class ProbeParams {
 	public String triggerName;
 	public String triggerId;
 	
-	public ConditionUpdateModel[] triggers;
+	public TriggerModel[] triggers;
 }

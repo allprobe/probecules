@@ -28,6 +28,7 @@ import GlobalConstants.SnmpDataType;
 import GlobalConstants.TriggerSeverity;
 import GlobalConstants.Enums.ApiAction;
 import Interfaces.IDAL;
+import Model.ConditionModel;
 import Model.ConditionUpdateModel;
 import Model.DiscoveryElementParams;
 import Model.HostParams;
@@ -364,18 +365,6 @@ public class UsersManager {
 		}
 	}
 
-	// private static ArrayList<UUID> convertNotificationGroupsArray(Object
-	// notifs) {
-	// if (notifs == null)
-	// return null;
-	// JSONArray notifGroups = (JSONArray) notifs;
-	// ArrayList<UUID> groups = new ArrayList<UUID>();
-	// for (int i = 0; i < notifGroups.size(); i++) {
-	// groups.add(UUID.fromString((String) (notifGroups.get(i))));
-	// }
-	// return groups;
-	// }
-
 	private static void addTemplates(JSONArray allTemplateProbesJson, HashMap<String, UUID> probeByUser) {
 		for (int i = 0; i < allTemplateProbesJson.size(); i++) {
 			JSONObject probeJson = (JSONObject) allTemplateProbesJson.get(i);
@@ -434,7 +423,6 @@ public class UsersManager {
 					break;
 				}
 				case Constants.discovery: {
-
 					// Roi - Please take a look here especially discovery_type
 					probeParams.element_interval = Integer.parseInt(probeKeyJson.get("element_interval").toString());
 					JSONParser jsonParser = new JSONParser();
@@ -442,39 +430,6 @@ public class UsersManager {
 							.parse(probeKeyJson.get("discovery_triggers").toString());
 					TriggerCondition[] discovery_triggers = new TriggerCondition[triggers.size()];
 					probeParams.discovery_type = probeKeyJson.get("discovery_type").toString();
-					// probeParams.tuple = probeKeyJson.get("tuple").toString();
-					// probeParams.xvalue_unit =
-					// probeKeyJson.get("xvalue_unit").toString();
-					// probeParams.triggerName =
-					// probeKeyJson.get("triggerName").toString();
-					// probeParams.triggerId =
-					// probeKeyJson.get("triggerId").toString();
-					//
-					// ConditionUpdateModel[] discovertyTiggers = new
-					// ConditionUpdateModel[triggers.size()];
-					// for (int tIndex = 0; tIndex < triggers.size(); tIndex++)
-					// {
-					// ConditionUpdateModel discovertyTigger = new
-					// ConditionUpdateModel();
-					//
-					// JSONObject trigger = (JSONObject) triggers.get(tIndex);
-					// discovertyTigger.andor = trigger.get("andor").toString();
-					// discovertyTigger.condition =
-					// trigger.get("condition").toString();
-					// discovertyTigger.function =
-					// trigger.get("function").toString();
-					// discovertyTigger.index = trigger.get("index").toString();
-					// discovertyTigger.xvalue =
-					// trigger.get("xvalue").toString();
-					// discovertyTigger.results_vector_type =
-					// trigger.get("results_vector_type").toString();
-					// discovertyTigger.nvalue =
-					// trigger.get("nvalue").toString();
-					//
-					// discovertyTiggers[tIndex] = discovertyTigger;
-					// }
-					//
-					// probeParams.triggers = discovertyTiggers;
 					break;
 				}
 				case Constants.rbl: {
@@ -591,18 +546,18 @@ public class UsersManager {
 		return conditions;
 	}
 
-	public static ArrayList<TriggerCondition> getTriggerConds(ConditionUpdateModel[] conditionUpdateModels) {
+	public static ArrayList<TriggerCondition> getTriggerConds(ConditionModel[] conditionModels) {
 		ArrayList<TriggerCondition> conditions = new ArrayList<TriggerCondition>();
-		for (ConditionUpdateModel conditionUpdateModel : conditionUpdateModels) {
+		for (ConditionModel conditionModel : conditionModels) {
 			// JSONObject conditionJson = (JSONObject) jsonArray.get(i);
 
-			String condition = conditionUpdateModel.condition.toString();
-			String xValue = conditionUpdateModel.xvalue.toString();
-			String xValueUnit = conditionUpdateModel.xvalue_unit.toString();
-			String elementType = conditionUpdateModel.results_vector_type.toString();
-			String function = conditionUpdateModel.function.toString();
-			String lastType = conditionUpdateModel.last_type.toString();
-			String nValue = conditionUpdateModel.nvalue.toString();
+			String condition = conditionModel.condition.toString();
+			String xValue = conditionModel.xvalue.toString();
+			String xValueUnit = conditionModel.xvalue_unit.toString();
+			String elementType = conditionModel.results_vector_type.toString();
+			String function = conditionModel.function.toString();
+			String lastType = conditionModel.last_type.toString();
+			String nValue = conditionModel.nvalue.toString();
 
 			TriggerCondition triggerCondition = new TriggerCondition(condition, xValue, function, elementType,
 					xValueUnit, nValue, lastType);
