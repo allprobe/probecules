@@ -58,7 +58,7 @@ public class ResultsContainer implements IResultsContainer {
 		String userId = splittedId[0];
 		String bucketId = splittedId[1];
 		String hostd = splittedId[2];
-		String triggerId = splittedId[3];
+		String triggerId = splittedId[3] + "@" +splittedId[4] + "@" + splittedId[5];
 
 		ConcurrentHashMap<String, RunnableProbe> runnableProbes = RunnableProbeContainer.getInstanece()
 				.getByUser(userId);
