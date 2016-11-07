@@ -47,6 +47,7 @@ public class UsersManager {
 
 	private static HashMap<UUID, User> users;
 	private static boolean initialized;
+	private static boolean eventsPulled=false;
 	// static Logger log = Logger.getLogger(UsersManager.class);
 
 	public static void Initialize() {
@@ -142,6 +143,8 @@ public class UsersManager {
 		addRunnableProbes(runnableProbesIds);
 
 		ResultsContainer.getInstance().pullCurrentLiveEvents();
+		eventsPulled=true;
+
 		return true;
 	}
 
@@ -649,5 +652,9 @@ public class UsersManager {
 				return jsonInitServer;
 			}
 		}
+	}
+
+	public static boolean eventsPulled() {
+		return eventsPulled;
 	}
 }
