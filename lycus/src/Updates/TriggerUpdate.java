@@ -29,9 +29,9 @@ public class TriggerUpdate extends BaseUpdate {
 		ArrayList<TriggerCondition> conditions = UsersManager.getTriggerConds(getUpdate().update_value.triggers[0].conditions);
 
 		// From SsmpUnit swap integer and string to none - Roi
-		Trigger trigger = new Trigger(getUpdate().update_value.id, getUpdate().update_value.name, probe,
-				UsersManager.getTriggerSev(getUpdate().update_value.severity),
-				getUpdate().update_value.status.equals(Constants._true), conditions);
+		Trigger trigger = new Trigger(getUpdate().update_value.triggers[0].id, getUpdate().update_value.triggers[0].name, probe,
+				UsersManager.getTriggerSev(getUpdate().update_value.triggers[0].severity),
+				getUpdate().update_value.triggers[0].status.equals(Constants._true), conditions);
 
 		probe.addTrigger(trigger);
 		return true;
@@ -41,34 +41,34 @@ public class TriggerUpdate extends BaseUpdate {
 	public Boolean Update() {
 		super.Update();
 		BaseProbe probe = getUser().getProbeFor(getUpdate().probe_id);
-		Trigger trigger = probe.getTriggers().get(getUpdate().update_value.id);
+		Trigger trigger = probe.getTriggers().get(getUpdate().update_value.triggers[0].id);
 		ArrayList<TriggerCondition> conditions = UsersManager.getTriggerConds(getUpdate().update_value.triggers[0].conditions);
 
 		if (conditions != null && !conditions.isEmpty()) {
 			trigger.setCondtions(conditions);
-			Logit.LogCheck("Conditions for trigger : " + getUpdate().update_value.id);
+			Logit.LogCheck("Conditions for trigger : " + getUpdate().update_value.triggers[0].id);
 		}
 		
-		if (GeneralFunctions.isChanged(trigger.getName(), getUpdate().update_value.name)) {
-			trigger.setName(getUpdate().update_value.name);
+		if (GeneralFunctions.isChanged(trigger.getName(), getUpdate().update_value.triggers[0].name)) {
+			trigger.setName(getUpdate().update_value.triggers[0].name);
 			ResultsContainer.getInstance().resendEvents(trigger.getTriggerId(),Constants.object_changed);
 			Logit.LogCheck(
-					"Name for trigger " + getUpdate().update_value.id + " has changed to " + getUpdate().update_value.name);
+					"Name for trigger " + getUpdate().update_value.triggers[0].id + " has changed to " + getUpdate().update_value.triggers[0].name);
 		}
 
 		trigger.setProbe(probe);
 		if (getUpdate().update_value.status != null
-				&& trigger.getStatus() != getUpdate().update_value.status.equals(Constants._true)) {
-			trigger.setStatus(getUpdate().update_value.status.equals(Constants._true));
-			Logit.LogCheck("Status for trigger " + getUpdate().update_value.id + " has changed to "
-					+ getUpdate().update_value.status);
+				&& trigger.getStatus() != getUpdate().update_value.triggers[0].status.equals(Constants._true)) {
+			trigger.setStatus(getUpdate().update_value.triggers[0].status.equals(Constants._true));
+			Logit.LogCheck("Status for trigger " + getUpdate().update_value.triggers[0].id + " has changed to "
+					+ getUpdate().update_value.triggers[0].status);
 		}
 		
-		if (GeneralFunctions.isChanged(trigger.getSvrty().toString().toLowerCase(), getUpdate().update_value.severity)) {
-			trigger.setSvrty(UsersManager.getTriggerSev(getUpdate().update_value.severity));
+		if (GeneralFunctions.isChanged(trigger.getSvrty().toString().toLowerCase(), getUpdate().update_value.triggers[0].severity)) {
+			trigger.setSvrty(UsersManager.getTriggerSev(getUpdate().update_value.triggers[0].severity));
 			ResultsContainer.getInstance().resendEvents(trigger.getTriggerId(),Constants.object_changed);
-			Logit.LogCheck("Severity for trigger " + getUpdate().update_value.id + " has changed to "
-					+ getUpdate().update_value.severity);
+			Logit.LogCheck("Severity for trigger " + getUpdate().update_value.triggers[0].id + " has changed to "
+					+ getUpdate().update_value.triggers[0].severity);
 		}
 
 		return true;
