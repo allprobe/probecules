@@ -1,6 +1,5 @@
 package Triggers;
 
-import GlobalConstants.XvalueUnit;
 import Probes.BaseProbe;
 import Results.BaseResult;
 import lycus.Event;

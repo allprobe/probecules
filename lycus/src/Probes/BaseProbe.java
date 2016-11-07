@@ -191,8 +191,8 @@ public class BaseProbe {
 
 	public Boolean addTriggers(TriggerModel[] triggers) {
 		if (triggers != null && triggers.length > 0) {
-			ArrayList<TriggerCondition> condtions = new ArrayList<>();
 			for (TriggerModel triggerModel : triggers) {
+				ArrayList<TriggerCondition> condtions = new ArrayList<>();
 				for (ConditionModel ConditionModel : triggerModel.conditions) {
 					TriggerCondition condition = new TriggerCondition(ConditionModel.condition,
 							ConditionModel.xvalue, ConditionModel.function, ConditionModel.results_vector_type, ConditionModel.xvalue_unit, 
