@@ -86,47 +86,52 @@ public class ProbeUpdate extends BaseUpdate {
 				probeParams.snmp_store_as = getUpdate().update_value.key.store_value_as;
 
 				// Trigger
-//				if (getUpdate().update_value.triggers != null && getUpdate().update_value.triggers.length > 0) {
-//					probeParams.triggers = new TriggerModel[getUpdate().update_value.triggers.length];
-//					for (TriggerModel triggerModel : getUpdate().update_value.triggers) {
-//						TriggerModel trigger = new TriggerModel();
-//						trigger.id = triggerModel.id;
-//						trigger.name = triggerModel.name;
-//						trigger.probe_id = triggerModel.probe_id;
-//						trigger.severity = triggerModel.severity;
-//						trigger.user_id = triggerModel.user_id;
-//						trigger.status = triggerModel.status;
-//						trigger.tuple = triggerModel.tuple;
-//						
-//						trigger.conditions = new ConditionModel[triggerModel.conditions.length];
-//						for (ConditionModel ConditionModel : triggerModel.conditions) {
-//							ConditionModel condition = new ConditionModel();
-//							condition.andor = ConditionModel.andor;
-//							condition.condition = ConditionModel.condition;
-//							condition.function = ConditionModel.function;
-//							condition.index = ConditionModel.index;
-//							condition.last_type = ConditionModel.last_type;
-//							condition.nvalue = ConditionModel.nvalue;
-//							condition.results_vector_type = ConditionModel.results_vector_type;
-//							condition.xvalue = ConditionModel.xvalue;
-//							condition.xvalue_unit = ConditionModel.xvalue_unit;
-//						}
-//					}
-//				}
+				if (getUpdate().update_value.triggers != null && getUpdate().update_value.triggers.length > 0) {
+					probeParams.triggers = new TriggerModel[getUpdate().update_value.triggers.length];
+					int i = 0;
+					for (TriggerModel triggerModel : getUpdate().update_value.triggers) {
+						TriggerModel trigger = new TriggerModel();
+						trigger.id = triggerModel.id;
+						trigger.name = triggerModel.name;
+						trigger.probe_id = triggerModel.probe_id;
+						trigger.severity = triggerModel.severity;
+						trigger.user_id = triggerModel.user_id;
+						trigger.status = triggerModel.status;
+						trigger.tuple = triggerModel.tuple;
+						
+						int j = 0;
+						trigger.conditions = new ConditionModel[triggerModel.conditions.length];
+						for (ConditionModel ConditionModel : triggerModel.conditions) {
+							ConditionModel condition = new ConditionModel();
+							condition.andor = ConditionModel.andor;
+							condition.condition = ConditionModel.condition;
+							condition.function = ConditionModel.function;
+							condition.index = ConditionModel.index;
+							condition.last_type = ConditionModel.last_type;
+							condition.nvalue = ConditionModel.nvalue;
+							condition.results_vector_type = ConditionModel.results_vector_type;
+							condition.xvalue = ConditionModel.xvalue;
+							condition.xvalue_unit = ConditionModel.xvalue_unit;
+							trigger.conditions[j++] = condition;
+						}
+						
+						probeParams.triggers[i++] = trigger;
+					}
+				}
 
 				// Discovery
 				probeParams.discovery_type = getUpdate().update_value.key.discovery_type;
 				probeParams.severity = getUpdate().update_value.severity;
 
 				probe = getUser().addTemplateProbe(probeParams);
-				probe.addTriggers(getUpdate().update_value.triggers);
+				probe.addTriggers(probeParams.triggers);
 				Logit.LogCheck("New probe was created");
 
 			} else {
 				probe = getUser().getProbeFor(getUpdate().probe_id);
 				probe.updateKeyValues(getUpdate());
-				probe.clearTriggers();
-				probe.addTriggers(getUpdate().update_value.triggers);
+//				probe.clearTriggers();
+//				probe.addTriggers(getUpdate().update_value.triggers);
 				Logit.LogCheck("New probe was updated,  probe was already exist");
 			}
 
