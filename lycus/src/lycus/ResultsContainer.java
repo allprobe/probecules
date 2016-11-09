@@ -58,7 +58,7 @@ public class ResultsContainer implements IResultsContainer {
 		String userId = splittedId[0];
 		String bucketId = splittedId[1];
 		String hostd = splittedId[2];
-		String triggerId = splittedId[3] + "@" +splittedId[4] + "@" + splittedId[5];
+		String triggerId = splittedId[3] + "@" + splittedId[4] + "@" + splittedId[5];
 
 		ConcurrentHashMap<String, RunnableProbe> runnableProbes = RunnableProbeContainer.getInstanece()
 				.getByUser(userId);
@@ -66,7 +66,8 @@ public class ResultsContainer implements IResultsContainer {
 		for (RunnableProbe runnableProbe : runnableProbes.values()) {
 			if (runnableProbe.getHost().getHostId().toString().equals(hostd)
 					&& runnableProbe.getProbe().getTrigger(triggerId) != null) {
-				ConcurrentHashMap<String, Event> runnableProbeEvents = eventsPerRunnableProbe.get(runnableProbe.getId());
+				ConcurrentHashMap<String, Event> runnableProbeEvents = eventsPerRunnableProbe
+						.get(runnableProbe.getId());
 
 				List<String> triggersIds = new ArrayList();
 				for (Event event : runnableProbeEvents.values()) {
@@ -74,8 +75,7 @@ public class ResultsContainer implements IResultsContainer {
 						triggersIds.add(event.getTriggerId());
 				}
 
-				for (String triggId :triggersIds )
-				{
+				for (String triggId : triggersIds) {
 					synchronized (lockEvents) {
 						runnableProbeEvents.remove(triggId);
 					}
@@ -392,13 +392,17 @@ public class ResultsContainer implements IResultsContainer {
 		eventValues.put("host_id", runnableProbeId.split("@")[1]);
 		eventValues.put("host_bucket", event.getBucketId());
 		eventValues.put("extra_info", event.getExtraInfo());
+		eventValues.put("event_sub_type", event.getSubType());
 
-		if (event.isDeleted()) 
+		if (!event.getSubType().contains("regular"))
+			Logit.LogDebug("Breakpoint");
+
+		if (event.isDeleted())
 			eventValues.put("remove_object", "true");
 
 		if (event.getIsStatus())
 			eventValues.put("origin_timestamp", String.valueOf(event.getOriginalTimeStamp()));
-		
+
 		if (trigger != null) {
 			eventValues.put("trigger_name", trigger.getName());
 			eventValues.put("trigger_severity", trigger.getSvrty().toString());

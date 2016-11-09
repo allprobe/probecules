@@ -1,7 +1,12 @@
 package Triggers;
 
+import Elements.NicElement;
+import Elements.DiskElement;
 import Probes.BaseProbe;
+import Probes.DiskProbe;
+import Probes.NicProbe;
 import Results.BaseResult;
+import Utils.GeneralFunctions;
 import lycus.Event;
 import lycus.ResultsContainer;
 import lycus.RunnableProbe;
@@ -40,7 +45,15 @@ public class EventTrigger {
 		Event eventExist = ResultsContainer.getInstance().getEvent(runnableProbeId, trigger.getTriggerId());
 		if (eventExist == null) {
 			RunnableProbe runnableProbe = RunnableProbeContainer.getInstanece().get(runnableProbeId);
-			Event event = new Event(trigger.getTriggerId(), runnableProbe.getProbe().getUser().getUserId().toString(), runnableProbe.getHost().getBucket());
+			Event event = new Event(trigger.getTriggerId(), runnableProbe.getProbe().getUser().getUserId().toString(),
+					runnableProbe.getHost().getBucket());
+			if ((runnableProbe.getProbe() instanceof NicProbe)) {
+				NicElement element = ((NicProbe) runnableProbe.getProbe()).getNicElement();
+				event.setSubType("nic-element@" + GeneralFunctions.Base64Encode(element.getName()));
+			} else if ((runnableProbe.getProbe() instanceof DiskProbe)) {
+				DiskElement element = ((DiskProbe) runnableProbe.getProbe()).getDiskElement();
+				event.setSubType("disk-element@" + GeneralFunctions.Base64Encode(element.getName()));
+			}
 			ResultsContainer.getInstance().addEvent(runnableProbeId, trigger.getTriggerId(), event);
 		}
 		return true;
@@ -51,7 +64,7 @@ public class EventTrigger {
 		Event eventExist = ResultsContainer.getInstance().getEvent(runnableProbeId, trigger.getTriggerId());
 		if (eventExist != null) {
 			eventExist.setIsStatus(true);
-//			eventExist.setTime(System.currentTimeMillis());
+			// eventExist.setTime(System.currentTimeMillis());
 		}
 		return true;
 	}

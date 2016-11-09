@@ -12,6 +12,7 @@ public class Event {
 	private boolean isDeleted;
 	private long originalTimeStamp;     
 	private String extraInfo;
+	private String subType;
 	
 	public Event(String triggerId, String userId, String bucketId) {
 		this.triggerId = triggerId;
@@ -22,6 +23,7 @@ public class Event {
 		this.originalTimeStamp = this.time;
 		this.isSent = false;
 		this.setDeleted(false);
+		this.setSubType("regular");
 	}
 	public Event(String triggerId, String userId, String bucketId, boolean sent) {
 		this.triggerId = triggerId;
@@ -32,6 +34,7 @@ public class Event {
 		this.originalTimeStamp = this.time;
 		this.isSent = sent;
 		this.setDeleted(false);
+		this.setSubType("regular");
 	}
 	public String getTriggerId() {
 		return triggerId;
@@ -105,5 +108,13 @@ public class Event {
 
 	public void setExtraInfo(String extraInfo) {
 		this.extraInfo = extraInfo;
+	}
+
+	public String getSubType() {
+		return subType;
+	}
+
+	public void setSubType(String subType) {
+		this.subType = subType;
 	}
 }
