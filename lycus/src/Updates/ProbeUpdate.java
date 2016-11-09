@@ -66,6 +66,7 @@ public class ProbeUpdate extends BaseUpdate {
 				probeParams.http_auth_password = getUpdate().update_value.key.http_auth_password;
 				probeParams.http_auth_username = getUpdate().update_value.key.http_auth_user;
 				probeParams.http_request = getUpdate().update_value.key.http_method;
+				probeParams.http_deep=Integer.parseInt(getUpdate().update_value.http_deep);
 				probeParams.interval = getUpdate().update_value.interval;
 				probeParams.is_active = getUpdate().update_value.status.equals(Constants._true);
 				probeParams.multiplier = getUpdate().update_value.multiplier;

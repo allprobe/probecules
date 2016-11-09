@@ -35,5 +35,6 @@ public class UpdateValueModel
 	public Integer timeout;
 	public Integer snmp_port;
 	public String results_vector_type;
+    public String http_deep;
 }
 
