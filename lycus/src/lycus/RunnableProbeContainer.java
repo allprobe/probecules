@@ -275,7 +275,6 @@ public class RunnableProbeContainer implements IRunnableProbeContainer {
 
 	private Boolean changeSnmpProbeInterval(RunnableProbe runnableProbe, Integer interval) {
 		stopSnmpProbe(runnableProbe);
-		runnableProbe.getProbe().setInterval(interval);
 		addSnmpRunnableProbeToBatches(runnableProbe);
 		return true;
 	}
