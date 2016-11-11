@@ -445,7 +445,8 @@ public class User {
 				String auth = probeParams.http_auth;
 				String authUser = GeneralFunctions.Base64Decode(probeParams.http_auth_username);
 				String authPass = GeneralFunctions.Base64Decode(probeParams.http_auth_password);
-				boolean deepCheck = probeParams.http_deep == 1 ? true : false;
+				
+				boolean deepCheck = probeParams.http_deep != null && probeParams.http_deep == 1 ? true : false;
 
 				int timeout = probeParams.timeout;
 
