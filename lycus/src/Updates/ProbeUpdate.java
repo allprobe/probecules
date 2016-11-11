@@ -20,8 +20,6 @@ import lycus.RunnableProbeContainer;
 import lycus.UsersManager;
 
 public class ProbeUpdate extends BaseUpdate {
-	static Boolean isHostFetchFinished = null;
-	
 	public ProbeUpdate(UpdateModel update) {
 		super(update);
 	}
@@ -34,9 +32,8 @@ public class ProbeUpdate extends BaseUpdate {
 		BaseProbe probe = null;
 		
 		try {
-			if (isHostFetchFinished == null && !getUser().isHostExist(UUID.fromString(getUpdate().host_id))) {
+			if (!getUser().isHostExist(UUID.fromString(getUpdate().host_id))) {
 				// Get host from Ran for host_id
-				isHostFetchFinished = false;
 				IDAL dal = DAL.getInstanece();
 				JSONObject hosts = new JSONObject();
 				JSONArray hostsArray = new JSONArray();
@@ -47,15 +44,8 @@ public class ProbeUpdate extends BaseUpdate {
 				JSONArray jsonArray = (JSONArray) jsonObject.get("hosts");
 				UsersManager.addHostsForUpdate(jsonArray);
 				Logit.LogCheck("New host was created from server");
-				isHostFetchFinished = true;
 			}
 
-			if (isHostFetchFinished != null)
-			{
-				while (!isHostFetchFinished)
-					wait(500);
-			}
-			
 			if (!UsersManager.getUser(getUpdate().user_id).equals(getUser()))
 				setUser(UsersManager.getUser(getUpdate().user_id));
 
