@@ -20,7 +20,8 @@ import lycus.RunnableProbeContainer;
 import lycus.UsersManager;
 
 public class ProbeUpdate extends BaseUpdate {
-
+	static Boolean isHostFetchFinished = null;
+	
 	public ProbeUpdate(UpdateModel update) {
 		super(update);
 	}
@@ -28,13 +29,12 @@ public class ProbeUpdate extends BaseUpdate {
 	@Override
 	public Boolean New() {
 		super.New();
-		Boolean isHostFetchFinished = null;
+		
 		Host host = null;
 		BaseProbe probe = null;
-
 		
 		try {
-			if (!getUser().isHostExist(UUID.fromString(getUpdate().host_id))) {
+			if (isHostFetchFinished == null && !getUser().isHostExist(UUID.fromString(getUpdate().host_id))) {
 				// Get host from Ran for host_id
 				isHostFetchFinished = false;
 				IDAL dal = DAL.getInstanece();
