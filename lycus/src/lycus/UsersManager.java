@@ -604,23 +604,8 @@ public class UsersManager {
 
 			RunnableProbe runnableProbe = new RunnableProbe(host, probe);
 			RunnableProbeContainer.getInstanece().add(runnableProbe);
-			// u.addRunnableProbe(runnableProbe);
 		}
 	}
-
-	// public static HashMap<String, RunnableProbe> getAllUsersRunnableProbes()
-	// {
-	// HashMap<String, RunnableProbe> allRps = new HashMap<String,
-	// RunnableProbe>();
-	// for (User user : getUsers().values()) {
-	//// HashMap<String, RunnableProbe> allUserRps =
-	// user.getAllRunnableProbes();
-	// HashMap<String, RunnableProbe> allUserRps =
-	// RunnableProbeContainer.getInstanece().getByUser(user.getUserId().toString());
-	// allRps.putAll(allUserRps);
-	// }
-	// return allRps;
-	// }
 
 	public static void printUsers() {
 		for (User user : getUsers().values()) {

@@ -265,7 +265,7 @@ public class RunnableProbeContainer implements IRunnableProbeContainer {
 		if (runnableProbe == null)
 			return false;
 
-		runnableProbe.getProbe().setInterval(interval);
+		// runnableProbe.getProbe().setInterval(interval);
 		if (runnableProbe.getProbeType() == ProbeTypes.SNMP) {
 			changeSnmpProbeInterval(runnableProbe, interval);
 		}
@@ -275,7 +275,7 @@ public class RunnableProbeContainer implements IRunnableProbeContainer {
 
 	private Boolean changeSnmpProbeInterval(RunnableProbe runnableProbe, Integer interval) {
 		stopSnmpProbe(runnableProbe);
-		//runnableProbe.getProbe().setInterval(interval);
+		runnableProbe.getProbe().setInterval(interval);
 		addSnmpRunnableProbeToBatches(runnableProbe);
 		return true;
 	}
@@ -311,9 +311,14 @@ public class RunnableProbeContainer implements IRunnableProbeContainer {
 
 		try {
 			SnmpProbesBatch newBatch = new SnmpProbesBatch(runnableProbe);
+			if (runnableProbe.getId().equals("8b0104e7-5902-4419-933f-668582fc3acd@6b999cd6-fcbb-4ca8-9936-5529b4c66976@snmp_5d937636-eb75-4165-b339-38a729aa2b7d") ||
+				runnableProbe.getId().equals("8b0104e7-5902-4419-933f-668582fc3acd@6975cb58-8aa4-4ecd-b9fc-47b78c0d7af8@snmp_5d937636-eb75-4165-b339-38a729aa2b7d"))
+				System.out.println("New Interval: " + newBatch.getInterval() + "Probe name: " + runnableProbe.getProbe().getName());
+				
 			snmpBatchExec.execute(newBatch);
 			batches.put(runnableProbe.getId(), newBatch);
 			newBatch.setRunning(true);
+			runnableProbe.setRunning(true);
 			return true;
 		} catch (Exception e) {
 			Logit.LogWarn(
@@ -336,9 +341,7 @@ public class RunnableProbeContainer implements IRunnableProbeContainer {
 				return true;
 			}
 			return false;
-		} catch (Exception e)
-
-		{
+		} catch (Exception e) {
 			Logit.LogWarn("Unable to stop running probe: " + runnableProbe.getId() + ",\n" + e.getMessage());
 			return false;
 		}

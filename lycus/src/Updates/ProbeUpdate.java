@@ -99,7 +99,7 @@ public class ProbeUpdate extends BaseUpdate {
 						trigger.user_id = triggerModel.user_id;
 						trigger.status = triggerModel.status;
 						trigger.tuple = triggerModel.tuple;
-						
+
 						int j = 0;
 						trigger.conditions = new ConditionModel[triggerModel.conditions.length];
 						for (ConditionModel ConditionModel : triggerModel.conditions) {
@@ -115,7 +115,7 @@ public class ProbeUpdate extends BaseUpdate {
 							condition.xvalue_unit = ConditionModel.xvalue_unit;
 							trigger.conditions[j++] = condition;
 						}
-						
+
 						probeParams.triggers[i++] = trigger;
 					}
 				}
@@ -131,14 +131,14 @@ public class ProbeUpdate extends BaseUpdate {
 			} else {
 				probe = getUser().getProbeFor(getUpdate().probe_id);
 				probe.updateKeyValues(getUpdate());
-//				probe.clearTriggers();
-//				probe.addTriggers(getUpdate().update_value.triggers);
+				// probe.clearTriggers();
+				// probe.addTriggers(getUpdate().update_value.triggers);
 				Logit.LogCheck("New probe was updated,  probe was already exist");
 			}
 
 			RunnableProbe runnableProbe = new RunnableProbe(host, probe);
 			RunnableProbeContainer.getInstanece().add(runnableProbe);
-			 
+
 			Logit.LogCheck("New Runnable probe was created: " + runnableProbe.getId());
 
 		} catch (Exception e) {
@@ -152,23 +152,23 @@ public class ProbeUpdate extends BaseUpdate {
 	@Override
 	public Boolean Update() {
 		super.Update();
-
+		Boolean isChangeInterval = null;
 		ConcurrentHashMap<String, RunnableProbe> runnableProbes = RunnableProbeContainer.getInstanece()
 				.getByProbe(getUpdate().probe_id);
+
 		for (RunnableProbe runnableProbe : runnableProbes.values()) {
-			// TODO: What to do with them
-			// probeParams.template_id = update.template_id;
-			// probeParams.type = update.update_value.type;
+			if (isChangeInterval == null)
+				isChangeInterval = getUpdate().update_value.interval != null
+					&& runnableProbe.getProbe().getInterval() != getUpdate().update_value.interval;
+
+			if (isChangeInterval) {
+				RunnableProbeContainer.getInstanece().changeInterval(runnableProbe, getUpdate().update_value.interval);
+			}
 
 			if (getUpdate().update_value != null)
 				runnableProbe.getProbe().updateKeyValues(getUpdate());
 
-			if (getUpdate().update_value.interval != null
-					&& runnableProbe.getProbe().getInterval() != getUpdate().update_value.interval) {
-				RunnableProbeContainer.getInstanece().changeInterval(runnableProbe, getUpdate().update_value.interval);
-			}
 		}
-
 		return true;
 	}
 

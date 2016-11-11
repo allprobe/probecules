@@ -2,6 +2,7 @@ package lycus;
 
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -14,7 +15,6 @@ import Probes.SnmpProbe;
 import Results.SnmpDeltaResult;
 import Results.SnmpResult;
 import Rollups.RollupsContainer;
-import Triggers.EventTrigger;
 import Utils.Logit;
 
 public class SnmpProbesBatch implements Runnable {
@@ -97,7 +97,7 @@ public class SnmpProbesBatch implements Runnable {
             try {
                 String batchID = this.getBatchId();
                 if (batchID.contains(
-                        "8b0104e7-5902-4419-933f-668582fc3acd@6975cb58-8aa4-4ecd-b9fc-47b78c0d7af8@snmp_5d937636-eb75-4165-b339-38a729aa2b7d"))
+                        "6975cb58-8aa4-4ecd-b9fc-47b78c0d7af8@8b0104e7-5902-4419-933f-668582fc3acd@40@6ca75402-dd7f-4aee-bcc3-1b22463d2dd8"))
                     Logit.LogDebug("BREAKPOINT");
 
                 if (this.getHost().isHostStatus() && this.getHost().isSnmpStatus()) {
@@ -122,7 +122,7 @@ public class SnmpProbesBatch implements Runnable {
 
                         String rpStr = runnableProbe.getId();
                         if (rpStr.contains(
-                                "c3f052eb-d8e3-4672-9bab-cb25fc6e702f@snmp_239439df-4baa-44f4-b333-3ddfb7b028bd"))
+                                "8b0104e7-5902-4419-933f-668582fc3acd@6b999cd6-fcbb-4ca8-9936-5529b4c66976@snmp_5d937636-eb75-4165-b339-38a729aa2b7d"))
                             Logit.LogDebug("BREAKPOINT");
 
                         _runnableProbes.add(runnableProbe);
@@ -152,6 +152,12 @@ public class SnmpProbesBatch implements Runnable {
                                 Logit.LogDebug("BREAKPOINT");
 
                             RunnableProbe runnableProbe =  RunnableProbeContainer.getInstanece().get(result.getRunnableProbeId());
+                            if (runnableProbe.getId().equals("8b0104e7-5902-4419-933f-668582fc3acd@6b999cd6-fcbb-4ca8-9936-5529b4c66976@snmp_5d937636-eb75-4165-b339-38a729aa2b7d") ||
+                    				runnableProbe.getId().equals("8b0104e7-5902-4419-933f-668582fc3acd@6975cb58-8aa4-4ecd-b9fc-47b78c0d7af8@snmp_5d937636-eb75-4165-b339-38a729aa2b7d"))
+                            {
+                            	System.out.println("Interval: " + this.getInterval() + ", Number of Probes: " + response.size() + ", Number of Probes: " + response.size() + ", " + 
+                            		"Probe name: " + runnableProbe.getProbe().getName() + ", Time: " + new Date());
+                            }
                             SnmpStoreAs storeAs = ((SnmpProbe)runnableProbe.getProbe()).getStoreAs();
                             if (storeAs == SnmpStoreAs.asIs) {
                                 result.setLastTimestamp(resultsTimestamp);

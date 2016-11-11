@@ -148,21 +148,6 @@ public class HttpProbe extends BaseProbe {
 	 * @return the authCredentials
 	 */
 
-	// public void updateProbeAttributes(String probeNewName, long
-	// probeNewInterval, float probeNewMultiplier,
-	// boolean probeNewStatus,String newUrl,String newRequestType,String
-	// newAuthStatus,String newAuthUser,String newAuthPass,int newTimeout)
-	// {
-	// super.updateProbe(probeNewName, probeNewInterval, probeNewMultiplier,
-	// probeNewStatus);
-	// this.setUrl(newUrl);
-	// this.setHttpRequestType(newRequestType);
-	// this.setAuthStatus(newAuthStatus);
-	// this.setAuthUsername(newAuthUser);
-	// this.setAuthPassword(newAuthPass);
-	// this.setTimeout(newTimeout);
-	// }
-
 	@Override
 	public WebResult getResult(Host h) {
 		if (!h.isHostStatus())
@@ -191,8 +176,6 @@ public class HttpProbe extends BaseProbe {
 	public boolean updateKeyValues(UpdateModel updateModel) {
 		super.updateKeyValues(updateModel);
 		UpdateValueModel updateValue = updateModel.update_value;
-		// super.updateProbe(probeNewName, probeNewInterval, probeNewMultiplier,
-		// probeNewStatus);
 
 		String url = GeneralFunctions.Base64Decode(updateValue.key.urls);
 		if (GeneralFunctions.isChanged(getUrl(), url)) {
