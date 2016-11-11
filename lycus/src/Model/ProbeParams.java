@@ -27,8 +27,7 @@ public class ProbeParams {
 	public String http_auth_password;
 	public String url;
 	public Integer element_interval;
-//	public String trigger_id;;
-	public int http_deep;
+	public Integer http_deep;
 	
 	// Discovery
 	public String discovery_type;

@@ -330,7 +330,7 @@ public class UsersManager {
 			}
 
 			String snmpTemplateId = ((JSONObject) allHostsJson.get(0)).get("snmp_template").toString();
-			if (snmpTemplateId != null && !user.isSnmpTemplateExist(snmpTemplateId)) {
+			if (!snmpTemplateId.equals("") && snmpTemplateId != null && !user.isSnmpTemplateExist(snmpTemplateId)) {
 				JSONObject templateId = new JSONObject();
 				JSONObject userIdSnmpTemplate = new JSONObject();
 				userIdSnmpTemplate.put(user_id, snmpTemplateId);
