@@ -320,13 +320,14 @@ public class RollupsContainer implements IRollupsContainer {
 			Logit.LogDebug("BREAKPOINT");
 
 		DataPointsRollup[] snmpRollups = snmpDataRollups.get(result.getRunnableProbeId());
-		if (snmpRollups == null)
-			snmpDataRollups.put(result.getRunnableProbeId(), new DataPointsRollup[6]);
-
+		if (snmpRollups == null) {
+			snmpRollups = new DataPointsRollup[6];
+			snmpDataRollups.put(result.getRunnableProbeId(), snmpRollups);
+		}
 		for (int i = 0; i < result.getNumberOfRollupTables(); i++) {
-			if (result == null)
-				continue;
-			DataPointsRollup snmpDataRollup = snmpDataRollups.get(result.getRunnableProbeId())[i];
+//			if (result == null)
+//				continue;
+			DataPointsRollup snmpDataRollup = snmpRollups[i];
 			if (snmpDataRollup == null) {
 				snmpDataRollup = new DataPointsRollup(result.getRunnableProbeId(), this.getRollupSize(i));
 				snmpDataRollups.get(result.getRunnableProbeId())[i] = snmpDataRollup;
