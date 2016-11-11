@@ -112,8 +112,8 @@ public class Net {
 				/* Linux & OSX */
                 try {
                     StringBuilder b = new StringBuilder();
-                    Integer buffer = timeout;
-                    b.append("ping").append(" ").append("-c").append(" ").append(numOfPings).append(" ").append("-i")
+                    Integer buffer = (timeout / 1000);
+                    b.append("ping").append(" ").append("-c").append(" ").append(numOfPings).append(" ").append("-W")
                             .append(" ").append(String.valueOf(buffer)).append(" ").append("-s").append(" ")
                             .append(sizeOfPings).append(" ").append(ip);
                     Process p = Runtime.getRuntime().exec(b.toString());
