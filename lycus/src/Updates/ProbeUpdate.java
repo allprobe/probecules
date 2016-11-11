@@ -28,13 +28,15 @@ public class ProbeUpdate extends BaseUpdate {
 	@Override
 	public Boolean New() {
 		super.New();
-
+		Boolean isHostFetchFinished = null;
 		Host host = null;
 		BaseProbe probe = null;
 
+		
 		try {
 			if (!getUser().isHostExist(UUID.fromString(getUpdate().host_id))) {
 				// Get host from Ran for host_id
+				isHostFetchFinished = false;
 				IDAL dal = DAL.getInstanece();
 				JSONObject hosts = new JSONObject();
 				JSONArray hostsArray = new JSONArray();
@@ -45,8 +47,15 @@ public class ProbeUpdate extends BaseUpdate {
 				JSONArray jsonArray = (JSONArray) jsonObject.get("hosts");
 				UsersManager.addHostsForUpdate(jsonArray);
 				Logit.LogCheck("New host was created from server");
+				isHostFetchFinished = true;
 			}
 
+			if (isHostFetchFinished != null)
+			{
+				while (!isHostFetchFinished)
+					wait(500);
+			}
+			
 			if (!UsersManager.getUser(getUpdate().user_id).equals(getUser()))
 				setUser(UsersManager.getUser(getUpdate().user_id));
 
@@ -66,7 +75,8 @@ public class ProbeUpdate extends BaseUpdate {
 				probeParams.http_auth_password = getUpdate().update_value.key.http_auth_password;
 				probeParams.http_auth_username = getUpdate().update_value.key.http_auth_user;
 				probeParams.http_request = getUpdate().update_value.key.http_method;
-				probeParams.http_deep=Integer.parseInt(getUpdate().update_value.key.http_deep);
+				if (getUpdate().update_value.key.http_deep != null)
+					probeParams.http_deep=Integer.parseInt(getUpdate().update_value.key.http_deep);
 				probeParams.interval = getUpdate().update_value.interval;
 				probeParams.is_active = getUpdate().update_value.status.equals(Constants._true);
 				probeParams.multiplier = getUpdate().update_value.multiplier;
