@@ -67,9 +67,9 @@ public class WebResult extends BaseResult {
 	}
 
 	public Boolean isActive() {
-		if (statusCode == null)
+		if (stateCode == null)
 			return false;
-		return statusCode < 400;
+		return this.stateCode == 3;
 	}
 
 	public Integer getStateCode() {
