@@ -20,21 +20,24 @@ import Utils.Logit;
 public class Updates implements Runnable {
 
 	public Boolean getUpdates() {
-		IDAL dal = DAL.getInstanece();
-		if (dal == null) {
-			return false;
-		} else {
-			// JSONObject jsonObject = dal.get(ApiAction.DevGetThreadsUpdates);
-
-			Object json = DAL.getInstanece().get(Enums.ApiAction.GetThreadsUpdates);
-			if (json == null)
+		JSONObject jsonObject = null;
+		try {
+			IDAL dal = DAL.getInstanece();
+			if (dal == null) {
 				return false;
-			JSONObject jsonObject = (JSONObject) json;
-			// JSONObject jsonObject = dal.get(ApiAction.GetThreadsUpdates);
-			runUpdates(jsonObject);
-		}
+			} else {
+				Object json = DAL.getInstanece().get(Enums.ApiAction.GetThreadsUpdates);
+				if (json == null)
+					return false;
+				jsonObject = (JSONObject) json;
+				runUpdates(jsonObject);
+			}
 
-		return true;
+			return true;
+		} catch (Exception e) {
+			Logit.LogError("Updates - getUpdates()", "Update thread was aborted the json: " + jsonObject);
+			return false;
+		}
 	}
 
 	static Logger log = Logger.getLogger(Updates.class.getName());

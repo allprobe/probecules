@@ -314,43 +314,56 @@ public class Net {
 	}
 
 	public static ArrayList<Object> Weber(String url, String requestType, String user, String pass, int timeout) {
+		try {
 		HttpRequest request;
 		String UserPass;
 		int response_state = 0;
 		ArrayList<Object> webResults = new ArrayList<Object>();
 
-		webResults.add(System.currentTimeMillis());
+			webResults.add(System.currentTimeMillis());
 
-		if (user != null && pass != null) {
-			UserPass = user + ":" + pass;
-			request = new HttpRequest(url, requestType.equals("POST") ? RequestTypes.POST : RequestTypes.GET, timeout,
-					UserPass);
-		} else {
-			request = new HttpRequest(url, requestType.equals("POST") ? RequestTypes.POST : RequestTypes.GET, timeout);
-		}
+			if (user != null && pass != null) {
+				UserPass = user + ":" + pass;
+				request = new HttpRequest(url, requestType.equals("POST") ? RequestTypes.POST : RequestTypes.GET,
+						timeout, UserPass);
+			} else {
+				request = new HttpRequest(url, requestType.equals("POST") ? RequestTypes.POST : RequestTypes.GET,
+						timeout);
+			}
 
-		request.Execute();
+			request.Execute();
 
-		if (request.getIsTimeOut()) {
-			webResults.add(0);
-			webResults.add(0L);
-			webResults.add(0L);
-			webResults.add(1);
-			return webResults;
-		}
-		String contentType = request.getResponseEntity().getContentType().getValue().toString().split(";")[0]
-				.toString();
-		String contentType1 = contentType.split("/")[0].toString();
-		String contentType2 = contentType.split("/")[1].toString();
+			if (request.getIsTimeOut()) {
+				webResults.add(0);
+				webResults.add(0L);
+				webResults.add(0L);
+				webResults.add(1);
+				return webResults;
+			}
+			String contentType = request.getResponseEntity().getContentType().getValue().toString().split(";")[0]
+					.toString();
+			String contentType1 = contentType.split("/")[0].toString();
+			String contentType2 = contentType.split("/")[1].toString();
 
-		HashMap<String, List<String>> mimeTypes = new HashMap<>();
-		mimeTypes.put("application",
-				Arrays.asList("jason", "javascript", "x-javascript", "xml", "xhtml+xml", "rss+xml", "soap+xml"));
-		mimeTypes.put("text", Arrays.asList("x-json", "html", "javascript", "plain", "xml"));
+			HashMap<String, List<String>> mimeTypes = new HashMap<>();
+			mimeTypes.put("application",
+					Arrays.asList("jason", "javascript", "x-javascript", "xml", "xhtml+xml", "rss+xml", "soap+xml"));
+			mimeTypes.put("text", Arrays.asList("x-json", "html", "javascript", "plain", "xml"));
 
-		if (mimeTypes.get(contentType1).contains(contentType2)) {
+			if (mimeTypes.get(contentType1).contains(contentType2)) {
 
-			if (request.getResponseStatusCode() >= 400) {
+				if (request.getResponseStatusCode() >= 400) {
+					long pageSize = GeneralFunctions.fromStringToBytes(request.getResponsePageContent(),
+							"UTF-8").length;
+					// status code
+					webResults.add(request.getResponseStatusCode());
+					// query time
+					webResults.add(request.getResponseQueryTime());
+					// page size in bytes
+					webResults.add(pageSize);
+					webResults.add(2);
+					return webResults;
+				}
 				long pageSize = GeneralFunctions.fromStringToBytes(request.getResponsePageContent(), "UTF-8").length;
 				// status code
 				webResults.add(request.getResponseStatusCode());
@@ -358,27 +371,21 @@ public class Net {
 				webResults.add(request.getResponseQueryTime());
 				// page size in bytes
 				webResults.add(pageSize);
+				webResults.add(3);
+				return webResults;
+			} else {
+				webResults.add(-1);
+				webResults.add(-1L);
+				webResults.add(-1L);
 				webResults.add(2);
+
 				return webResults;
 			}
-			long pageSize = GeneralFunctions.fromStringToBytes(request.getResponsePageContent(), "UTF-8").length;
-			// status code
-			webResults.add(request.getResponseStatusCode());
-			// query time
-			webResults.add(request.getResponseQueryTime());
-			// page size in bytes
-			webResults.add(pageSize);
-			webResults.add(3);
-			return webResults;
-		} else {
-			webResults.add(-1);
-			webResults.add(-1L);
-			webResults.add(-1L);
-			webResults.add(2);
-
-			return webResults;
+		} catch (Exception e) {
+			Logit.LogError("Net - Weber",
+					"Error while running http check! URL: " + url + ", phantomjs output: ", e);
+			e.printStackTrace();
 		}
-
 	}
 
 	public static JSONObject ExtendedWeber(String url, String requestType, String user, String pass, int timeout) {
@@ -457,9 +464,6 @@ public class Net {
 			//// System.out.println("text: " + link.text());
 			// }
 		} catch (Exception e) {
-			// Logit.LogError("Net - ExtendedWeber", "current working dir: " +
-			// System.getProperty("user.dir"), e);
-
 			Logit.LogError("Net - ExtendedWeber",
 					"Error while running http extended check! URL: " + url + ", phantomjs output: " + sb.toString(), e);
 		} finally {

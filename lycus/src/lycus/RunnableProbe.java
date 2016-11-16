@@ -108,41 +108,51 @@ public class RunnableProbe implements Runnable {
 	}
 
 	public void run() {
-		// isRunning = false will stop the thread
-		while (isRunning()) {
-			BaseResult result = null;
-			try {
-				String rpStr = this.getId();
-				if (rpStr.contains(
-						"f84b117c-03fb-40aa-8003-4283a72c35e4@7352a46f-5189-428c-b4c0-fb98dedd10b1@discovery_3ee653fc-adaa-468e-9430-b1793b1d1c7d@dmVuZXQw"))
-					Logit.LogDebug("BREAKPOINT - RunnableProbe");
-
-				// isActive = false will pause the thread
-				if (!isActive() || !getProbe().isActive())
-					continue;
-
-				long timeStamp = System.currentTimeMillis();
-
-				result = getResult();
-				result = buildErrorResultWhenEmpty(result);
-
-				addResult(result, timeStamp);
-				addResultToTrigger(result);
-				addResultToRollups(result);
-				addResultToSLA(result);
-
-			} finally {
+		try {
+			// isRunning = false will stop the thread
+			while (isRunning()) {
+				BaseResult result = null;
 				try {
-					Logit.LogInfo("Running Probe: " + this.getId() + " at Host: " + this.getHost().getHostIp() + "("
-							+ this.getHost().getName() + ")" + ", Results: " + result + " ...");
+					String rpStr = this.getId();
+					if (rpStr.contains(
+							"f84b117c-03fb-40aa-8003-4283a72c35e4@7352a46f-5189-428c-b4c0-fb98dedd10b1@discovery_3ee653fc-adaa-468e-9430-b1793b1d1c7d@dmVuZXQw"))
+						Logit.LogDebug("BREAKPOINT - RunnableProbe");
 
-					synchronized (this) {
-						wait(this.getProbe().getInterval() * 1000);
+					// isActive = false will pause the thread
+					if (!isActive() || !getProbe().isActive())
+						continue;
+
+					long timeStamp = System.currentTimeMillis();
+
+					result = getResult();
+					result = buildErrorResultWhenEmpty(result);
+
+					addResult(result, timeStamp);
+					addResultToTrigger(result);
+					addResultToRollups(result);
+					addResultToSLA(result);
+
+				} catch (Exception e) {
+					Logit.LogError("RunnableProbe - run()", "Running Probe: " + this.getId() + " at Host: " + this.getHost().getHostIp() + "("
+							+ this.getHost().getName() + ")" + ", Results: " + result + "was thrown an exception: " + e.getMessage());
+				} finally {
+					try {
+						Logit.LogInfo("Running Probe: " + this.getId() + " at Host: " + this.getHost().getHostIp() + "("
+								+ this.getHost().getName() + ")" + ", Results: " + result + " ...");
+
+						synchronized (this) {
+							wait(this.getProbe().getInterval() * 1000);
+						}
+					} catch (InterruptedException e) {
+						e.printStackTrace();
 					}
-				} catch (InterruptedException e) {
-					e.printStackTrace();
 				}
 			}
+		} catch (Exception e) {
+			Logit.LogError("RunnableProbe - run()",
+					"Error, The RunnableProbe Thread was Interrupted, Probe type: " + this.getProbeType()
+							+ ", ProbeName: " + this.getProbe().getName() + ", \nRunnabelProbeId: " + this.getId()
+							+ "\nException: " + e.getMessage());
 		}
 	}
 

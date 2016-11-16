@@ -26,8 +26,8 @@ import Utils.Logit;
 public class LycusMain {
 
 	public static void main(String[] args) {
-		// System.out.println("Starting Probecules Version: 0.232");
-		Logit.LogCheck("Starting Probecules Version: 0.232");
+		//System.out.println("Starting Probecules Version: 0.232");
+		Logit.LogCheck("Starting Probecules Version: 0.235");
 
 		System.setProperty("log4j.debug", "true");
 		if (args.length == 0 || args[0] == "")
@@ -42,13 +42,10 @@ public class LycusMain {
 		if (!UsersManager.isInitialized())
 			return;
 
-		startResultsTasks();
-
-		Updates updates = new Updates();
-		Executors.newSingleThreadScheduledExecutor().scheduleAtFixedRate(updates, 0, 30, TimeUnit.SECONDS);
+		startAllTasks();
 	}
 
-	private static boolean startResultsTasks() {
+	private static boolean startAllTasks() {
 		ResultsTask resultsTask = new ResultsTask();
 		ScheduledExecutorService resultsThread = Executors.newSingleThreadScheduledExecutor();
 		resultsThread.scheduleAtFixedRate(resultsTask, 0, resultsTask.getInterval(), TimeUnit.SECONDS);
@@ -73,7 +70,8 @@ public class LycusMain {
 		ScheduledExecutorService DiagnosticThread = Executors.newSingleThreadScheduledExecutor();
 		rollupsThread.scheduleAtFixedRate(diagnosticTask, 0, 300, TimeUnit.SECONDS);
 
+		Updates updates = new Updates();
+		Executors.newSingleThreadScheduledExecutor().scheduleAtFixedRate(updates, 0, 30, TimeUnit.SECONDS);
 		return true;
-
 	}
 }
