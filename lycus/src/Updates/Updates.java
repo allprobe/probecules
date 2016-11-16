@@ -62,6 +62,7 @@ public class Updates implements Runnable {
 
 	@Override
 	public void run() {
+		Logit.LogInfo("Retrieving updates from server...");
 		getUpdates();
 	}
 }

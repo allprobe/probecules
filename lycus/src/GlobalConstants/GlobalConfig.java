@@ -22,7 +22,6 @@ import Utils.Logit;
  */
 public class GlobalConfig {
 
-
 	private static String confPath = null;
 
 	private static String dateFormat = "yyyy-MM-dd HH:mm:ss";
@@ -43,7 +42,7 @@ public class GlobalConfig {
 	private static int SnmpBatchThreadCount = 50;
 	private static int BandwidthThreadCount = 50;
 	private static int DiskhreadCount = 50;
-	private static  int TracerouteThreadCount = 50;
+	private static int TracerouteThreadCount = 50;
 	private static Boolean Debug = null;
 	private static Boolean Development = null;
 	private static String syslogHost = null;
@@ -185,7 +184,7 @@ public class GlobalConfig {
 	public static boolean Initialize() {
 
 		setEnvironmentProperties();
-		
+
 		Properties prop = new Properties();
 		InputStream input = null;
 		try {
@@ -234,16 +233,17 @@ public class GlobalConfig {
 			return false;
 		}
 		DateFormat dateFormat = new SimpleDateFormat("yyyy/MM/dd HH:mm:ss");
-		Calendar cal = Calendar.getInstance();
-		System.out.println("Global Initialization Succeed! - " + dateFormat.format(cal.getTime()));
-		Logit.LogCheck("Global Initialization Succeed!" + dateFormat.format(cal.getTime()));
+		// Calendar cal = Calendar.getInstance();
+		// Logit.LogCheck("Global Initialization Succeed!" +
+		// dateFormat.format(cal.getTime()));
+		Logit.LogCheck("Global Initialization Succeed! SRV: " + DataCenterID + "-" + ThisHostToken);
 
 		return true;
 	}
 
 	private static void setEnvironmentProperties() {
-		java.security.Security.setProperty("networkaddress.cache.ttl" , "0");
-		java.security.Security.setProperty("networkaddress.cache.negative.ttl","0");
+		java.security.Security.setProperty("networkaddress.cache.ttl", "0");
+		java.security.Security.setProperty("networkaddress.cache.negative.ttl", "0");
 	}
 
 	public static String ToString() {

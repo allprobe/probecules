@@ -47,7 +47,7 @@ public class UsersManager {
 
 	private static HashMap<UUID, User> users;
 	private static boolean initialized;
-	private static boolean eventsPulled=false;
+	private static boolean eventsPulled = false;
 	// static Logger log = Logger.getLogger(UsersManager.class);
 
 	public static void Initialize() {
@@ -143,7 +143,7 @@ public class UsersManager {
 		addRunnableProbes(runnableProbesIds);
 
 		ResultsContainer.getInstance().pullCurrentLiveEvents();
-		eventsPulled=true;
+		eventsPulled = true;
 
 		return true;
 	}
@@ -516,18 +516,15 @@ public class UsersManager {
 		}
 	}
 
-	public static Trigger getTrigger(String triggerId)
-    {
-        for(User user:users.values())
-        {
-            for(BaseProbe probe:user.getTemplateProbes().values())
-            {
-                if(probe.getTrigger(triggerId)!=null)
-                    return probe.getTrigger(triggerId);
-            }
-        }
-    return null;
-    }
+	public static Trigger getTrigger(String triggerId) {
+		for (User user : users.values()) {
+			for (BaseProbe probe : user.getTemplateProbes().values()) {
+				if (probe.getTrigger(triggerId) != null)
+					return probe.getTrigger(triggerId);
+			}
+		}
+		return null;
+	}
 
 	private static ArrayList<TriggerCondition> getTriggerConds(JSONArray jsonArray) {
 		ArrayList<TriggerCondition> conditions = new ArrayList<TriggerCondition>();
@@ -590,7 +587,7 @@ public class UsersManager {
 			UUID userID = rp.getValue();
 			String rpID = rp.getKey();
 
-			if (rpID.contains("6ac8fe37-de2d-4649-8565-9e85fb518a81@discovery_17b6eece-59dc-4b77-9706-7a1ef641e05a"))
+			if (rpID.contains("d382d15a-19e2-4c7f-b544-7de9357ed304@port_9a54b4cc-0589-4a1c-8280-0cf57b81dc6e"))
 				Logit.LogDebug("BREAKPOINT");
 
 			User u = getUsers().get(userID);
