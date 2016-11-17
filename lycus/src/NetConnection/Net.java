@@ -385,6 +385,7 @@ public class Net {
 			Logit.LogError("Net - Weber",
 					"Error while running http check! URL: " + url + ", phantomjs output: ", e);
 			e.printStackTrace();
+			return null;
 		}
 	}
 
