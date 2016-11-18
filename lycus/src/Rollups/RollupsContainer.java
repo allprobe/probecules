@@ -330,7 +330,7 @@ public class RollupsContainer implements IRollupsContainer {
 			DataPointsRollup snmpDataRollup = snmpRollups[i];
 			if (snmpDataRollup == null) {
 				snmpDataRollup = new DataPointsRollup(result.getRunnableProbeId(), this.getRollupSize(i));
-				snmpDataRollups.get(result.getRunnableProbeId())[i] = snmpDataRollup;
+				snmpRollups[i] = snmpDataRollup;
 			}
 			if (snmpResults.getNumData() == null || snmpResults.getLastTimestamp() == null)
 				break;
