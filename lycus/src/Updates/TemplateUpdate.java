@@ -16,8 +16,6 @@ public class TemplateUpdate extends BaseUpdate {
 
 	@Override
 	public Boolean New() {
-		// super.New();
-
 		return true;
 	}
 
@@ -45,6 +43,7 @@ public class TemplateUpdate extends BaseUpdate {
 			}
 		}
 
+		Logit.LogCheck("Template " + getUpdate().object_id + " was updated");
 		return true;
 	}
 

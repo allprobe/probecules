@@ -16,8 +16,6 @@ public class SnmpUpdate  extends BaseUpdate{
 	@Override
 	public Boolean New()
 	{
-//		super.New();
-	
 		return true;
 	}
 	
@@ -93,6 +91,7 @@ public class SnmpUpdate  extends BaseUpdate{
 			Logit.LogCheck("Snmp port for " + snmpTemplate.getSnmpTemplateName() +  " has changed to " + getUpdate().update_value.snmp_port);
 		}  	
 		
+		Logit.LogCheck("Snmp template: " + getUpdate().object_id + " was updated");
 		return true;
 	}
 	

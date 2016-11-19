@@ -1,6 +1,7 @@
 package Updates;
 
 import Model.UpdateModel;
+import Utils.Logit;
 import lycus.ResultsContainer;
 
 public class EventUpdate extends BaseUpdate{
@@ -24,6 +25,7 @@ public class EventUpdate extends BaseUpdate{
 		super.Delete();
 		ResultsContainer resultsContainer = ResultsContainer.getInstance();
 		resultsContainer.removeEventsById(getUpdate().object_id);
+		Logit.LogCheck("Event: " + getUpdate().object_id + " was deleted");
 		return true;
 	}
 }

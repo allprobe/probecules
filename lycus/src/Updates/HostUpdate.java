@@ -105,6 +105,8 @@ public class HostUpdate extends BaseUpdate {
 			Logit.LogCheck("Status for host " + host.getName() + " has changed to "
 					+ isActive);
 		}
+		
+		Logit.LogCheck("Host " + getUpdate().host_id +  " has updated");
 		return true;
 	}
 

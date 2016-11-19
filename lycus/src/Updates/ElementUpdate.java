@@ -1,6 +1,7 @@
 package Updates;
 
 import Model.UpdateModel;
+import Utils.Logit;
 import lycus.ElementsContainer;
 
 public class ElementUpdate extends BaseUpdate {
@@ -19,6 +20,7 @@ public class ElementUpdate extends BaseUpdate {
 	public Boolean Update() {
 		super.Update();
 		ElementsContainer.getInstance().updateElements(getUpdate());
+		Logit.LogCheck("Element " + getUpdate().object_id + " was removed");
 		return true;
 	}
 
