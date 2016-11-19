@@ -318,11 +318,6 @@ public class ResultsContainer implements IResultsContainer {
 		}
 	}
 
-	// @Override
-	// public String getRollups() {
-	// return RollupsContainer.getInstance().getAllFinsihedRollups();
-	// }
-
 	public String getEventsPerRunnableProbe() {
 		ArrayList<HashMap<String, HashMap<String, String>>> eventsToSend = new ArrayList<HashMap<String, HashMap<String, String>>>();
 		for (Map.Entry<String, ConcurrentHashMap<String, Event>> runnableProbeEventsEntry : eventsPerRunnableProbe

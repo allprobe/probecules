@@ -30,7 +30,7 @@ public class EventTask extends BaseTask {
 					if (DAL.DAL.getInstanece().put(Enums.ApiAction.PutEvents, eventsJson) == null)
 						FailedRequestsHandler.getInstance().addRequest(new ApiRequest(ApiAction.PutEvents, eventsJson));
 
-					Logit.LogInfo("Packet with " + events.split(",").length + " events was just sent.");
+					Logit.LogInfo("Packet with " + events.split("}}").length + " events was just sent.");
 					resultsContainer.cleanEvents();
 				}
 			} else {
