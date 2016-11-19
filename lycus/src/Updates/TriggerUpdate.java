@@ -34,6 +34,7 @@ public class TriggerUpdate extends BaseUpdate {
 				getUpdate().update_value.triggers[0].status.equals(Constants._true), conditions);
 
 		probe.addTrigger(trigger);
+		Logit.LogCheck("Trigger: " + getUpdate().object_id + " was added");
 		return true;
 	}
 
@@ -71,6 +72,7 @@ public class TriggerUpdate extends BaseUpdate {
 					+ getUpdate().update_value.triggers[0].severity);
 		}
 
+		Logit.LogCheck("Trigger: " + getUpdate().object_id + " was updated");
 		return true;
 	}
 

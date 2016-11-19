@@ -146,7 +146,7 @@ public class HostUpdate extends BaseUpdate {
 				rps.add(runnableProbe);
 
 			} catch (Exception e) {
-				Logit.LogError("HostUpdate - Delete()", "Runnable probe " + runnableProbe.getId() +  " Could did not accumulate");
+				Logit.LogError("HostUpdate - Delete()", "Runnable probe " + runnableProbe.getId() +  " did not accumulate");
 			}
 		}
 
@@ -156,7 +156,7 @@ public class HostUpdate extends BaseUpdate {
 				Logit.LogCheck("Runnable probe " + runnableProbe.getId() +  " was removed");
 
 			} catch (Exception e) {
-				Logit.LogError("HostUpdate - Delete()", "Runnable probe " + runnableProbe.getId() +  " Could did not remove");
+				Logit.LogError("HostUpdate - Delete()", "Runnable probe " + runnableProbe.getId() +  " was not remove");
 			}
 		}
 		
