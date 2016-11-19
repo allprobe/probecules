@@ -5,6 +5,7 @@ import DAL.ApiRequest;
 import DAL.FailedRequestsHandler;
 import GlobalConstants.Enums;
 import GlobalConstants.Enums.ApiAction;
+import Model.EventsObject;
 import Utils.GeneralFunctions;
 import Utils.Logit;
 import lycus.ResultsContainer;
@@ -15,8 +16,8 @@ public class EventTask extends BaseTask {
 	public void run() {
 		try {
 			ResultsContainer resultsContainer = ResultsContainer.getInstance();
-			String events = resultsContainer.getEventsPerRunnableProbe();
-
+			EventsObject eventsObject = resultsContainer.getEventsPerRunnableProbe();
+			String events = eventsObject.getEventsJson();
 			if (events != null && events.length() > 2) {
 				Logit.LogInfo("Sending collected Events to API...");
 
@@ -30,7 +31,7 @@ public class EventTask extends BaseTask {
 					if (DAL.DAL.getInstanece().put(Enums.ApiAction.PutEvents, eventsJson) == null)
 						FailedRequestsHandler.getInstance().addRequest(new ApiRequest(ApiAction.PutEvents, eventsJson));
 
-					Logit.LogInfo("Packet with " + (events.split("}}").length - 1) + " events was just sent.");
+					Logit.LogInfo("Packet with " + eventsObject.getLegth() + " events was just sent.");
 					resultsContainer.cleanEvents();
 				}
 			} else {

@@ -16,6 +16,7 @@ import com.google.gson.GsonBuilder;
 import DAL.DAL;
 import GlobalConstants.Enums.ApiAction;
 import Interfaces.IResultsContainer;
+import Model.EventsObject;
 import Results.BaseResult;
 import Results.DiscoveryResult;
 import Utils.GeneralFunctions;
@@ -318,7 +319,8 @@ public class ResultsContainer implements IResultsContainer {
 		}
 	}
 
-	public String getEventsPerRunnableProbe() {
+	public EventsObject getEventsPerRunnableProbe() {
+		int countEventsToSend = 0;
 		ArrayList<HashMap<String, HashMap<String, String>>> eventsToSend = new ArrayList<HashMap<String, HashMap<String, String>>>();
 		for (Map.Entry<String, ConcurrentHashMap<String, Event>> runnableProbeEventsEntry : eventsPerRunnableProbe
 				.entrySet()) {
@@ -350,6 +352,7 @@ public class ResultsContainer implements IResultsContainer {
 								triggerEvent.getValue().getTriggerId() + ", hostId: " + runnableProbe.getHost().getHostId() +
 								", status: " + status + " is ready for sending");
 						event.setSent(true);
+						countEventsToSend++;
 					}
 				} catch (Exception e) {
 					Logit.LogError(null, "Unable to process evsent for triggerId: " + triggerId + ", RunnableProbeId: "
@@ -360,7 +363,7 @@ public class ResultsContainer implements IResultsContainer {
 		}
 
 		Gson gson = new GsonBuilder().setPrettyPrinting().create();
-		return (gson.toJson(eventsToSend));
+		return new EventsObject(gson.toJson(eventsToSend), countEventsToSend);
 	}
 
 	public void cleanEvents() {
@@ -433,3 +436,4 @@ public class ResultsContainer implements IResultsContainer {
 		}
 	}
 }
+
