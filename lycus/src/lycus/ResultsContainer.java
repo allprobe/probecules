@@ -353,7 +353,7 @@ public class ResultsContainer implements IResultsContainer {
 						String status =  triggerEvent.getValue().getIsStatus() ? "true" : "false";
 						Logit.LogInfo("Event in bucketId: " + triggerEvent.getValue().getBucketId() + ", triggerId: " +
 								triggerEvent.getValue().getTriggerId() + ", hostId: " + runnableProbe.getHost().getHostId() +
-								", status: " + status);
+								", status: " + status + " is ready for sending");
 						event.setSent(true);
 					}
 				} catch (Exception e) {
