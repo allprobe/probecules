@@ -18,7 +18,7 @@ public class EventTask extends BaseTask {
 			String events = resultsContainer.getEventsPerRunnableProbe();
 
 			if (events != null && events.length() > 2) {
-				Logit.LogInfo("Sending events to API...");
+				Logit.LogInfo("Sending collected Events to API...");
 
 				if (!events.equals("[]")) {
 					String eventsEncoded = GeneralFunctions.Base64Encode(events);
