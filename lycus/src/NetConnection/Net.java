@@ -315,10 +315,10 @@ public class Net {
 
 	public static ArrayList<Object> Weber(String url, String requestType, String user, String pass, int timeout) {
 		try {
-		HttpRequest request;
-		String UserPass;
-		int response_state = 0;
-		ArrayList<Object> webResults = new ArrayList<Object>();
+			HttpRequest request;
+			String UserPass;
+			int response_state = 0;
+			ArrayList<Object> webResults = new ArrayList<Object>();
 
 			webResults.add(System.currentTimeMillis());
 
@@ -382,8 +382,7 @@ public class Net {
 				return webResults;
 			}
 		} catch (Exception e) {
-			Logit.LogError("Net - Weber",
-					"Error while running http check! URL: " + url + ", phantomjs output: ", e);
+			Logit.LogError("Net - Weber", "Error while running http check! URL: " + url + ", phantomjs output: ", e);
 			e.printStackTrace();
 			return null;
 		}
@@ -465,8 +464,12 @@ public class Net {
 			//// System.out.println("text: " + link.text());
 			// }
 		} catch (Exception e) {
+			if(e.getMessage().contains("No such file or directory"))
 			Logit.LogError("Net - ExtendedWeber",
-					"Error while running http extended check! URL: " + url + ", phantomjs output: " + sb.toString(), e);
+					"Error while running http extended check! unable to find phantomjs module, URL: " + url, e);
+			else
+				Logit.LogError("Net - ExtendedWeber",
+						"Error while running http extended check!, URL: " + url+ ", phantomjs output: " + sb.toString(), e);
 		} finally {
 			if (p != null)
 				p.destroy();

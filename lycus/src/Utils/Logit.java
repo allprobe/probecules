@@ -11,42 +11,47 @@ import org.apache.log4j.LogManager;
 
 public class Logit {
 	// static Logger log = Logger.getLogger("");
-//	static Logger log = LogManager.getLogger("syslog-debug");
+	// static Logger log = LogManager.getLogger("syslog-debug");
 	static Logger log = LogManager.getRootLogger();
 	static boolean isDebug = false;
 	static boolean isInfo = false;
 	static boolean isWarn = false;
 	static boolean isCheck = true;
+
 	// public Logit(String className)
 	// {
 	// log = Logger.getLogger(className);
 	// }
+	private static String formatMessage(String message) {
+		return GlobalConfig.getDataCenterID() + "-" + GlobalConfig.getThisHostToken() + ": " + message;
+	}
 
 	public static void LogDebug(String message) {
 		if (log.isDebugEnabled() && isDebug)
-			log.debug(message);
+			log.debug(formatMessage(message));
 	}
 
 	public static void LogCheck(String message) {
 		if (isCheck)
-			log.info(message);
+			log.info(formatMessage(message));
 	}
 
 	public static void LogInfo(String message) {
-		log.info(message);
+		// if (log.isInfoEnabled())
+		// log.info(message);
+		if (log.isInfoEnabled() && isInfo)
+			log.info(formatMessage(message));
 	}
 
 	// extraInfo - Class name + Function name
 	public static void LogError(String extraInfo, String message) {
-		log.error(
-				GlobalConstants.GlobalConfig.getDataCenterID() + "-" + GlobalConfig.getThisHostToken() + " " + message);
+		log.error(formatMessage(message));
 	}
 
 	// extraInfo - Class name + Function name
 	public static void LogError(String extraInfo, String message, Exception e) {
 		if (e == null) {
-			log.error(GlobalConstants.GlobalConfig.getDataCenterID() + "-" + GlobalConfig.getThisHostToken() + " "
-					+ message);
+			log.error(formatMessage(message));
 			return;
 		}
 		StringWriter sw = new StringWriter();
@@ -55,8 +60,7 @@ public class Logit {
 
 		String trace = sw.toString();
 
-		log.error(GlobalConstants.GlobalConfig.getDataCenterID() + "-" + GlobalConfig.getThisHostToken() + " " + message
-				+ " - TRACE: " + trace);
+		log.error(formatMessage(message) + " - TRACE: " + trace);
 
 	}
 
@@ -64,7 +68,7 @@ public class Logit {
 	public static void LogFatal(String extraInfo, String message, Exception e) {
 
 		if (e == null) {
-			log.fatal(message);
+			log.fatal(formatMessage(message));
 			return;
 		}
 		StringWriter sw = new StringWriter();
@@ -78,10 +82,10 @@ public class Logit {
 
 	public static void LogWarn(String message) {
 		if (isWarn)
-			log.warn(message);
+			log.warn(formatMessage(message));
 	}
 
 	public static void LogTrace(String message) {
-		log.trace(message);
+		log.trace(formatMessage(message));
 	}
 }

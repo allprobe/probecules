@@ -140,12 +140,11 @@ public class BaseProbe {
 		this.getTriggers().remove(trigger_id);
 	}
 
-	public Boolean clearTriggers()
-	{
+	public Boolean clearTriggers() {
 		this.getTriggers().clear();
 		return true;
 	}
-	
+
 	public String getProbeKey() {
 		return this.getTemplate_id().toString() + "@" + this.getProbe_id();
 	}
@@ -194,19 +193,20 @@ public class BaseProbe {
 			for (TriggerModel triggerModel : triggers) {
 				ArrayList<TriggerCondition> condtions = new ArrayList<>();
 				for (ConditionModel ConditionModel : triggerModel.conditions) {
-					TriggerCondition condition = new TriggerCondition(ConditionModel.condition,
-							ConditionModel.xvalue, ConditionModel.function, ConditionModel.results_vector_type, ConditionModel.xvalue_unit, 
+					TriggerCondition condition = new TriggerCondition(ConditionModel.condition, ConditionModel.xvalue,
+							ConditionModel.function, ConditionModel.results_vector_type, ConditionModel.xvalue_unit,
 							ConditionModel.nvalue, ConditionModel.last_type);
 					condtions.add(condition);
 				}
-				
-				Trigger trigger = new Trigger(triggerModel.id, triggerModel.name, this, UsersManager.getTriggerSev(triggerModel.severity),
-						triggerModel.status.equals(Constants._true), condtions);
-				
+
+				Trigger trigger = new Trigger(triggerModel.id, triggerModel.name, this,
+						UsersManager.getTriggerSev(triggerModel.severity), triggerModel.status.equals(Constants._true),
+						condtions);
+
 				addTrigger(trigger);
 			}
 		}
-		
+
 		return true;
 	}
 }

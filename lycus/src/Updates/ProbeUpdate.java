@@ -27,10 +27,10 @@ public class ProbeUpdate extends BaseUpdate {
 	@Override
 	public Boolean New() {
 		super.New();
-		
+
 		Host host = null;
 		BaseProbe probe = null;
-		
+
 		try {
 			if (!getUser().isHostExist(UUID.fromString(getUpdate().host_id))) {
 				// Get host from Ran for host_id
@@ -159,7 +159,7 @@ public class ProbeUpdate extends BaseUpdate {
 		for (RunnableProbe runnableProbe : runnableProbes.values()) {
 			if (isChangeInterval == null)
 				isChangeInterval = getUpdate().update_value.interval != null
-					&& runnableProbe.getProbe().getInterval() != getUpdate().update_value.interval;
+						&& runnableProbe.getProbe().getInterval() != getUpdate().update_value.interval;
 
 			if (isChangeInterval) {
 				RunnableProbeContainer.getInstanece().changeInterval(runnableProbe, getUpdate().update_value.interval);

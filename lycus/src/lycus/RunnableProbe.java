@@ -133,8 +133,10 @@ public class RunnableProbe implements Runnable {
 					addResultToSLA(result);
 
 				} catch (Exception e) {
-					Logit.LogError("RunnableProbe - run()", "Running Probe: " + this.getId() + " at Host: " + this.getHost().getHostIp() + "("
-							+ this.getHost().getName() + ")" + ", Results: " + result + "was thrown an exception: " + e.getMessage());
+					Logit.LogError("RunnableProbe - run()",
+							"Running Probe: " + this.getId() + " at Host: " + this.getHost().getHostIp() + "("
+									+ this.getHost().getName() + ")" + ", Results: " + result
+									+ "was thrown an exception: " + e.getMessage());
 				} finally {
 					try {
 						Logit.LogInfo("Running Probe: " + this.getId() + " at Host: " + this.getHost().getHostIp() + "("

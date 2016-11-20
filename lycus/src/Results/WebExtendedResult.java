@@ -19,15 +19,18 @@ public class WebExtendedResult extends WebResult {
 	private ArrayList<DOMElement> allElementsResults;
 
 	public WebExtendedResult(String runnableProbeId, long timestamp, long responseTime, int responseCode,
-			long responseSize,int stateCode) {
-		super(runnableProbeId, timestamp, responseCode, responseTime, responseSize,stateCode);
+			long responseSize, int stateCode) {
+		super(runnableProbeId, timestamp, responseCode, responseTime, responseSize, stateCode);
 	}
-	public WebExtendedResult(String runnableProbeId, long timestamp,int stateCode) {
-		super(runnableProbeId, timestamp,stateCode);
+
+	public WebExtendedResult(String runnableProbeId, long timestamp, int stateCode) {
+		super(runnableProbeId, timestamp, stateCode);
 	}
+
 	public WebExtendedResult(String runnableProbeId) {
 		super(runnableProbeId);
 	}
+
 	public ArrayList<DOMElement> getAllElementsResults() {
 		return allElementsResults;
 	}
