@@ -9,12 +9,15 @@ import java.util.Map;
 import java.util.UUID;
 import java.util.concurrent.ConcurrentHashMap;
 import org.snmp4j.Snmp;
+
+import GlobalConstants.Enums.SnmpError;
 import GlobalConstants.Enums.SnmpStoreAs;
 import NetConnection.NetResults;
 import Probes.SnmpProbe;
 import Results.SnmpDeltaResult;
 import Results.SnmpResult;
 import Rollups.RollupsContainer;
+import Triggers.Trigger;
 import Utils.Logit;
 
 public class SnmpProbesBatch implements Runnable {
@@ -149,13 +152,9 @@ public class SnmpProbesBatch implements Runnable {
 							long resultsTimestamp = System.currentTimeMillis();
 							for (SnmpResult result : response) {
 
-								String rpStr = result.getRunnableProbeId();
-								if (rpStr.contains(
-										"c3f052eb-d8e3-4672-9bab-cb25fc6e702f@snmp_239439df-4baa-44f4-b333-3ddfb7b028bd"))
-									Logit.LogDebug("BREAKPOINT");
-
 								RunnableProbe runnableProbe = RunnableProbeContainer.getInstanece()
 										.get(result.getRunnableProbeId());
+
 								if (runnableProbe.getId()
 										.equals("8b0104e7-5902-4419-933f-668582fc3acd@6b999cd6-fcbb-4ca8-9936-5529b4c66976@snmp_5d937636-eb75-4165-b339-38a729aa2b7d")
 										|| runnableProbe.getId().equals(
@@ -178,14 +177,21 @@ public class SnmpProbesBatch implements Runnable {
 									RollupsContainer.getInstance().addResult(snmpDeltaResult);
 									runnableProbe.addResultToTrigger(snmpDeltaResult);
 								}
+								if (result.getError() == SnmpError.NO_COMUNICATION) {
+									for (Trigger trigger : runnableProbe.getProbe().getTriggers().values())
+										ResultsContainer.getInstance().resendEvents(trigger.getTriggerId(),
+												GlobalConstants.Constants.SNMP_CONNECTION_FAILED);
+								}
 							}
 						}
 					}
 				} catch (Exception e) {
 					e.printStackTrace();
-					Logit.LogError("SnmpProbesBatch - run()", "Error running snmp probes batch: " + this.getBatchId() + " at Host: " + this.getHost().getHostIp() + "("
-							+ this.getHost().getName()  + "was thrown an exception: " + e.getMessage());
-					
+					Logit.LogError("SnmpProbesBatch - run()",
+							"Error running snmp probes batch: " + this.getBatchId() + " at Host: "
+									+ this.getHost().getHostIp() + "(" + this.getHost().getName()
+									+ "was thrown an exception: " + e.getMessage());
+
 					for (RunnableProbe runnableProbe : this.getSnmpProbes().values()) {
 						SnmpResult result = new SnmpResult(runnableProbe.getId());
 						result.setErrorMessage("exception for snmp probe!");

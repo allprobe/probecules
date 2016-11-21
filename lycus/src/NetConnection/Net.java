@@ -464,12 +464,12 @@ public class Net {
 			//// System.out.println("text: " + link.text());
 			// }
 		} catch (Exception e) {
-			if(e.getMessage().contains("No such file or directory"))
-			Logit.LogError("Net - ExtendedWeber",
-					"Error while running http extended check! unable to find phantomjs module, URL: " + url, e);
-			else
+			if (e.getMessage().contains("No such file or directory"))
 				Logit.LogError("Net - ExtendedWeber",
-						"Error while running http extended check!, URL: " + url+ ", phantomjs output: " + sb.toString(), e);
+						"Error while running http extended check! unable to find phantomjs module, URL: " + url, e);
+			else
+				Logit.LogError("Net - ExtendedWeber", "Error while running http extended check!, URL: " + url
+						+ ", phantomjs output: " + sb.toString(), e);
 		} finally {
 			if (p != null)
 				p.destroy();
