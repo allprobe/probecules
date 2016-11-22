@@ -25,7 +25,7 @@ public class SnmpProbesBatch implements Runnable {
 	private ConcurrentHashMap<String, RunnableProbe> snmpProbes;
 	private Host host;
 	private long interval;
-	private boolean snmpError;
+	private boolean snmpErrorSent = false;
 	private boolean isRunning;
 	private Map<String, SnmpResult> snmpPreviousResults; // Map<runnableProbeId,
 	private Snmp snmp;
@@ -75,12 +75,12 @@ public class SnmpProbesBatch implements Runnable {
 		this.snmp = snmp;
 	}
 
-	public boolean isSnmpError() {
-		return snmpError;
+	public boolean isSnmpErrorSent() {
+		return snmpErrorSent;
 	}
 
-	public void setSnmpError(boolean snmpError) {
-		this.snmpError = snmpError;
+	public void setSnmpErrorSent(boolean snmpError) {
+		this.snmpErrorSent = snmpError;
 	}
 
 	public boolean isRunning() {
@@ -178,9 +178,19 @@ public class SnmpProbesBatch implements Runnable {
 									runnableProbe.addResultToTrigger(snmpDeltaResult);
 								}
 								if (result.getError() == SnmpError.NO_COMUNICATION) {
-									for (Trigger trigger : runnableProbe.getProbe().getTriggers().values())
+									if (!this.isSnmpErrorSent()) {
+										for (Trigger trigger : runnableProbe.getProbe().getTriggers().values()) {
+											ResultsContainer.getInstance().resendEvents(trigger.getTriggerId(),
+													GlobalConstants.Constants.snmp_connection_failed);
+										}
+										this.setSnmpErrorSent(true);
+									}
+								} else {
+									for (Trigger trigger : runnableProbe.getProbe().getTriggers().values()) {
 										ResultsContainer.getInstance().resendEvents(trigger.getTriggerId(),
-												GlobalConstants.Constants.SNMP_CONNECTION_FAILED);
+												GlobalConstants.Constants.snmp_connection_failed_fixed);
+									}
+									this.setSnmpErrorSent(false);
 								}
 							}
 						}
