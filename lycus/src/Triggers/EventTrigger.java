@@ -1,6 +1,9 @@
 package Triggers;
 
 import Elements.NicElement;
+
+import java.util.UUID;
+
 import Elements.DiskElement;
 import Probes.BaseProbe;
 import Probes.DiskProbe;
@@ -46,9 +49,12 @@ public class EventTrigger {
 		if (eventExist == null) {
 			RunnableProbe runnableProbe = RunnableProbeContainer.getInstanece().get(runnableProbeId);
 			
+			String  hostNotificationGroup = "" ; 
+			if (runnableProbe.getHost().getNotificationGroups() != null)
+				hostNotificationGroup = runnableProbe.getHost().getNotificationGroups().toString();
 			
 			Event event = new Event(trigger.getTriggerId(), runnableProbe.getProbe().getUser().getUserId().toString(),
-					runnableProbe.getHost().getBucket(), runnableProbe.getHost().getName(), runnableProbe.getHost().getNotificationGroups().toString(), trigger.getName(), trigger.getSvrty().toString());
+					runnableProbe.getHost().getBucket(), runnableProbe.getHost().getName(), hostNotificationGroup, trigger.getName(), trigger.getSvrty().toString());
 			if ((runnableProbe.getProbe() instanceof NicProbe)) {
 				NicElement element = ((NicProbe) runnableProbe.getProbe()).getNicElement();
 				event.setSubType("nic-element@" + GeneralFunctions.Base64Encode(element.getName()));
