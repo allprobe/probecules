@@ -232,7 +232,7 @@ public class RunnableProbe implements Runnable {
 				eventTrigger.addResult(result);
 		} catch (Exception e) {
 			Logit.LogError("RunnableProbe - addResultToTrigger()",
-					"Error Adding result to eventTrigger! " + this.getId());
+					"Error Adding result to eventTrigger! " + this.getId() + " Error Message: "+ e.getMessage() + e.getStackTrace());
 			return false;
 		}
 		return true;
