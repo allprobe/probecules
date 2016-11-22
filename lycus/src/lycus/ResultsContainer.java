@@ -190,6 +190,10 @@ public class ResultsContainer implements IResultsContainer {
 					UUID templateId = UUID.fromString(it.split("@")[3]);
 					String probeId = it.split("@")[4];
 					String triggerId = templateId + "@" + probeId + "@" + it.split("@")[5];
+					String hostName = null;
+					String hostNotificationGroup = null;
+					String triggerName = null;
+					String triggerSeverity = null;
 
 					String runnableProbeId = GeneralFunctions.getRunnableProbeId(templateId, hostId, probeId);
 					if (runnableProbeId
@@ -198,9 +202,25 @@ public class ResultsContainer implements IResultsContainer {
 
 					RunnableProbe runnableProbe = RunnableProbeContainer.getInstanece().get(runnableProbeId);
 					long timestamp = Long.parseLong((String) events.get(it));
-					// Trigger trigger = UsersManager.getTrigger(triggerId);
 
-					Event event = new Event(triggerId, userId, bucketId);
+					User user = UsersManager.getUser(userId);
+					if (user != null) {
+						Host host = user.getHost(hostId);
+						if (host != null) {
+							hostName = host.getName();
+							hostNotificationGroup = host.getNotificationGroups().toString();
+						}
+					}
+
+					if (runnableProbe != null) {
+						Trigger trigger = runnableProbe.getProbe().getTrigger(triggerId);
+						if (trigger != null) {
+							triggerName = trigger.getName();
+							triggerSeverity = trigger.getSvrty().toString();
+						}
+					}
+					Event event = new Event(triggerId, userId, bucketId, hostName, hostNotificationGroup, triggerName,
+							triggerSeverity);
 					event.setTime(timestamp);
 					event.setSent(true);
 
@@ -333,29 +353,32 @@ public class ResultsContainer implements IResultsContainer {
 				Event event = triggerEvent.getValue();
 
 				Trigger trigger = null;
-				RunnableProbe runnableProbe = RunnableProbeContainer.getInstanece().get(runnableProbeId);
-				if (runnableProbe != null)
-					trigger = runnableProbe.getProbe().getTrigger(triggerId);
+
+				String rpStr = runnableProbeId;
+				if (rpStr.contains("ff00ff2c-0f40-4616-9ac4-a71447b22431@inner_33695a83-654d-4177-b90d-0a89c5f0120d"))
+					Logit.LogDebug("BREAKPOINT");
+
 				try {
-					String rpStr = runnableProbeId;
-					if (rpStr.contains(
-							"ff00ff2c-0f40-4616-9ac4-a71447b22431@inner_33695a83-654d-4177-b90d-0a89c5f0120d"))
-						Logit.LogDebug("BREAKPOINT");
+					// RunnableProbe runnableProbe =
+					// RunnableProbeContainer.getInstanece().get(runnableProbeId);
+					// if (runnableProbe != null)
+					// trigger = runnableProbe.getProbe().getTrigger(triggerId);
 
 					if (!event.isSent() || (event.isSent() && event.getIsStatus())) {
 						HashMap<String, HashMap<String, String>> sendingEvents = eventDBFormat(runnableProbeId,
-								triggerId, event, runnableProbe, trigger);
+								triggerId, event);
 
 						eventsToSend.add(sendingEvents);
-						String status =  triggerEvent.getValue().getIsStatus() ? "true" : "false";
-						Logit.LogInfo("Event in bucketId: " + triggerEvent.getValue().getBucketId() + ", triggerId: " +
-								triggerEvent.getValue().getTriggerId() + ", hostId: " + runnableProbe.getHost().getHostId() +
-								", status: " + status + " is ready for sending");
+						String status = triggerEvent.getValue().getIsStatus() ? "true" : "false";
 						event.setSent(true);
 						countEventsToSend++;
+						Logit.LogInfo("Event in bucketId: " + triggerEvent.getValue().getBucketId() + ", triggerId: "
+								+ triggerEvent.getValue().getTriggerId() + ", host: "
+								+ triggerEvent.getValue().getHostName() + ", status: " + status
+								+ " is ready for sending");
 					}
 				} catch (Exception e) {
-					Logit.LogError(null, "Unable to process evsent for triggerId: " + triggerId + ", RunnableProbeId: "
+					Logit.LogError(null, "Unable to process event for triggerId: " + triggerId + ", RunnableProbeId: "
 							+ runnableProbeId, e);
 					continue;
 				}
@@ -384,7 +407,7 @@ public class ResultsContainer implements IResultsContainer {
 	}
 
 	private HashMap<String, HashMap<String, String>> eventDBFormat(String runnableProbeId, String triggerId,
-			Event event, RunnableProbe runnableProbe, Trigger trigger) {
+			Event event) {
 		HashMap<String, HashMap<String, String>> sendingEvents = new HashMap<String, HashMap<String, String>>();
 		HashMap<String, String> eventValues = new HashMap<String, String>();
 		eventValues.put("trigger_id", triggerId);
@@ -395,7 +418,11 @@ public class ResultsContainer implements IResultsContainer {
 		eventValues.put("host_bucket", event.getBucketId());
 		eventValues.put("extra_info", event.getExtraInfo());
 		eventValues.put("event_sub_type", event.getSubType());
-
+		eventValues.put("trigger_name", event.getTriggerName());
+		eventValues.put("trigger_severity", event.getTriggerSeverity());
+		eventValues.put("host_name", event.getHostName());
+		eventValues.put("host_notifs_groups", event.getHostNotificationGroup());
+		
 		if (!event.getSubType().contains("regular"))
 			Logit.LogDebug("Breakpoint");
 
@@ -404,23 +431,6 @@ public class ResultsContainer implements IResultsContainer {
 
 		if (event.getIsStatus())
 			eventValues.put("origin_timestamp", String.valueOf(event.getOriginalTimeStamp()));
-
-		if (trigger != null) {
-			eventValues.put("trigger_name", trigger.getName());
-			eventValues.put("trigger_severity", trigger.getSvrty().toString());
-		}
-
-		if (runnableProbe != null) {
-			eventValues.put("host_name", runnableProbe.getHost().getName());
-			// eventValues.put("user_id",
-			// runnableProbe.getProbe().getUser().getUserId().toString());
-			// eventValues.put("host_bucket",
-			// runnableProbe.getHost().getBucket());
-			if (runnableProbe.getHost().getNotificationGroups() != null)
-				eventValues.put("host_notifs_groups", runnableProbe.getHost().getNotificationGroups().toString());
-			else
-				eventValues.put("host_notifs_groups", null);
-		}
 
 		sendingEvents.put(runnableProbeId, eventValues);
 		return sendingEvents;
@@ -436,4 +446,3 @@ public class ResultsContainer implements IResultsContainer {
 		}
 	}
 }
-

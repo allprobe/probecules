@@ -13,8 +13,12 @@ public class Event {
 	private long originalTimeStamp;     
 	private String extraInfo;
 	private String subType;
+	private String hostName;
+	private String hostNotificationGroup;
+	private String triggerName;
+	private String triggerSeverity;
 	
-	public Event(String triggerId, String userId, String bucketId) {
+	public Event(String triggerId, String userId, String bucketId, String hostName, String hostNotificationGroup, String triggerName, String triggerSeverity) {
 		this.triggerId = triggerId;
 		this.setUserId(userId);
 		this.setBucketId(bucketId);
@@ -24,18 +28,24 @@ public class Event {
 		this.isSent = false;
 		this.setDeleted(false);
 		this.setSubType("regular");
+		this.setHostName(hostName);
+		this.setHostNotificationGroup(hostNotificationGroup);
+		this.setTriggerName(triggerName);
+		this.setTriggerSeverity(triggerSeverity);
 	}
-	public Event(String triggerId, String userId, String bucketId, boolean sent) {
-		this.triggerId = triggerId;
-		this.setUserId(userId);
-		this.setBucketId(bucketId);
-		this.isStatus = false;
-		this.time = System.currentTimeMillis();
-		this.originalTimeStamp = this.time;
-		this.isSent = sent;
-		this.setDeleted(false);
-		this.setSubType("regular");
-	}
+	
+//	public Event(String triggerId, String userId, String bucketId, boolean sent) {
+//		this.triggerId = triggerId;
+//		this.setUserId(userId);
+//		this.setBucketId(bucketId);
+//		this.isStatus = false;
+//		this.time = System.currentTimeMillis();
+//		this.originalTimeStamp = this.time;
+//		this.isSent = sent;
+//		this.setDeleted(false);
+//		this.setSubType("regular");
+//	}
+	
 	public String getTriggerId() {
 		return triggerId;
 	}
@@ -116,5 +126,33 @@ public class Event {
 
 	public void setSubType(String subType) {
 		this.subType = subType;
+	}
+	public String getHostName() {
+		return hostName;
+	}
+	public void setHostName(String hostName) {
+		this.hostName = hostName;
+	}
+	public String getHostNotificationGroup() {
+		return hostNotificationGroup;
+	}
+	public void setHostNotificationGroup(String hostNotificationGroup) {
+		this.hostNotificationGroup = hostNotificationGroup;
+	}
+
+	public String getTriggerName() {
+		return triggerName;
+	}
+
+	public void setTriggerName(String triggerName) {
+		this.triggerName = triggerName;
+	}
+
+	public String getTriggerSeverity() {
+		return triggerSeverity;
+	}
+
+	public void setTriggerSeverity(String triggerSeverity) {
+		this.triggerSeverity = triggerSeverity;
 	}
 }
