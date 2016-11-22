@@ -190,10 +190,10 @@ public class ResultsContainer implements IResultsContainer {
 					UUID templateId = UUID.fromString(it.split("@")[3]);
 					String probeId = it.split("@")[4];
 					String triggerId = templateId + "@" + probeId + "@" + it.split("@")[5];
-					String hostName = null;
-					String hostNotificationGroup = null;
-					String triggerName = null;
-					String triggerSeverity = null;
+					String hostName = "";
+					String hostNotificationGroup = "";
+					String triggerName = "";
+					String triggerSeverity = "";
 
 					String runnableProbeId = GeneralFunctions.getRunnableProbeId(templateId, hostId, probeId);
 					if (runnableProbeId
@@ -208,7 +208,8 @@ public class ResultsContainer implements IResultsContainer {
 						Host host = user.getHost(hostId);
 						if (host != null) {
 							hostName = host.getName();
-							hostNotificationGroup = host.getNotificationGroups().toString();
+							if (host.getNotificationGroups() != null)
+								hostNotificationGroup = host.getNotificationGroups().toString();
 						}
 					}
 
