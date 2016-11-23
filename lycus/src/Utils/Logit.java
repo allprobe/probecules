@@ -39,13 +39,13 @@ public class Logit {
 	public static void LogInfo(String message) {
 		// if (log.isInfoEnabled())
 		// log.info(message);
-		if (log.isInfoEnabled() && isInfo)
+//		if (log.isInfoEnabled() && isInfo)
 			log.info(formatMessage(message));
 	}
 
 	// extraInfo - Class name + Function name
 	public static void LogError(String extraInfo, String message) {
-		log.error(formatMessage(message));
+		log.error(formatMessage(extraInfo + " -- " + message));
 	}
 
 	// extraInfo - Class name + Function name
