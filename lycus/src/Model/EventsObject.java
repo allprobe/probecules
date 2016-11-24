@@ -2,11 +2,11 @@ package Model;
 
 public class EventsObject {
 	private String eventsJson;
-	private int legth;
+	private int length;
 	
 	public EventsObject(String eventsJson, int length){
 		this.eventsJson = eventsJson;
-		this.legth = legth;
+		this.length = length;
 	}
 	
 	public String getEventsJson() {
@@ -14,6 +14,6 @@ public class EventsObject {
 	}
 	
 	public int getLegth() {
-		return legth;
+		return length;
 	}
 }
