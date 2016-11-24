@@ -185,7 +185,7 @@ public class SnmpProbesBatch implements Runnable {
 										}
 										this.setSnmpErrorSent(true);
 									}
-								} else {
+								} else if (this.isSnmpErrorSent()) {
 									for (Trigger trigger : runnableProbe.getProbe().getTriggers().values()) {
 										ResultsContainer.getInstance().resendEvents(trigger.getTriggerId(),
 												GlobalConstants.Constants.snmp_connection_failed_fixed);

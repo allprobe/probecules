@@ -293,7 +293,7 @@ public class RunnableProbeContainer implements IRunnableProbeContainer {
 									+ probe.getInterval())
 							&& batch.getSnmpProbes().size() < Constants.getBatchesSize()) {
 						batch.getSnmpProbes().put(runnableProbe.getId(), runnableProbe);
-						batches.put(runnableProbe.getId(), batch);
+						batches.put(batch.getBatchId(), batch);
 						batch.setRunning(true);
 						return true;
 					}
@@ -311,12 +311,15 @@ public class RunnableProbeContainer implements IRunnableProbeContainer {
 
 		try {
 			SnmpProbesBatch newBatch = new SnmpProbesBatch(runnableProbe);
-			if (runnableProbe.getId().equals("8b0104e7-5902-4419-933f-668582fc3acd@6b999cd6-fcbb-4ca8-9936-5529b4c66976@snmp_5d937636-eb75-4165-b339-38a729aa2b7d") ||
-				runnableProbe.getId().equals("8b0104e7-5902-4419-933f-668582fc3acd@6975cb58-8aa4-4ecd-b9fc-47b78c0d7af8@snmp_5d937636-eb75-4165-b339-38a729aa2b7d"))
-				System.out.println("New Interval: " + newBatch.getInterval() + "Probe name: " + runnableProbe.getProbe().getName());
-				
+			if (runnableProbe.getId()
+					.equals("8b0104e7-5902-4419-933f-668582fc3acd@6b999cd6-fcbb-4ca8-9936-5529b4c66976@snmp_5d937636-eb75-4165-b339-38a729aa2b7d")
+					|| runnableProbe.getId().equals(
+							"8b0104e7-5902-4419-933f-668582fc3acd@6975cb58-8aa4-4ecd-b9fc-47b78c0d7af8@snmp_5d937636-eb75-4165-b339-38a729aa2b7d"))
+				System.out.println("New Interval: " + newBatch.getInterval() + "Probe name: "
+						+ runnableProbe.getProbe().getName());
+
 			snmpBatchExec.execute(newBatch);
-			batches.put(runnableProbe.getId(), newBatch);
+			batches.put(newBatch.getBatchId(), newBatch);
 			newBatch.setRunning(true);
 			runnableProbe.setRunning(true);
 			return true;
