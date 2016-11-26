@@ -29,6 +29,7 @@ import org.apache.commons.io.IOUtils;
 import org.apache.http.impl.conn.SystemDefaultDnsResolver;
 import org.json.simple.JSONObject;
 import org.json.simple.parser.JSONParser;
+import org.json.simple.parser.ParseException;
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
 import org.jsoup.nodes.Element;
@@ -62,6 +63,7 @@ import org.snmp4j.util.DefaultPDUFactory;
 import org.snmp4j.util.TreeEvent;
 import org.snmp4j.util.TreeListener;
 import org.snmp4j.util.TreeUtils;
+
 
 import GlobalConstants.GlobalConfig;
 import Utils.GeneralFunctions;
@@ -464,12 +466,17 @@ public class Net {
 			//// System.out.println("text: " + link.text());
 			// }
 		} catch (Exception e) {
-			if (e.getMessage().contains("No such file or directory"))
+			if (e instanceof ParseException) {
 				Logit.LogError("Net - ExtendedWeber",
-						"Error while running http extended check! unable to find phantomjs module, URL: " + url, e);
-			else
-				Logit.LogError("Net - ExtendedWeber", "Error while running http extended check!, URL: " + url
-						+ ", phantomjs output: " + sb.toString(), e);
+						"Error while running http extended check! unable to parse phantomjs output, URL: " + url, e);
+			} else {
+				if (e.getMessage().contains("No such file or directory"))
+					Logit.LogError("Net - ExtendedWeber",
+							"Error while running http extended check! unable to find phantomjs module, URL: " + url, e);
+				else
+					Logit.LogError("Net - ExtendedWeber", "Error while running http extended check!, URL: " + url
+							+ ", phantomjs output: " + sb.toString(), e);
+			}
 		} finally {
 			if (p != null)
 				p.destroy();
