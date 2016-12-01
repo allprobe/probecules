@@ -64,7 +64,6 @@ import org.snmp4j.util.TreeEvent;
 import org.snmp4j.util.TreeListener;
 import org.snmp4j.util.TreeUtils;
 
-
 import GlobalConstants.GlobalConfig;
 import Utils.GeneralFunctions;
 import Utils.Logit;
@@ -115,9 +114,10 @@ public class Net {
 				try {
 					StringBuilder b = new StringBuilder();
 					Integer buffer = (timeout / 1000);
-					b.append("ping").append(" ").append("-c").append(" ").append(numOfPings).append(" ").append("-W")
-							.append(" ").append(String.valueOf(buffer)).append(" ").append("-s").append(" ")
-							.append(sizeOfPings).append(" ").append(ip);
+					b.append("ping").append(" ").append("-i").append(" ").append("0.2").append(" ").append("-c")
+							.append(" ").append(numOfPings).append(" ").append("-W").append(" ")
+							.append(String.valueOf(buffer)).append(" ").append("-s").append(" ").append(sizeOfPings)
+							.append(" ").append(ip);
 					Process p = Runtime.getRuntime().exec(b.toString());
 					BufferedReader stdInput = new BufferedReader(new InputStreamReader(p.getInputStream()));
 					List<Object> lines;
@@ -391,6 +391,7 @@ public class Net {
 	}
 
 	public static JSONObject ExtendedWeber(String url, String requestType, String user, String pass, int timeout) {
+
 		Process p = null;
 		StringBuilder sb = new StringBuilder();
 		try {
@@ -414,15 +415,32 @@ public class Net {
 				sb.append(line);
 			}
 
-			if (sb.toString().equals(""))
+			String phantomOutput = sb.toString();
+
+			if (phantomOutput.equals(""))
 				return null;
 
-			if (sb.toString().equals("FAIL to load the address") || sb.toString().startsWith("ReferenceError")) {
+			if (phantomOutput.equals("FAIL to load the address")) {
 				Logit.LogInfo("Error processing probe - might caused by timeout as well, Failed URL:" + url);
 				return null;
 			}
+			if (phantomOutput.startsWith("ReferenceError")) {
+				if (phantomOutput.contains("{")) {
+					int firstBracket = -1;
+					for (int i = 0; i < phantomOutput.length(); i++) {
+						if (phantomOutput.charAt(i) == '{') {
+							firstBracket = i;
+							break;
+						}
+					}
+					phantomOutput = phantomOutput.substring(firstBracket);
+				} else {
+					Logit.LogInfo("Error processing probe - might caused by timeout as well, Failed URL:" + url);
+					return null;
+				}
+			}
 
-			JSONObject harFile = (JSONObject) new JSONParser().parse(sb.toString());
+			JSONObject harFile = (JSONObject) new JSONParser().parse(phantomOutput);
 			return harFile;
 			// WebClient webClient = new WebClient(BrowserVersion.CHROME);
 			// HtmlPage htmlPage = webClient.getPage("http://www.walla.co.il/");

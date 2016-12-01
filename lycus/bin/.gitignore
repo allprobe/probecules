@@ -1,9 +1,11 @@
-/.gitignore
-/Results/
-/Updates/
-/lycus/
 /Probes/
-/NetConnection/
+/Results/
 /Rollups/
+/SLA/
+/Tasks/
+/Triggers/
+/Updates/
 /Utils/
-/GlobalConstants/
+/jpcap/
+/lycus/
+/NetConnection/
