@@ -155,6 +155,9 @@ public class SnmpProbesBatch implements Runnable {
 								RunnableProbe runnableProbe = RunnableProbeContainer.getInstanece()
 										.get(result.getRunnableProbeId());
 
+								if(runnableProbe.getId().contains("6a10a32d-0d33-415b-a1f6-e9aeb2826d03@7352a46f-5189-428c-b4c0-fb98dedd10b1@snmp_1e189e8e-ec48-40bf-baba-88b61b18978a"))
+ 									Logit.LogDebug("BP");
+								
 								if (runnableProbe.getId()
 										.equals("8b0104e7-5902-4419-933f-668582fc3acd@6b999cd6-fcbb-4ca8-9936-5529b4c66976@snmp_5d937636-eb75-4165-b339-38a729aa2b7d")
 										|| runnableProbe.getId().equals(
@@ -165,17 +168,21 @@ public class SnmpProbesBatch implements Runnable {
 													+ runnableProbe.getProbe().getName() + ", Time: " + new Date());
 								}
 								SnmpStoreAs storeAs = ((SnmpProbe) runnableProbe.getProbe()).getStoreAs();
+
+
 								if (storeAs == SnmpStoreAs.asIs) {
 									result.setLastTimestamp(resultsTimestamp);
 									ResultsContainer.getInstance().addResult(result);
 									RollupsContainer.getInstance().addResult(result);
-									runnableProbe.addResultToTrigger(result);
+									if(result.getData() != null || result.getNumData() != null)
+										runnableProbe.addResultToTrigger(result);
 
 								} else if (storeAs == SnmpStoreAs.delta) {
 									SnmpDeltaResult snmpDeltaResult = getSnmpDeltaResult(result, resultsTimestamp);
 									ResultsContainer.getInstance().addResult(snmpDeltaResult);
 									RollupsContainer.getInstance().addResult(snmpDeltaResult);
-									runnableProbe.addResultToTrigger(snmpDeltaResult);
+									if(result.getData() != null || result.getNumData() != null)
+										runnableProbe.addResultToTrigger(snmpDeltaResult);
 								}
 								if (result.getError() == SnmpError.NO_COMUNICATION) {
 									if (!this.isSnmpErrorSent()) {
