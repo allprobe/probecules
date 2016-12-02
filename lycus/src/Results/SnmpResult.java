@@ -45,6 +45,7 @@ public class SnmpResult extends BaseResult {
 				return null;
 			numData = Double.parseDouble(data);
 		} catch (Exception e) {
+			return null;
 		}
 
 		return numData;

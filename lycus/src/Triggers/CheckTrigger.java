@@ -38,32 +38,63 @@ public class CheckTrigger {
 
 	public boolean isConditionMet(BaseResult result, Trigger trigger) {
 		for (TriggerCondition triggerCondition : trigger.getCondtions()) {
-			Double xValue = getDouble(triggerCondition.getxValue());
+			if (result instanceof SnmpResult && ((SnmpResult) result).getNumData() == null
+					&& ((SnmpResult) result).getData() != null) {
+				String xValue = ((SnmpResult) result).getData();
+				if (!isNoFunctionConditionMet(triggerCondition, xValue))
+					return false;
+			} else {
+				Double xValue = getDouble(triggerCondition.getxValue());
 
-			XvalueUnit resultUnit = result.getResultUnit(triggerCondition.getElementType().toString());
+				XvalueUnit resultUnit = result.getResultUnit(triggerCondition.getElementType().toString());
 
-			if (triggerCondition.getFunction() == Function.none) {
-				if (!isNoFunctionConditionMet(resultUnit, triggerCondition, xValue))
-					return false;
-			} else if (triggerCondition.getFunction() == Function.delta) {
-				Double delta = getDelta(triggerCondition.getElementType().toString());
-				if (delta == null)
-					return false;
-				if (!isCondition(delta, resultUnit, triggerCondition.getCondition(), xValue,
-						triggerCondition.getXvalueUnit()))
-					return false;
-			} else if (triggerCondition.getFunction() == Function.max) {
-				if (!isMaxConditionMet(resultUnit, triggerCondition, xValue))
-					return false;
-			} else if (triggerCondition.getFunction() == Function.avg) {
-				if (!isAvgConditionMet(resultUnit, triggerCondition, xValue))
-					return false;
-			} else if (triggerCondition.getFunction() == Function.delta_avg) {
-				if (!isDeltaAvgConditionMet(resultUnit, triggerCondition, xValue))
-					return false;
+				if (triggerCondition.getFunction() == Function.none) {
+					if (!isNoFunctionConditionMet(resultUnit, triggerCondition, xValue))
+						return false;
+				} else if (triggerCondition.getFunction() == Function.delta) {
+					Double delta = getDelta(triggerCondition.getElementType().toString());
+					if (delta == null)
+						return false;
+					if (!isCondition(delta, resultUnit, triggerCondition.getCondition(), xValue,
+							triggerCondition.getXvalueUnit()))
+						return false;
+				} else if (triggerCondition.getFunction() == Function.max) {
+					if (!isMaxConditionMet(resultUnit, triggerCondition, xValue))
+						return false;
+				} else if (triggerCondition.getFunction() == Function.avg) {
+					if (!isAvgConditionMet(resultUnit, triggerCondition, xValue))
+						return false;
+				} else if (triggerCondition.getFunction() == Function.delta_avg) {
+					if (!isDeltaAvgConditionMet(resultUnit, triggerCondition, xValue))
+						return false;
+				}
 			}
 		}
 		return true;
+	}
+
+	private boolean isNoFunctionConditionMet(TriggerCondition triggerCondition, String xValue) {
+		LastN lastN = getLast(triggerCondition);
+		if (!lastN.isEnoughElements())
+			return false;
+		Object result = lastN.getNextResult(triggerCondition.getElementType().toString());
+		int nValue = lastN.getElementCount();
+
+		while (nValue > 0) {
+			if (result == null || xValue == null)
+				return false;
+			for (Object oneResult : (ArrayList<Object>) result) {
+				if (oneResult == null)
+					continue;
+				if (isCondition(oneResult.toString(), triggerCondition.getCondition(), triggerCondition.getxValue(),
+						triggerCondition.getXvalueUnit()))
+					return true;
+			}
+			nValue--;
+			result = lastN.getNextResult(triggerCondition.getElementType().toString());
+		}
+		return false;
+
 	}
 
 	private boolean isMaxConditionMet(XvalueUnit resultUnit, TriggerCondition triggerCondition, Double xValue) {
