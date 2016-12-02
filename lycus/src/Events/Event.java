@@ -1,4 +1,4 @@
-package lycus;
+package Events;
 
 import Utils.Logit;
 
@@ -17,8 +17,9 @@ public class Event {
 	private String hostNotificationGroup;
 	private String triggerName;
 	private String triggerSeverity;
+	private String runnableProbeId;
 	
-	public Event(String triggerId, String userId, String bucketId, String hostName, String hostNotificationGroup, String triggerName, String triggerSeverity) {
+	public Event(String triggerId, String userId, String bucketId, String hostName, String hostNotificationGroup, String triggerName, String triggerSeverity, String runnableProbeId) {
 		this.triggerId = triggerId;
 		this.setUserId(userId);
 		this.setBucketId(bucketId);
@@ -32,19 +33,8 @@ public class Event {
 		this.setHostNotificationGroup(hostNotificationGroup);
 		this.setTriggerName(triggerName);
 		this.setTriggerSeverity(triggerSeverity);
+		this.setRunnableProbeId(runnableProbeId);
 	}
-	
-//	public Event(String triggerId, String userId, String bucketId, boolean sent) {
-//		this.triggerId = triggerId;
-//		this.setUserId(userId);
-//		this.setBucketId(bucketId);
-//		this.isStatus = false;
-//		this.time = System.currentTimeMillis();
-//		this.originalTimeStamp = this.time;
-//		this.isSent = sent;
-//		this.setDeleted(false);
-//		this.setSubType("regular");
-//	}
 	
 	public String getTriggerId() {
 		return triggerId;
@@ -154,5 +144,13 @@ public class Event {
 
 	public void setTriggerSeverity(String triggerSeverity) {
 		this.triggerSeverity = triggerSeverity;
+	}
+
+	public String getRunnableProbeId() {
+		return runnableProbeId;
+	}
+
+	public void setRunnableProbeId(String runnableProbeId) {
+		this.runnableProbeId = runnableProbeId;
 	}
 }

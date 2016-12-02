@@ -3,6 +3,7 @@ package Tasks;
 import org.json.simple.JSONObject;
 import DAL.ApiRequest;
 import DAL.FailedRequestsHandler;
+import Events.EvenetsQueue;
 import GlobalConstants.Enums;
 import GlobalConstants.Enums.ApiAction;
 import Model.EventsObject;
@@ -15,8 +16,8 @@ public class EventTask extends BaseTask {
 
 	public void run() {
 		try {
-			ResultsContainer resultsContainer = ResultsContainer.getInstance();
-			EventsObject eventsObject = resultsContainer.getEventsPerRunnableProbe();
+			EvenetsQueue evenetsQueue = EvenetsQueue.getInstance();
+			EventsObject eventsObject = evenetsQueue.getEventsPerRunnableProbe();
 			String events = eventsObject.getEventsJson();
 			if (events != null && events.length() > 2) {
 				Logit.LogInfo("Sending collected Events to API...");
@@ -32,7 +33,7 @@ public class EventTask extends BaseTask {
 						FailedRequestsHandler.getInstance().addRequest(new ApiRequest(ApiAction.PutEvents, eventsJson));
 
 					Logit.LogInfo("Packet with " + eventsObject.getLegth() + " events was just sent.");
-					resultsContainer.cleanEvents();
+//					evenetsQueue.clearAll();
 				}
 			} else {
 				Logit.LogInfo("No Events changed! events did not sent to API...");

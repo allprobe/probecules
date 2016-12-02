@@ -50,9 +50,9 @@ public class LycusMain {
 		ScheduledExecutorService resultsThread = Executors.newSingleThreadScheduledExecutor();
 		resultsThread.scheduleAtFixedRate(resultsTask, 0, resultsTask.getInterval(), TimeUnit.SECONDS);
 
-		EventTask eventHandler = new EventTask();
+		EventTask eventTask = new EventTask();
 		ScheduledExecutorService eventsThread = Executors.newSingleThreadScheduledExecutor();
-		eventsThread.scheduleAtFixedRate(eventHandler, 0, eventHandler.getInterval(), TimeUnit.SECONDS);
+		eventsThread.scheduleAtFixedRate(eventTask, 0, eventTask.getInterval(), TimeUnit.SECONDS);
 
 		RollupsDumpTask rollupsMemoryDump = new RollupsDumpTask();
 		ScheduledExecutorService rollupsThread = Executors.newSingleThreadScheduledExecutor();

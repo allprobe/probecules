@@ -182,7 +182,7 @@ public class SnmpProbesBatch implements Runnable {
 									ResultsContainer.getInstance().addResult(snmpDeltaResult);
 									RollupsContainer.getInstance().addResult(snmpDeltaResult);
 									if(result.getData() != null || result.getNumData() != null)
-										runnableProbe.addResultToTrigger(snmpDeltaResult);
+									runnableProbe.addResultToTrigger(snmpDeltaResult);
 								}
 								if (result.getError() == SnmpError.NO_COMUNICATION) {
 									if (!this.isSnmpErrorSent()) {

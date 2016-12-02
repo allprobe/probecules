@@ -1,7 +1,7 @@
 package Tasks;
 
 public abstract class BaseTask implements Runnable {
-	private long interval = 30; 
+	private long interval = 25; 
 	
 	public void run() { 
 		

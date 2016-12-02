@@ -311,12 +311,12 @@ public class RunnableProbeContainer implements IRunnableProbeContainer {
 
 		try {
 			SnmpProbesBatch newBatch = new SnmpProbesBatch(runnableProbe);
-			if (runnableProbe.getId()
-					.equals("8b0104e7-5902-4419-933f-668582fc3acd@6b999cd6-fcbb-4ca8-9936-5529b4c66976@snmp_5d937636-eb75-4165-b339-38a729aa2b7d")
-					|| runnableProbe.getId().equals(
-							"8b0104e7-5902-4419-933f-668582fc3acd@6975cb58-8aa4-4ecd-b9fc-47b78c0d7af8@snmp_5d937636-eb75-4165-b339-38a729aa2b7d"))
-				System.out.println("New Interval: " + newBatch.getInterval() + "Probe name: "
-						+ runnableProbe.getProbe().getName());
+//			if (runnableProbe.getId()
+//					.equals("8b0104e7-5902-4419-933f-668582fc3acd@6b999cd6-fcbb-4ca8-9936-5529b4c66976@snmp_5d937636-eb75-4165-b339-38a729aa2b7d")
+//					|| runnableProbe.getId().equals(
+//							"8b0104e7-5902-4419-933f-668582fc3acd@6975cb58-8aa4-4ecd-b9fc-47b78c0d7af8@snmp_5d937636-eb75-4165-b339-38a729aa2b7d"))
+//				System.out.println("New Interval: " + newBatch.getInterval() + "Probe name: "
+//						+ runnableProbe.getProbe().getName());
 
 			snmpBatchExec.execute(newBatch);
 			batches.put(newBatch.getBatchId(), newBatch);
@@ -376,56 +376,4 @@ public class RunnableProbeContainer implements IRunnableProbeContainer {
 		}
 		return threadCount;
 	}
-
-	// @Override
-	// public boolean pause(String runnableProbeId, boolean isActive) {
-	// if (!runnableProbeId.contains("@@")) {
-	// RunnableProbe runnableProbe = runnableProbes.get(runnableProbeId);
-	// if (runnableProbe == null)
-	// return false;
-	//
-	// pause(runnableProbe, isActive);
-	// } else {
-	// String templateId = runnableProbeId.split("@@")[0];
-	// String probeId = runnableProbeId.split("@@")[1];
-	// HashMap<String, RunnableProbe> runnableProbesHash = getByProbe(probeId);
-	// for (String rpId : runnableProbesHash.keySet()) {
-	// if (rpId.contains(templateId))
-	// {
-	// RunnableProbe runnableProbe = runnableProbes.get(rpId);
-	// pause(runnableProbe, isActive);
-	// }
-	// }
-	// }
-	// return true;
-	// }
-
-	// private boolean pause(RunnableProbe runnableProbe, boolean isActive) {
-	// if (runnableProbe.getProbeType() == ProbeTypes.SNMP) {
-	//
-	// } else {
-	// try {
-	// if (!isActive) {
-	// synchronized (lock) {
-	// runnableProbe.wait();
-	// }
-	// } else {
-	// synchronized (lock) {
-	// runnableProbe.notify();
-	// }
-	// }
-	// } catch (Exception ex) {
-	// if (!isActive) {
-	// Logit.LogError("RunnableProbeContainer - pause()", "The runnable probe
-	// did not pause due to error");
-	// } else {
-	// Logit.LogError("RunnableProbeContainer - pause()",
-	// "The runnable probe did not restart due to error");
-	// }
-	//
-	// return false;
-	// }
-	// }
-	// return true;
-	// }
 }
