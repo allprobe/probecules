@@ -281,6 +281,10 @@ public class RunnableProbeContainer implements IRunnableProbeContainer {
 	}
 
 	private Boolean addSnmpRunnableProbeToBatches(RunnableProbe runnableProbe) {
+
+		// if(runnableProbe.getId().contains("36897eaf-db96-4533-b261-3476bb4e90a2"))
+		Logit.LogDebug("BP");
+
 		SnmpProbesBatch batch = null;
 		try {
 			for (Map.Entry<String, SnmpProbesBatch> _batch : batches.entrySet()) {
@@ -311,12 +315,13 @@ public class RunnableProbeContainer implements IRunnableProbeContainer {
 
 		try {
 			SnmpProbesBatch newBatch = new SnmpProbesBatch(runnableProbe);
-//			if (runnableProbe.getId()
-//					.equals("8b0104e7-5902-4419-933f-668582fc3acd@6b999cd6-fcbb-4ca8-9936-5529b4c66976@snmp_5d937636-eb75-4165-b339-38a729aa2b7d")
-//					|| runnableProbe.getId().equals(
-//							"8b0104e7-5902-4419-933f-668582fc3acd@6975cb58-8aa4-4ecd-b9fc-47b78c0d7af8@snmp_5d937636-eb75-4165-b339-38a729aa2b7d"))
-//				System.out.println("New Interval: " + newBatch.getInterval() + "Probe name: "
-//						+ runnableProbe.getProbe().getName());
+			// if (runnableProbe.getId()
+			// .equals("8b0104e7-5902-4419-933f-668582fc3acd@6b999cd6-fcbb-4ca8-9936-5529b4c66976@snmp_5d937636-eb75-4165-b339-38a729aa2b7d")
+			// || runnableProbe.getId().equals(
+			// "8b0104e7-5902-4419-933f-668582fc3acd@6975cb58-8aa4-4ecd-b9fc-47b78c0d7af8@snmp_5d937636-eb75-4165-b339-38a729aa2b7d"))
+			// System.out.println("New Interval: " + newBatch.getInterval() +
+			// "Probe name: "
+			// + runnableProbe.getProbe().getName());
 
 			snmpBatchExec.execute(newBatch);
 			batches.put(newBatch.getBatchId(), newBatch);
@@ -332,22 +337,27 @@ public class RunnableProbeContainer implements IRunnableProbeContainer {
 
 	private boolean stopSnmpProbe(RunnableProbe runnableProbe) {
 		try {
-			SnmpProbesBatch batch = batches.get(runnableProbe.getId());
-			if (batch.isExist(runnableProbe.getId())) {
+			SnmpProbesBatch batch = this.getBatch(runnableProbe.getId());
+			if (batch != null) {
 				batch.deleteSnmpProbe(runnableProbe);
+			}
+			if (batch.size() == 0)
 				batches.remove(runnableProbe.getId());
 
-				if (batch.getSnmpProbes().size() == 0) {
-					batch.setRunning(false);
-					batch = null;
-				}
-				return true;
-			}
-			return false;
+			return true;
+
 		} catch (Exception e) {
 			Logit.LogWarn("Unable to stop running probe: " + runnableProbe.getId() + ",\n" + e.getMessage());
 			return false;
 		}
+	}
+
+	private SnmpProbesBatch getBatch(String runnableProbeId) {
+		for (SnmpProbesBatch batch : this.batches.values()) {
+			if (batch.isExist(runnableProbeId))
+				return batch;
+		}
+		return null;
 	}
 
 	public ThreadsCount getThreadCount() {
