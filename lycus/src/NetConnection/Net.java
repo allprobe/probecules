@@ -111,7 +111,7 @@ public class Net {
 					b.append("/usr/bin/fping").append(" ").append("-i").append(" ").append("25").append(" ")
 							.append("-q").append(" ").append("-c").append(" ").append(numOfPings).append(" ")
 							.append("-t").append(" ").append(timeout).append(" ").append("-b").append(" ")
-							.append(sizeOfPings).append(" ").append("62.90.132.255");
+							.append(sizeOfPings).append(" ").append(ip);
 
 					p = Runtime.getRuntime().exec(b.toString());
 					// BufferedReader stdInput = new BufferedReader(new
