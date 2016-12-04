@@ -278,6 +278,7 @@ public class RunnableProbeContainer implements IRunnableProbeContainer {
 		runnableProbe.getProbe().setInterval(interval);
 		addSnmpRunnableProbeToBatches(runnableProbe);
 		return true;
+
 	}
 
 	private Boolean addSnmpRunnableProbeToBatches(RunnableProbe runnableProbe) {

@@ -43,16 +43,16 @@ public class DAL implements IDAL {
 		return dal;
 	}
 
-//	public JSONObject executeRequest(ApiRequest request) {
-//		executeFailedRequests();
-//		switch (request.getType()) {
-//		case Constants.get:
-//			return get(request.getAction());
-//		case Constants.put:
-//			return put(request.getAction(), request.getRequestBody());
-//		}
-//		return null;
-//	}
+	// public JSONObject executeRequest(ApiRequest request) {
+	// executeFailedRequests();
+	// switch (request.getType()) {
+	// case Constants.get:
+	// return get(request.getAction());
+	// case Constants.put:
+	// return put(request.getAction(), request.getRequestBody());
+	// }
+	// return null;
+	// }
 
 	@Override
 	public JSONObject get(ApiAction action) {
@@ -196,31 +196,33 @@ public class DAL implements IDAL {
 		return apiUrl;
 	}
 
-//	private void executeFailedRequests() {
-//		while (true) {
-//			if (failedRequests.isEmpty())
-//				return;
-//			ApiRequest failedRequest = failedRequests.peek();
-//			switch (failedRequest.getType()) {
-//			case Constants.get:
-//				if (get(failedRequest.getAction()) != null)
-//					failedRequests.remove();
-//				break;
-//			case Constants.put:
-//				if (put(failedRequest.getAction(), failedRequest.getRequestBody()) != null)
-//					failedRequests.remove();
-//			}
-//		}
-//
-//	}
-//
-//	private void addPutFailedRequest(ApiAction action, JSONObject requestBody) {
-//		// failedRequests.add(new ApiRequest(action, requestBody));
-//	}
-//
-//	private void addGetFailedRequest(ApiAction action) {
-//		// failedRequests.add(new ApiRequest(action));
-//	}
+	// private void executeFailedRequests() {
+	// while (true) {
+	// if (failedRequests.isEmpty())
+	// return;
+	// ApiRequest failedRequest = failedRequests.peek();
+	// switch (failedRequest.getType()) {
+	// case Constants.get:
+	// if (get(failedRequest.getAction()) != null)
+	// failedRequests.remove();
+	// break;
+	// case Constants.put:
+	// if (put(failedRequest.getAction(), failedRequest.getRequestBody()) !=
+	// null)
+	// failedRequests.remove();
+	// }
+	// }
+	//
+	// }
+	//
+	// private void addPutFailedRequest(ApiAction action, JSONObject
+	// requestBody) {
+	// // failedRequests.add(new ApiRequest(action, requestBody));
+	// }
+	//
+	// private void addGetFailedRequest(ApiAction action) {
+	// // failedRequests.add(new ApiRequest(action));
+	// }
 
 	private String executeGetRequest(HttpURLConnection conn) throws Exception {
 		BufferedReader rd;

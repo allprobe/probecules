@@ -49,13 +49,14 @@ public class EventTrigger {
 		Event eventExist = ResultsContainer.getInstance().getEvent(runnableProbeId, trigger.getTriggerId());
 		if (eventExist == null) {
 			RunnableProbe runnableProbe = RunnableProbeContainer.getInstanece().get(runnableProbeId);
-			
-			String  hostNotificationGroup = "" ; 
+
+			String hostNotificationGroup = "";
 			if (runnableProbe.getHost().getNotificationGroups() != null)
 				hostNotificationGroup = runnableProbe.getHost().getNotificationGroups().toString();
-			
+
 			Event event = new Event(trigger.getTriggerId(), runnableProbe.getProbe().getUser().getUserId().toString(),
-					runnableProbe.getHost().getBucket(), runnableProbe.getHost().getName(), hostNotificationGroup, trigger.getName(), trigger.getSvrty().toString(), runnableProbeId);
+					runnableProbe.getHost().getBucket(), runnableProbe.getHost().getName(), hostNotificationGroup,
+					trigger.getName(), trigger.getSvrty().toString(), runnableProbeId);
 			if ((runnableProbe.getProbe() instanceof NicProbe)) {
 				NicElement element = ((NicProbe) runnableProbe.getProbe()).getNicElement();
 				event.setSubType("nic-element@" + GeneralFunctions.Base64Encode(element.getName()));

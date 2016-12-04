@@ -231,8 +231,7 @@ public class ResultsContainer implements IResultsContainer {
 						event.setIsStatus(true);
 						event.setDeleted(true);
 						EvenetsQueue.getInstance().add(event);
-					}
-					else
+					} else
 						addEvent(runnableProbeId, triggerId, event);
 
 				} catch (Exception e) {
@@ -343,72 +342,83 @@ public class ResultsContainer implements IResultsContainer {
 		}
 	}
 
-//	public EventsObject getEventsPerRunnableProbe() {
-//		int countEventsToSend = 0;
-//		ArrayList<HashMap<String, HashMap<String, String>>> eventsToSend = new ArrayList<HashMap<String, HashMap<String, String>>>();
-//		for (Map.Entry<String, ConcurrentHashMap<String, Event>> runnableProbeEventsEntry : eventsPerRunnableProbe
-//				.entrySet()) {
-//			String runnableProbeId = runnableProbeEventsEntry.getKey();
-//
-//			ConcurrentHashMap<String, Event> runnableProbeEvents = runnableProbeEventsEntry.getValue();
-//
-//			for (Map.Entry<String, Event> triggerEvent : runnableProbeEvents.entrySet()) {
-//				String triggerId = triggerEvent.getKey();
-//				Event event = triggerEvent.getValue();
-//
-//				Trigger trigger = null;
-//
-//				String rpStr = runnableProbeId;
-//				if (rpStr.contains("ff00ff2c-0f40-4616-9ac4-a71447b22431@inner_33695a83-654d-4177-b90d-0a89c5f0120d"))
-//					Logit.LogDebug("BREAKPOINT");
-//
-//				try {
-//					// RunnableProbe runnableProbe =
-//					// RunnableProbeContainer.getInstanece().get(runnableProbeId);
-//					// if (runnableProbe != null)
-//					// trigger = runnableProbe.getProbe().getTrigger(triggerId);
-//
-//					if (!event.isSent() || (event.isSent() && event.getIsStatus())) {
-//						HashMap<String, HashMap<String, String>> sendingEvents = eventDBFormat(runnableProbeId,
-//								triggerId, event);
-//
-//						eventsToSend.add(sendingEvents);
-//						String status = triggerEvent.getValue().getIsStatus() ? "true" : "false";
-//						event.setSent(true);
-//						countEventsToSend++;
-//						Logit.LogInfo("Event in bucketId: " + triggerEvent.getValue().getBucketId() + ", triggerId: "
-//								+ triggerEvent.getValue().getTriggerId() + ", host: "
-//								+ triggerEvent.getValue().getHostName() + ", status: " + status
-//								+ " is ready for sending");
-//					}
-//				} catch (Exception e) {
-//					Logit.LogError(null, "Unable to process event for triggerId: " + triggerId + ", RunnableProbeId: "
-//							+ runnableProbeId, e);
-//					continue;
-//				}
-//			}
-//		}
-//
-//		Gson gson = new GsonBuilder().setPrettyPrinting().create();
-//		return new EventsObject(gson.toJson(eventsToSend), countEventsToSend);
-//	}
+	// public EventsObject getEventsPerRunnableProbe() {
+	// int countEventsToSend = 0;
+	// ArrayList<HashMap<String, HashMap<String, String>>> eventsToSend = new
+	// ArrayList<HashMap<String, HashMap<String, String>>>();
+	// for (Map.Entry<String, ConcurrentHashMap<String, Event>>
+	// runnableProbeEventsEntry : eventsPerRunnableProbe
+	// .entrySet()) {
+	// String runnableProbeId = runnableProbeEventsEntry.getKey();
+	//
+	// ConcurrentHashMap<String, Event> runnableProbeEvents =
+	// runnableProbeEventsEntry.getValue();
+	//
+	// for (Map.Entry<String, Event> triggerEvent :
+	// runnableProbeEvents.entrySet()) {
+	// String triggerId = triggerEvent.getKey();
+	// Event event = triggerEvent.getValue();
+	//
+	// Trigger trigger = null;
+	//
+	// String rpStr = runnableProbeId;
+	// if
+	// (rpStr.contains("ff00ff2c-0f40-4616-9ac4-a71447b22431@inner_33695a83-654d-4177-b90d-0a89c5f0120d"))
+	// Logit.LogDebug("BREAKPOINT");
+	//
+	// try {
+	// // RunnableProbe runnableProbe =
+	// // RunnableProbeContainer.getInstanece().get(runnableProbeId);
+	// // if (runnableProbe != null)
+	// // trigger = runnableProbe.getProbe().getTrigger(triggerId);
+	//
+	// if (!event.isSent() || (event.isSent() && event.getIsStatus())) {
+	// HashMap<String, HashMap<String, String>> sendingEvents =
+	// eventDBFormat(runnableProbeId,
+	// triggerId, event);
+	//
+	// eventsToSend.add(sendingEvents);
+	// String status = triggerEvent.getValue().getIsStatus() ? "true" : "false";
+	// event.setSent(true);
+	// countEventsToSend++;
+	// Logit.LogInfo("Event in bucketId: " +
+	// triggerEvent.getValue().getBucketId() + ", triggerId: "
+	// + triggerEvent.getValue().getTriggerId() + ", host: "
+	// + triggerEvent.getValue().getHostName() + ", status: " + status
+	// + " is ready for sending");
+	// }
+	// } catch (Exception e) {
+	// Logit.LogError(null, "Unable to process event for triggerId: " +
+	// triggerId + ", RunnableProbeId: "
+	// + runnableProbeId, e);
+	// continue;
+	// }
+	// }
+	// }
+	//
+	// Gson gson = new GsonBuilder().setPrettyPrinting().create();
+	// return new EventsObject(gson.toJson(eventsToSend), countEventsToSend);
+	// }
 
-//	public void cleanEvents() {
-//		for (Map.Entry<String, ConcurrentHashMap<String, Event>> runnableProbeEventsEntry : eventsPerRunnableProbe
-//				.entrySet()) {
-//			String runnableProbeId = runnableProbeEventsEntry.getKey();
-//
-//			ConcurrentHashMap<String, Event> runnableProbeEvents = runnableProbeEventsEntry.getValue();
-//			for (Map.Entry<String, Event> triggerEvent : runnableProbeEvents.entrySet()) {
-//				Event event = triggerEvent.getValue();
-//				if (event.isSent() && event.getIsStatus()) {
-//					synchronized (lockEvents) {
-//						this.eventsPerRunnableProbe.get(runnableProbeId).remove(triggerEvent.getKey());
-//					}
-//				}
-//			}
-//		}
-//	}
+	// public void cleanEvents() {
+	// for (Map.Entry<String, ConcurrentHashMap<String, Event>>
+	// runnableProbeEventsEntry : eventsPerRunnableProbe
+	// .entrySet()) {
+	// String runnableProbeId = runnableProbeEventsEntry.getKey();
+	//
+	// ConcurrentHashMap<String, Event> runnableProbeEvents =
+	// runnableProbeEventsEntry.getValue();
+	// for (Map.Entry<String, Event> triggerEvent :
+	// runnableProbeEvents.entrySet()) {
+	// Event event = triggerEvent.getValue();
+	// if (event.isSent() && event.getIsStatus()) {
+	// synchronized (lockEvents) {
+	// this.eventsPerRunnableProbe.get(runnableProbeId).remove(triggerEvent.getKey());
+	// }
+	// }
+	// }
+	// }
+	// }
 
 	private HashMap<String, HashMap<String, String>> eventDBFormat(String runnableProbeId, String triggerId,
 			Event event) {
@@ -426,7 +436,7 @@ public class ResultsContainer implements IResultsContainer {
 		eventValues.put("trigger_severity", event.getTriggerSeverity());
 		eventValues.put("host_name", event.getHostName());
 		eventValues.put("host_notifs_groups", event.getHostNotificationGroup());
-		
+
 		if (!event.getSubType().contains("regular"))
 			Logit.LogDebug("Breakpoint");
 

@@ -115,7 +115,7 @@ public class RunnableProbe implements Runnable {
 				try {
 					String rpStr = this.getId();
 					if (rpStr.contains(
-							"f84b117c-03fb-40aa-8003-4283a72c35e4@7352a46f-5189-428c-b4c0-fb98dedd10b1@discovery_3ee653fc-adaa-468e-9430-b1793b1d1c7d@dmVuZXQw"))
+							"6a10a32d-0d33-415b-a1f6-e9aeb2826d03@7352a46f-5189-428c-b4c0-fb98dedd10b1@snmp_1e189e8e-ec48-40bf-baba-88b61b18978a"))
 						Logit.LogDebug("BREAKPOINT - RunnableProbe");
 
 					// isActive = false will pause the thread
@@ -232,7 +232,7 @@ public class RunnableProbe implements Runnable {
 				eventTrigger.addResult(result);
 		} catch (Exception e) {
 			Logit.LogError("RunnableProbe - addResultToTrigger()",
-					"Error Adding result to eventTrigger! " + this.getId() + " Error Message: "+ e);
+					"Error Adding result to eventTrigger! " + this.getId() + " Error Message: " + e);
 			return false;
 		}
 		return true;

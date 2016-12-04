@@ -24,16 +24,10 @@ import java.util.List;
 import java.util.Map;
 import java.util.StringTokenizer;
 
-import org.apache.bcel.Constants;
 import org.apache.commons.io.IOUtils;
-import org.apache.http.impl.conn.SystemDefaultDnsResolver;
 import org.json.simple.JSONObject;
 import org.json.simple.parser.JSONParser;
 import org.json.simple.parser.ParseException;
-import org.jsoup.Jsoup;
-import org.jsoup.nodes.Document;
-import org.jsoup.nodes.Element;
-import org.jsoup.select.Elements;
 import org.snmp4j.CommunityTarget;
 import org.snmp4j.PDU;
 import org.snmp4j.ScopedPDU;
@@ -111,37 +105,29 @@ public class Net {
 				}
 			} else {
 				/* Linux & OSX */
+				Process p = null;
 				try {
 					StringBuilder b = new StringBuilder();
-					Integer buffer = (timeout / 1000);
-					b.append("ping").append(" ").append("-i").append(" ").append("0.2").append(" ").append("-c")
-							.append(" ").append(numOfPings).append(" ").append("-W").append(" ")
-							.append(String.valueOf(buffer)).append(" ").append("-s").append(" ").append(sizeOfPings)
-							.append(" ").append(ip);
-					Process p = Runtime.getRuntime().exec(b.toString());
-					BufferedReader stdInput = new BufferedReader(new InputStreamReader(p.getInputStream()));
-					List<Object> lines;
-					lines = new ArrayList<Object>();
-					String s;
-					String PacketLoss = "100";
-					String rtt_avg = "0";
+					b.append("/usr/bin/fping").append(" ").append("-i").append(" ").append("25").append(" ")
+							.append("-q").append(" ").append("-c").append(" ").append(numOfPings).append(" ")
+							.append("-t").append(" ").append(timeout).append(" ").append("-b").append(" ")
+							.append(sizeOfPings).append(" ").append("62.90.132.255");
+
+					p = Runtime.getRuntime().exec(b.toString());
+					// BufferedReader stdInput = new BufferedReader(new
+					// InputStreamReader(p.getInputStream()));
+					BufferedReader errInput = new BufferedReader(new InputStreamReader(p.getErrorStream()));
+
+					String packetLoss = "100";
+					String rttAvg = "0";
 					String ttl = "0";
 
-					while ((s = stdInput.readLine()) != null) {
-						lines.add(s);
-						if (hasPingResult(s)) {
-							ttl = checkLineTTL(s);
-						} else {
-							if (checkLinePacketLoss(s) != null) {
-								PacketLoss = checkLinePacketLoss(s);
-							} else if (checkLineRTT(s) != null) {
-								rtt_avg = checkLineRTT(s);
-							}
-						}
-					}
-					p.destroy();
+					String fpingOutput = errInput.readLine();
+					packetLoss = getPacketLoss(fpingOutput);
+					if (!packetLoss.equals("100"))
+						rttAvg = getRTT(fpingOutput);
 
-					if ("100".equals(PacketLoss)) {
+					if ("100".equals(packetLoss)) {
 						pingResults.add(System.currentTimeMillis());
 						pingResults.add(100);
 						pingResults.add(0.0);
@@ -150,8 +136,8 @@ public class Net {
 
 					} else {
 						pingResults.add(System.currentTimeMillis());
-						pingResults.add(Integer.parseInt(PacketLoss));
-						pingResults.add(Double.parseDouble(rtt_avg));
+						pingResults.add(Integer.parseInt(packetLoss));
+						pingResults.add(Double.parseDouble(rttAvg));
 						pingResults.add(Integer.parseInt(ttl));
 						return pingResults;
 
@@ -162,6 +148,9 @@ public class Net {
 					pingResults.add(0.0);
 					pingResults.add(0);
 					return pingResults;
+				} finally {
+					if (p != null)
+						p.destroy();
 				}
 			}
 		} else {
@@ -173,43 +162,13 @@ public class Net {
 		}
 	}
 
-	// #region pinger sub functions
-	private static String checkLinePacketLoss(String line) {
-		if (!line.contains("packet loss"))
-			return null;
-		String split[] = line.split(" ");
-		for (String s : split) {
-			if (s.contains("%"))
-				return s.split("%")[0];
-		}
-		return null;
+	private static String getPacketLoss(String line) {
+		return line.split("/")[4].split("%")[0];
 	}
 
-	private static String checkLineTTL(String line) {
-		if (!line.contains("ttl"))
-			return null;
-		String split[] = line.split(" ");
-		for (String s : split) {
-			if (s.contains("ttl"))
-				return s.split("=")[1];
-		}
-		return null;
+	private static String getRTT(String line) {
+		return line.split("/")[7];
 	}
-
-	private static String checkLineRTT(String line) {
-		if (!line.contains("rtt min"))
-			return null;
-		String rtt_avg = line.split(" ")[3].split("/")[1];
-		// String rtt_min = line.split(" ")[3].split("/")[0];
-		// String rtt_max = line.split(" ")[3].split("/")[2];
-		return rtt_avg;
-	}
-
-	private static boolean hasPingResult(String line) {
-		return line.contains("bytes from");
-	}
-
-	// #endregion
 
 	public static ArrayList<Object> TcpPorter(String ip, int port, int timeout) {
 		long querytime;

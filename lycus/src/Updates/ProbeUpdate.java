@@ -167,7 +167,7 @@ public class ProbeUpdate extends BaseUpdate {
 
 			if (getUpdate().update_value != null)
 				runnableProbe.getProbe().updateKeyValues(getUpdate());
-			
+
 			Logit.LogCheck("New Runnable probe was updated: " + runnableProbe.getId());
 		}
 		return true;
