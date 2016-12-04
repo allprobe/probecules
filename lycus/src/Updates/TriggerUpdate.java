@@ -84,11 +84,11 @@ public class TriggerUpdate extends BaseUpdate {
 				&& !GeneralFunctions.isNullOrEmpty(getUpdate().object_id)) {
 			probe = getUser().getProbeFor(getUpdate().probe_id);
 			ConcurrentHashMap<String, RunnableProbe> runnbaleProbes = RunnableProbeContainer.getInstanece().getByProbe(getUpdate().probe_id);
+			ResultsContainer.getInstance().resendEvents(getUpdate().object_id,Constants.object_removed);
 			for (RunnableProbe runnbleProbe : runnbaleProbes.values())
 				runnbleProbe.removeEvents(getUpdate().object_id);
-			
+
 			probe.removeTrigger(getUpdate().object_id);
-			ResultsContainer.getInstance().resendEvents(getUpdate().object_id,Constants.object_removed);
 
 			Logit.LogCheck("Trigger: " + getUpdate().object_id + " was removed");
 			return true;
