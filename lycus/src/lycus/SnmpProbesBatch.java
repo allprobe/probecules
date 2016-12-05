@@ -160,7 +160,7 @@ public class SnmpProbesBatch implements Runnable {
 										.get(result.getRunnableProbeId());
 
 								if (runnableProbe.getId().contains(
-										"6a10a32d-0d33-415b-a1f6-e9aeb2826d03@7352a46f-5189-428c-b4c0-fb98dedd10b1@snmp_1e189e8e-ec48-40bf-baba-88b61b18978a"))
+										"6a10a32d-0d33-415b-a1f6-e9aeb2826d03@7352a46f-5189-428c-b4c0-fb98dedd10b1@snmp_43e8ea8e-b3ad-48b5-a4e0-5bf669f26b84"))
 									Logit.LogDebug("BP");
 
 								if (runnableProbe.getId()
@@ -176,6 +176,23 @@ public class SnmpProbesBatch implements Runnable {
 
 								if (storeAs == SnmpStoreAs.asIs) {
 									result.setLastTimestamp(resultsTimestamp);
+									
+									if (result.getError() == SnmpError.NO_COMUNICATION) {
+										if (!this.isSnmpErrorSent()) {
+											for (Trigger trigger : runnableProbe.getProbe().getTriggers().values()) {
+												ResultsContainer.getInstance().resendEvents(trigger.getTriggerId(),
+														GlobalConstants.Constants.snmp_connection_failed);
+											}
+											this.setSnmpErrorSent(true);
+										}
+									} else if (this.isSnmpErrorSent()) {
+										for (Trigger trigger : runnableProbe.getProbe().getTriggers().values()) {
+											ResultsContainer.getInstance().resendEvents(trigger.getTriggerId(),
+													GlobalConstants.Constants.snmp_connection_failed_fixed);
+										}
+										this.setSnmpErrorSent(false);
+									}
+									
 									ResultsContainer.getInstance().addResult(result);
 									RollupsContainer.getInstance().addResult(result);
 									if (result.getData() != null || result.getNumData() != null)
@@ -183,26 +200,29 @@ public class SnmpProbesBatch implements Runnable {
 
 								} else if (storeAs == SnmpStoreAs.delta) {
 									SnmpDeltaResult snmpDeltaResult = getSnmpDeltaResult(result, resultsTimestamp);
+									
+									if (result.getError() == SnmpError.NO_COMUNICATION) {
+										if (!this.isSnmpErrorSent()) {
+											for (Trigger trigger : runnableProbe.getProbe().getTriggers().values()) {
+												ResultsContainer.getInstance().resendEvents(trigger.getTriggerId(),
+														GlobalConstants.Constants.snmp_connection_failed);
+											}
+											this.setSnmpErrorSent(true);
+										}
+									} else if (this.isSnmpErrorSent()) {
+										for (Trigger trigger : runnableProbe.getProbe().getTriggers().values()) {
+											ResultsContainer.getInstance().resendEvents(trigger.getTriggerId(),
+													GlobalConstants.Constants.snmp_connection_failed_fixed);
+										}
+										this.setSnmpErrorSent(false);
+									}
+									
 									ResultsContainer.getInstance().addResult(snmpDeltaResult);
 									RollupsContainer.getInstance().addResult(snmpDeltaResult);
 									if (result.getData() != null || result.getNumData() != null)
 										runnableProbe.addResultToTrigger(snmpDeltaResult);
 								}
-								if (result.getError() == SnmpError.NO_COMUNICATION) {
-									if (!this.isSnmpErrorSent()) {
-										for (Trigger trigger : runnableProbe.getProbe().getTriggers().values()) {
-											ResultsContainer.getInstance().resendEvents(trigger.getTriggerId(),
-													GlobalConstants.Constants.snmp_connection_failed);
-										}
-										this.setSnmpErrorSent(true);
-									}
-								} else if (this.isSnmpErrorSent()) {
-									for (Trigger trigger : runnableProbe.getProbe().getTriggers().values()) {
-										ResultsContainer.getInstance().resendEvents(trigger.getTriggerId(),
-												GlobalConstants.Constants.snmp_connection_failed_fixed);
-									}
-									this.setSnmpErrorSent(false);
-								}
+								
 							}
 						}
 					}
