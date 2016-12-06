@@ -7,6 +7,7 @@ import GlobalConstants.Enums.Function;
 import GlobalConstants.XvalueUnit;
 import Results.BaseResult;
 import Results.SnmpResult;
+import Utils.Logit;
 
 public class CheckTrigger {
 	private BaseResult[] queue;
@@ -38,173 +39,213 @@ public class CheckTrigger {
 
 	public boolean isConditionMet(BaseResult result, Trigger trigger) {
 		for (TriggerCondition triggerCondition : trigger.getCondtions()) {
-			if (result instanceof SnmpResult && ((SnmpResult) result).getNumData() == null
-					&& ((SnmpResult) result).getData() != null) {
-				String xValue = ((SnmpResult) result).getData();
-				if (!isNoFunctionConditionMet(triggerCondition, xValue))
-					return false;
-			} else {
-				Double xValue = getDouble(triggerCondition.getxValue());
+			try {
+				if (result instanceof SnmpResult && ((SnmpResult) result).getNumData() == null
+						&& ((SnmpResult) result).getData() != null) {
+					String xValue = ((SnmpResult) result).getData();
+					if (!isNoFunctionConditionMet(triggerCondition, xValue))
+						return false;
+				} else {
+					Double xValue = getDouble(triggerCondition.getxValue());
 
-				XvalueUnit resultUnit = result.getResultUnit(triggerCondition.getElementType().toString());
+					XvalueUnit resultUnit = result.getResultUnit(triggerCondition.getElementType().toString());
 
-				if (triggerCondition.getFunction() == Function.none) {
-					if (!isNoFunctionConditionMet(resultUnit, triggerCondition, xValue))
-						return false;
-				} else if (triggerCondition.getFunction() == Function.delta) {
-					Double delta = getDelta(triggerCondition.getElementType().toString());
-					if (delta == null)
-						return false;
-					if (!isCondition(delta, resultUnit, triggerCondition.getCondition(), xValue,
-							triggerCondition.getXvalueUnit()))
-						return false;
-				} else if (triggerCondition.getFunction() == Function.max) {
-					if (!isMaxConditionMet(resultUnit, triggerCondition, xValue))
-						return false;
-				} else if (triggerCondition.getFunction() == Function.avg) {
-					if (!isAvgConditionMet(resultUnit, triggerCondition, xValue))
-						return false;
-				} else if (triggerCondition.getFunction() == Function.delta_avg) {
-					if (!isDeltaAvgConditionMet(resultUnit, triggerCondition, xValue))
-						return false;
+					if (triggerCondition.getFunction() == Function.none) {
+						if (!isNoFunctionConditionMet(resultUnit, triggerCondition, xValue))
+							return false;
+					} else if (triggerCondition.getFunction() == Function.delta) {
+						Double delta = getDelta(triggerCondition.getElementType().toString());
+						if (delta == null)
+							return false;
+						if (!isCondition(delta, resultUnit, triggerCondition.getCondition(), xValue,
+								triggerCondition.getXvalueUnit()))
+							return false;
+					} else if (triggerCondition.getFunction() == Function.max) {
+						if (!isMaxConditionMet(resultUnit, triggerCondition, xValue))
+							return false;
+					} else if (triggerCondition.getFunction() == Function.avg) {
+						if (!isAvgConditionMet(resultUnit, triggerCondition, xValue))
+							return false;
+					} else if (triggerCondition.getFunction() == Function.delta_avg) {
+						if (!isDeltaAvgConditionMet(resultUnit, triggerCondition, xValue))
+							return false;
+					}
 				}
+			} catch (Exception e) {
+				Logit.LogError("EventTrigger - isConditionMet()", "Error, conditioning event, triggerName: " +
+						trigger.getName() + " , TriggerId: " + trigger.getTriggerId(), e);
+				e.printStackTrace();
 			}
 		}
 		return true;
 	}
 
 	private boolean isNoFunctionConditionMet(TriggerCondition triggerCondition, String xValue) {
-		LastN lastN = getLast(triggerCondition);
-		if (!lastN.isEnoughElements())
-			return false;
-		Object result = lastN.getNextResult(triggerCondition.getElementType().toString());
-		int nValue = lastN.getElementCount();
-
-		while (nValue > 0) {
-			if (result == null || xValue == null)
+		try {
+			LastN lastN = getLast(triggerCondition);
+			if (!lastN.isEnoughElements())
 				return false;
-			for (Object oneResult : (ArrayList<Object>) result) {
-				if (oneResult == null)
-					continue;
-				if (isCondition(oneResult.toString(), triggerCondition.getCondition(), triggerCondition.getxValue(),
-						triggerCondition.getXvalueUnit()))
-					return true;
+			Object result = lastN.getNextResult(triggerCondition.getElementType().toString());
+			int nValue = lastN.getElementCount();
+
+			while (nValue > 0) {
+				if (result == null || xValue == null)
+					return false;
+				for (Object oneResult : (ArrayList<Object>) result) {
+					if (oneResult == null)
+						continue;
+					if (isCondition(oneResult.toString(), triggerCondition.getCondition(), triggerCondition.getxValue(),
+							triggerCondition.getXvalueUnit()))
+						return true;
+				}
+				nValue--;
+				result = lastN.getNextResult(triggerCondition.getElementType().toString());
 			}
-			nValue--;
-			result = lastN.getNextResult(triggerCondition.getElementType().toString());
+		} catch (Exception e) {
+			Logit.LogError("EventTrigger - isNoFunctionConditionMet()", "Error, no function conditioning" , e);
+			e.printStackTrace();
 		}
 		return false;
 
 	}
 
 	private boolean isMaxConditionMet(XvalueUnit resultUnit, TriggerCondition triggerCondition, Double xValue) {
-		LastN lastN = getLast(triggerCondition);
-		if (!lastN.isEnoughElements())
-			return false;
-		Object result = lastN.getNextResult(triggerCondition.getElementType().toString());
-		double max = 0;
-		int nValue = lastN.getElementCount();
-
-		while (nValue > 0) {
-			if (result == null || (!(result instanceof Double) && !(result instanceof Integer)) || xValue == null)
+		try {
+			double max;
+			LastN lastN = getLast(triggerCondition);
+			if (!lastN.isEnoughElements())
 				return false;
+			Object result = lastN.getNextResult(triggerCondition.getElementType().toString());
+			max = 0;
+			int nValue = lastN.getElementCount();
 
-			Double current = Double.parseDouble(result.toString());
-			if (max < current)
-				max = current;
-			result = lastN.getNextResult(triggerCondition.getElementType().toString());
-			nValue--;
+			while (nValue > 0) {
+				if (result == null || (!(result instanceof Double) && !(result instanceof Integer)) || xValue == null)
+					return false;
+
+				Double current = Double.parseDouble(result.toString());
+				if (max < current)
+					max = current;
+				result = lastN.getNextResult(triggerCondition.getElementType().toString());
+				nValue--;
+			}
+			
+			return isCondition(max, resultUnit, triggerCondition.getCondition(), xValue, triggerCondition.getXvalueUnit());
+		} catch (NumberFormatException e) {
+			Logit.LogError("EventTrigger - isMaxConditionMet()", "Error, no max function conditioning" , e);
+			e.printStackTrace();
 		}
-
-		return isCondition(max, resultUnit, triggerCondition.getCondition(), xValue, triggerCondition.getXvalueUnit());
+		
+		return false;
 	}
 
 	private boolean isAvgConditionMet(XvalueUnit resultUnit, TriggerCondition triggerCondition, Double xValue) {
-		LastN lastN = getLast(triggerCondition);
-		if (!lastN.isEnoughElements())
-			return false;
-		Object result = lastN.getNextResult(triggerCondition.getElementType().toString());
-		double sum = 0;
-		int nValue = lastN.getElementCount();
-
-		while (nValue > 0) {
-			if (result == null || (!(result instanceof Double) && !(result instanceof Integer)) || xValue == null)
+		try {
+			LastN lastN = getLast(triggerCondition);
+			if (!lastN.isEnoughElements())
 				return false;
+			Object result = lastN.getNextResult(triggerCondition.getElementType().toString());
+			double sum = 0;
+			int nValue = lastN.getElementCount();
 
-			sum += Double.parseDouble(result.toString());
-			result = lastN.getNextResult(triggerCondition.getElementType().toString());
-			nValue--;
+			while (nValue > 0) {
+				if (result == null || (!(result instanceof Double) && !(result instanceof Integer)) || xValue == null)
+					return false;
+
+				sum += Double.parseDouble(result.toString());
+				result = lastN.getNextResult(triggerCondition.getElementType().toString());
+				nValue--;
+			}
+
+			return isCondition(sum / lastN.getElementCount(), resultUnit, triggerCondition.getCondition(), xValue,
+					triggerCondition.getXvalueUnit());
+		} catch (NumberFormatException e) {
+			Logit.LogError("EventTrigger - isAvgConditionMet()", "Error, average function conditioning" , e);
+			e.printStackTrace();
 		}
-
-		return isCondition(sum / lastN.getElementCount(), resultUnit, triggerCondition.getCondition(), xValue,
-				triggerCondition.getXvalueUnit());
+		return false;
 	}
 
 	private boolean isDeltaAvgConditionMet(XvalueUnit resultUnit, TriggerCondition triggerCondition, Double xValue) {
-		LastN lastN = getLast(triggerCondition);
-		if (!lastN.isEnoughElements())
-			return false;
-		Object result = lastN.getNextResult(triggerCondition.getElementType().toString());
-		double sum = 0;
-		int nValue = lastN.getElementCount();
-
-		while (nValue > 0) {
-			if (result == null || (!(result instanceof Double) && !(result instanceof Integer)) || xValue == null)
+		try {
+			LastN lastN = getLast(triggerCondition);
+			if (!lastN.isEnoughElements())
 				return false;
+			Object result = lastN.getNextResult(triggerCondition.getElementType().toString());
+			double sum = 0;
+			int nValue = lastN.getElementCount();
 
-			sum += Double.parseDouble(result.toString());
-			result = lastN.getNextResult(triggerCondition.getElementType().toString());
-			nValue--;
+			while (nValue > 0) {
+				if (result == null || (!(result instanceof Double) && !(result instanceof Integer)) || xValue == null)
+					return false;
+
+				sum += Double.parseDouble(result.toString());
+				result = lastN.getNextResult(triggerCondition.getElementType().toString());
+				nValue--;
+			}
+
+			double delta_avg = sum / lastN.getElementCount() - (double) getQueue()[getTail()]
+					.getResultElementValue(triggerCondition.getElementType().toString()).get(0);
+			return isCondition(delta_avg, resultUnit, triggerCondition.getCondition(), xValue,
+					triggerCondition.getXvalueUnit());
+		} catch (NumberFormatException e) {
+			Logit.LogError("EventTrigger - isDeltaAvgConditionMet()", "Error, delta average function conditioning" , e);
+			e.printStackTrace();
 		}
-
-		double delta_avg = sum / lastN.getElementCount() - (double) getQueue()[getTail()]
-				.getResultElementValue(triggerCondition.getElementType().toString()).get(0);
-		return isCondition(delta_avg, resultUnit, triggerCondition.getCondition(), xValue,
-				triggerCondition.getXvalueUnit());
+		return false;
 	}
 
 	private boolean isNoFunctionConditionMet(XvalueUnit resultUnit, TriggerCondition triggerCondition, Double xValue) {
-		LastN lastN = getLast(triggerCondition);
-		if (!lastN.isEnoughElements())
-			return false;
-		Object result = lastN.getNextResult(triggerCondition.getElementType().toString());
-		int nValue = lastN.getElementCount();
-
-		while (nValue > 0) {
-			if (result == null || xValue == null)
+		try {
+			LastN lastN = getLast(triggerCondition);
+			if (!lastN.isEnoughElements())
 				return false;
-			for (Object oneResult : (ArrayList<Object>) result) {
-				if (oneResult == null)
-					continue;
-				if (!(oneResult instanceof Double) && !(oneResult instanceof Integer) && !(oneResult instanceof Long)) {
-					if (isCondition(oneResult.toString(), triggerCondition.getCondition(), triggerCondition.getxValue(),
-							triggerCondition.getXvalueUnit()))
-						return true;
+			Object result = lastN.getNextResult(triggerCondition.getElementType().toString());
+			int nValue = lastN.getElementCount();
 
-				} else {
-					if (isCondition(Double.parseDouble(oneResult.toString()), resultUnit,
-							triggerCondition.getCondition(), xValue, triggerCondition.getXvalueUnit()))
-						return true;
+			while (nValue > 0) {
+				if (result == null || xValue == null)
+					return false;
+				for (Object oneResult : (ArrayList<Object>) result) {
+					if (oneResult == null)
+						continue;
+					if (!(oneResult instanceof Double) && !(oneResult instanceof Integer) && !(oneResult instanceof Long)) {
+						if (isCondition(oneResult.toString(), triggerCondition.getCondition(), triggerCondition.getxValue(),
+								triggerCondition.getXvalueUnit()))
+							return true;
+
+					} else {
+						if (isCondition(Double.parseDouble(oneResult.toString()), resultUnit,
+								triggerCondition.getCondition(), xValue, triggerCondition.getXvalueUnit()))
+							return true;
+					}
 				}
+				nValue--;
+				result = lastN.getNextResult(triggerCondition.getElementType().toString());
 			}
-			nValue--;
-			result = lastN.getNextResult(triggerCondition.getElementType().toString());
+		} catch (NumberFormatException e) {
+			Logit.LogError("EventTrigger - isNoFunctionConditionMet()", "Error, no function conditioning" , e);
+			e.printStackTrace();
 		}
 		return false;
-
 	}
 
 	private boolean isCondition(Double result, XvalueUnit resultUnit, Condition condition, double xValue,
 			XvalueUnit xvalueUnit) {
-		switch (condition) {
-		case bigger:
-			return xvalueUnit.getBasic(result, resultUnit) > xvalueUnit.getBasic(xValue, xvalueUnit);
-		case equal:
-			return xvalueUnit.getBasic(result, resultUnit) == xvalueUnit.getBasic(xValue, xvalueUnit);
-		case tinier:
-			return xvalueUnit.getBasic(result, resultUnit) < xvalueUnit.getBasic(xValue, xvalueUnit);
-		case not_equal:
-			return xvalueUnit.getBasic(result, resultUnit) != xvalueUnit.getBasic(xValue, xvalueUnit);
+		try {
+			switch (condition) {
+			case bigger:
+				return xvalueUnit.getBasic(result, resultUnit) > xvalueUnit.getBasic(xValue, xvalueUnit);
+			case equal:
+				return xvalueUnit.getBasic(result, resultUnit) == xvalueUnit.getBasic(xValue, xvalueUnit);
+			case tinier:
+				return xvalueUnit.getBasic(result, resultUnit) < xvalueUnit.getBasic(xValue, xvalueUnit);
+			case not_equal:
+				return xvalueUnit.getBasic(result, resultUnit) != xvalueUnit.getBasic(xValue, xvalueUnit);
+			}
+		} catch (Exception e) {
+			Logit.LogError("EventTrigger - isCondition()", "Error, is condition" , e);
+			e.printStackTrace();
 		}
 		return false;
 	}
@@ -247,48 +288,36 @@ public class CheckTrigger {
 
 	// retrun null is false;
 	private Double getDelta(String elementType) {
-		if (getTail() > 1 && getQueue()[0] != null && getQueue()[1] != null) {
-			BaseResult lastResult = null;
-			BaseResult previousResult = null;
+		try {
+			if (getTail() > 1 && getQueue()[0] != null && getQueue()[1] != null) {
+				BaseResult lastResult = null;
+				BaseResult previousResult = null;
 
-			if (getTail() == 0) {
-				lastResult = getQueue()[getSize() - 1];
-				previousResult = getQueue()[getTail()];
-				if (lastResult == null || previousResult == null)
-					return null;
+				if (getTail() == 0) {
+					lastResult = getQueue()[getSize() - 1];
+					previousResult = getQueue()[getTail()];
+					if (lastResult == null || previousResult == null)
+						return null;
 
-				return (double) lastResult.getResultElementValue(elementType).get(0)
-						- (double) previousResult.getResultElementValue(elementType).get(0);
-			} else {
-				lastResult = getQueue()[getTail()];
-				previousResult = getQueue()[getTail() - 1];
-				if (lastResult == null || previousResult == null)
-					return null;
+					return (double) lastResult.getResultElementValue(elementType).get(0)
+							- (double) previousResult.getResultElementValue(elementType).get(0);
+				} else {
+					lastResult = getQueue()[getTail()];
+					previousResult = getQueue()[getTail() - 1];
+					if (lastResult == null || previousResult == null)
+						return null;
 
-				return (double) lastResult.getResultElementValue(elementType).get(0)
-						- (double) previousResult.getResultElementValue(elementType).get(0);
+					return (double) lastResult.getResultElementValue(elementType).get(0)
+							- (double) previousResult.getResultElementValue(elementType).get(0);
+				}
+
 			}
-
+		} catch (Exception e) {
+			Logit.LogError("EventTrigger - getDelta()", "Error, get delta" , e);
+			e.printStackTrace();
 		}
 		return null;
 	}
-
-	// private double getAverage(LastN lastN, String elementType) {
-	// double sum = 0;
-	// int start = lastN.getHead();
-	// int end = lastN.getTail();
-	// if (lastN.getHead() > lastN.getTail()) {
-	// start = lastN.getTail();
-	// end = lastN.getHead();
-	// }
-	//
-	// while (start <= end) {
-	// sum += (double)
-	// getQueue()[start++].getResultElementValue(elementType).get(0);
-	// }
-	//
-	// return sum / Math.abs(lastN.getTail() - lastN.getHead() + 1);
-	// }
 
 	public int getSize() {
 		return size;
@@ -342,20 +371,25 @@ class LastN {
 
 	// Gets the set of indexes for last N Items
 	public LastN(int nValue, CheckTrigger checkTrigger) {
-		this.setSize(checkTrigger.getSize());
-		this.queue = checkTrigger.getQueue();
-		this.setTail(checkTrigger.getTail());
-		if (checkTrigger.getTail() > nValue - 1)
-			this.setHead(checkTrigger.getTail() - nValue);
-		if (checkTrigger.getHead() > checkTrigger.getTail()) {
-			int start = checkTrigger.getTail() - nValue + 1;
-			if (start < 0)
-				start = checkTrigger.getTail() - nValue + 1 + checkTrigger.getSize();
-			this.setHead(start);
+		try {
+			this.setSize(checkTrigger.getSize());
+			this.queue = checkTrigger.getQueue();
+			this.setTail(checkTrigger.getTail());
+			if (checkTrigger.getTail() > nValue - 1)
+				this.setHead(checkTrigger.getTail() - nValue);
+			if (checkTrigger.getHead() > checkTrigger.getTail()) {
+				int start = checkTrigger.getTail() - nValue + 1;
+				if (start < 0)
+					start = checkTrigger.getTail() - nValue + 1 + checkTrigger.getSize();
+				this.setHead(start);
+			}
+			elenemtCount = nValue;
+			this.current = head;
+			this.elementsPopped = nValue;
+		} catch (Exception e) {
+			Logit.LogError("EventTrigger - LastN()", "Error, Creating N vector" , e);
+			e.printStackTrace();
 		}
-		elenemtCount = nValue;
-		this.current = head;
-		this.elementsPopped = nValue;
 	}
 
 	public boolean isEnoughElements() {
