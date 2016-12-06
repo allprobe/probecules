@@ -134,11 +134,17 @@ public class HostUpdate extends BaseUpdate {
 	public Boolean Delete() {
 		super.Delete();
 
-		Host host = getUser().getHost(UUID.fromString(getUpdate().host_id));
-		if (host == null)
-		{
-			Logit.LogError("HostUpdate - Delete()", "Error deleting HostId:  " + getUpdate().host_id);
-			return false;
+		Host host;
+		try {
+			host = getUser().getHost(UUID.fromString(getUpdate().host_id));
+			if (host == null)
+			{
+				Logit.LogError("HostUpdate - Delete()", "Error deleting HostId:  " + getUpdate().host_id);
+				return false;
+			}
+		} catch (Exception e1) {
+			Logit.LogError("HostUpdate - Delete()", "getting HostId:  " + getUpdate().host_id);
+			e1.printStackTrace();
 		}
 		
 		ConcurrentHashMap<String, RunnableProbe> runnableProbes = RunnableProbeContainer.getInstanece()
