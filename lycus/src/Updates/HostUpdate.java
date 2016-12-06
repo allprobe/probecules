@@ -136,8 +136,11 @@ public class HostUpdate extends BaseUpdate {
 
 		Host host = getUser().getHost(UUID.fromString(getUpdate().host_id));
 		if (host == null)
+		{
+			Logit.LogError("HostUpdate - Delete()", "Error deleting HostId:  " + getUpdate().host_id);
 			return false;
-
+		}
+		
 		ConcurrentHashMap<String, RunnableProbe> runnableProbes = RunnableProbeContainer.getInstanece()
 				.getByHost(host.getHostId().toString());
 		
@@ -148,7 +151,7 @@ public class HostUpdate extends BaseUpdate {
 				rps.add(runnableProbe);
 
 			} catch (Exception e) {
-				Logit.LogError("HostUpdate - Delete()", "Runnable probe " + runnableProbe.getId() +  " did not accumulate");
+				Logit.LogError("HostUpdate - Delete()", "Runnable probe: " + runnableProbe.getId() +  " did not accumulate");
 			}
 		}
 
@@ -158,12 +161,12 @@ public class HostUpdate extends BaseUpdate {
 				Logit.LogCheck("Runnable probe " + runnableProbe.getId() +  " was removed");
 
 			} catch (Exception e) {
-				Logit.LogError("HostUpdate - Delete()", "Runnable probe " + runnableProbe.getId() +  " was not remove");
+				Logit.LogError("HostUpdate - Delete()", "Runnable probe: " + runnableProbe.getId() +  " was not remove");
 			}
 		}
 		
 		getUser().getHosts().remove(UUID.fromString(getUpdate().host_id));
-		Logit.LogCheck("Host " + getUpdate().host_id +  " has removed");
+		Logit.LogCheck("Host: " + getUpdate().host_id +  " has removed");
 		return true;
 	}
 }
