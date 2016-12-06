@@ -145,6 +145,7 @@ public class HostUpdate extends BaseUpdate {
 		} catch (Exception e1) {
 			Logit.LogError("HostUpdate - Delete()", "getting HostId:  " + getUpdate().host_id);
 			e1.printStackTrace();
+			return false;
 		}
 		
 		ConcurrentHashMap<String, RunnableProbe> runnableProbes = RunnableProbeContainer.getInstanece()
