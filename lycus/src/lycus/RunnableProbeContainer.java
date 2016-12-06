@@ -185,10 +185,20 @@ public class RunnableProbeContainer implements IRunnableProbeContainer {
 	public boolean removeByTemplateId(String teplateId) {
 		ConcurrentHashMap<String, RunnableProbe> templates = getByTemplate(teplateId);
 		if (templates == null)
+		{
+			Logit.LogError("RunnableProbeContainer - removeByTemplateId()", "Error getting TemplateId:  " + teplateId);
 			return true;
-		for (RunnableProbe runnableProbe : templates.values())
-			remove(runnableProbe);
-		return true;
+		}
+			
+		try {
+			for (RunnableProbe runnableProbe : templates.values())
+				remove(runnableProbe);
+			return true;
+		} catch (Exception e) {
+			Logit.LogError("RunnableProbeContainer - removeByTemplateId()", "Error deleting TemplateId:  " + teplateId);
+			e.printStackTrace();
+		}
+		return false;
 	}
 
 	@Override
