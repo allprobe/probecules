@@ -95,6 +95,11 @@ public class SnmpProbesBatch implements Runnable {
 		return batchId;
 	}
 
+	public int size()
+	{
+		return snmpProbes.size();
+	}
+	
 	public void run() {
 		try {
 			while (isRunning()) {
