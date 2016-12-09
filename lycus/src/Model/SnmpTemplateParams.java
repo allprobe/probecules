@@ -2,8 +2,8 @@ package Model;
 
 public class SnmpTemplateParams {
 public String user_id;
-public String snmp_template_id;
-public String template_name;
+public String id;
+public String name;
 public int version;
 public String community;
 public String sec;
@@ -14,4 +14,5 @@ public String crypt_method;
 public String crypt_password;
 public int timeout;
 public int port;
+public String collector_type;
 }

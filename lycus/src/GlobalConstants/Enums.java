@@ -2,7 +2,7 @@ package GlobalConstants;
 
 public class Enums {
 	public static enum ApiAction {
-		InitServer, GetServerMemoryDump, FlushServerMemory, InsertDatapointsBatches, PutEvents, GetServerLiveEvents, GetThreadsUpdates, DevGetThreadsUpdates, GetHosts, GetSnmpTemplates, PutSlaBatches, DiagnosticResults
+		InitServer, GetServerMemoryDump, FlushServerMemory, InsertDatapointsBatches, PutEvents, GetServerLiveEvents, GetThreadsUpdates, DevGetThreadsUpdates, GetHosts, GetCollectors, PutSlaBatches, DiagnosticResults
 	}
 
 	public static enum DiscoveryElementType {
@@ -82,6 +82,14 @@ public class Enums {
 		none, avg, delta, max, delta_avg
 	}
 
+	public static enum SnmpDataType {
+		Numeric, Text
+	}
+
+	public static enum CollectorType {
+		Snmp, Sql
+	}
+	
 	public static enum LastType {
 		N, // Last-N
 		P, // Last-Period

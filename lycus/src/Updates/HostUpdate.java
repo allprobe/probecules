@@ -6,6 +6,8 @@ import java.util.UUID;
 import java.util.concurrent.ConcurrentHashMap;
 import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
+
+import Collectors.SnmpTemplate;
 import DAL.DAL;
 import GlobalConstants.Constants;
 import GlobalConstants.Enums.ApiAction;
@@ -16,7 +18,6 @@ import Utils.Logit;
 import lycus.Host;
 import lycus.RunnableProbe;
 import lycus.RunnableProbeContainer;
-import lycus.SnmpTemplate;
 import lycus.UsersManager;
 
 public class HostUpdate extends BaseUpdate {
@@ -51,7 +52,7 @@ public class HostUpdate extends BaseUpdate {
 			Logit.LogCheck("Ip for host " + host.getName() + " has changed to " + getUpdate().update_value.ip);
 		}
 		
-		String  snmpTemplateId = host.getSnmpTemp() != null ? host.getSnmpTemp().getSnmpTemplateId().toString() : null;
+		String  snmpTemplateId = host.getCollector() != null ? host.getCollector().getId().toString() : null;
 		
 		if (getUpdate().update_value.snmp_template != null && snmpTemplateId != getUpdate().update_value.snmp_template) {
 			UUID uuid = null;
@@ -63,7 +64,7 @@ public class HostUpdate extends BaseUpdate {
 			
 			if (uuid == null)
 			{
-				host.setSnmpTemp(null);
+				host.setCollector(null);
 				Logit.LogCheck("Snmp Template for host " + host.getName() + " has changed");
 			}
 			else
@@ -72,11 +73,12 @@ public class HostUpdate extends BaseUpdate {
 				if (snmpTemplate == null) {
 					snmpTemplate = fetchSnmpTemplate();
 				}
-				host.setSnmpTemp(snmpTemplate);
+				host.setCollector(snmpTemplate);
 				if (snmpTemplate != null)
 					Logit.LogCheck("Snmp Template for host " + host.getName() + " has changed");
 			}
 		}
+		
 		String notificationGroup = host.getNotificationGroups() != null ? host.getNotificationGroups().toString() : null;
 		
 		if (GeneralFunctions.isChanged(notificationGroup, getUpdate().update_value.notifications_group)) {
@@ -120,33 +122,19 @@ public class HostUpdate extends BaseUpdate {
 		userSnmpTemplate.put(getUser().getUserId(), getUpdate().update_value.snmp_template);
 		snmpTemplatesArray.add(userSnmpTemplate);
 
-		snmpTemplates.put(Constants.snmpTemplates, snmpTemplatesArray);
+		snmpTemplates.put(Constants.collectors, snmpTemplatesArray);
 
-		JSONObject jsonObject = dal.put(ApiAction.GetSnmpTemplates, snmpTemplates);
+		JSONObject jsonObject = dal.put(ApiAction.GetCollectors, snmpTemplates);
 
-		JSONArray jsonArray = (JSONArray) jsonObject.get("snmp_templates");
-		UsersManager.addSnmpTemplates(jsonArray);
-		snmpTemplate = getUser().getSnmpTemplates().get(UUID.fromString(getUpdate().update_value.snmp_template));
+		JSONArray jsonArray = (JSONArray) jsonObject.get("collectors");
+		UsersManager.addCollector(jsonArray);
+		snmpTemplate = getUser().getSnmpTemplates().get(getUpdate().update_value.snmp_template);
 		return snmpTemplate;
 	}
 
 	@Override
 	public Boolean Delete() {
 		super.Delete();
-
-//		Host host;
-//		try {
-//			host = getUser().getHost(UUID.fromString(getUpdate().host_id));
-//			if (host == null)
-//			{
-//				Logit.LogError("HostUpdate - Delete()", "Error deleting HostId:  " + getUpdate().host_id);
-//				return false;
-//			}
-//		} catch (Exception e1) {
-//			Logit.LogError("HostUpdate - Delete()", "getting HostId:  " + getUpdate().host_id);
-//			e1.printStackTrace();
-//			return false;
-//		}
 		
 		ConcurrentHashMap<String, RunnableProbe> runnableProbes = RunnableProbeContainer.getInstanece()
 				.getByHost(getUpdate().host_id);

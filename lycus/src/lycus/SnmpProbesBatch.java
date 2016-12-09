@@ -109,15 +109,15 @@ public class SnmpProbesBatch implements Runnable {
 							"6975cb58-8aa4-4ecd-b9fc-47b78c0d7af8@8b0104e7-5902-4419-933f-668582fc3acd@40@6ca75402-dd7f-4aee-bcc3-1b22463d2dd8"))
 						Logit.LogDebug("BREAKPOINT");
 
-					if (this.getHost().isHostStatus() && this.getHost().isSnmpStatus()) {
+					if (this.getHost().isHostStatus()) {
 						Host host = this.getHost();
 
 						Collection<RunnableProbe> snmpProbes = this.getSnmpProbes().values();
 
-						if (host.getSnmpTemp() == null) {
+						if (host.getCollector() == null) {
 							for (RunnableProbe rp : snmpProbes) {
 								SnmpResult result = new SnmpResult(rp.getId());
-								result.setErrorMessage("no snmp template");
+								result.setErrorMessage("NO_SNMP_TEMPLATE");
 								ResultsContainer.getInstance().addResult(result);
 								Logit.LogInfo(
 										"Snmp Probe doesn't run: " + rp.getId() + ", no SNMP template configured!");
@@ -151,7 +151,7 @@ public class SnmpProbesBatch implements Runnable {
 							}
 							Logit.LogError("SnmpProbesBatch - run()",
 									"Failed running  snmp batch - host: " + this.getHost().getHostIp()
-											+ ", snmp template:" + this.getHost().getSnmpTemp().toString());
+											+ ", snmp template:" + this.getHost().getCollector().toString());
 							return;
 						} else {
 							long resultsTimestamp = System.currentTimeMillis();
@@ -164,15 +164,6 @@ public class SnmpProbesBatch implements Runnable {
 										"6a10a32d-0d33-415b-a1f6-e9aeb2826d03@7352a46f-5189-428c-b4c0-fb98dedd10b1@snmp_43e8ea8e-b3ad-48b5-a4e0-5bf669f26b84"))
 									Logit.LogDebug("BP");
 
-//								if (runnableProbe.getId()
-//										.equals("8b0104e7-5902-4419-933f-668582fc3acd@6b999cd6-fcbb-4ca8-9936-5529b4c66976@snmp_5d937636-eb75-4165-b339-38a729aa2b7d")
-//										|| runnableProbe.getId().equals(
-//												"8b0104e7-5902-4419-933f-668582fc3acd@6975cb58-8aa4-4ecd-b9fc-47b78c0d7af8@snmp_5d937636-eb75-4165-b339-38a729aa2b7d")) {
-//									System.out.println(
-//											"Interval: " + this.getInterval() + ", Number of Probes: " + response.size()
-//													+ ", Number of Probes: " + response.size() + ", " + "Probe name: "
-//													+ runnableProbe.getProbe().getName() + ", Time: " + new Date());
-//								}
 								SnmpStoreAs storeAs = ((SnmpProbe) runnableProbe.getProbe()).getStoreAs();
 
 								if (storeAs == SnmpStoreAs.asIs) {

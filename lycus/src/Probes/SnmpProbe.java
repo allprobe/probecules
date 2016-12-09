@@ -3,7 +3,7 @@ package Probes;
 import java.util.UUID;
 import org.snmp4j.smi.OID;
 
-import GlobalConstants.SnmpDataType;
+import GlobalConstants.Enums.SnmpDataType;
 import GlobalConstants.XvalueUnit;
 import GlobalConstants.Enums.SnmpStoreAs;
 import Model.UpdateModel;

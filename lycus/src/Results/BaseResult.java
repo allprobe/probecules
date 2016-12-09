@@ -2,7 +2,7 @@ package Results;
 
 import java.util.ArrayList;
 import java.util.HashMap;
-import GlobalConstants.SnmpDataType;
+import GlobalConstants.Enums.SnmpDataType;
 import GlobalConstants.XvalueUnit;
 import Probes.SnmpProbe;
 import GlobalConstants.Enums.ResultValueType;

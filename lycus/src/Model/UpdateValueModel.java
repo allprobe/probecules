@@ -1,7 +1,6 @@
 package Model;
 
-public class UpdateValueModel
-{
+public class UpdateValueModel {
 	public String user_id;
 	public Float multiplier;
 	public String name;
@@ -11,19 +10,20 @@ public class UpdateValueModel
 	public String status;
 	public String ip;
 	public String snmp_template;
+	public String sql_template;
 	public String bucket;
 	public String notifications_group;
-	
-	//Trigger
+
+	// Trigger
 	public TriggerModel[] triggers;
-	
+
 	public String id;
 	public String trigger_type;
 	public String severity;
 	public String xvalue_unit;
 	public String probe_id;
 	public String tuple;
-//	public ConditionUpdateModel[] conditions;
+	public String collector_type;
 	public Integer snmp_version;
 	public String snmp_community;
 	public String snmp_user;
@@ -36,4 +36,3 @@ public class UpdateValueModel
 	public Integer snmp_port;
 	public String results_vector_type;
 }
-

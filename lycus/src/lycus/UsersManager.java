@@ -10,7 +10,6 @@ import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
 import java.util.UUID;
-
 import Triggers.Trigger;
 import Triggers.TriggerCondition;
 import org.json.simple.JSONObject;
@@ -24,7 +23,7 @@ import Elements.DiskElement;
 import Elements.NicElement;
 import GlobalConstants.Constants;
 import GlobalConstants.Enums;
-import GlobalConstants.SnmpDataType;
+import GlobalConstants.Enums.SnmpDataType;
 import GlobalConstants.TriggerSeverity;
 import GlobalConstants.Enums.ApiAction;
 import Interfaces.IDAL;
@@ -111,7 +110,7 @@ public class UsersManager {
 	}
 
 	public static boolean Build() {
-		HashMap<UUID, User> user_s = UsersManager.getUsers();
+//		HashMap<UUID, User> user_s = UsersManager.getUsers();
 		JSONObject initServer = UsersManager.getServerInfoFromApi();
 
 		HashMap<String, UUID> runnableProbesIds = getInitRPs(initServer.get("runnable_ids"));
@@ -125,8 +124,8 @@ public class UsersManager {
 		Set<UUID> usersIds = new HashSet<UUID>(runnableProbesIds.values());
 		initUsers(usersIds);
 
-		JSONArray allSnmpTemplatesJson = (JSONArray) initServer.get("snmp_templates");
-		addSnmpTemplates(allSnmpTemplatesJson);
+		JSONArray allCollectorsJson = (JSONArray) initServer.get("collectors");
+		addCollector(allCollectorsJson);
 
 		JSONArray allHostsJson = (JSONArray) initServer.get("hosts");
 		addHosts(allHostsJson);
@@ -147,13 +146,6 @@ public class UsersManager {
 
 		return true;
 	}
-
-	// public static void runAtStart() {
-	// Set<User> allUsers = new HashSet<User>(getUsers().values());
-	// for (User user : allUsers) {
-	// user.runProbesAtStart();
-	// }
-	// }
 
 	public static HashMap<String, UUID> getInitRPs(Object longIds) {
 		// key:templateId@hostId@probeId , value:userId
@@ -199,34 +191,43 @@ public class UsersManager {
 		}
 	}
 
-	public static void addSnmpTemplates(JSONArray allSnmpTemplatesJson) {
+	public static void addCollector(JSONArray allSnmpTemplatesJson) {
 		for (int i = 0; i < allSnmpTemplatesJson.size(); i++) {
-			JSONObject snmpTempJson = (JSONObject) allSnmpTemplatesJson.get(i);
-			try {
-				SnmpTemplateParams snmpTemplateParams = new SnmpTemplateParams();
-				snmpTemplateParams.user_id = (String) snmpTempJson.get("snmp_user_id");
-				snmpTemplateParams.snmp_template_id = (String) snmpTempJson.get("snmp_template_id");
-				snmpTemplateParams.template_name = (String) snmpTempJson.get("snmp_template_name");
-				snmpTemplateParams.version = Integer.parseInt((String) snmpTempJson.get("snmp_version"));
-				snmpTemplateParams.community = (String) snmpTempJson.get("snmp_community");
-				snmpTemplateParams.sec = (String) snmpTempJson.get("snmp_sec");
-				snmpTemplateParams.auth_method = (String) snmpTempJson.get("snmp_auth_method");
-				snmpTemplateParams.username = (String) snmpTempJson.get("snmp_user");
-				snmpTemplateParams.password = (String) snmpTempJson.get("snmp_auth_password");
-				snmpTemplateParams.crypt_method = (String) snmpTempJson.get("snmp_crypt_method");
-				snmpTemplateParams.crypt_password = GeneralFunctions
-						.Base64Decode((String) snmpTempJson.get("snmp_crypt_password"));
-				snmpTemplateParams.timeout = Integer.parseInt((String) snmpTempJson.get("snmp_timeout"));
-				snmpTemplateParams.port = Integer.parseInt((String) snmpTempJson.get("snmp_port"));
+			JSONObject collectorJson = (JSONObject) allSnmpTemplatesJson.get(i);
+			String collectorType = (String) collectorJson.get("collector_type");
+			switch (collectorType) 
+			{
+			case "snmp":
+				try {
+					SnmpTemplateParams snmpTemplateParams = new SnmpTemplateParams();
+					snmpTemplateParams.collector_type = collectorType;
+					snmpTemplateParams.user_id = (String) collectorJson.get("user_id");
+					snmpTemplateParams.id = (String) collectorJson.get("id");
+					snmpTemplateParams.name = (String) collectorJson.get("name");
+					snmpTemplateParams.version = Integer.parseInt((String) collectorJson.get("snmp_version"));
+					snmpTemplateParams.community = (String) collectorJson.get("snmp_community");
+					snmpTemplateParams.sec = (String) collectorJson.get("snmp_sec");
+					snmpTemplateParams.auth_method = (String) collectorJson.get("snmp_auth_method");
+					snmpTemplateParams.username = (String) collectorJson.get("snmp_user");
+					snmpTemplateParams.password = (String) collectorJson.get("snmp_auth_password");
+					snmpTemplateParams.crypt_method = (String) collectorJson.get("snmp_crypt_method");
+					snmpTemplateParams.crypt_password = GeneralFunctions
+							.Base64Decode((String) collectorJson.get("snmp_crypt_password"));
+					snmpTemplateParams.timeout = Integer.parseInt((String) collectorJson.get("timeout"));
+					snmpTemplateParams.port = Integer.parseInt((String) collectorJson.get("snmp_port"));
 
-				User user = getUsers().get(UUID.fromString(snmpTemplateParams.user_id));
-				if (user == null)
+					User user = getUsers().get(UUID.fromString(snmpTemplateParams.user_id));
+					if (user == null)
+						continue;
+					user.addSnmpTemplate(snmpTemplateParams);
+				} catch (Exception e) {
+					Logit.LogWarn("Creation of Snmp Template Failed: " + collectorJson.toJSONString() + " , not added! E: "
+							+ e.getMessage());
 					continue;
-				user.addSnmpTemplate(snmpTemplateParams);
-			} catch (Exception e) {
-				Logit.LogWarn("Creation of Snmp Template Failed: " + snmpTempJson.toJSONString() + " , not added! E: "
-						+ e.getMessage());
-				continue;
+				}
+				break;
+			case "sql":
+				break;
 			}
 		}
 	}
@@ -312,8 +313,8 @@ public class UsersManager {
 			hostParams.hostStatus = (String) hostJson.get("status");
 			hostParams.bucket = (String) hostJson.get("bucket");
 			hostParams.notificationGroups = (String) hostJson.get("notifications_group");
-			hostParams.snmpTemp = (String) hostJson.get("snmp_template");
-
+			hostParams.snmpTemplate = (String) hostJson.get("snmp_template");
+			hostParams.sqlTemplate = (String) hostJson.get("sql_template");
 			user.addHost(hostParams);
 		}
 	}
@@ -337,22 +338,12 @@ public class UsersManager {
 
 				JSONArray snmpTemplateIds = new JSONArray();
 				snmpTemplateIds.add(userIdSnmpTemplate);
-				templateId.put(Constants.snmpTemplates, snmpTemplateIds);
+				templateId.put(Constants.collectors, snmpTemplateIds);
 
 				IDAL dal = DAL.getInstanece();
-				JSONObject jsonObject = dal.put(ApiAction.GetSnmpTemplates, templateId);
+				JSONObject jsonObject = dal.put(ApiAction.GetCollectors, templateId);
 
-				UsersManager.addSnmpTemplates((JSONArray) jsonObject.get("snmp_templates"));
-				// UUID id = jsonObject.get("snmp_user_id");
-				//
-				//
-				// (UUID id,String name, int version,int port, String sec,
-				// String userName,
-				// String authPass, String algo,String cryptPass,String
-				// cryptType,int timeout,boolean status
-				// SnmpTemplate snmpTemplate = new SnmpTemplate(id, name,
-				// version, port, sec, userName, authPass, algo, cryptPass,
-				// cryptType, timeout, status)
+				UsersManager.addCollector((JSONArray) jsonObject.get("collectors"));
 			}
 
 			HostParams hostParams = new HostParams();
@@ -362,7 +353,7 @@ public class UsersManager {
 			hostParams.hostStatus = (String) hostJson.get("status");
 			hostParams.bucket = (String) hostJson.get("bucket");
 			hostParams.notificationGroups = (String) hostJson.get("notifications_group");
-			hostParams.snmpTemp = (String) hostJson.get("snmp_template");
+			hostParams.snmpTemplate = (String) hostJson.get("snmp_template");
 
 			user.addHost(hostParams);
 		}

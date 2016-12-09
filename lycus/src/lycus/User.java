@@ -1,24 +1,18 @@
 package lycus;
 
-import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.UUID;
-
-import org.apache.logging.log4j.core.net.Severity;
 import org.snmp4j.smi.OID;
+import Collectors.SnmpTemplate;
 import GlobalConstants.Constants;
 import GlobalConstants.Enums;
-import GlobalConstants.Enums.ResultValueType;
-import GlobalConstants.SnmpDataType;
+import GlobalConstants.Enums.SnmpDataType;
 import GlobalConstants.TriggerSeverity;
 import GlobalConstants.XvalueUnit;
-import Model.ConditionModel;
-import Model.ConditionUpdateModel;
 import Model.HostParams;
 import Model.ProbeParams;
 import Model.SnmpTemplateParams;
-import Model.TriggerModel;
 import Probes.BaseProbe;
 import Probes.DiscoveryProbe;
 import Probes.HttpProbe;
@@ -27,8 +21,6 @@ import Probes.PortProbe;
 import Probes.RBLProbe;
 import Probes.SnmpProbe;
 import Probes.TracerouteProbe;
-import Triggers.Trigger;
-import Triggers.TriggerCondition;
 import Utils.GeneralFunctions;
 import Utils.Logit;
 
@@ -37,28 +29,15 @@ public class User {
 	private String email;
 	private Map<UUID, Host> hosts;
 	private Map<String, BaseProbe> templateProbes;
-	private Map<UUID, SnmpTemplate> snmpTemplates;
+	private Map<String, SnmpTemplate> snmpTemplates;
 
-	// public User(UUID userId, Map<UUID, Host> hosts,
-	// Map<UUID, Template> templates, Map<UUID, SnmpTemplate> snmpTemps,
-	// Set<String> runnableProbes) {
-	// this.setUserId(userId);
-	// this.setHosts(hosts);
-	// this.setTemplates(templates);
-	// this.setSnmpTemplates(snmpTemps);
-	// this.setRunnableProbes(new HashMap<String, RunnableProbe>());
-	// this.setRps(runnableProbes);
-	// this.createRunningProbes();
-	// }
 	public User(UUID userId) {
 		this.setUserId(userId);
 		this.setHosts(new HashMap<UUID, Host>());
 		this.setTemplateProbes(new HashMap<String, BaseProbe>());
-		this.setSnmpTemplates(new HashMap<UUID, SnmpTemplate>());
-		// this.setSnmpManager(new SnmpManager(this));
+		this.setSnmpTemplates(new HashMap<String, SnmpTemplate>());
 	}
 
-	// Getters/Setters
 	public UUID getUserId() {
 		return userId;
 	}
@@ -79,11 +58,11 @@ public class User {
 		return getHosts().get(uid);
 	}
 
-	public Map<UUID, SnmpTemplate> getSnmpTemplates() {
+	public Map<String, SnmpTemplate> getSnmpTemplates() {
 		return snmpTemplates;
 	}
 
-	public void setSnmpTemplates(Map<UUID, SnmpTemplate> snmpTemplates) {
+	public void setSnmpTemplates(Map<String, SnmpTemplate> snmpTemplates) {
 		this.snmpTemplates = snmpTemplates;
 	}
 
@@ -134,173 +113,6 @@ public class User {
 		this.templateProbes = templateProbes;
 	}
 
-	// public HashMap<String, RunnableProbe> getAllRunnableProbes() {
-	// HashMap<String, RunnableProbe> allHostsRunnableProbes = new
-	// HashMap<String, RunnableProbe>();
-	// Set<Host> hosts = new HashSet<Host>(this.getHosts().values());
-	// for (Host host : hosts) {
-	// allHostsRunnableProbes.putAll(host.getRunnableProbes());
-	// }
-	// return allHostsRunnableProbes;
-	// }
-
-	// public List<RunnableProbe> getRunnableProbesFor(String probe_id) {
-	// List<RunnableProbe> runnableProbes = new ArrayList<RunnableProbe>();
-	// Set<Host> hosts = new HashSet<Host>(this.getHosts().values());
-	// for (Host host : hosts) {
-	// runnableProbes.addAll(host.getRunnableProbes(probe_id));
-	// }
-	// return runnableProbes;
-	// }
-
-	// public Probe getProbe(UUID templateId, String probeId) {
-	// for (Map.Entry<String, RunnableProbe> entry :
-	// this.getAllRunnableProbes().entrySet()) {
-	// if (entry.getKey().contains(templateId.toString() + "@" + probeId))
-	// return entry.getValue().getProbe();
-	// }
-	// HashMap<Host, HashMap<String, RunnableProbe>> snmpRunnableProbes =
-	// this.getSnmpManager().getProbesByHosts();
-	// if (snmpRunnableProbes == null)
-	// return null;
-	// for (Map.Entry<Host, HashMap<String, RunnableProbe>> entry :
-	// snmpRunnableProbes.entrySet()) {
-	// if (entry.getValue() != null) {
-	// for (Map.Entry<String, RunnableProbe> entry2 :
-	// entry.getValue().entrySet()) {
-	// if (entry2.getKey().contains(templateId.toString() + "@" + probeId))
-	// return entry2.getValue().getProbe();
-	// }
-	// }
-	// }
-	// return null;
-	// }
-
-	// private void runProbes(List<RunnableProbe> rps) {
-	// for (RunnableProbe rp : rps) {
-	// if (rp.getId().contains(
-	// "0b05919c-6cc0-42cc-a74b-de3b0dcd4a2a@6aadf750-e887-43ee-b872-326c94fbab7c@discovery_6b54463e-fe1c-4e2c-a090-452dbbf2d510"))
-	// Logit.LogDebug("BREAKPOINT");
-	// this.startRunnableProbe(rp);
-	// }
-	// }
-
-	// public void runProbesAtStart() {
-	//// this.runProbes(new
-	// ArrayList<RunnableProbe>(this.getAllRunnableProbes().values()));
-	// this.runProbes(new
-	// ArrayList<RunnableProbe>(RunnableProbeContainer.getInstanece().getByUser(getUserId().toString()).values()));
-	// ;
-	// // this.runSnmpVer2_3();
-	// }
-
-	// public void runSnmpVer2_3() {
-	// this.getSnmpManager().runAllBatches();
-	// }
-
-	// public Probe getProbeByID(String probeId) {
-	// for (Map.Entry<String, Probe> p : this.getTemplateProbes().entrySet()) {
-	// if(p.getKey().split("@")[1].equals(probeId))
-	// {
-	// return p.getValue();
-	// }
-	// }
-	// return null;
-	// }
-
-	// public Set<Host> getHostsByTemplate(Template t) {
-	// if (t == null)
-	// return null;
-	// Set<Host> hosts = new HashSet<Host>();
-	// for (String rpString : this.getAllRunnableProbes().keySet()) {
-	// if (rpString.contains(t.getTemplateId().toString())) {
-	// hosts.add(this.getHosts().get(UUID.fromString(rpString.split("@")[1])));
-	// }
-	// }
-	// for (Map<String, RunnableProbe> rps :
-	// this.getSnmpManager().getProbesByHosts().values()) {
-	// for (String rpString : rps.keySet()) {
-	// if (rpString.contains(t.getTemplateId().toString())) {
-	// hosts.add(this.getHosts().get(UUID.fromString(rpString.split("@")[1])));
-	// break;
-	// }
-	// }
-	// }
-	// return hosts;
-	//
-	// }
-
-	// public List<RunnableProbe> getRPSbyProbeID(String probeId) {
-	// List<RunnableProbe> matchedRps = new ArrayList<RunnableProbe>();
-	// HashMap<String, RunnableProbe> allRps = this.getAllRunnableProbes();
-	// for (Map.Entry<String, RunnableProbe> entry : allRps.entrySet()) {
-	// if (entry.getKey().contains(probeId)) {
-	// matchedRps.add(entry.getValue());
-	// }
-	// }
-	// return matchedRps;
-	// }
-
-	// public List<RunnableProbe> getRPSbyTemplateIdHostId(UUID templateId, UUID
-	// hostId) {
-	// List<RunnableProbe> matchedRps = new ArrayList<RunnableProbe>();
-	// HashMap<String, RunnableProbe> allRps = this.getAllRunnableProbes();
-	// for (Map.Entry<String, RunnableProbe> entry : allRps.entrySet()) {
-	// if (entry.getKey().contains(templateId.toString() + "@" +
-	// hostId.toString())) {
-	// matchedRps.add(entry.getValue());
-	// }
-	// }
-	// return matchedRps;
-	// }
-
-	// public boolean startRunnableProbe(RunnableProbe rp) {
-	// // if (rp.getProbe() instanceof SnmpProbe) {
-	// // this.getSnmpManager().startProbe(rp);
-	// // return true;
-	// // }
-	//
-	// return rp.start();
-	// }
-
-	// public boolean stopRunnableProbe(RunnableProbe rp) {
-	// if (rp == null)
-	// return false;
-	// if (rp.getProbe() instanceof SnmpProbe &&
-	// rp.getHost().getSnmpTemp().getVersion() > 1) {
-	// this.getSnmpManager().stopProbe(rp);
-	// return true;
-	// }
-	// try {
-	// rp.stop();
-	// return true;
-	// } catch (Exception e) {
-	// Logit.LogError("User - stopRunnableProbe", "Unable To stop RunnableProbe:
-	// " + rp.getId());
-	// return false;
-	// }
-	// }
-
-	// public boolean addRunnableProbe(RunnableProbe runnableProbe) {
-	// String rpStr = runnableProbe.getId();
-	// if (rpStr.contains("inner_996a80bf-913e-4ba4-ad46-a28c30f9fe36"))
-	// Logit.LogDebug("BREAKPOINT");
-	//
-	// return RunnableProbeContainer.getInstanece().add(runnableProbe);
-	//// this.startRunnableProbe(runnableProbe);
-	// }
-
-	// public boolean removeRunnableProbe(RunnableProbe runnableProbe) {
-	// UUID hostId = runnableProbe.getHost().getHostId();
-	// RunnableProbeContainer.getInstanece().remove(runnableProbe);
-	//
-	// if (this.getHosts().get(hostId).getRunnableProbes().size() == 0) {
-	// this.getSnmpTemplates().remove(this.getHosts().get(hostId).getSnmpTemp().getSnmpTemplateId());
-	// this.getHosts().remove(hostId);
-	// }
-	// return this.stopRunnableProbe(runnableProbe);
-	// }
-
 	public String toString() {
 		return this.getUserId().toString();
 	}
@@ -317,14 +129,6 @@ public class User {
 	public boolean isSnmpTemplateExist(String snmp_template_id) {
 		return snmpTemplates.containsKey(snmp_template_id);
 	}
-
-	// public boolean removeRunnableProbes(String probe_id) {
-	// List<RunnableProbe> runnableProbes = getRunnableProbesFor(probe_id);
-	// for (RunnableProbe runnableProbe : runnableProbes) {
-	// removeRunnableProbe(runnableProbe);
-	// }
-	// return true;
-	// }
 
 	public void addHost(HostParams hostParams) {
 		try {
@@ -344,23 +148,10 @@ public class User {
 				notif_groups = null;
 			}
 
-			UUID snmp_template;
-			try {
-				snmp_template = UUID.fromString(hostParams.snmpTemp);
-			} catch (Exception e) {
-				Logit.LogWarn("Unable to parse snmp template id for host: " + hostParams.host_id);
-				snmp_template = null;
-			}
+			String sql_template = hostParams.sqlTemplate;
+			SnmpTemplate snmpTemplate = this.getSnmpTemplates().get(hostParams.snmpTemplate);
 
-			Host host;
-
-			if (snmp_template == null) {
-				host = new Host(host_id, name, ip, status, true, bucket, notif_groups, getUserId().toString());
-			} else {
-				SnmpTemplate snmpTemp = this.getSnmpTemplates().get(snmp_template);
-				host = new Host(host_id, name, ip, snmpTemp, status, true, bucket, notif_groups,
-						getUserId().toString());
-			}
+			Host host = new Host(host_id, name, ip, snmpTemplate, status, bucket, notif_groups, getUserId().toString());
 			addHost(host);
 
 		} catch (Exception e) {
@@ -370,9 +161,9 @@ public class User {
 
 	public void addSnmpTemplate(SnmpTemplateParams snmpTemplateParams) {
 		try {
-			UUID userId = UUID.fromString(snmpTemplateParams.user_id);
-			UUID templateId = UUID.fromString(snmpTemplateParams.snmp_template_id);
-			String name = snmpTemplateParams.template_name;
+//			UUID userId = UUID.fromString(snmpTemplateParams.user_id);
+			String templateId =  snmpTemplateParams.id;
+			String name = snmpTemplateParams.name;
 			int version = snmpTemplateParams.version;
 			String commName = snmpTemplateParams.community;
 			String sec = snmpTemplateParams.sec;
@@ -384,18 +175,17 @@ public class User {
 			int timeout = snmpTemplateParams.timeout;
 			int port = snmpTemplateParams.port;
 
-			SnmpTemplate snmpTemp = null;
+			SnmpTemplate snmpTemplate = null;
 			if (version <= 2)
-				snmpTemp = new SnmpTemplate(templateId, name, commName, version, port, timeout, true);
+				snmpTemplate = new SnmpTemplate(templateId, name, commName, version, port, timeout, true);
 			else
-				snmpTemp = new SnmpTemplate(templateId, name, version, port, sec, authUser, authPass, authMethod,
+				snmpTemplate = new SnmpTemplate(templateId, name, version, port, sec, authUser, authPass, authMethod,
 						cryptPass, cryptMethod, timeout, true);
 
-			this.getSnmpTemplates().put(snmpTemp.getSnmpTemplateId(), snmpTemp);
+			this.getSnmpTemplates().put(snmpTemplate.getId(), snmpTemplate);
 
 		} catch (Exception e) {
-			Logit.LogWarn(
-					"Unable to add SNMP Template: " + snmpTemplateParams.snmp_template_id.toString() + " , not added!");
+			Logit.LogWarn("Unable to add SNMP Template: " + snmpTemplateParams.id.toString() + " , not added!");
 		}
 
 	}
@@ -445,7 +235,7 @@ public class User {
 				String auth = probeParams.http_auth;
 				String authUser = GeneralFunctions.Base64Decode(probeParams.http_auth_username);
 				String authPass = GeneralFunctions.Base64Decode(probeParams.http_auth_password);
-				
+
 				boolean deepCheck = probeParams.http_deep != null && probeParams.http_deep == 1 ? true : false;
 
 				int timeout = probeParams.timeout;
@@ -487,18 +277,6 @@ public class User {
 			}
 			case Constants.discovery: {
 				int elementsInterval = probeParams.element_interval;
-				// int triggerCode = probeParams.discovery_trigger_code;
-				// String triggerXValue = probeParams.discovery_trigger_x_value;
-				// String unitType = probeParams.snmp_unit;
-
-				// TriggerSeverity severity =
-				// getTriggerSev(probeParams.discovery_trigger_severity);
-				// SnmpUnit trigValueUnit = getSnmpUnit(unitType);
-				// if (trigValueUnit == null) {
-				// Logit.LogError("User = addTemplateProbe()",
-				// "Probe: " + probeId + " Wrong Unit Type, Doesn't Added!");
-				// return null;
-				// }
 				Enums.DiscoveryElementType discoveryType;
 				switch (probeParams.discovery_type) {
 				case Constants.bw:
@@ -535,65 +313,6 @@ public class User {
 		}
 	}
 
-//	private String getDiscoveryTriggerName(ProbeParams probeParams) throws Exception {
-//		switch (probeParams.discovery_type) {
-//		case Constants.bw:
-//			switch (probeParams.triggers[0].condition) {
-//			case "1":
-//				return "Bandwidth is bigger than trigger X value!";
-//			case "2":
-//				return "Bandwidth is less than trigger X value!";
-//
-//			case "3":
-//				return "Bandwidth is equal to trigger X value!";
-//
-//			case "4":
-//				return "Bandwidth is different from trigger X value!";
-//			}
-//
-//			break;
-//		case Constants.ds:
-//			switch (probeParams.triggers[0].condition) {
-//			case "1":
-//				return "Disk is bigger than trigger X value!";
-//			case "2":
-//				return "Disk is less than trigger X value!";
-//
-//			case "3":
-//				return "Disk is equal to trigger X value!";
-//			case "4":
-//				return "Disk is different from trigger X value!";
-//			}
-//			break;
-//		default:
-//			throw new Exception("Unable to determine discovery type --- " + probeParams.probe_id);
-//		}
-//		return null;
-//	}
-
-//	private void updateTriggers(ProbeParams probeParams, UUID templateId, String probeId, String name,
-//			BaseProbe probe) {
-//
-//		for (ConditionUpdateModel trigger : probeParams.triggers) {
-//			// String triggerId = templateId.toString() + "@" + probeId + "@" +
-//			// trigger;
-//			// ArrayList<TriggerCondition> conditions = new
-//			// ArrayList<TriggerCondition>();
-//			// TriggerCondition triggerCondition = new
-//			// TriggerCondition(trigger.discovery_trigger_code,
-//			// trigger.discovery_trigger_x_value, null);
-//			// conditions.add(triggerCondition);
-//			//
-//			// TriggerSeverity sev =
-//			// UsersManager.getTriggerSev(trigger.discovery_trigger_severity);
-//			// SnmpUnit un = SnmpUnit.valueOf(trigger.discovery_trigger_unit);
-//			//
-//			// Trigger discoveryTrigger = new Trigger(triggerId, name, probe,
-//			// sev, true, "", un, conditions);
-//			// probe.addTrigger(discoveryTrigger);
-//		}
-//	}
-
 	private SnmpDataType getSnmpDataType(String valueType) {
 		SnmpDataType dataType;
 		switch (valueType) {
@@ -617,117 +336,17 @@ public class User {
 		return dataType;
 	}
 
-	// private SnmpUnit getSnmpUnit(String unitType) {
-	// SnmpUnit unit;
-	// switch (unitType) {
-	// case Constants.b:
-	// unit = SnmpUnit.bits;
-	// break;
-	// case Constants.B:
-	// unit = SnmpUnit.bytes;
-	// break;
-	// case Constants.Kb:
-	// unit = SnmpUnit.kbits;
-	// break;
-	// case Constants.KB:
-	// unit = SnmpUnit.kbytes;
-	// break;
-	// case Constants.Mb:
-	// unit = SnmpUnit.mbits;
-	// break;
-	// case Constants.MB:
-	// unit = SnmpUnit.mbytes;
-	// break;
-	// case Constants.Gb:
-	// unit = SnmpUnit.gbits;
-	// break;
-	// case Constants.GB:
-	// unit = SnmpUnit.gbytes;
-	// break;
-	// case Constants.none:
-	// unit = SnmpUnit.none;
-	// break;
-	// case "":
-	// unit = SnmpUnit.none;
-	// break;
-	//
-	// default: {
-	// unit = SnmpUnit.none;
-	// }
-	// }
-	// return unit;
-	// }
-
-	private TriggerSeverity getTriggerSev(String sev) {
-		switch (sev) {
-		case Constants.notice:
-			return TriggerSeverity.Notice;
-		case Constants.warning:
-			return TriggerSeverity.Warning;
-		case Constants.high:
-			return TriggerSeverity.High;
-		case Constants.disaster:
-			return TriggerSeverity.Disaster;
-		}
-		return null;
-	}
-
-	// private void addNicRunnableProbes(NicProbe newElement, Host host) {
-	// this.templateProbes.put(newElement.getProbe_id(), newElement);
-	// if (newElement == null || host == null) {
-	// Logit.LogError("User - addNicRunnableProbes()", "Unable to create
-	// Runnable Probe: " + newElement.getTemplate_id().toString() + "@"
-	// + host.getHostId().toString() + "@" + newElement.getProbe_id()
-	// + ", one of its elements is missing!");
-	// return;
-	// }
-	// if (!newElement.isActive())
-	// return;
-	//
-	// RunnableProbe inOctetsRunnableProbe;
-	// RunnableProbe outOctetsRunnableProbe;
-	//
-	// try {
-	// inOctetsRunnableProbe = new RunnableProbe(host,
-	// newElement.getIfInOctets());
-	// outOctetsRunnableProbe = new RunnableProbe(host,
-	// newElement.getIfOutOctets());
-	// } catch (Exception e) {
-	// Logit.LogError("User - addNicRunnableProbes()", "Unable to create
-	// Runnable Probe: " + newElement.getTemplate_id().toString() + "@"
-	// + host.getHostId().toString() + "@" + newElement.getProbe_id() + ", check
-	// probe type!\n" + e.getMessage());
-	// return;
-	// }
-	//
-	//// HashMap<String, RunnableProbe> runnableProbes =
-	// RunnableProbeContainer.getInstanece().getByHost(host.getHostId().toString());
-	//// if (runnableProbes != null)
-	//// {
-	// RunnableProbeContainer.getInstanece().add(inOctetsRunnableProbe);
-	// RunnableProbeContainer.getInstanece().add(inOctetsRunnableProbe);
-	//// }
-	//// this.getHost(host.getHostId()).getRunnableProbes().put(inOctetsRunnableProbe.getId(),
-	// inOctetsRunnableProbe);
-	//// this.getHost(host.getHostId()).getRunnableProbes().put(outOctetsRunnableProbe.getId(),outOctetsRunnableProbe);
-	//
-	// }
-
-	// public void removeDiscoveryElement(BaseElement baseElement) {
-	// if (baseElement instanceof NicProbe) {
-	// this.removeNicRunnableProbes((NicProbe) baseElement);
-	// } else if (baseElement instanceof DiskElement) {
-	// this.addDiskRunnableProbes((NicProbe) baseElement);
-	// }
-	// }
-
-	// private void removeNicRunnableProbes(NicProbe baseElement) {
-	// for (RunnableProbe runnableProbe :
-	// RunnableProbeContainer.getInstanece().getByProbe(baseElement.getProbe_id()).values())
-	// {
-	// RunnableProbeContainer.getInstanece().remove(runnableProbe);
-	//// this.removeRunnableProbe(runnableProbe);
-	// }
-	// }
-
+//	private TriggerSeverity getTriggerSev(String sev) {
+//		switch (sev) {
+//		case Constants.notice:
+//			return TriggerSeverity.Notice;
+//		case Constants.warning:
+//			return TriggerSeverity.Warning;
+//		case Constants.high:
+//			return TriggerSeverity.High;
+//		case Constants.disaster:
+//			return TriggerSeverity.Disaster;
+//		}
+//		return null;
+//	}
 }

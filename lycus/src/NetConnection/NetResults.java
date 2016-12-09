@@ -15,6 +15,7 @@ import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
 import org.snmp4j.smi.OID;
 
+import Collectors.SnmpTemplate;
 import Elements.BaseElement;
 import Elements.DiskElement;
 import Elements.NicElement;
@@ -48,7 +49,6 @@ import Results.WebResult;
 import Utils.GeneralFunctions;
 import Utils.Logit;
 import lycus.Host;
-import lycus.SnmpTemplate;
 
 public class NetResults implements INetResults {
 	private static NetResults netResults = null;
@@ -268,7 +268,7 @@ public class NetResults implements INetResults {
 		List<SnmpResult> allResults = new ArrayList<SnmpResult>();
 
 		try {
-			SnmpTemplate snmpTemplate = host.getSnmpTemp();
+			SnmpTemplate snmpTemplate = (SnmpTemplate)host.getCollector();
 
 			HashMap<String, OID> probesOids = new HashMap<String, OID>();
 			for (SnmpProbe snmpProbe : snmpProbes)
@@ -322,7 +322,7 @@ public class NetResults implements INetResults {
 	@Override
 	public NicResult getNicResult(Host host, NicProbe probe) {
 
-		SnmpTemplate snmpTemplate = host.getSnmpTemp();
+		SnmpTemplate snmpTemplate = (SnmpTemplate)host.getCollector();
 
 		Set<OID> nicOids = new HashSet<OID>();
 		nicOids.add(probe.getIfinoctetsOID());
@@ -414,16 +414,17 @@ public class NetResults implements INetResults {
 		long checkTime;
 
 		Map<String, String> hrStorageResults = null;
-
-		int snmpVersion = host.getSnmpTemp().getVersion();
+		SnmpTemplate snmpTemplate = (SnmpTemplate)host.getCollector();
+		
+		int snmpVersion = snmpTemplate.getVersion();
 		if (snmpVersion == 2) {
-			hrStorageResults = Net.Snmp2Walk(host.getHostIp(), host.getSnmpTemp().getPort(),
-					host.getSnmpTemp().getTimeout(), host.getSnmpTemp().getCommunityName(),
+			hrStorageResults = Net.Snmp2Walk(host.getHostIp(), snmpTemplate.getPort(),
+					host.getCollector().getTimeout(), snmpTemplate.getCommunityName(),
 					Constants.storageAll.toString());
 		} else if (snmpVersion == 3) {
-			hrStorageResults = Net.Snmp3Walk(host.getHostIp(), host.getSnmpTemp().getPort(),
-					host.getSnmpTemp().getTimeout(), host.getSnmpTemp().getUserName(), host.getSnmpTemp().getAuthPass(),
-					host.getSnmpTemp().getAlgo(), host.getSnmpTemp().getCryptPass(), host.getSnmpTemp().getCryptType(),
+			hrStorageResults = Net.Snmp3Walk(host.getHostIp(), snmpTemplate.getPort(),
+					snmpTemplate.getTimeout(), snmpTemplate.getName(), snmpTemplate.getAuthPass(),
+					snmpTemplate.getAlgo(), snmpTemplate.getCryptPass(), snmpTemplate.getCryptType(),
 					Constants.storageAll.toString());
 		}
 
@@ -434,30 +435,31 @@ public class NetResults implements INetResults {
 		return lastScanElements;
 	}
 
-	private HashMap<String, BaseElement> getNicElements(Host h) {
+	private HashMap<String, BaseElement> getNicElements(Host host) {
 
 		long checkTime;
 
 		Map<String, String> ifDescrResults = null;
 		Map<String, String> sysDescrResults = null;
 
-		int snmpVersion = h.getSnmpTemp().getVersion();
+		SnmpTemplate snmpTemplate = (SnmpTemplate)host.getCollector();
+		int snmpVersion = snmpTemplate.getVersion();
 		if (snmpVersion == 2) {
-			ifDescrResults = Net.Snmp2Walk(h.getHostIp(), h.getSnmpTemp().getPort(), h.getSnmpTemp().getTimeout(),
-					h.getSnmpTemp().getCommunityName(), Constants.ifAll.toString());
+			ifDescrResults = Net.Snmp2Walk(host.getHostIp(), snmpTemplate.getPort(), host.getCollector().getTimeout(),
+					snmpTemplate.getCommunityName(), Constants.ifAll.toString());
 			ArrayList<OID> oids = new ArrayList<OID>();
 			oids.add(Constants.sysDescr);
-			sysDescrResults = Net.Snmp2GETBULK(h.getHostIp(), h.getSnmpTemp().getPort(), h.getSnmpTemp().getTimeout(),
-					h.getSnmpTemp().getCommunityName(), oids);
+			sysDescrResults = Net.Snmp2GETBULK(host.getHostIp(), snmpTemplate.getPort(), host.getCollector().getTimeout(),
+					snmpTemplate.getCommunityName(), oids);
 		} else if (snmpVersion == 3) {
-			ifDescrResults = Net.Snmp3Walk(h.getHostIp(), h.getSnmpTemp().getPort(), h.getSnmpTemp().getTimeout(),
-					h.getSnmpTemp().getUserName(), h.getSnmpTemp().getAuthPass(), h.getSnmpTemp().getAlgo(),
-					h.getSnmpTemp().getCryptPass(), h.getSnmpTemp().getCryptType(), Constants.ifAll.toString());
+			ifDescrResults = Net.Snmp3Walk(host.getHostIp(), snmpTemplate.getPort(), host.getCollector().getTimeout(),
+					snmpTemplate.getUserName(), snmpTemplate.getAuthPass(), snmpTemplate.getAlgo(),
+					snmpTemplate.getCryptPass(), snmpTemplate.getCryptType(), Constants.ifAll.toString());
 			ArrayList<OID> oids = new ArrayList<OID>();
 			oids.add(Constants.sysDescr);
-			sysDescrResults = Net.Snmp3GETBULK(h.getHostIp(), h.getSnmpTemp().getPort(), h.getSnmpTemp().getTimeout(),
-					h.getSnmpTemp().getUserName(), h.getSnmpTemp().getAuthPass(), h.getSnmpTemp().getAlgo(),
-					h.getSnmpTemp().getCryptPass(), h.getSnmpTemp().getCryptType(), oids);
+			sysDescrResults = Net.Snmp3GETBULK(host.getHostIp(), snmpTemplate.getPort(), snmpTemplate.getTimeout(),
+					snmpTemplate.getUserName(), snmpTemplate.getAuthPass(), snmpTemplate.getAlgo(),
+					snmpTemplate.getCryptPass(), snmpTemplate.getCryptType(), oids);
 		}
 		if (ifDescrResults == null || sysDescrResults == null || ifDescrResults.size() == 0
 				|| sysDescrResults.size() == 0)
@@ -562,7 +564,7 @@ public class NetResults implements INetResults {
 	}
 
 	public DiskResult getDiskResult(Host host, DiskProbe probe) {
-		SnmpTemplate snmpTemplate = host.getSnmpTemp();
+		SnmpTemplate snmpTemplate = (SnmpTemplate)host.getCollector();
 
 		Set<OID> storageOids = new HashSet<OID>();
 		storageOids.add(probe.getHrstorageallocationunitsoid());
