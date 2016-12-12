@@ -8,7 +8,9 @@ public class BaseCollector {
 	private CollectorType type;
 	private int timeout;
 	private boolean isActive;
-	
+	private boolean issueSent=false;
+
+
 	public String getId() {
 		return id;
 	}
@@ -47,5 +49,13 @@ public class BaseCollector {
 	
 	public void setActive(boolean isActive) {
 		this.isActive = isActive;
+	}
+
+	public boolean issueSent() {
+		return issueSent;
+	}
+
+	public void setIssueSent(boolean issueSent) {
+		this.issueSent = issueSent;
 	}
 }

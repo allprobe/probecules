@@ -8,6 +8,9 @@ import java.util.List;
 import java.util.Map;
 import java.util.UUID;
 import java.util.concurrent.ConcurrentHashMap;
+
+import Collectors.CollectorIssuesContainer;
+import GlobalConstants.Enums;
 import org.snmp4j.Snmp;
 
 import GlobalConstants.Enums.SnmpError;
@@ -25,7 +28,6 @@ public class SnmpProbesBatch implements Runnable {
 	private ConcurrentHashMap<String, RunnableProbe> snmpProbes;
 	private Host host;
 	private long interval;
-	private boolean snmpErrorSent = false;
 	private boolean isRunning;
 	private Map<String, SnmpResult> snmpPreviousResults; // Map<runnableProbeId,
 	private Snmp snmp;
@@ -75,14 +77,6 @@ public class SnmpProbesBatch implements Runnable {
 		this.snmp = snmp;
 	}
 
-	public boolean isSnmpErrorSent() {
-		return snmpErrorSent;
-	}
-
-	public void setSnmpErrorSent(boolean snmpError) {
-		this.snmpErrorSent = snmpError;
-	}
-
 	public boolean isRunning() {
 		return isRunning;
 	}
@@ -114,7 +108,7 @@ public class SnmpProbesBatch implements Runnable {
 
 						Collection<RunnableProbe> snmpProbes = this.getSnmpProbes().values();
 
-						if (host.getCollector() == null) {
+						if (host.getSnmpCollector() == null) {
 							for (RunnableProbe rp : snmpProbes) {
 								SnmpResult result = new SnmpResult(rp.getId());
 								result.setErrorMessage("NO_SNMP_TEMPLATE");
@@ -151,7 +145,7 @@ public class SnmpProbesBatch implements Runnable {
 							}
 							Logit.LogError("SnmpProbesBatch - run()",
 									"Failed running  snmp batch - host: " + this.getHost().getHostIp()
-											+ ", snmp template:" + this.getHost().getCollector().toString());
+											+ ", snmp template:" + this.getHost().getSnmpCollector().toString());
 							return;
 						} else {
 							long resultsTimestamp = System.currentTimeMillis();
@@ -161,30 +155,23 @@ public class SnmpProbesBatch implements Runnable {
 										.get(result.getRunnableProbeId());
 
 								if (runnableProbe.getId().contains(
-										"6a10a32d-0d33-415b-a1f6-e9aeb2826d03@7352a46f-5189-428c-b4c0-fb98dedd10b1@snmp_43e8ea8e-b3ad-48b5-a4e0-5bf669f26b84"))
+										"6a10a32d-0d33-415b-a1f6-e9aeb2826d03@7352a46f-5189-428c-b4c0-fb98dedd10b1@snmp_1e189e8e-ec48-40bf-baba-88b61b18978a"))
 									Logit.LogDebug("BP");
+
+								if (result.getError() == SnmpError.NO_COMUNICATION) {
+									if (!this.getHost().getSnmpCollector().issueSent()) {
+										CollectorIssuesContainer.getInstance().addIssue(this.getHost(), Enums.CollectorType.Snmp,GlobalConstants.Constants.snmp_connection_failed);
+										this.getHost().getSnmpCollector().setIssueSent(true);
+									}
+								} else if (this.getHost().getSnmpCollector().issueSent()) {
+									CollectorIssuesContainer.getInstance().addIssue(this.getHost(), Enums.CollectorType.Snmp,GlobalConstants.Constants.snmp_connection_failed_fixed);
+									this.getHost().getSnmpCollector().setIssueSent(false);
+								}
 
 								SnmpStoreAs storeAs = ((SnmpProbe) runnableProbe.getProbe()).getStoreAs();
 
 								if (storeAs == SnmpStoreAs.asIs) {
 									result.setLastTimestamp(resultsTimestamp);
-									
-									if (result.getError() == SnmpError.NO_COMUNICATION) {
-										if (!this.isSnmpErrorSent()) {
-											for (Trigger trigger : runnableProbe.getProbe().getTriggers().values()) {
-												ResultsContainer.getInstance().resendEvents(trigger.getTriggerId(),
-														GlobalConstants.Constants.snmp_connection_failed);
-											}
-											this.setSnmpErrorSent(true);
-										}
-									} else if (this.isSnmpErrorSent()) {
-										for (Trigger trigger : runnableProbe.getProbe().getTriggers().values()) {
-											ResultsContainer.getInstance().resendEvents(trigger.getTriggerId(),
-													GlobalConstants.Constants.snmp_connection_failed_fixed);
-										}
-										this.setSnmpErrorSent(false);
-									}
-									
 									ResultsContainer.getInstance().addResult(result);
 									RollupsContainer.getInstance().addResult(result);
 									if (result.getData() != null || result.getNumData() != null)
@@ -192,23 +179,6 @@ public class SnmpProbesBatch implements Runnable {
 
 								} else if (storeAs == SnmpStoreAs.delta) {
 									SnmpDeltaResult snmpDeltaResult = getSnmpDeltaResult(result, resultsTimestamp);
-									
-									if (result.getError() == SnmpError.NO_COMUNICATION) {
-										if (!this.isSnmpErrorSent()) {
-											for (Trigger trigger : runnableProbe.getProbe().getTriggers().values()) {
-												ResultsContainer.getInstance().resendEvents(trigger.getTriggerId(),
-														GlobalConstants.Constants.snmp_connection_failed);
-											}
-											this.setSnmpErrorSent(true);
-										}
-									} else if (this.isSnmpErrorSent()) {
-										for (Trigger trigger : runnableProbe.getProbe().getTriggers().values()) {
-											ResultsContainer.getInstance().resendEvents(trigger.getTriggerId(),
-													GlobalConstants.Constants.snmp_connection_failed_fixed);
-										}
-										this.setSnmpErrorSent(false);
-									}
-									
 									ResultsContainer.getInstance().addResult(snmpDeltaResult);
 									RollupsContainer.getInstance().addResult(snmpDeltaResult);
 									if (result.getData() != null || result.getNumData() != null)

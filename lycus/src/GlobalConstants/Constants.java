@@ -90,8 +90,9 @@ public class Constants {
 	public static final String daily = "sla1d";
 	public static final String snmp_connection_failed = "snmp_connection_failed";
 	public static final String snmp_connection_failed_fixed = "snmp_connection_failed_fixed";
+	public static final String issues = "issues";
 
-	public static int getBatchesSize() {
+    public static int getBatchesSize() {
 		return 1400 / GlobalConfig.getMaxSnmpResponseInBytes();
 	}
 }

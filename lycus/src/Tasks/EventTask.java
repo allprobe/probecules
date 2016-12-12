@@ -1,5 +1,6 @@
 package Tasks;
 
+import Collectors.CollectorIssuesContainer;
 import org.json.simple.JSONObject;
 import DAL.ApiRequest;
 import DAL.FailedRequestsHandler;
@@ -37,10 +38,28 @@ public class EventTask extends BaseTask {
 				}
 			} else {
 				Logit.LogInfo("No Events changed! events did not sent to API...");
-			}
-		} catch (Exception e) {
+			}} catch (Exception e) {
 			e.printStackTrace();
 			Logit.LogError("EventHandler - run()", "Error prepairing/seding all runnable probe events!");
 		}
+		try{
+			CollectorIssuesContainer issues=CollectorIssuesContainer.getInstance();
+			int issuesLength=issues.length();
+			if(issuesLength!=0)
+			{
+				if (FailedRequestsHandler.getInstance().getNumberOfFailedRequests() != 0)
+					FailedRequestsHandler.getInstance().executeRequests();
+				if (DAL.DAL.getInstanece().put(Enums.ApiAction.PutCollectorsIssue, issues.getAllIssues()) == null)
+					FailedRequestsHandler.getInstance().addRequest(new ApiRequest(ApiAction.PutCollectorsIssue, issues.getAllIssues()));
+
+				Logit.LogInfo("Packet with " + issuesLength + " collectors issues was just sent.");
+			}else {
+				Logit.LogInfo("No collectors issues found! issues did not sent to API...");
+			}
+		} catch (Exception e) {
+			e.printStackTrace();
+			Logit.LogError("EventHandler - run()", "Error prepairing/seding all hosts collectors issues!");
+		}
+
 	}
 }

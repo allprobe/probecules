@@ -1,5 +1,6 @@
 package lycus;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
 
@@ -9,22 +10,25 @@ import Elements.NicElement;
 
 public class Host {
 	private UUID hostId;
+	private UUID userId;
 	private String name;
 	private String hostIp;
-	private BaseCollector collector;
+	private BaseCollector snmpCollector;
 	private boolean hostStatus;
 	private String bucket;
 	private UUID notificationGroups;
 	private List<NicElement> nicElements;
 
-	public Host(UUID host_id, String name, String host_ip, SnmpTemplate snmpTemplate, boolean hostStatus, String bucket, UUID notificationGroups, String userId) {
+	public Host(UUID host_id, String name, String host_ip, SnmpTemplate snmpTemplate, boolean hostStatus, String bucket,
+			UUID notificationGroups, String userId) {
 		this.setName(name);
 		this.setHostId(host_id);
+		this.setUserId(UUID.fromString(userId));
 		this.setHostIp(host_ip);
-		this.setCollector(snmpTemplate);
 		this.setHostStatus(hostStatus);
 		this.setBucket(bucket);
 		this.setNotificationGroups(notificationGroups);
+		this.snmpCollector = snmpTemplate;
 	}
 
 	public UUID getHostId() {
@@ -63,14 +67,14 @@ public class Host {
 		return hostStatus;
 	}
 
-	public BaseCollector getCollector() {
-		return collector;
+	public SnmpTemplate getSnmpCollector() {
+		if(this.snmpCollector==null)
+		return null;
+		return (SnmpTemplate)this.snmpCollector;
 	}
-
-	public void setCollector(BaseCollector collector) {
-		this.collector = collector;
+	public void setSnmpCollector(SnmpTemplate snmpTemplate) {
+		this.snmpCollector=snmpTemplate;
 	}
-
 	public String getBucket() {
 		return bucket;
 	}
@@ -92,5 +96,13 @@ public class Host {
 		s.append("Host ID:").append(this.getHostId().toString()).append("; ");
 		s.append("Host IP:").append(this.getHostIp().toString()).append("; ");
 		return s.toString();
+	}
+
+	public UUID getUserId() {
+		return userId;
+	}
+
+	public void setUserId(UUID userId) {
+		this.userId = userId;
 	}
 }

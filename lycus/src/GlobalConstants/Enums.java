@@ -2,7 +2,7 @@ package GlobalConstants;
 
 public class Enums {
 	public static enum ApiAction {
-		InitServer, GetServerMemoryDump, FlushServerMemory, InsertDatapointsBatches, PutEvents, GetServerLiveEvents, GetThreadsUpdates, DevGetThreadsUpdates, GetHosts, GetCollectors, PutSlaBatches, DiagnosticResults
+		InitServer, GetServerMemoryDump, FlushServerMemory, InsertDatapointsBatches, PutEvents, GetServerLiveEvents, GetThreadsUpdates, DevGetThreadsUpdates, GetHosts, GetCollectors, PutSlaBatches, PutCollectorsIssue, DiagnosticResults
 	}
 
 	public static enum DiscoveryElementType {

@@ -52,7 +52,7 @@ public class HostUpdate extends BaseUpdate {
 			Logit.LogCheck("Ip for host " + host.getName() + " has changed to " + getUpdate().update_value.ip);
 		}
 		
-		String  snmpTemplateId = host.getCollector() != null ? host.getCollector().getId().toString() : null;
+		String  snmpTemplateId = host.getSnmpCollector() != null ? host.getSnmpCollector().getId().toString() : null;
 		
 		if (getUpdate().update_value.snmp_template != null && snmpTemplateId != getUpdate().update_value.snmp_template) {
 			UUID uuid = null;
@@ -64,7 +64,7 @@ public class HostUpdate extends BaseUpdate {
 			
 			if (uuid == null)
 			{
-				host.setCollector(null);
+				host.setSnmpCollector(null);
 				Logit.LogCheck("Snmp Template for host " + host.getName() + " has changed");
 			}
 			else
@@ -73,7 +73,7 @@ public class HostUpdate extends BaseUpdate {
 				if (snmpTemplate == null) {
 					snmpTemplate = fetchSnmpTemplate();
 				}
-				host.setCollector(snmpTemplate);
+				host.setSnmpCollector(snmpTemplate);
 				if (snmpTemplate != null)
 					Logit.LogCheck("Snmp Template for host " + host.getName() + " has changed");
 			}
