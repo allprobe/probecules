@@ -24,7 +24,10 @@ public class CollectorIssuesContainer implements ICollectorIssuesContainer {
             }
             return instance;
         }
-
+    public CollectorIssuesContainer() {
+        issuesArray = new JSONArray();
+        int count = 0;
+    }
     @Override
     public void addIssue(Host host, Enums.CollectorType type, String issue) {
         JSONObject issueObject = new JSONObject();
