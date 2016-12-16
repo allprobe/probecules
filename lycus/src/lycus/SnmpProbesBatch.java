@@ -105,6 +105,9 @@ public class SnmpProbesBatch implements Runnable {
 					if (this.getHost().isHostStatus()) {
 						Host host = this.getHost();
 
+						if (this.getHost().getHostIp().contains("62.90.132.124"))
+							Logit.LogDebug("BP");
+
 						Collection<RunnableProbe> snmpProbes = this.getSnmpProbes().values();
 
 						if (host.getSnmpCollector() == null) {

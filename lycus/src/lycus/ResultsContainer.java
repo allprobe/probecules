@@ -450,13 +450,17 @@ public class ResultsContainer implements IResultsContainer {
 		return sendingEvents;
 	}
 
-	public void resendEvents(String triggerId, String eventInfo) {
+	public void resendEvents(String triggerId, String eventInfo, String newTriggerName, String newSeverity) {
 		for (ConcurrentHashMap<String, Event> events : eventsPerRunnableProbe.values()) {
 			if (events.containsKey(triggerId)) {
 				// events.get(triggerId).setTime(System.currentTimeMillis());
 				Event event = events.get(triggerId);
 				event.setSent(false);
 				event.setExtraInfo(eventInfo);
+				if (newTriggerName != null)
+					event.setTriggerName(newTriggerName);
+				if (newSeverity != null)
+					event.setTriggerSeverity(newSeverity);
 				EvenetsQueue.getInstance().add(event);
 			}
 		}

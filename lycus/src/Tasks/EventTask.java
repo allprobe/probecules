@@ -49,10 +49,9 @@ public class EventTask extends BaseTask {
 			int issuesLength = issues.length();
 			JSONObject allIssues = issues.getAllIssues();
 
-			// if
-			// (GeneralFunctions.Base64Decode(allIssues.get(Constants.issues).toString())
-			// .contains("7352a46f-5189-428c-b4c0-fb98dedd10b1"))
-			// Logit.LogDebug("BP");
+			if (GeneralFunctions.Base64Decode(allIssues.get(Constants.issues).toString())
+					.contains("7352a46f-5189-428c-b4c0-fb98dedd10b1"))
+				Logit.LogDebug("BP");
 
 			if (issuesLength != 0) {
 				if (FailedRequestsHandler.getInstance().getNumberOfFailedRequests() != 0)

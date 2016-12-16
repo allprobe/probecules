@@ -40,8 +40,8 @@ public class CollectorIssuesContainer implements ICollectorIssuesContainer {
 
 	@Override
 	public synchronized void addIssue(Host host, Enums.CollectorType type, String issue, int issueState) {
-		// if (host.getHostIp().contains("62.90.132.124"))
-		// Logit.LogDebug("BP");
+		if (host.getHostIp().contains("62.90.132.124"))
+			Logit.LogDebug("BP");
 		if (issueState == 1) {
 			if (this.liveIssues.containsKey(host.getHostId().toString())) {
 				if (this.liveIssues.get(host.getHostId().toString()).contains(type))
