@@ -1,3 +1,12 @@
+/Collectors/
+/DAL/
+/Elements/
+/Events/
+/Garbage/
+/GlobalConstants/
+/Interfaces/
+/Model/
+/NetConnection/
 /Probes/
 /Results/
 /Rollups/
@@ -8,8 +17,3 @@
 /Utils/
 /jpcap/
 /lycus/
-/NetConnection/
-/Garbage/
-/GlobalConstants/
-/Interfaces/
-/Model/

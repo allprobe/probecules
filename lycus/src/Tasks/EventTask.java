@@ -1,6 +1,7 @@
 package Tasks;
 
 import Collectors.CollectorIssuesContainer;
+import GlobalConstants.Constants;
 import org.json.simple.JSONObject;
 import DAL.ApiRequest;
 import DAL.FailedRequestsHandler;
@@ -34,26 +35,34 @@ public class EventTask extends BaseTask {
 						FailedRequestsHandler.getInstance().addRequest(new ApiRequest(ApiAction.PutEvents, eventsJson));
 
 					Logit.LogInfo("Packet with " + eventsObject.getLegth() + " events was just sent.");
-//					evenetsQueue.clearAll();
+					// evenetsQueue.clearAll();
 				}
 			} else {
 				Logit.LogInfo("No Events changed! events did not sent to API...");
-			}} catch (Exception e) {
+			}
+		} catch (Exception e) {
 			e.printStackTrace();
 			Logit.LogError("EventHandler - run()", "Error prepairing/seding all runnable probe events!");
 		}
-		try{
-			CollectorIssuesContainer issues=CollectorIssuesContainer.getInstance();
-			int issuesLength=issues.length();
-			if(issuesLength!=0)
-			{
+		try {
+			CollectorIssuesContainer issues = CollectorIssuesContainer.getInstance();
+			int issuesLength = issues.length();
+			JSONObject allIssues = issues.getAllIssues();
+
+			// if
+			// (GeneralFunctions.Base64Decode(allIssues.get(Constants.issues).toString())
+			// .contains("7352a46f-5189-428c-b4c0-fb98dedd10b1"))
+			// Logit.LogDebug("BP");
+
+			if (issuesLength != 0) {
 				if (FailedRequestsHandler.getInstance().getNumberOfFailedRequests() != 0)
 					FailedRequestsHandler.getInstance().executeRequests();
-				if (DAL.DAL.getInstanece().put(Enums.ApiAction.PutCollectorsIssue, issues.getAllIssues()) == null)
-					FailedRequestsHandler.getInstance().addRequest(new ApiRequest(ApiAction.PutCollectorsIssue, issues.getAllIssues()));
+				if (DAL.DAL.getInstanece().put(Enums.ApiAction.PutCollectorsIssue, allIssues) == null)
+					FailedRequestsHandler.getInstance()
+							.addRequest(new ApiRequest(ApiAction.PutCollectorsIssue, issues.getAllIssues()));
 
 				Logit.LogInfo("Packet with " + issuesLength + " collectors issues was just sent.");
-			}else {
+			} else {
 				Logit.LogInfo("No collectors issues found! issues did not sent to API...");
 			}
 		} catch (Exception e) {

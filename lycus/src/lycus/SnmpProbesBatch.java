@@ -89,11 +89,10 @@ public class SnmpProbesBatch implements Runnable {
 		return batchId;
 	}
 
-	public int size()
-	{
+	public int size() {
 		return snmpProbes.size();
 	}
-	
+
 	public void run() {
 		try {
 			while (isRunning()) {
@@ -115,6 +114,10 @@ public class SnmpProbesBatch implements Runnable {
 								ResultsContainer.getInstance().addResult(result);
 								Logit.LogInfo(
 										"Snmp Probe doesn't run: " + rp.getId() + ", no SNMP template configured!");
+							}
+							if (host.getSnmpCollector() == null) {
+								CollectorIssuesContainer.getInstance().addIssue(this.getHost(),
+										Enums.CollectorType.Snmp, GlobalConstants.Constants.no_snmp_template, 1);
 							}
 							return;
 						}
@@ -159,13 +162,14 @@ public class SnmpProbesBatch implements Runnable {
 									Logit.LogDebug("BP");
 
 								if (result.getError() == SnmpError.NO_COMUNICATION) {
-									if (!this.getHost().getSnmpCollector().issueSent()) {
-										CollectorIssuesContainer.getInstance().addIssue(this.getHost(), Enums.CollectorType.Snmp,GlobalConstants.Constants.snmp_connection_failed);
-										this.getHost().getSnmpCollector().setIssueSent(true);
-									}
-								} else if (this.getHost().getSnmpCollector().issueSent()) {
-									CollectorIssuesContainer.getInstance().addIssue(this.getHost(), Enums.CollectorType.Snmp,GlobalConstants.Constants.snmp_connection_failed_fixed);
-									this.getHost().getSnmpCollector().setIssueSent(false);
+									if (this.getHost().getHostIp().contains("62.90.132.124"))
+										Logit.LogDebug("BP");
+									CollectorIssuesContainer.getInstance().addIssue(this.getHost(),
+											Enums.CollectorType.Snmp, GlobalConstants.Constants.snmp_connection_failed,
+											1);
+								} else {
+									CollectorIssuesContainer.getInstance().addIssue(this.getHost(),
+											Enums.CollectorType.Snmp, GlobalConstants.Constants.snmp_fixed, 0);
 								}
 
 								SnmpStoreAs storeAs = ((SnmpProbe) runnableProbe.getProbe()).getStoreAs();
@@ -184,7 +188,7 @@ public class SnmpProbesBatch implements Runnable {
 									if (result.getData() != null || result.getNumData() != null)
 										runnableProbe.addResultToTrigger(snmpDeltaResult);
 								}
-								
+
 							}
 						}
 					}
