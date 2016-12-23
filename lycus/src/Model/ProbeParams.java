@@ -29,6 +29,10 @@ public class ProbeParams {
 	public Integer element_interval;
 	public Integer http_deep;
 	
+	//SQL
+	public String sql_query;
+	public String sql_db;
+	
 	// Discovery
 	public String discovery_type;
 	public String severity;

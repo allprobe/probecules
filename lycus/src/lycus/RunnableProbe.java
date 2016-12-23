@@ -11,6 +11,7 @@ import Probes.NicProbe;
 import Probes.PortProbe;
 import Probes.RBLProbe;
 import Probes.SnmpProbe;
+import Probes.SqlProbe;
 import Probes.TracerouteProbe;
 import Probes.DiskProbe;
 import Results.BaseResult;
@@ -104,6 +105,8 @@ public class RunnableProbe implements Runnable {
 			return ProbeTypes.DISK_ELEMENT;
 		if (getProbe() instanceof TracerouteProbe)
 			return ProbeTypes.TRACEROUTE;
+		if (getProbe() instanceof SqlProbe)
+			return ProbeTypes.SQL;
 		return null;
 	}
 

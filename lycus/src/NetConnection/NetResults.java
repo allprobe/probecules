@@ -10,12 +10,10 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
-
 import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
 import org.snmp4j.smi.OID;
-
-import Collectors.SnmpTemplate;
+import Collectors.SnmpCollector;
 import Elements.BaseElement;
 import Elements.DiskElement;
 import Elements.NicElement;
@@ -32,6 +30,7 @@ import Probes.NicProbe;
 import Probes.PortProbe;
 import Probes.RBLProbe;
 import Probes.SnmpProbe;
+import Probes.SqlProbe;
 import Probes.TracerouteProbe;
 import Probes.DiskProbe;
 import Results.DOMElement;
@@ -41,14 +40,18 @@ import Results.NicResult;
 import Results.PingResult;
 import Results.PortResult;
 import Results.RblResult;
-import Results.SnmpDeltaResult;
 import Results.SnmpResult;
+import Results.SqlResult;
 import Results.TraceRouteResult;
 import Results.WebExtendedResult;
 import Results.WebResult;
 import Utils.GeneralFunctions;
 import Utils.Logit;
 import lycus.Host;
+import java.sql.Connection;
+import java.sql.DriverManager;
+import java.sql.ResultSet;
+import java.sql.Statement;
 
 public class NetResults implements INetResults {
 	private static NetResults netResults = null;
@@ -268,7 +271,10 @@ public class NetResults implements INetResults {
 		List<SnmpResult> allResults = new ArrayList<SnmpResult>();
 
 		try {
+ 
 			SnmpTemplate snmpTemplate = host.getSnmpCollector();
+			SnmpCollector snmpTemplate = (SnmpCollector) host.getSnmpCollector();
+ 
 
 			HashMap<String, OID> probesOids = new HashMap<String, OID>();
 			for (SnmpProbe snmpProbe : snmpProbes)
@@ -322,7 +328,10 @@ public class NetResults implements INetResults {
 	@Override
 	public NicResult getNicResult(Host host, NicProbe probe) {
 
+ 
 		SnmpTemplate snmpTemplate = host.getSnmpCollector();
+		SnmpCollector snmpTemplate = (SnmpCollector) host.getSnmpCollector();
+ 
 
 		Set<OID> nicOids = new HashSet<OID>();
 		nicOids.add(probe.getIfinoctetsOID());
@@ -414,6 +423,7 @@ public class NetResults implements INetResults {
 		long checkTime;
 
 		Map<String, String> hrStorageResults = null;
+ 
 		SnmpTemplate snmpTemplate = host.getSnmpCollector();
 		
 		int snmpVersion = snmpTemplate.getVersion();
@@ -421,11 +431,17 @@ public class NetResults implements INetResults {
 			hrStorageResults = Net.Snmp2Walk(host.getHostIp(), snmpTemplate.getPort(),
 					snmpTemplate.getTimeout(), snmpTemplate.getCommunityName(),
 					Constants.storageAll.toString());
+ 
+		SnmpCollector snmpTemplate = (SnmpCollector) host.getSnmpCollector();
+
+		int snmpVersion = snmpTemplate.getVersion();
+		if (snmpVersion == 2) {
+			hrStorageResults = Net.Snmp2Walk(host.getHostIp(), snmpTemplate.getPort(), host.getSnmpCollector().getTimeout(),
+					snmpTemplate.getCommunityName(), Constants.storageAll.toString());
 		} else if (snmpVersion == 3) {
-			hrStorageResults = Net.Snmp3Walk(host.getHostIp(), snmpTemplate.getPort(),
-					snmpTemplate.getTimeout(), snmpTemplate.getName(), snmpTemplate.getAuthPass(),
-					snmpTemplate.getAlgo(), snmpTemplate.getCryptPass(), snmpTemplate.getCryptType(),
-					Constants.storageAll.toString());
+			hrStorageResults = Net.Snmp3Walk(host.getHostIp(), snmpTemplate.getPort(), snmpTemplate.getTimeout(),
+					snmpTemplate.getName(), snmpTemplate.getAuthPass(), snmpTemplate.getAlgo(),
+					snmpTemplate.getCryptPass(), snmpTemplate.getCryptType(), Constants.storageAll.toString());
 		}
 
 		if (hrStorageResults == null || hrStorageResults.size() == 0)
@@ -442,6 +458,7 @@ public class NetResults implements INetResults {
 		Map<String, String> ifDescrResults = null;
 		Map<String, String> sysDescrResults = null;
 
+ 
 		SnmpTemplate snmpTemplate = host.getSnmpCollector();
 		int snmpVersion = snmpTemplate.getVersion();
 		if (snmpVersion == 2) {
@@ -453,6 +470,19 @@ public class NetResults implements INetResults {
 					snmpTemplate.getCommunityName(), oids);
 		} else if (snmpVersion == 3) {
 			ifDescrResults = Net.Snmp3Walk(host.getHostIp(), snmpTemplate.getPort(), snmpTemplate.getTimeout(),
+ 
+		SnmpCollector snmpTemplate = (SnmpCollector) host.getSnmpCollector();
+		int snmpVersion = snmpTemplate.getVersion();
+		if (snmpVersion == 2) {
+			ifDescrResults = Net.Snmp2Walk(host.getHostIp(), snmpTemplate.getPort(), host.getSnmpCollector().getTimeout(),
+					snmpTemplate.getCommunityName(), Constants.ifAll.toString());
+			ArrayList<OID> oids = new ArrayList<OID>();
+			oids.add(Constants.sysDescr);
+			sysDescrResults = Net.Snmp2GETBULK(host.getHostIp(), snmpTemplate.getPort(),
+					host.getSnmpCollector().getTimeout(), snmpTemplate.getCommunityName(), oids);
+		} else if (snmpVersion == 3) {
+			ifDescrResults = Net.Snmp3Walk(host.getHostIp(), snmpTemplate.getPort(), host.getSnmpCollector().getTimeout(),
+ 
 					snmpTemplate.getUserName(), snmpTemplate.getAuthPass(), snmpTemplate.getAlgo(),
 					snmpTemplate.getCryptPass(), snmpTemplate.getCryptType(), Constants.ifAll.toString());
 			ArrayList<OID> oids = new ArrayList<OID>();
@@ -470,22 +500,6 @@ public class NetResults implements INetResults {
 
 		HashMap<String, BaseElement> lastScanElements = this.convertNicsWalkToElements(ifDescrResults, hostType);
 		return lastScanElements;
-
-		// HashMap<BaseElement, Enums.ElementChange> elementsChanges = new
-		// HashMap<BaseElement, Enums.ElementChange>();
-		//
-		//
-		// if (discoveryResult.getCurrentElements() == null) {
-		// for (Map.Entry<String, BaseElement> lastElement :
-		// lastScanElements.entrySet()) {
-		// elementsChanges.put(lastElement.getValue(),
-		// ElementChange.addedElement);
-		// }
-		// discoveryResult.setElementsChanges(elementsChanges);
-		// discoveryResult.setCurrentElements(lastScanElements);
-		// discoveryResult.setLastTimestamp(System.currentTimeMillis());
-		// return discoveryResult;
-		// }
 	}
 
 	private HashMap<String, BaseElement> convertNicsWalkToElements(Map<String, String> nicsWalk, HostType hostType) {
@@ -565,6 +579,7 @@ public class NetResults implements INetResults {
 
 	public DiskResult getDiskResult(Host host, DiskProbe probe) {
 		SnmpTemplate snmpTemplate = host.getSnmpCollector();
+		SnmpCollector snmpTemplate = (SnmpCollector) host.getSnmpCollector();
 
 		Set<OID> storageOids = new HashSet<OID>();
 		storageOids.add(probe.getHrstorageallocationunitsoid());
@@ -601,6 +616,27 @@ public class NetResults implements INetResults {
 				hrstoragesizeoid, hrstorageallocationunitsoid);
 
 		return diskResut;
+	}
+
+	@Override
+	public SqlResult getSqlResult(Host host, SqlProbe probe) {
+		try {
+//			SqlResult sqlResult = new SqlResult(runnableProbeId, timestamp, sqlResults)
+			Class.forName("com.microsoft.sqlserver.jdbc.SqlServerDriver");
+			Connection con = DriverManager
+					.getConnection("jdbc:sqlserver://Servername;database=LargainDb;" + "IntegratedSecurity=true;");
+
+			Statement stmt = con.createStatement();
+			ResultSet rs = stmt.executeQuery(probe.getSql_query());
+			while (rs.next())
+				System.out.println(rs.getInt(1) + " " + rs.getString(2) + " " + rs.getString(3));
+			con.close();
+			return null;
+		} catch (Exception e) {
+			Logit.LogError("NetResults - getSqlResult",
+					"Error getting sql results, Probe name: " + probe.getName(), e);
+		}
+		return null;
 	}
 
 }

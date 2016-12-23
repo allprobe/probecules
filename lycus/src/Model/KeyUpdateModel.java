@@ -37,12 +37,10 @@ public class KeyUpdateModel {
 	public String hostType;
 	public Integer element_interval;
 	
-	//Discovery
-//	public String discovery_trigger_unit;
-//	public String discovery_type;
-//	public Integer discovery_trigger_code;
-//	public String discovery_trigger_x_value;
-//	public String discovery_trigger_severity;
 	public String discovery_type;
 	public DiscoveryTrigger[] discovery_triggers;
+	
+	//SQL
+	public String sql_db;
+	public String sql_query;
 }

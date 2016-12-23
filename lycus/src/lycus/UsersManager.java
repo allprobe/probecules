@@ -32,7 +32,7 @@ import Model.ConditionUpdateModel;
 import Model.DiscoveryElementParams;
 import Model.HostParams;
 import Model.ProbeParams;
-import Model.SnmpTemplateParams;
+import Model.CollectorParams;
 import Probes.BaseProbe;
 import Utils.GeneralFunctions;
 import Utils.Logit;
@@ -110,7 +110,7 @@ public class UsersManager {
 	}
 
 	public static boolean Build() {
-//		HashMap<UUID, User> user_s = UsersManager.getUsers();
+		// HashMap<UUID, User> user_s = UsersManager.getUsers();
 		JSONObject initServer = UsersManager.getServerInfoFromApi();
 
 		HashMap<String, UUID> runnableProbesIds = getInitRPs(initServer.get("runnable_ids"));
@@ -195,39 +195,59 @@ public class UsersManager {
 		for (int i = 0; i < allSnmpTemplatesJson.size(); i++) {
 			JSONObject collectorJson = (JSONObject) allSnmpTemplatesJson.get(i);
 			String collectorType = (String) collectorJson.get("collector_type");
-			switch (collectorType) 
-			{
+			switch (collectorType) {
 			case "snmp":
 				try {
-					SnmpTemplateParams snmpTemplateParams = new SnmpTemplateParams();
-					snmpTemplateParams.collector_type = collectorType;
-					snmpTemplateParams.user_id = (String) collectorJson.get("user_id");
-					snmpTemplateParams.id = (String) collectorJson.get("id");
-					snmpTemplateParams.name = (String) collectorJson.get("name");
-					snmpTemplateParams.version = Integer.parseInt((String) collectorJson.get("snmp_version"));
-					snmpTemplateParams.community = (String) collectorJson.get("snmp_community");
-					snmpTemplateParams.sec = (String) collectorJson.get("snmp_sec");
-					snmpTemplateParams.auth_method = (String) collectorJson.get("snmp_auth_method");
-					snmpTemplateParams.username = (String) collectorJson.get("snmp_user");
-					snmpTemplateParams.password = (String) collectorJson.get("snmp_auth_password");
-					snmpTemplateParams.crypt_method = (String) collectorJson.get("snmp_crypt_method");
-					snmpTemplateParams.crypt_password = GeneralFunctions
+					CollectorParams collectorParams = new CollectorParams();
+					collectorParams.collector_type = collectorType;
+					collectorParams.user_id = (String) collectorJson.get("user_id");
+					collectorParams.id = (String) collectorJson.get("id");
+					collectorParams.name = (String) collectorJson.get("name");
+					collectorParams.version = Integer.parseInt((String) collectorJson.get("snmp_version"));
+					collectorParams.community = (String) collectorJson.get("snmp_community");
+					collectorParams.sec = (String) collectorJson.get("snmp_sec");
+					collectorParams.auth_method = (String) collectorJson.get("snmp_auth_method");
+					collectorParams.username = (String) collectorJson.get("snmp_user");
+					collectorParams.password = (String) collectorJson.get("snmp_auth_password");
+					collectorParams.crypt_method = (String) collectorJson.get("snmp_crypt_method");
+					collectorParams.crypt_password = GeneralFunctions
 							.Base64Decode((String) collectorJson.get("snmp_crypt_password"));
-					snmpTemplateParams.timeout = Integer.parseInt((String) collectorJson.get("timeout"));
-					snmpTemplateParams.port = Integer.parseInt((String) collectorJson.get("snmp_port"));
+					collectorParams.timeout = Integer.parseInt((String) collectorJson.get("timeout"));
+					collectorParams.port = Integer.parseInt((String) collectorJson.get("snmp_port"));
 
-					User user = getUsers().get(UUID.fromString(snmpTemplateParams.user_id));
+					User user = getUsers().get(UUID.fromString(collectorParams.user_id));
 					if (user == null)
 						continue;
-					user.addSnmpTemplate(snmpTemplateParams);
+					user.addSnmpTemplate(collectorParams);
 				} catch (Exception e) {
-					Logit.LogWarn("Creation of Snmp Template Failed: " + collectorJson.toJSONString() + " , not added! E: "
-							+ e.getMessage());
+					Logit.LogWarn("Creation of Snmp Collector Failed: " + collectorJson.toJSONString()
+							+ " , not added! E: " + e.getMessage());
 					continue;
 				}
 				break;
 			case "sql":
-				break;
+				try {
+					CollectorParams collectorParams = new CollectorParams();
+					collectorParams.collector_type = collectorType;
+					collectorParams.user_id = (String) collectorJson.get("user_id");
+					collectorParams.id = (String) collectorJson.get("id");
+					collectorParams.name = (String) collectorJson.get("name");
+					collectorParams.timeout = Integer.parseInt((String) collectorJson.get("timeout"));
+					collectorParams.sql_sec = (String) collectorJson.get("sql_sec");
+					collectorParams.sql_user = (String) collectorJson.get("sql_user");
+					collectorParams.sql_type = (String) collectorJson.get("sql_type");
+					collectorParams.sql_password = (String) collectorJson.get("sql_password");
+					collectorParams.sql_port = Integer.parseInt(collectorJson.get("sql_port").toString());
+					
+					User user = getUsers().get(UUID.fromString(collectorParams.user_id));
+					if (user == null)
+						continue;
+					user.addSqlTemplate(collectorParams);
+				} catch (Exception e) {
+					Logit.LogWarn("Creation of Sql Collector Failed: " + collectorJson.toJSONString()
+							+ " , not added! E: " + e.getMessage());
+					continue;
+				}
 			}
 		}
 	}

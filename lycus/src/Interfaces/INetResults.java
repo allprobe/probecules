@@ -9,6 +9,7 @@ import Probes.NicProbe;
 import Probes.PortProbe;
 import Probes.RBLProbe;
 import Probes.SnmpProbe;
+import Probes.SqlProbe;
 import Probes.TracerouteProbe;
 import Results.DiscoveryResult;
 import Results.NicResult;
@@ -16,6 +17,7 @@ import Results.PingResult;
 import Results.PortResult;
 import Results.RblResult;
 import Results.SnmpResult;
+import Results.SqlResult;
 import Results.TraceRouteResult;
 import Results.WebExtendedResult;
 import Results.WebResult;
@@ -31,4 +33,5 @@ public interface INetResults {
 	DiscoveryResult getDiscoveryResult(Host h, DiscoveryProbe discoveryProbe);
 	WebExtendedResult getWebExtendedResult(Host host, HttpProbe probe);
 	TraceRouteResult getTracerouteResult(Host host, TracerouteProbe probe);
+	SqlResult getSqlResult(Host host,SqlProbe probe);
 }

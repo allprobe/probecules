@@ -85,7 +85,10 @@ public class ProbeUpdate extends BaseUpdate {
 				probeParams.snmp_datatype = getUpdate().update_value.key.value_type;
 				probeParams.snmp_unit = getUpdate().update_value.key.value_unit;
 				probeParams.snmp_store_as = getUpdate().update_value.key.store_value_as;
-
+				
+				probeParams.sql_db = getUpdate().update_value.key.sql_db;
+				probeParams.sql_query = getUpdate().update_value.key.sql_query;
+				
 				// Trigger
 				if (getUpdate().update_value.triggers != null && getUpdate().update_value.triggers.length > 0) {
 					probeParams.triggers = new TriggerModel[getUpdate().update_value.triggers.length];

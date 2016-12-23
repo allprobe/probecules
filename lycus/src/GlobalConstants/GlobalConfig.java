@@ -43,6 +43,7 @@ public class GlobalConfig {
 	private static int BandwidthThreadCount = 50;
 	private static int DiskhreadCount = 50;
 	private static int TracerouteThreadCount = 50;
+	private static int SqlThreadCount = 50;
 	private static Boolean Debug = null;
 	private static Boolean Development = null;
 	private static String syslogHost = null;
@@ -81,6 +82,10 @@ public class GlobalConfig {
 		return SnmpBatchThreadCount;
 	}
 
+	public static int getSqlThreadCount() {
+		return SqlThreadCount;
+	}
+	
 	public static String getThisHostIP() {
 		return ThisHostIP;
 	}

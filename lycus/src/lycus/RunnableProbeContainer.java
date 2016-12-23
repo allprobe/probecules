@@ -47,7 +47,8 @@ public class RunnableProbeContainer implements IRunnableProbeContainer {
 	private ExecutorService bandwidthProbeExec = Executors.newFixedThreadPool(GlobalConfig.getBandwidthThreadCount());
 	private ExecutorService diskProbeExec = Executors.newFixedThreadPool(GlobalConfig.getDiskhreadCount());
 	private ExecutorService tracerouteExec = Executors.newFixedThreadPool(GlobalConfig.getTracerouteThreadCount());
-
+	private ExecutorService sqlExec = Executors.newFixedThreadPool(GlobalConfig.getSqlThreadCount());
+	
 	private HashMap<String, SnmpProbesBatch> batches = new HashMap<String, SnmpProbesBatch>(); // HashMap<runnableProbeId,
 
 	// SnmpProbesBatch>
@@ -256,6 +257,8 @@ public class RunnableProbeContainer implements IRunnableProbeContainer {
 			case TRACEROUTE:
 				tracerouteExec.execute(runnableProbe);
 				break;
+			case SQL:
+				sqlExec.execute(runnableProbe);
 			default:
 				return true;
 			}

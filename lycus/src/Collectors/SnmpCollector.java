@@ -6,7 +6,7 @@ import java.util.UUID;
 
 import GlobalConstants.Enums;
 
-public class SnmpTemplate extends BaseCollector{
+public class SnmpCollector extends BaseCollector{
 	private String communityName;
 	private Integer version;
 	private String sec;     //noAuthNoPriv/authNoPriv/authPriv
@@ -18,7 +18,7 @@ public class SnmpTemplate extends BaseCollector{
 	private int port;
 
 	// constructor for version 1,2
-	public SnmpTemplate(String id,String name,
+	public SnmpCollector(String id,String name,
 			String commName, int version,int port,int timeout,boolean status) {
 		this.setId(id);
 		this.setName(name);
@@ -37,7 +37,7 @@ public class SnmpTemplate extends BaseCollector{
 	}
 
 	// constructor for version 3
-	public SnmpTemplate(String id,String name, int version,int port, String sec, String userName,
+	public SnmpCollector(String id,String name, int version,int port, String sec, String userName,
 			String authPass, String algo,String cryptPass,String cryptType,int timeout,boolean status) {
 		this.setId(id);
 		this.setName(name);
@@ -144,8 +144,8 @@ public class SnmpTemplate extends BaseCollector{
 		this.port = port;
 	}
 
-	public static Map<UUID, SnmpTemplate> BuildMap() {
-		return new HashMap<UUID, SnmpTemplate>();
+	public static Map<UUID, SnmpCollector> BuildMap() {
+		return new HashMap<UUID, SnmpCollector>();
 	}
 	
 	@Override

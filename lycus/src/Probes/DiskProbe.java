@@ -20,18 +20,9 @@ public class DiskProbe extends BaseProbe {
 	DiscoveryProbe discoveryProbe;
 	private DiskElement diskElement;
 
-	// public DiskProbe(User user, String probe_id, UUID template_id, String
-	// name, long interval, float multiplier,
-	// boolean status,int index) {
-	// super(user, probe_id, template_id, name, interval, multiplier, status);
-	// }
-
 	public DiskProbe(DiscoveryProbe probe, DiskElement diskElement) {
 		this.discoveryProbe = probe;
 		this.setDiskElement(diskElement);
-		// this.index=index;
-		// this.ifSpeed=ifSpeed;
-		// this.hostType=hostType;
 	}
 
 	@Override
@@ -53,11 +44,6 @@ public class DiskProbe extends BaseProbe {
 	public String getName() {
 		return getDiskElement().getName();
 	}
-
-	// @Override
-	// public boolean isActive() {
-	// return discoveryProbe.isActive();
-	// }
 
 	@Override
 	public float getMultiplier() {

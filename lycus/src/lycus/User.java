@@ -4,7 +4,10 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.UUID;
 import org.snmp4j.smi.OID;
-import Collectors.SnmpTemplate;
+
+import Collectors.BaseCollector;
+import Collectors.SnmpCollector;
+import Collectors.SqlCollector;
 import GlobalConstants.Constants;
 import GlobalConstants.Enums;
 import GlobalConstants.Enums.SnmpDataType;
@@ -12,7 +15,7 @@ import GlobalConstants.TriggerSeverity;
 import GlobalConstants.XvalueUnit;
 import Model.HostParams;
 import Model.ProbeParams;
-import Model.SnmpTemplateParams;
+import Model.CollectorParams;
 import Probes.BaseProbe;
 import Probes.DiscoveryProbe;
 import Probes.HttpProbe;
@@ -29,13 +32,13 @@ public class User {
 	private String email;
 	private Map<UUID, Host> hosts;
 	private Map<String, BaseProbe> templateProbes;
-	private Map<String, SnmpTemplate> snmpTemplates;
+	private Map<String, BaseCollector> collectors;
 
 	public User(UUID userId) {
 		this.setUserId(userId);
 		this.setHosts(new HashMap<UUID, Host>());
 		this.setTemplateProbes(new HashMap<String, BaseProbe>());
-		this.setSnmpTemplates(new HashMap<String, SnmpTemplate>());
+		this.setCollectors(new HashMap<String, BaseCollector>());
 	}
 
 	public UUID getUserId() {
@@ -58,12 +61,12 @@ public class User {
 		return getHosts().get(uid);
 	}
 
-	public Map<String, SnmpTemplate> getSnmpTemplates() {
-		return snmpTemplates;
+	public Map<String, BaseCollector> getCollectors() {
+		return collectors;
 	}
 
-	public void setSnmpTemplates(Map<String, SnmpTemplate> snmpTemplates) {
-		this.snmpTemplates = snmpTemplates;
+	public void setCollectors(Map<String, BaseCollector> collectors) {
+		this.collectors = collectors;
 	}
 
 	public Map<UUID, Host> getHosts() {
@@ -91,7 +94,7 @@ public class User {
 		if (newHost == null)
 			hosts.put(host.getHostId(), host);
 
-		Host h = getHosts().get(host.getHostId());
+		// Host h = getHosts().get(host.getHostId());
 		return true;
 	}
 
@@ -127,7 +130,7 @@ public class User {
 	}
 
 	public boolean isSnmpTemplateExist(String snmp_template_id) {
-		return snmpTemplates.containsKey(snmp_template_id);
+		return collectors.containsKey(snmp_template_id);
 	}
 
 	public void addHost(HostParams hostParams) {
@@ -149,7 +152,7 @@ public class User {
 			}
 
 			String sql_template = hostParams.sqlTemplate;
-			SnmpTemplate snmpTemplate = this.getSnmpTemplates().get(hostParams.snmpTemplate);
+			SnmpCollector snmpTemplate = (SnmpCollector)this.getCollectors().get(hostParams.snmpTemplate);
 
 			Host host = new Host(host_id, name, ip, snmpTemplate, status, bucket, notif_groups, getUserId().toString());
 			addHost(host);
@@ -159,10 +162,10 @@ public class User {
 		}
 	}
 
-	public void addSnmpTemplate(SnmpTemplateParams snmpTemplateParams) {
+	public void addSnmpTemplate(CollectorParams snmpTemplateParams) {
 		try {
-//			UUID userId = UUID.fromString(snmpTemplateParams.user_id);
-			String templateId =  snmpTemplateParams.id;
+			// UUID userId = UUID.fromString(snmpTemplateParams.user_id);
+			String templateId = snmpTemplateParams.id;
 			String name = snmpTemplateParams.name;
 			int version = snmpTemplateParams.version;
 			String commName = snmpTemplateParams.community;
@@ -175,21 +178,46 @@ public class User {
 			int timeout = snmpTemplateParams.timeout;
 			int port = snmpTemplateParams.port;
 
-			SnmpTemplate snmpTemplate = null;
+			SnmpCollector snmpTemplate = null;
 			if (version <= 2)
-				snmpTemplate = new SnmpTemplate(templateId, name, commName, version, port, timeout, true);
+				snmpTemplate = new SnmpCollector(templateId, name, commName, version, port, timeout, true);
 			else
-				snmpTemplate = new SnmpTemplate(templateId, name, version, port, sec, authUser, authPass, authMethod,
+				snmpTemplate = new SnmpCollector(templateId, name, version, port, sec, authUser, authPass, authMethod,
 						cryptPass, cryptMethod, timeout, true);
 
-			this.getSnmpTemplates().put(snmpTemplate.getId(), snmpTemplate);
+			this.getCollectors().put(snmpTemplate.getId(), snmpTemplate);
 
 		} catch (Exception e) {
 			Logit.LogWarn("Unable to add SNMP Template: " + snmpTemplateParams.id.toString() + " , not added!");
 		}
-
 	}
 
+	public void addSqlTemplate(CollectorParams snmpCollectorParams) {
+		try {
+			// UUID userId = UUID.fromString(snmpTemplateParams.user_id);
+			
+			// Complete add.
+			String collectorId = snmpCollectorParams.id;
+			String name = snmpCollectorParams.name;
+			String user_id = snmpCollectorParams.user_id;
+			Integer timeout = snmpCollectorParams.timeout;
+			
+			String sql_sec = snmpCollectorParams.sql_sec;
+			String sql_user = snmpCollectorParams.sql_user;
+			String sql_password = snmpCollectorParams.sql_password;
+			Integer sql_port = snmpCollectorParams.sql_port;
+			String sql_type = snmpCollectorParams.sql_type;
+			
+			SqlCollector sqlCollector = new SqlCollector(collectorId, name, user_id, timeout, sql_port, sql_sec, sql_user, sql_type,
+					sql_password);
+
+			this.getCollectors().put(sqlCollector.getId(), sqlCollector);
+
+		} catch (Exception e) {
+			Logit.LogWarn("Unable to add SNMP Template: " + snmpCollectorParams.id.toString() + " , not added!");
+		}
+	}
+	
 	public boolean removeTemplateProbe(String templateId) {
 		templateProbes.remove(templateId);
 		return true;
@@ -298,6 +326,14 @@ public class User {
 				probe = new RBLProbe(this, probeId, templateId, name, interval, multiplier, status, rblName);
 				break;
 			}
+			case Constants.sql: {
+				int npings = probeParams.npings;
+				int bytes = probeParams.bytes;
+				int timeout = probeParams.timeout;
+				probe = new IcmpProbe(this, probeId, templateId, name, interval, multiplier, status, timeout, npings,
+						bytes);
+				break;
+			}
 			}
 			if (probe == null) {
 				Logit.LogWarn("Creation of Probe: " + probeParams.probe_id + " failed, skipping!");
@@ -336,17 +372,17 @@ public class User {
 		return dataType;
 	}
 
-//	private TriggerSeverity getTriggerSev(String sev) {
-//		switch (sev) {
-//		case Constants.notice:
-//			return TriggerSeverity.Notice;
-//		case Constants.warning:
-//			return TriggerSeverity.Warning;
-//		case Constants.high:
-//			return TriggerSeverity.High;
-//		case Constants.disaster:
-//			return TriggerSeverity.Disaster;
-//		}
-//		return null;
-//	}
+	// private TriggerSeverity getTriggerSev(String sev) {
+	// switch (sev) {
+	// case Constants.notice:
+	// return TriggerSeverity.Notice;
+	// case Constants.warning:
+	// return TriggerSeverity.Warning;
+	// case Constants.high:
+	// return TriggerSeverity.High;
+	// case Constants.disaster:
+	// return TriggerSeverity.Disaster;
+	// }
+	// return null;
+	// }
 }

@@ -1,34 +1,32 @@
 package lycus;
 
-import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
 
 import Collectors.BaseCollector;
-import Collectors.SnmpTemplate;
+import Collectors.SnmpCollector;
+import Collectors.SqlCollector;
 import Elements.NicElement;
 
 public class Host {
 	private UUID hostId;
-	private UUID userId;
 	private String name;
 	private String hostIp;
-	private BaseCollector snmpCollector;
+	private SnmpCollector snmpCollector;
+	private SqlCollector sqlCollector;
 	private boolean hostStatus;
 	private String bucket;
 	private UUID notificationGroups;
 	private List<NicElement> nicElements;
 
-	public Host(UUID host_id, String name, String host_ip, SnmpTemplate snmpTemplate, boolean hostStatus, String bucket,
-			UUID notificationGroups, String userId) {
+	public Host(UUID host_id, String name, String host_ip, SnmpCollector snmpTemplate, boolean hostStatus, String bucket, UUID notificationGroups, String userId) {
 		this.setName(name);
 		this.setHostId(host_id);
-		this.setUserId(UUID.fromString(userId));
 		this.setHostIp(host_ip);
+		this.setCollector(snmpTemplate);
 		this.setHostStatus(hostStatus);
 		this.setBucket(bucket);
 		this.setNotificationGroups(notificationGroups);
-		this.snmpCollector = snmpTemplate;
 	}
 
 	public UUID getHostId() {
@@ -67,14 +65,14 @@ public class Host {
 		return hostStatus;
 	}
 
-	public SnmpTemplate getSnmpCollector() {
-		if(this.snmpCollector==null)
-		return null;
-		return (SnmpTemplate)this.snmpCollector;
+	public SnmpCollector getSnmpCollector() {
+		return snmpCollector;
 	}
-	public void setSnmpCollector(SnmpTemplate snmpTemplate) {
-		this.snmpCollector=snmpTemplate;
+
+	public void setCollector(SnmpCollector snmpCollector) {
+		this.snmpCollector = snmpCollector;
 	}
+
 	public String getBucket() {
 		return bucket;
 	}
@@ -98,11 +96,11 @@ public class Host {
 		return s.toString();
 	}
 
-	public UUID getUserId() {
-		return userId;
+	public SqlCollector getSqlCollector() {
+		return sqlCollector;
 	}
 
-	public void setUserId(UUID userId) {
-		this.userId = userId;
+	public void setSqlCollector(SqlCollector sqlCollector) {
+		this.sqlCollector = sqlCollector;
 	}
 }

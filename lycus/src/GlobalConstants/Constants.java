@@ -40,7 +40,8 @@ public class Constants {
 	public final static String discovery = "discovery";
 	public final static String rbl = "rbl";
 	public final static String no = "no";
-
+	public final static String sql = "sql";
+	
 	public final static String integer = "integer";
 	public final static String string = "string";
 	public final static String _float = "float";

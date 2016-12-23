@@ -136,8 +136,10 @@ public class SnmpProbesBatch implements Runnable {
 								Logit.LogDebug("BREAKPOINT");
 
 							_runnableProbes.add(runnableProbe);
+							Logit.LogInfo(host.getName() + ": " + runnableProbe.getProbe().getInterval() +  ", Probe name: " + runnableProbe.getProbe().getName() + ", RunnableProbeId: " + runnableProbe.getId()); 
 							_snmpProbes.add((SnmpProbe) runnableProbe.getProbe());
 						}
+
 
 						List<SnmpResult> response = NetResults.getInstanece().getSnmpResults(this.getHost(),
 								_snmpProbes);

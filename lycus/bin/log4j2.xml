@@ -10,7 +10,7 @@
 	</Appenders>
 	<Loggers>
 		<Root level="info" additivity="false">
-			<AppenderRef ref="syslog" />
+			<AppenderRef ref="console" />
 		</Root>
 		<logger name="syslogger-production" level="error">
 			<AppenderRef ref="syslog" />
