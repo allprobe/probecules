@@ -52,40 +52,12 @@ public class HostUpdate extends BaseUpdate {
 			host.setHostIp(getUpdate().update_value.ip);
 			Logit.LogCheck("Ip for host " + host.getName() + " has changed to " + getUpdate().update_value.ip);
 		}
-
-		String  snmpTemplateId = host.getSnmpCollector() != null ? host.getSnmpCollector().getId().toString() : null;
 		
-		if (getUpdate().update_value.snmp_template != null && snmpTemplateId != getUpdate().update_value.snmp_template) {
-			UUID uuid = null;
-			try{
-			    uuid = UUID.fromString(getUpdate().update_value.snmp_template);
-			} catch (Exception exception){
-			    //handle the case where string is not valid UUID 
-			}
-			
-			if (uuid == null)
-			{
-				host.setSnmpCollector(null);
-				Logit.LogCheck("Snmp Template for host " + host.getName() + " has changed");
-			}
-			else
-			{
-				SnmpTemplate snmpTemplate = getUser().getSnmpTemplates().get(uuid);
-				if (snmpTemplate == null) {
-					snmpTemplate = fetchSnmpTemplate();
-				}
-				host.setSnmpCollector(snmpTemplate);
-				if (snmpTemplate != null)
-					Logit.LogCheck("Snmp Template for host " + host.getName() + " has changed");
-			}
-		}
-
 		String  snmpCollectorId = host.getSnmpCollector() != null ? host.getSnmpCollector().getId().toString() : null;
 		String  sqlCollectorId = host.getSqlCollector() != null ? host.getSqlCollector().getId().toString() : null;
 		
 		getSnmpCollector(host, snmpCollectorId);
 		getSqlCollector(host, sqlCollectorId);
-
 		
 		String notificationGroup = host.getNotificationGroups() != null ? host.getNotificationGroups().toString() : null;
 		
@@ -173,7 +145,7 @@ public class HostUpdate extends BaseUpdate {
 			}
 		}
 	}
-
+	
 	private SnmpCollector fetchSnmpCollector() {
 		SnmpCollector snmpCollector;
 		// Get snmp template from Ran for snmp_template_id
