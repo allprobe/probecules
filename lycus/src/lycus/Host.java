@@ -18,6 +18,7 @@ public class Host {
 	private String bucket;
 	private UUID notificationGroups;
 	private List<NicElement> nicElements;
+	private String userId;
 
 	public Host(UUID host_id, String name, String host_ip, SnmpCollector snmpTemplate, boolean hostStatus, String bucket, UUID notificationGroups, String userId) {
 		this.setName(name);
@@ -27,6 +28,7 @@ public class Host {
 		this.setHostStatus(hostStatus);
 		this.setBucket(bucket);
 		this.setNotificationGroups(notificationGroups);
+		this.setUserId(userId);
 	}
 
 	public UUID getHostId() {
@@ -102,5 +104,13 @@ public class Host {
 
 	public void setSqlCollector(SqlCollector sqlCollector) {
 		this.sqlCollector = sqlCollector;
+	}
+
+	public String getUserId() {
+		return userId;
+	}
+
+	public void setUserId(String userId) {
+		this.userId = userId;
 	}
 }
