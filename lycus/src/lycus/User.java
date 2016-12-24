@@ -4,14 +4,12 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.UUID;
 import org.snmp4j.smi.OID;
-
 import Collectors.BaseCollector;
 import Collectors.SnmpCollector;
 import Collectors.SqlCollector;
 import GlobalConstants.Constants;
 import GlobalConstants.Enums;
 import GlobalConstants.Enums.SnmpDataType;
-import GlobalConstants.TriggerSeverity;
 import GlobalConstants.XvalueUnit;
 import Model.HostParams;
 import Model.ProbeParams;
@@ -141,10 +139,10 @@ public class User {
 			boolean status = (hostParams.hostStatus).equals("1") ? true : false;
 			String bucket = hostParams.bucket;
 
-			UUID notif_groups = null;
+			String notif_groups = null;
 			try {
 				if (!hostParams.notificationGroups.equals("none"))
-					notif_groups = UUID.fromString(hostParams.notificationGroups);
+					notif_groups = hostParams.notificationGroups;
 			} catch (Exception e) {
 				Logit.LogWarn("Unable to parse notifications group: " + hostParams.notificationGroups + ", E: "
 						+ e.getMessage());

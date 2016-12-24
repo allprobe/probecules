@@ -16,11 +16,11 @@ public class Host {
 	private SqlCollector sqlCollector;
 	private boolean hostStatus;
 	private String bucket;
-	private UUID notificationGroups;
+	private String notificationGroups;
 	private List<NicElement> nicElements;
 	private String userId;
 
-	public Host(UUID host_id, String name, String host_ip, SnmpCollector snmpTemplate, boolean hostStatus, String bucket, UUID notificationGroups, String userId) {
+	public Host(UUID host_id, String name, String host_ip, SnmpCollector snmpTemplate, boolean hostStatus, String bucket, String notificationGroups, String userId) {
 		this.setName(name);
 		this.setHostId(host_id);
 		this.setHostIp(host_ip);
@@ -83,11 +83,11 @@ public class Host {
 		this.bucket = bucket;
 	}
 
-	public UUID getNotificationGroups() {
+	public String getNotificationGroups() {
 		return notificationGroups;
 	}
 
-	public void setNotificationGroups(UUID notificationGroups) {
+	public void setNotificationGroups(String notificationGroups) {
 		this.notificationGroups = notificationGroups;
 	}
 

@@ -63,7 +63,7 @@ public class HostUpdate extends BaseUpdate {
 		
 		if (GeneralFunctions.isChanged(notificationGroup, getUpdate().update_value.notifications_group)) {
 			if (!GeneralFunctions.isNullOrEmpty(getUpdate().update_value.notifications_group))
-				host.setNotificationGroups(UUID.fromString(getUpdate().update_value.notifications_group));
+				host.setNotificationGroups(getUpdate().update_value.notifications_group);
 			else 
 				host.setNotificationGroups(null);
 			Logit.LogCheck("Notifications group for host " + host.getName() + " has changed to "
@@ -94,14 +94,7 @@ public class HostUpdate extends BaseUpdate {
 
 	private void getSnmpCollector(Host host, String snmpCollectorId) {
 		if (getUpdate().update_value.snmp_template != null && snmpCollectorId != getUpdate().update_value.snmp_template) {
-			UUID uuid = null;
-			try{
-			    uuid = UUID.fromString(getUpdate().update_value.snmp_template);
-			} catch (Exception exception){
-			    //handle the case where string is not valid UUID 
-			}
-			
-			if (uuid == null)
+			if (getUpdate().update_value.snmp_template.equals(""))
 			{
 				host.setCollector(null);
 				Logit.LogCheck("Snmp Collector for host " + host.getName() + " has changed");
@@ -121,14 +114,7 @@ public class HostUpdate extends BaseUpdate {
 
 	private void getSqlCollector(Host host, String sqlCollectorId) {
 		if (getUpdate().update_value.snmp_template != null && sqlCollectorId != getUpdate().update_value.snmp_template) {
-			UUID uuid = null;
-			try{
-			    uuid = UUID.fromString(getUpdate().update_value.snmp_template);
-			} catch (Exception exception){
-			    //handle the case where string is not valid UUID 
-			}
-			
-			if (uuid == null)
+			if (getUpdate().update_value.snmp_template == null)
 			{
 				host.setCollector(null);
 				Logit.LogCheck("Snmp Template for host " + host.getName() + " has changed");
