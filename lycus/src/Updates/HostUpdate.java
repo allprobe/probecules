@@ -59,7 +59,7 @@ public class HostUpdate extends BaseUpdate {
 		getSnmpCollector(host, snmpCollectorId);
 		getSqlCollector(host, sqlCollectorId);
 		
-		String notificationGroup = host.getNotificationGroups() != null ? host.getNotificationGroups().toString() : null;
+		String notificationGroup = host.getNotificationGroups() != null ? host.getNotificationGroups() : null;
 		
 		if (GeneralFunctions.isChanged(notificationGroup, getUpdate().update_value.notifications_group)) {
 			if (!GeneralFunctions.isNullOrEmpty(getUpdate().update_value.notifications_group))
@@ -113,28 +113,28 @@ public class HostUpdate extends BaseUpdate {
 	}
 
 	private void getSqlCollector(Host host, String sqlCollectorId) {
-		if (getUpdate().update_value.snmp_template != null && sqlCollectorId != getUpdate().update_value.snmp_template) {
-			if (getUpdate().update_value.snmp_template == null)
+		if (getUpdate().update_value.sql_template != null && sqlCollectorId != getUpdate().update_value.sql_template) {
+			if (getUpdate().update_value.sql_template.equals(""))
 			{
 				host.setCollector(null);
-				Logit.LogCheck("Snmp Template for host " + host.getName() + " has changed");
+				Logit.LogCheck("Sql Template for host " + host.getName() + " has changed");
 			}
 			else
 			{
-				SqlCollector sqlCollector = (SqlCollector)getUser().getCollectors().get(getUpdate().update_value.snmp_template);
+				SqlCollector sqlCollector = (SqlCollector)getUser().getCollectors().get(getUpdate().update_value.sql_template);
 				if (sqlCollector == null) {
 					sqlCollector = fetchSqlCollector();
 				}
 				host.setSqlCollector(sqlCollector);
 				if (sqlCollector != null)
-					Logit.LogCheck("Snmp Template for host " + host.getName() + " has changed");
+					Logit.LogCheck("Sql Template for host " + host.getName() + " has changed");
 			}
 		}
 	}
 	
 	private SnmpCollector fetchSnmpCollector() {
 		SnmpCollector snmpCollector;
-		// Get snmp template from Ran for snmp_template_id
+		// Get sql template from Ran for sql_template_id
 		IDAL dal = DAL.getInstanece();
 		JSONObject snmpTemplates = new JSONObject();
 		JSONArray snmpTemplatesArray = new JSONArray();
@@ -168,7 +168,7 @@ public class HostUpdate extends BaseUpdate {
 
 		JSONArray jsonArray = (JSONArray) jsonObject.get("collectors");
 		UsersManager.addCollector(jsonArray);
-		sqlCollector = (SqlCollector)getUser().getCollectors().get(getUpdate().update_value.snmp_template);
+		sqlCollector = (SqlCollector)getUser().getCollectors().get(getUpdate().update_value.sql_template);
 		return sqlCollector;
 	}
 

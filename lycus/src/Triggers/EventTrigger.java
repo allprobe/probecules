@@ -62,7 +62,7 @@ public class EventTrigger {
 
 				String hostNotificationGroup = "";
 				if (runnableProbe.getHost().getNotificationGroups() != null)
-					hostNotificationGroup = runnableProbe.getHost().getNotificationGroups().toString();
+					hostNotificationGroup = runnableProbe.getHost().getNotificationGroups();
 
 				Event event = new Event(trigger.getTriggerId(),
 						runnableProbe.getProbe().getUser().getUserId().toString(), runnableProbe.getHost().getBucket(),

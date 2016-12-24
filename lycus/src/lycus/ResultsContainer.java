@@ -211,7 +211,7 @@ public class ResultsContainer implements IResultsContainer {
 						if (host != null) {
 							hostName = host.getName();
 							if (host.getNotificationGroups() != null)
-								hostNotificationGroup = host.getNotificationGroups().toString();
+								hostNotificationGroup = host.getNotificationGroups();
 						}
 					}
 
