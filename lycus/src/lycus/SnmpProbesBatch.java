@@ -112,34 +112,32 @@ public class SnmpProbesBatch implements Runnable {
 
 						if (host.getSnmpCollector() == null) {
 							noSmpmCollectorForHost(host, snmpProbes);
-							return;
-						}
-
-						List<SnmpProbe> _snmpProbes = new ArrayList<SnmpProbe>();
-						List<RunnableProbe> _runnableProbes = new ArrayList<RunnableProbe>();
-
-						for (RunnableProbe runnableProbe : snmpProbes) {
-
-							String rpStr = runnableProbe.getId();
-							if (rpStr.contains(
-									"8b0104e7-5902-4419-933f-668582fc3acd@6b999cd6-fcbb-4ca8-9936-5529b4c66976@snmp_5d937636-eb75-4165-b339-38a729aa2b7d"))
-								Logit.LogDebug("BREAKPOINT");
-
-							_runnableProbes.add(runnableProbe);
-							Logit.LogInfo(host.getName() + ": " + runnableProbe.getProbe().getInterval()
-									+ ", Probe name: " + runnableProbe.getProbe().getName() + ", RunnableProbeId: "
-									+ runnableProbe.getId());
-							_snmpProbes.add((SnmpProbe) runnableProbe.getProbe());
-						}
-
-						List<SnmpResult> response = NetResults.getInstanece().getSnmpResults(this.getHost(),
-								_snmpProbes);
-
-						if (response == null) {
-							isNoResponse(_runnableProbes);
-							return;
 						} else {
-							createResponse(response);
+							List<SnmpProbe> _snmpProbes = new ArrayList<SnmpProbe>();
+							List<RunnableProbe> _runnableProbes = new ArrayList<RunnableProbe>();
+
+							for (RunnableProbe runnableProbe : snmpProbes) {
+
+								String rpStr = runnableProbe.getId();
+								if (rpStr.contains(
+										"8b0104e7-5902-4419-933f-668582fc3acd@6b999cd6-fcbb-4ca8-9936-5529b4c66976@snmp_5d937636-eb75-4165-b339-38a729aa2b7d"))
+									Logit.LogDebug("BREAKPOINT");
+
+								_runnableProbes.add(runnableProbe);
+								Logit.LogInfo(host.getName() + ": " + runnableProbe.getProbe().getInterval()
+										+ ", Probe name: " + runnableProbe.getProbe().getName() + ", RunnableProbeId: "
+										+ runnableProbe.getId());
+								_snmpProbes.add((SnmpProbe) runnableProbe.getProbe());
+							}
+
+							List<SnmpResult> response = NetResults.getInstanece().getSnmpResults(this.getHost(),
+									_snmpProbes);
+
+							if (response == null) {
+								isNoResponse(_runnableProbes);
+							} else {
+								createResponse(response);
+							}
 						}
 					}
 				} catch (Exception e) {
@@ -175,13 +173,12 @@ public class SnmpProbesBatch implements Runnable {
 
 	private void noSmpmCollectorForHost(Host host, Collection<RunnableProbe> snmpProbes) {
 		Logit.LogError("SnmpProbesBatch - run()", "No Snmp collector for host: " + host.getName());
-		 
+
 		for (RunnableProbe rp : snmpProbes) {
 			SnmpResult result = new SnmpResult(rp.getId());
 			result.setErrorMessage("NO_SNMP_TEMPLATE");
 			ResultsContainer.getInstance().addResult(result);
-			Logit.LogInfo(
-					"Snmp Probe doesn't run: " + rp.getId() + ", no SNMP template configured!");
+			Logit.LogInfo("Snmp Probe doesn't run: " + rp.getId() + ", no SNMP template configured!");
 		}
 
 		CollectorIssuesContainer.getInstance().addIssue(this.getHost(), Enums.CollectorType.Snmp,
