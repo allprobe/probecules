@@ -24,7 +24,7 @@ public class Host {
 		this.setName(name);
 		this.setHostId(host_id);
 		this.setHostIp(host_ip);
-		this.setCollector(snmpTemplate);
+		this.setSnmpCollector(snmpTemplate);
 		this.setHostStatus(hostStatus);
 		this.setBucket(bucket);
 		this.setNotificationGroups(notificationGroups);
@@ -71,7 +71,7 @@ public class Host {
 		return snmpCollector;
 	}
 
-	public void setCollector(SnmpCollector snmpCollector) {
+	public void setSnmpCollector(SnmpCollector snmpCollector) {
 		this.snmpCollector = snmpCollector;
 	}
 

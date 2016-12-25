@@ -96,7 +96,7 @@ public class HostUpdate extends BaseUpdate {
 		if (getUpdate().update_value.snmp_template != null && snmpCollectorId != getUpdate().update_value.snmp_template) {
 			if (getUpdate().update_value.snmp_template.equals(""))
 			{
-				host.setCollector(null);
+				host.setSnmpCollector(null);
 				Logit.LogCheck("Snmp Collector for host " + host.getName() + " has changed");
 			}
 			else
@@ -105,7 +105,7 @@ public class HostUpdate extends BaseUpdate {
 				if (snmpCollector == null) {
 					snmpCollector = fetchSnmpCollector();
 				}
-				host.setCollector(snmpCollector);
+				host.setSnmpCollector(snmpCollector);
 				if (snmpCollector != null)
 					Logit.LogCheck("Snmp Template for host " + host.getName() + " has changed");
 			}
@@ -116,7 +116,7 @@ public class HostUpdate extends BaseUpdate {
 		if (getUpdate().update_value.sql_template != null && sqlCollectorId != getUpdate().update_value.sql_template) {
 			if (getUpdate().update_value.sql_template.equals(""))
 			{
-				host.setCollector(null);
+				host.setSqlCollector(null);
 				Logit.LogCheck("Sql Template for host " + host.getName() + " has changed");
 			}
 			else
