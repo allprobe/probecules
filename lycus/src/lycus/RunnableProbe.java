@@ -253,6 +253,8 @@ public class RunnableProbe implements Runnable {
 
 	public boolean removeAllEvents() {
 		HashMap<String, Trigger> triggers = getProbe().getTriggers();
+		if (triggers == null)
+			return true;
 		for (Trigger trigger : triggers.values())
 			removeEvents(trigger.getTriggerId());
 		return true;
