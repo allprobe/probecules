@@ -1435,6 +1435,8 @@ public class Net {
 			results.add(true);
 		} catch (UnknownHostException e) {
 			results.add(false);
+		} catch (Exception e2) {
+			results.add(false);
 		}
 		return results;
 	}
