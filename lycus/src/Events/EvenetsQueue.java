@@ -46,7 +46,7 @@ public class EvenetsQueue implements IEventsQueue {
 			eventJson.put("origin_timestamp", String.valueOf(event.getOriginalTimeStamp()));
 
 		runnableEventJson.put(event.getRunnableProbeId(), eventJson);
-		
+
 		synchronized (lock) {
 			eventsArray.add(runnableEventJson);
 		}

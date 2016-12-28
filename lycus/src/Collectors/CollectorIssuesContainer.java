@@ -78,6 +78,7 @@ public class CollectorIssuesContainer implements ICollectorIssuesContainer {
 				e.printStackTrace();
 			}
 			issueObject.put("host_id", hostId);
+			issueObject.put("host_name", host.getName());
 			issueObject.put("type", type.toString());
 			issueObject.put("issue_info", issue);
 			issueObject.put("issue_status", issueState);

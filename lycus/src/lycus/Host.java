@@ -3,7 +3,6 @@ package lycus;
 import java.util.List;
 import java.util.UUID;
 
-import Collectors.BaseCollector;
 import Collectors.SnmpCollector;
 import Collectors.SqlCollector;
 import Elements.NicElement;
@@ -20,7 +19,8 @@ public class Host {
 	private List<NicElement> nicElements;
 	private String userId;
 
-	public Host(UUID host_id, String name, String host_ip, SnmpCollector snmpTemplate, boolean hostStatus, String bucket, String notificationGroups, String userId) {
+	public Host(UUID host_id, String name, String host_ip, SnmpCollector snmpTemplate, boolean hostStatus,
+			String bucket, String notificationGroups, String userId) {
 		this.setName(name);
 		this.setHostId(host_id);
 		this.setHostIp(host_ip);
@@ -68,11 +68,13 @@ public class Host {
 	}
 
 	public SnmpCollector getSnmpCollector() {
-		return snmpCollector;
+		if (this.snmpCollector == null)
+			return null;
+		return this.snmpCollector;
 	}
 
-	public void setSnmpCollector(SnmpCollector snmpCollector) {
-		this.snmpCollector = snmpCollector;
+	public void setSnmpCollector(SnmpCollector snmpTemplate) {
+		this.snmpCollector = snmpTemplate;
 	}
 
 	public String getBucket() {
