@@ -99,7 +99,7 @@ public class SnmpUpdate  extends BaseUpdate{
 	public Boolean Delete()
 	{
 		super.Delete();
-		getUser().getCollectors().remove(UUID.fromString(getUpdate().object_id));
+		getUser().getCollectors().remove(getUpdate().object_id);
 		Logit.LogCheck("Snmp template: " + getUpdate().object_id + " was removed");
 		return true;
 	}
