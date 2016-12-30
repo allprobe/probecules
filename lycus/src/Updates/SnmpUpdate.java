@@ -23,7 +23,7 @@ public class SnmpUpdate  extends BaseUpdate{
 	public Boolean Update()
 	{
 		super.Update();
-		SnmpCollector snmpCollector = (SnmpCollector)getUser().getCollectors().get(UUID.fromString(getUpdate().object_id));
+		SnmpCollector snmpCollector = (SnmpCollector)getUser().getCollectors().get(getUpdate().object_id);
 		
 		if (GeneralFunctions.isChanged(snmpCollector.getName(), getUpdate().update_value.name)) 
 		{
