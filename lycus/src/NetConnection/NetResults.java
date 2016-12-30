@@ -571,10 +571,17 @@ public class NetResults implements INetResults {
 			break;
 		}
 
-		if (rawResults == null || rawResults.size() == 0) {
+		if (rawResults == null) {
 			DiskResult result = new DiskResult(
 					GeneralFunctions.getRunnableProbeId(probe.getTemplate_id(), host.getHostId(), probe.getProbe_id()));
-			result.setErrorMessage("Unable to retrieve disks information or number of disks is zero.");
+			result.setErrorMessage(Constants.WRONG_OID);
+			return result;
+		}
+
+		if (rawResults.size() == 0) {
+			DiskResult result = new DiskResult(
+					GeneralFunctions.getRunnableProbeId(probe.getTemplate_id(), host.getHostId(), probe.getProbe_id()));
+			result.setErrorMessage(Constants.WRONG_OID);
 			return result;
 		}
 		long hrstorageallocationunitsoid = Long
