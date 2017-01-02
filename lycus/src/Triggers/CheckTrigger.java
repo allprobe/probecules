@@ -39,6 +39,7 @@ public class CheckTrigger {
 
 	public boolean isConditionMet(BaseResult result, Trigger trigger) {
 		for (TriggerCondition triggerCondition : trigger.getCondtions()) {
+			Logit.LogInfo("Checking trigger condition for runnable probe: "+result.getRunnableProbeId()+" , trigger condition Xvalue: "+triggerCondition.getxValue()+" , last result: "+result.getResultElementValue(triggerCondition.getElementType().toString()).get(0));
 			try {
 				if (result instanceof SnmpResult && ((SnmpResult) result).getNumData() == null
 						&& ((SnmpResult) result).getData() != null) {
