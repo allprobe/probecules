@@ -2,6 +2,8 @@ package Results;
 
 import java.util.ArrayList;
 import java.util.HashMap;
+
+import GlobalConstants.Enums;
 import GlobalConstants.Enums.SnmpDataType;
 import GlobalConstants.XvalueUnit;
 import Probes.SnmpProbe;
@@ -194,19 +196,24 @@ public class BaseResult implements IResult {
 			values.add(((PingResult) this).getPacketLost());
 			break;
 		case DFDS:
+			if(!this.getErrorMessage().equals(Enums.SnmpError.NO_COMUNICATION.name()))
 			values.add(((DiskResult) this).getStorageFree());
 			break;
 		case DUDS:
-			values.add(((DiskResult) this).getStorageUsed());
+			if(!this.getErrorMessage().equals(Enums.SnmpError.NO_COMUNICATION.name()))
+				values.add(((DiskResult) this).getStorageUsed());
 			break;
 		case DTDS:
-			values.add(((DiskResult) this).getStorageSize());
+			if(!this.getErrorMessage().equals(Enums.SnmpError.NO_COMUNICATION.name()))
+				values.add(((DiskResult) this).getStorageSize());
 			break;
 		case DPFDS:
-			values.add(((DiskResult) this).getStorageFreePercentage());
+			if(!this.getErrorMessage().equals(Enums.SnmpError.NO_COMUNICATION.name()))
+				values.add(((DiskResult) this).getStorageFreePercentage());
 			break;
 		case DPUDS:
-			values.add(((DiskResult) this).getStorageUsedPercentage());
+			if(!this.getErrorMessage().equals(Enums.SnmpError.NO_COMUNICATION.name()))
+				values.add(((DiskResult) this).getStorageUsedPercentage());
 			break;
 		case DBI:
 			Long inBW = ((NicResult) this).getInBW();

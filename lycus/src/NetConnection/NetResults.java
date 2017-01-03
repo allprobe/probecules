@@ -574,14 +574,14 @@ public class NetResults implements INetResults {
 		if (rawResults == null) {
 			DiskResult result = new DiskResult(
 					GeneralFunctions.getRunnableProbeId(probe.getTemplate_id(), host.getHostId(), probe.getProbe_id()));
-			result.setErrorMessage(Constants.WRONG_OID);
+			result.setErrorMessage(SnmpError.NO_COMUNICATION.name());
 			return result;
 		}
 
 		if (rawResults.size() == 0) {
 			DiskResult result = new DiskResult(
 					GeneralFunctions.getRunnableProbeId(probe.getTemplate_id(), host.getHostId(), probe.getProbe_id()));
-			result.setErrorMessage(Constants.WRONG_OID);
+			result.setErrorMessage(SnmpError.NO_COMUNICATION.name());
 			return result;
 		}
 		long hrstorageallocationunitsoid = Long
