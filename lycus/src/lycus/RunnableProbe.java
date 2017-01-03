@@ -118,7 +118,12 @@ public class RunnableProbe implements Runnable {
 				try {
 					String rpStr = this.getId();
 					if (rpStr.contains(
-							"6a10a32d-0d33-415b-a1f6-e9aeb2826d03@7352a46f-5189-428c-b4c0-fb98dedd10b1@snmp_1e189e8e-ec48-40bf-baba-88b61b18978a"))
+							"0eb888bc-ba24-49f0-8468-da89ca830c77@discovery_35667a76-cb01-4108-9429-cac2dbcf933e"))
+						Logit.LogDebug("BREAKPOINT - RunnableProbe");
+
+
+					if (rpStr.contains(
+							"15a29f39-5baf-4672-8853-c08b4b247be0@discovery_3ee653fc-adaa-468e-9430-b1793b1d1c7d"))
 						Logit.LogDebug("BREAKPOINT - RunnableProbe");
 
 					// isActive = false will pause the thread
@@ -232,7 +237,7 @@ public class RunnableProbe implements Runnable {
 
 		try {
 			if (probe.getTriggers().size() > 0)
-				eventTrigger.addResult(result);
+				getEventTrigger().addResult(result);
 		} catch (Exception e) {
 			Logit.LogError("RunnableProbe - addResultToTrigger()",
 					"Error Adding result to eventTrigger! " + this.getId() + " Error Message: " + e);
@@ -243,7 +248,7 @@ public class RunnableProbe implements Runnable {
 
 	public boolean removeEvents(String triggerId) {
 		try {
-			eventTrigger.removeEvent(triggerId);
+			getEventTrigger().removeEvent(triggerId);
 		} catch (Exception e) {
 			Logit.LogError("RunnableProbe - removeEvents()", "Error Removing event of trigger! " + triggerId);
 			return false;
@@ -258,5 +263,9 @@ public class RunnableProbe implements Runnable {
 		for (Trigger trigger : triggers.values())
 			removeEvents(trigger.getTriggerId());
 		return true;
+	}
+
+	public EventTrigger getEventTrigger() {
+		return eventTrigger;
 	}
 }

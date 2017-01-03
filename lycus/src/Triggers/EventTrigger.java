@@ -68,13 +68,7 @@ public class EventTrigger {
 						runnableProbe.getProbe().getUser().getUserId().toString(), runnableProbe.getHost().getBucket(),
 						runnableProbe.getHost().getName(), hostNotificationGroup, trigger.getName(),
 						trigger.getSvrty().toString(), runnableProbeId);
-				if ((runnableProbe.getProbe() instanceof NicProbe)) {
-					NicElement element = ((NicProbe) runnableProbe.getProbe()).getNicElement();
-					event.setSubType("nic-element@" + GeneralFunctions.Base64Encode(element.getName()));
-				} else if ((runnableProbe.getProbe() instanceof DiskProbe)) {
-					DiskElement element = ((DiskProbe) runnableProbe.getProbe()).getDiskElement();
-					event.setSubType("disk-element@" + GeneralFunctions.Base64Encode(element.getName()));
-				}
+				appendSubType(event);
 				ResultsContainer.getInstance().addEvent(runnableProbeId, trigger.getTriggerId(), event);
 				EvenetsQueue.getInstance().add(event);
 			}
@@ -93,6 +87,9 @@ public class EventTrigger {
 		try {
 			if (eventExist != null) {
 				eventExist.setIsStatus(true);
+
+				appendSubType(eventExist);
+
 				EvenetsQueue.getInstance().add(eventExist);
 				ResultsContainer.getInstance().removeEvent(runnableProbeId, trigger.getTriggerId());
 				// eventExist.setTime(System.currentTimeMillis());
@@ -105,6 +102,17 @@ public class EventTrigger {
 			e.printStackTrace();
 		}
 		return true;
+	}
+
+	public void appendSubType(Event eventExist) {
+		RunnableProbe runnableProbe= RunnableProbeContainer.getInstanece().get(runnableProbeId);
+		if ((runnableProbe.getProbe() instanceof NicProbe)) {
+            NicElement element = ((NicProbe) runnableProbe.getProbe()).getNicElement();
+            eventExist.setSubType("nic-element@" + GeneralFunctions.Base64Encode(element.getName()));
+        } else if ((runnableProbe.getProbe() instanceof DiskProbe)) {
+            DiskElement element = ((DiskProbe) runnableProbe.getProbe()).getDiskElement();
+            eventExist.setSubType("disk-element@" + GeneralFunctions.Base64Encode(element.getName()));
+        }
 	}
 
 	public boolean removeEvent(String triggerId) {
