@@ -429,7 +429,7 @@ class LastN {
 	}
 
 	public Object getNextResult(String elementType) {
-		if (this.current > getSize() - 1)
+		if (this.current >= getSize())
 			this.current = 0;
 
 		int cur = current++;

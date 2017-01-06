@@ -107,7 +107,7 @@ public class SnmpUpdate extends BaseUpdate {
 			return true;
 		}
 		
-		Logit.LogCheck("Snmp template: " + getUpdate().object_id + " was not updated, collector does not existS" );
+		Logit.LogCheck("Snmp template: " + getUpdate().object_id + " was not updated, collector does not exist" );
 		return true;
 		
 	}

@@ -271,7 +271,7 @@ public class NetResults implements INetResults {
 		List<SnmpResult> allResults = new ArrayList<SnmpResult>();
 
 		try {
-			SnmpCollector snmpTemplate = (SnmpCollector) host.getSnmpCollector();
+			SnmpCollector snmpCollector = (SnmpCollector) host.getSnmpCollector();
 
 			HashMap<String, OID> probesOids = new HashMap<String, OID>();
 			for (SnmpProbe snmpProbe : snmpProbes)
@@ -280,15 +280,15 @@ public class NetResults implements INetResults {
 			Map<String, String> rawResults = null;
 
 			long timestamp = System.currentTimeMillis();
-			switch (snmpTemplate.getVersion()) {
+			switch (snmpCollector.getVersion()) {
 			case 2:
-				rawResults = Net.Snmp2GETBULK(host.getHostIp(), snmpTemplate.getPort(), snmpTemplate.getTimeout(),
-						snmpTemplate.getCommunityName(), probesOids.values());
+				rawResults = Net.Snmp2GETBULK(host.getHostIp(), snmpCollector.getPort(), snmpCollector.getTimeout(),
+						snmpCollector.getCommunityName(), probesOids.values());
 				break;
 			case 3:
-				rawResults = Net.Snmp3GETBULK(host.getHostIp(), snmpTemplate.getPort(), snmpTemplate.getTimeout(),
-						snmpTemplate.getUserName(), snmpTemplate.getAuthPass(), snmpTemplate.getAlgo(),
-						snmpTemplate.getCryptPass(), snmpTemplate.getCryptType(), probesOids.values());
+				rawResults = Net.Snmp3GETBULK(host.getHostIp(), snmpCollector.getPort(), snmpCollector.getTimeout(),
+						snmpCollector.getUserName(), snmpCollector.getAuthPass(), snmpCollector.getAlgo(),
+						snmpCollector.getCryptPass(), snmpCollector.getCryptType(), probesOids.values());
 				break;
 			}
 			if (rawResults == null || rawResults.size() == 0) {
