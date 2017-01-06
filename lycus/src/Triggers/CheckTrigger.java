@@ -39,8 +39,11 @@ public class CheckTrigger {
 
 	public boolean isConditionMet(BaseResult result, Trigger trigger) {
 		for (TriggerCondition triggerCondition : trigger.getCondtions()) {
-//			if(result.getResultElementValue(triggerCondition.getElementType().toString()).size()!=0)
-//			Logit.LogInfo("Checking trigger condition for runnable probe: "+result.getRunnableProbeId()+" , trigger condition Xvalue: "+triggerCondition.getxValue()+" , last result: "+result.getResultElementValue(triggerCondition.getElementType().toString()).get(0));
+			// if(result.getResultElementValue(triggerCondition.getElementType().toString()).size()!=0)
+			// Logit.LogInfo("Checking trigger condition for runnable probe:
+			// "+result.getRunnableProbeId()+" , trigger condition Xvalue:
+			// "+triggerCondition.getxValue()+" , last result:
+			// "+result.getResultElementValue(triggerCondition.getElementType().toString()).get(0));
 			try {
 				if (result instanceof SnmpResult && ((SnmpResult) result).getNumData() == null
 						&& ((SnmpResult) result).getData() != null) {
@@ -74,8 +77,8 @@ public class CheckTrigger {
 					}
 				}
 			} catch (Exception e) {
-				Logit.LogError("EventTrigger - isConditionMet()", "Error, conditioning event, triggerName: " +
-						trigger.getName() + " , TriggerId: " + trigger.getTriggerId(), e);
+				Logit.LogError("EventTrigger - isConditionMet()", "Error, conditioning event, triggerName: "
+						+ trigger.getName() + " , TriggerId: " + trigger.getTriggerId(), e);
 				e.printStackTrace();
 			}
 		}
@@ -104,7 +107,7 @@ public class CheckTrigger {
 				result = lastN.getNextResult(triggerCondition.getElementType().toString());
 			}
 		} catch (Exception e) {
-			Logit.LogError("EventTrigger - isNoFunctionConditionMet()", "Error, no function conditioning" , e);
+			Logit.LogError("EventTrigger - isNoFunctionConditionMet()", "Error, no function conditioning", e);
 			e.printStackTrace();
 		}
 		return false;
@@ -131,13 +134,14 @@ public class CheckTrigger {
 				result = lastN.getNextResult(triggerCondition.getElementType().toString());
 				nValue--;
 			}
-			
-			return isCondition(max, resultUnit, triggerCondition.getCondition(), xValue, triggerCondition.getXvalueUnit());
+
+			return isCondition(max, resultUnit, triggerCondition.getCondition(), xValue,
+					triggerCondition.getXvalueUnit());
 		} catch (NumberFormatException e) {
-			Logit.LogError("EventTrigger - isMaxConditionMet()", "Error, no max function conditioning" , e);
+			Logit.LogError("EventTrigger - isMaxConditionMet()", "Error, no max function conditioning", e);
 			e.printStackTrace();
 		}
-		
+
 		return false;
 	}
 
@@ -162,7 +166,7 @@ public class CheckTrigger {
 			return isCondition(sum / lastN.getElementCount(), resultUnit, triggerCondition.getCondition(), xValue,
 					triggerCondition.getXvalueUnit());
 		} catch (NumberFormatException e) {
-			Logit.LogError("EventTrigger - isAvgConditionMet()", "Error, average function conditioning" , e);
+			Logit.LogError("EventTrigger - isAvgConditionMet()", "Error, average function conditioning", e);
 			e.printStackTrace();
 		}
 		return false;
@@ -191,7 +195,7 @@ public class CheckTrigger {
 			return isCondition(delta_avg, resultUnit, triggerCondition.getCondition(), xValue,
 					triggerCondition.getXvalueUnit());
 		} catch (NumberFormatException e) {
-			Logit.LogError("EventTrigger - isDeltaAvgConditionMet()", "Error, delta average function conditioning" , e);
+			Logit.LogError("EventTrigger - isDeltaAvgConditionMet()", "Error, delta average function conditioning", e);
 			e.printStackTrace();
 		}
 		return false;
@@ -211,9 +215,10 @@ public class CheckTrigger {
 				for (Object oneResult : (ArrayList<Object>) result) {
 					if (oneResult == null)
 						continue;
-					if (!(oneResult instanceof Double) && !(oneResult instanceof Integer) && !(oneResult instanceof Long)) {
-						if (isCondition(oneResult.toString(), triggerCondition.getCondition(), triggerCondition.getxValue(),
-								triggerCondition.getXvalueUnit()))
+					if (!(oneResult instanceof Double) && !(oneResult instanceof Integer)
+							&& !(oneResult instanceof Long)) {
+						if (isCondition(oneResult.toString(), triggerCondition.getCondition(),
+								triggerCondition.getxValue(), triggerCondition.getXvalueUnit()))
 							return true;
 
 					} else {
@@ -226,7 +231,7 @@ public class CheckTrigger {
 				result = lastN.getNextResult(triggerCondition.getElementType().toString());
 			}
 		} catch (NumberFormatException e) {
-			Logit.LogError("EventTrigger - isNoFunctionConditionMet()", "Error, no function conditioning" , e);
+			Logit.LogError("EventTrigger - isNoFunctionConditionMet()", "Error, no function conditioning", e);
 			e.printStackTrace();
 		}
 		return false;
@@ -246,7 +251,7 @@ public class CheckTrigger {
 				return xvalueUnit.getBasic(result, resultUnit) != xvalueUnit.getBasic(xValue, xvalueUnit);
 			}
 		} catch (Exception e) {
-			Logit.LogError("EventTrigger - isCondition()", "Error, is condition" , e);
+			Logit.LogError("EventTrigger - isCondition()", "Error, is condition", e);
 			e.printStackTrace();
 		}
 		return false;
@@ -315,7 +320,7 @@ public class CheckTrigger {
 
 			}
 		} catch (Exception e) {
-			Logit.LogError("EventTrigger - getDelta()", "Error, get delta" , e);
+			Logit.LogError("EventTrigger - getDelta()", "Error, get delta", e);
 			e.printStackTrace();
 		}
 		return null;
@@ -389,7 +394,7 @@ class LastN {
 			this.current = head;
 			this.elementsPopped = nValue;
 		} catch (Exception e) {
-			Logit.LogError("EventTrigger - LastN()", "Error, Creating N vector" , e);
+			Logit.LogError("EventTrigger - LastN()", "Error, Creating N vector", e);
 			e.printStackTrace();
 		}
 	}
@@ -424,7 +429,7 @@ class LastN {
 	}
 
 	public Object getNextResult(String elementType) {
-		if (this.current > this.size)
+		if (this.current > getSize() - 1)
 			this.current = 0;
 
 		int cur = current++;
