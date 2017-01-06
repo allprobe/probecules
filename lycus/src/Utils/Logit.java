@@ -16,7 +16,7 @@ public class Logit {
 	static boolean isDebug = false;
 	static boolean isInfo = false;
 	static boolean isWarn = false;
-	static boolean isCheck = true;
+	static boolean isCheck = false;
 
 	// public Logit(String className)
 	// {
