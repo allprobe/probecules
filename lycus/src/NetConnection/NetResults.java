@@ -1,6 +1,5 @@
 package NetConnection;
 
-import java.text.DateFormatSymbols;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -48,10 +47,10 @@ import Results.WebResult;
 import Utils.GeneralFunctions;
 import Utils.Logit;
 import lycus.Host;
-import java.sql.Connection;
-import java.sql.DriverManager;
-import java.sql.ResultSet;
-import java.sql.Statement;
+//import java.sql.Connection;
+//import java.sql.DriverManager;
+//import java.sql.ResultSet;
+//import java.sql.Statement;
 
 public class NetResults implements INetResults {
 	private static NetResults netResults = null;
@@ -597,22 +596,22 @@ public class NetResults implements INetResults {
 
 	@Override
 	public SqlResult getSqlResult(Host host, SqlProbe probe) {
-		try {
-//			SqlResult sqlResult = new SqlResult(runnableProbeId, timestamp, sqlResults)
-			Class.forName("com.microsoft.sqlserver.jdbc.SqlServerDriver");
-			Connection con = DriverManager
-					.getConnection("jdbc:sqlserver://Servername;database=LargainDb;" + "IntegratedSecurity=true;");
-
-			Statement stmt = con.createStatement();
-			ResultSet rs = stmt.executeQuery(probe.getSql_query());
-			while (rs.next())
-				System.out.println(rs.getInt(1) + " " + rs.getString(2) + " " + rs.getString(3));
-			con.close();
-			return null;
-		} catch (Exception e) {
-			Logit.LogError("NetResults - getSqlResult",
-					"Error getting sql results, Probe name: " + probe.getName(), e);
-		}
+//		try {
+////			SqlResult sqlResult = new SqlResult(runnableProbeId, timestamp, sqlResults)
+//			Class.forName("com.microsoft.sqlserver.jdbc.SqlServerDriver");
+//			Connection con = DriverManager
+//					.getConnection("jdbc:sqlserver://Servername;database=LargainDb;" + "IntegratedSecurity=true;");
+//
+//			Statement stmt = con.createStatement();
+//			ResultSet rs = stmt.executeQuery(probe.getSql_query());
+//			while (rs.next())
+//				System.out.println(rs.getInt(1) + " " + rs.getString(2) + " " + rs.getString(3));
+//			con.close();
+//			return null;
+//		} catch (Exception e) {
+//			Logit.LogError("NetResults - getSqlResult",
+//					"Error getting sql results, Probe name: " + probe.getName(), e);
+//		}
 		return null;
 	}
 
