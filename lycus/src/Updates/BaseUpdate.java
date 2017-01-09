@@ -7,6 +7,7 @@ import GlobalConstants.Enums;
 import GlobalConstants.Enums.Action;
 import Interfaces.IUpdate;
 import Model.UpdateModel;
+import Utils.Logit;
 import lycus.User;
 import lycus.UsersManager;
 
@@ -54,9 +55,11 @@ public abstract class BaseUpdate implements IUpdate {
 	public Boolean Run() {
 		if (action == Action.New)
 			return New();
-		else if (action == Action.Update)
+		else if (action == Action.Update) {
+			if(this  instanceof  SnmpUpdate)
+				Logit.LogCheck("Updating snmp collector");
 			return Update();
-		else if (action == Action.Delete)
+		}else if (action == Action.Delete)
 			return Delete();
 
 		return true;
