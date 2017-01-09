@@ -20,6 +20,7 @@ public class SnmpUpdate extends BaseUpdate {
 
 	@Override
 	public Boolean Update() {
+		Logit.LogCheck("Updating snmp collector");
 		super.Update();
 		Logit.LogCheck("Updating snmp collector");
 		try {
