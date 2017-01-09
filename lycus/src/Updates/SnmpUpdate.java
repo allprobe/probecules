@@ -10,6 +10,7 @@ import Utils.Logit;
 public class SnmpUpdate extends BaseUpdate {
 	public SnmpUpdate(UpdateModel update) {
 		super(update);
+		Logit.LogCheck("Updating snmp collector");
 		// TODO SnmpUpdate()
 	}
 
