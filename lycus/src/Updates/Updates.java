@@ -1,5 +1,6 @@
 package Updates;
 
+import GlobalConstants.Constants;
 import org.apache.log4j.Logger;
 import org.json.simple.JSONObject;
 import DAL.DAL;
@@ -47,6 +48,9 @@ public class Updates implements Runnable {
 				return false;
 
 			for (UpdateModel update : threadsUpdates.threads_updates) {
+
+				if(update.update_type == Constants.updateSnmp)
+					Logit.LogCheck("Updating snmp collector");
 				BaseUpdate baseUpdate = UpdateFactory.getUpdate(update);
 				try {
 					baseUpdate.Run();
