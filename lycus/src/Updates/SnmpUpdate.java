@@ -10,7 +10,7 @@ import Utils.Logit;
 public class SnmpUpdate extends BaseUpdate {
 	public SnmpUpdate(UpdateModel update) {
 		super(update);
-		Logit.LogCheck("Updating snmp collector");
+//		Logit.LogCheck("Updating snmp collector");
 		// TODO SnmpUpdate()
 	}
 
@@ -21,7 +21,7 @@ public class SnmpUpdate extends BaseUpdate {
 
 	@Override
 	public Boolean Update() {
-		Logit.LogCheck("Updating snmp collector");
+//		Logit.LogCheck("Updating snmp collector");
 		super.Update();
 		Logit.LogCheck("Updating snmp collector");
 		try {
