@@ -40,6 +40,8 @@ public class Updates implements Runnable {
 	static Logger log = Logger.getLogger(Updates.class.getName());
 
 	private Boolean runUpdates(JSONObject jsonObject) {
+		Logit.LogCheck("Updating snmp collector");
+
 		try {
 			ThreadsUpdates threadsUpdates = (ThreadsUpdates) JsonUtil.ToObject(jsonObject, ThreadsUpdates.class);
 			if (threadsUpdates.threads_updates.length < 1)
