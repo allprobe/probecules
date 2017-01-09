@@ -38,7 +38,7 @@ public class UpdateFactory {
 					return new TemplateUpdate(update);
 					
 				case Constants.updateSnmp:
-					Logit.LogCheck("Updating snmp collector");
+//					Logit.LogCheck("Updating snmp collector");
 				case Constants.deleteSnmp:
 					return new SnmpUpdate(update);
 					
