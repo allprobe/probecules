@@ -2,6 +2,7 @@ package Updates;
 
 import GlobalConstants.Constants;
 import Model.UpdateModel;
+import Utils.Logit;
 
 public class UpdateFactory {
 	 public static BaseUpdate getUpdate(UpdateModel update){
@@ -37,6 +38,7 @@ public class UpdateFactory {
 					return new TemplateUpdate(update);
 					
 				case Constants.updateSnmp:
+					Logit.LogCheck("Updating snmp collector");
 				case Constants.deleteSnmp:
 					return new SnmpUpdate(update);
 					
