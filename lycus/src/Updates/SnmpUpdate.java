@@ -22,6 +22,7 @@ public class SnmpUpdate extends BaseUpdate {
 	public Boolean Update() {
 		super.Update();
 		try {
+			Logit.LogCheck("Updating snmp collector: "+getUpdate().object_id);
 			SnmpCollector snmpCollector = (SnmpCollector) getUser().getCollectors().get(getUpdate().object_id);
 			String failedObject = getUpdate().update_value.name;
 			if (snmpCollector != null) {
