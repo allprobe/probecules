@@ -48,7 +48,7 @@ public class Updates implements Runnable {
 				return false;
 
 			for (UpdateModel update : threadsUpdates.threads_updates) {
-
+				Logit.LogCheck("updating update from type: "+update.update_type);
 				if(update.update_type == Constants.updateSnmp)
 					Logit.LogCheck("Updating snmp collector");
 				BaseUpdate baseUpdate = UpdateFactory.getUpdate(update);
