@@ -77,7 +77,7 @@ public class Logit {
 
 		String trace = sw.toString();
 
-		log.fatal(message + " - TRACE: " + trace);
+		log.fatal(formatMessage(message) + " - TRACE: " + trace);
 	}
 
 	public static void LogWarn(String message) {
