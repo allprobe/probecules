@@ -24,6 +24,7 @@ public class FailedRequestsHandler implements IFailedRequestsHandler {
 
 	private static FailedRequestsHandler failsHandler = null;
 	private static File failedRequestsDir = null;
+	private Object lockFiles = new Object();
 
 	public static FailedRequestsHandler getInstance() {
 		if (failsHandler == null)
@@ -86,17 +87,25 @@ public class FailedRequestsHandler implements IFailedRequestsHandler {
 		List<File> files = getFilesOrganized();
 		for (final File failedRequestFile : files) {
 			JSONObject obj = null;
-			try {
-				obj = (JSONObject) new JSONParser().parse(new String(Files.readAllBytes(failedRequestFile.toPath())));
-			} catch (ParseException | IOException e) {
-				Logit.LogError("FailedRequestsHandler - executeRequests",
-						"Unable to read failed api request file! E: " + e.getMessage());
+			synchronized (lockFiles) {
+				try {
+					obj = (JSONObject) new JSONParser()
+							.parse(new String(Files.readAllBytes(failedRequestFile.toPath())));
+				} catch (ParseException | IOException e) {
+					Logit.LogError("FailedRequestsHandler - executeRequests",
+							"Unable to read failed api request file! E: " + e.getMessage());
+				}
+				try {
+					if (DAL.getInstanece().put(
+							ApiAction.valueOf(FilenameUtils.getExtension(failedRequestFile.getName())), obj) != null)
+						failedRequestFile.delete();
+					else
+						return;
+				} catch (Exception e) {
+					Logit.LogError("FailedRequestsHandler - executeRequests",
+							"Failed to send failed api request! E: " + e.getMessage());
+				}
 			}
-			if (DAL.getInstanece().put(ApiAction.valueOf(FilenameUtils.getExtension(failedRequestFile.getName())),
-					obj) != null)
-				failedRequestFile.delete();
-			else
-				return;
 		}
 	}
 
