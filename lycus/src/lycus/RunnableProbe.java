@@ -132,8 +132,8 @@ public class RunnableProbe implements Runnable {
 						continue;
 
 					long timeStamp = System.currentTimeMillis();
-					if(getProbe() instanceof RBLProbe)
-					Logit.LogCheck("Checking RBL: "+GeneralFunctions.invertIPAddress(host.getHostIp()) + "." + ((RBLProbe)getProbe()).getRBL());
+//					if(getProbe() instanceof RBLProbe)
+//					Logit.LogCheck("Checking RBL: "+GeneralFunctions.invertIPAddress(host.getHostIp()) + "." + ((RBLProbe)getProbe()).getRBL());
 
 					result = getResult();
 					result = buildErrorResultWhenEmpty(result);

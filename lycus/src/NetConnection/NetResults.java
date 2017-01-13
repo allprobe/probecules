@@ -253,7 +253,7 @@ public class NetResults implements INetResults {
 	@Override
 	public RblResult getRblResult(Host host, RBLProbe probe) {
 		
-		Logit.LogCheck("Checking RBL: "+GeneralFunctions.invertIPAddress(host.getHostIp()) + "." + probe.getRBL());
+//		Logit.LogCheck("Checking RBL: "+GeneralFunctions.invertIPAddress(host.getHostIp()) + "." + probe.getRBL());
 
 		ArrayList<Object> rawResults = Net.RBLCheck(host.getHostIp(), probe.getRBL());
 		if (rawResults == null || rawResults.size() == 0)
