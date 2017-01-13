@@ -1434,8 +1434,10 @@ public class Net {
 			InetAddress.getByName(invertIPAddress(ip) + "." + RBL);
 			results.add(true);
 		} catch (UnknownHostException e) {
+			Logit.LogCheck("UnknownHostException: "+invertIPAddress(ip) + "." + RBL);
 			results.add(false);
 		} catch (Exception e2) {
+			Logit.LogCheck("OtherException: "+invertIPAddress(ip) + "." + RBL);
 			results.add(false);
 		}
 		return results;
