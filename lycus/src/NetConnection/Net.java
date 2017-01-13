@@ -22,7 +22,6 @@ import java.util.Collection;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.StringTokenizer;
 
 import org.apache.commons.io.IOUtils;
 import org.json.simple.JSONObject;
@@ -1431,29 +1430,17 @@ public class Net {
 		long probeTimestamp = System.currentTimeMillis();
 		results.add(probeTimestamp);
 		try {
-			Logit.LogCheck("Checking RBL: "+invertIPAddress(ip) + "." + RBL);
-			InetAddress.getByName(invertIPAddress(ip) + "." + RBL);
+			Logit.LogCheck("Checking RBL: "+GeneralFunctions.invertIPAddress(ip) + "." + RBL);
+			InetAddress.getByName(GeneralFunctions.invertIPAddress(ip) + "." + RBL);
 			results.add(true);
 		} catch (UnknownHostException e) {
-			Logit.LogCheck("UnknownHostException: "+invertIPAddress(ip) + "." + RBL);
+			Logit.LogCheck("UnknownHostException: "+GeneralFunctions.invertIPAddress(ip) + "." + RBL);
 			results.add(false);
 		} catch (Exception e2) {
-			Logit.LogCheck("OtherException: "+invertIPAddress(ip) + "." + RBL);
+			Logit.LogCheck("OtherException: "+GeneralFunctions.invertIPAddress(ip) + "." + RBL);
 			results.add(false);
 		}
 		return results;
-	}
-
-	private static String invertIPAddress(String originalIPAddress) {
-
-		StringTokenizer t = new StringTokenizer(originalIPAddress, ".");
-		String inverted = t.nextToken();
-
-		while (t.hasMoreTokens()) {
-			inverted = t.nextToken() + "." + inverted;
-		}
-
-		return inverted;
 	}
 
 	public static long getDnsResolutionTime(String hostname) {

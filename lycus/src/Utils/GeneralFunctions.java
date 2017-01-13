@@ -15,6 +15,7 @@ import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.StringTokenizer;
 import java.util.UUID;
 
 import org.apache.commons.codec.DecoderException;
@@ -249,6 +250,18 @@ public class GeneralFunctions {
 		if (interval >= 21600)
 			return 2;
 		return 0;
+	}
+
+	public static String invertIPAddress(String originalIPAddress) {
+	
+		StringTokenizer t = new StringTokenizer(originalIPAddress, ".");
+		String inverted = t.nextToken();
+	
+		while (t.hasMoreTokens()) {
+			inverted = t.nextToken() + "." + inverted;
+		}
+	
+		return inverted;
 	}
 
 	public static HostType getHostType(String string) {
