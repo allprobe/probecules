@@ -96,6 +96,8 @@ public class FailedRequestsHandler implements IFailedRequestsHandler {
 							"Unable to read failed api request file! E: " + e.getMessage());
 				}
 				try {
+					if(obj==null)
+						Logit.LogError(" ", failedRequestFile.getAbsolutePath());
 					if (DAL.getInstanece().put(
 							ApiAction.valueOf(FilenameUtils.getExtension(failedRequestFile.getName())), obj) != null)
 						failedRequestFile.delete();
