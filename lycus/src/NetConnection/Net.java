@@ -1431,7 +1431,9 @@ public class Net {
 		results.add(probeTimestamp);
 		try {
 			Logit.LogCheck("Checking RBL: "+GeneralFunctions.invertIPAddress(ip) + "." + RBL);
-			InetAddress.getByName(GeneralFunctions.invertIPAddress(ip) + "." + RBL);
+			InetAddress address=InetAddress.getByName(GeneralFunctions.invertIPAddress(ip) + "." + RBL);
+			Logit.LogCheck("Results RBL: "+GeneralFunctions.invertIPAddress(ip) + "." + RBL+", are: "+address.toString());
+
 			results.add(true);
 		} catch (UnknownHostException e) {
 			Logit.LogCheck("UnknownHostException: "+GeneralFunctions.invertIPAddress(ip) + "." + RBL);
