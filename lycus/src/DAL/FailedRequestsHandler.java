@@ -82,12 +82,12 @@ public class FailedRequestsHandler implements IFailedRequestsHandler {
 
 		Logit.LogInfo("Executing failed requests.");
 
+		synchronized (lockFiles) {
 		if (this.getNumberOfFailedRequests() == 0)
 			return;
 		List<File> files = getFilesOrganized();
 		for (final File failedRequestFile : files) {
 			JSONObject obj = null;
-			synchronized (lockFiles) {
 				try {
 					obj = (JSONObject) new JSONParser()
 							.parse(new String(Files.readAllBytes(failedRequestFile.toPath())));
