@@ -19,6 +19,7 @@ import Rollups.RollupsContainer;
 import SLA.SLAContainer;
 import Triggers.EventTrigger;
 import Triggers.Trigger;
+import Utils.GeneralFunctions;
 import Utils.Logit;
 
 public class RunnableProbe implements Runnable {
@@ -131,6 +132,8 @@ public class RunnableProbe implements Runnable {
 						continue;
 
 					long timeStamp = System.currentTimeMillis();
+					if(getProbe() instanceof RBLProbe)
+					Logit.LogCheck("Checking RBL: "+GeneralFunctions.invertIPAddress(host.getHostIp()) + "." + getProbe());
 
 					result = getResult();
 					result = buildErrorResultWhenEmpty(result);
