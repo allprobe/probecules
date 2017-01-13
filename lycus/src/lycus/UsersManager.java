@@ -34,6 +34,7 @@ import Model.HostParams;
 import Model.ProbeParams;
 import Model.CollectorParams;
 import Probes.BaseProbe;
+import Probes.RBLProbe;
 import Utils.GeneralFunctions;
 import Utils.Logit;
 import Rollups.DataPointsRollup;
@@ -605,6 +606,10 @@ public class UsersManager {
 			Host host = u.getHosts().get(UUID.fromString(rpID.split("@")[1]));
 			BaseProbe probe = u.getTemplateProbes().get(rpID.split("@")[2]);
 
+			if(probe instanceof RBLProbe)
+				Logit.LogCheck("Checking RBL: "+GeneralFunctions.invertIPAddress(host.getHostIp()) + "." + ((RBLProbe)probe).getRBL());
+
+			
 			if (host == null || probe == null) {
 				Logit.LogWarn("Unable to initiate RunnableProbe, one of its elements is missing! ID: " + rpID);
 				continue;
