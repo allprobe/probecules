@@ -1431,6 +1431,7 @@ public class Net {
 		long probeTimestamp = System.currentTimeMillis();
 		results.add(probeTimestamp);
 		try {
+			Logit.LogCheck("Checking RBL: "+invertIPAddress(ip) + "." + RBL);
 			InetAddress.getByName(invertIPAddress(ip) + "." + RBL);
 			results.add(true);
 		} catch (UnknownHostException e) {
