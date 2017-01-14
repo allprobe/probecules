@@ -13,6 +13,7 @@ import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
 import org.snmp4j.smi.OID;
 import Collectors.SnmpCollector;
+import Collectors.SqlCollector;
 import Elements.BaseElement;
 import Elements.DiskElement;
 import Elements.NicElement;
@@ -47,10 +48,10 @@ import Results.WebResult;
 import Utils.GeneralFunctions;
 import Utils.Logit;
 import lycus.Host;
-//import java.sql.Connection;
-//import java.sql.DriverManager;
-//import java.sql.ResultSet;
-//import java.sql.Statement;
+import java.sql.Connection;
+import java.sql.DriverManager;
+import java.sql.ResultSet;
+import java.sql.Statement;
 
 public class NetResults implements INetResults {
 	private static NetResults netResults = null;
@@ -603,25 +604,34 @@ public class NetResults implements INetResults {
 
 	@Override
 	public SqlResult getSqlResult(Host host, SqlProbe probe) {
-		// try {
-		//// SqlResult sqlResult = new SqlResult(runnableProbeId, timestamp,
-		// sqlResults)
-		// Class.forName("com.microsoft.sqlserver.jdbc.SqlServerDriver");
-		// Connection con = DriverManager
-		// .getConnection("jdbc:sqlserver://Servername;database=LargainDb;" +
-		// "IntegratedSecurity=true;");
-		//
-		// Statement stmt = con.createStatement();
-		// ResultSet rs = stmt.executeQuery(probe.getSql_query());
-		// while (rs.next())
-		// System.out.println(rs.getInt(1) + " " + rs.getString(2) + " " +
-		// rs.getString(3));
-		// con.close();
-		// return null;
-		// } catch (Exception e) {
-		// Logit.LogError("NetResults - getSqlResult",
-		// "Error getting sql results, Probe name: " + probe.getName(), e);
-		// }
+		try {
+			SqlCollector sqlTemplate = host.getSqlCollector();
+			Class.forName("com.mysql.jdbc.Driver").newInstance();
+			Connection con = DriverManager
+					.getConnection("jdbc:mysql://" + host.getHostIp() + ":" + sqlTemplate.getSql_port() + "/mysql", sqlTemplate.getSql_user(),  host.getSqlCollector().getSql_password());
+			
+			Statement stmt = con.createStatement();
+			String sql = "SELECT COUNT(*) AS users FROM mysql.`user`";
+			ResultSet rs = stmt.executeQuery(sql);
+			int index = 1;
+			List<String> results = new ArrayList<String>();
+			while (rs.next())
+			{
+				results.add(rs.getString(index++));
+//				System.out.println(rs.getInt(1) + " " + rs.getString(2) + " " + rs.getString(3));
+			}
+			
+			String[] sqlResults = new String[results.size()];
+			for (int i = 0; i < results.size(); i++)
+				sqlResults[i] = results.get(i);
+			
+			SqlResult result = new SqlResult(getRunnableProbeId(probe, host), sqlTemplate.getTimeout(), sqlResults);
+			con.close();
+			return result;
+		} catch (Exception e) {
+			Logit.LogError("NetResults - getSqlResult", "Error getting sql results, Probe name: " + probe.getName(), e);
+		}
+
 		return null;
 	}
 

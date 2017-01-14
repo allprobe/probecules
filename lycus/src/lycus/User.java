@@ -21,6 +21,7 @@ import Probes.IcmpProbe;
 import Probes.PortProbe;
 import Probes.RBLProbe;
 import Probes.SnmpProbe;
+import Probes.SqlProbe;
 import Probes.TracerouteProbe;
 import Utils.GeneralFunctions;
 import Utils.Logit;
@@ -151,8 +152,9 @@ public class User {
 
 			String sql_template = hostParams.sqlTemplate;
 			SnmpCollector snmpTemplate = (SnmpCollector) this.getCollectors().get(hostParams.snmpTemplate);
-
-			Host host = new Host(host_id, name, ip, snmpTemplate, status, bucket, notif_groups, getUserId().toString());
+			SqlCollector sqlTemplate = (SqlCollector) this.getCollectors().get(hostParams.sqlTemplate);
+			
+			Host host = new Host(host_id, name, ip, snmpTemplate, sqlTemplate, status, bucket, notif_groups, getUserId().toString());
 			addHost(host);
 
 		} catch (Exception e) {
@@ -325,11 +327,11 @@ public class User {
 				break;
 			}
 			case Constants.sql: {
-				int npings = probeParams.npings;
-				int bytes = probeParams.bytes;
+//				int npings = probeParams.npings;
+//				int bytes = probeParams.bytes;
 				int timeout = probeParams.timeout;
-				probe = new IcmpProbe(this, probeId, templateId, name, interval, multiplier, status, timeout, npings,
-						bytes);
+				probe = new SqlProbe(this, probeId, templateId, name, interval, multiplier, status, timeout, probeParams.sql_db,
+						probeParams.sql_query);
 				break;
 			}
 			}

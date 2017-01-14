@@ -5,7 +5,6 @@ import Model.UpdateModel;
 import Model.UpdateValueModel;
 import NetConnection.NetResults;
 import Results.BaseResult;
-import Results.PingResult;
 import Results.SqlResult;
 import Utils.Logit;
 import lycus.Host;

@@ -19,12 +19,13 @@ public class Host {
 	private List<NicElement> nicElements;
 	private String userId;
 
-	public Host(UUID host_id, String name, String host_ip, SnmpCollector snmpTemplate, boolean hostStatus,
+	public Host(UUID host_id, String name, String host_ip, SnmpCollector snmpTemplate, SqlCollector sqlCollector, boolean hostStatus,
 			String bucket, String notificationGroups, String userId) {
 		this.setName(name);
 		this.setHostId(host_id);
 		this.setHostIp(host_ip);
 		this.setSnmpCollector(snmpTemplate);
+		this.setSqlCollector(sqlCollector);
 		this.setHostStatus(hostStatus);
 		this.setBucket(bucket);
 		this.setNotificationGroups(notificationGroups);

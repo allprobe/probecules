@@ -451,6 +451,10 @@ public class UsersManager {
 					probeParams.rbl = (String) probeKeyJson.get("rbl");
 					break;
 				}
+				case Constants.sql: {
+					probeParams.timeout = Integer.parseInt(probeKeyJson.get("timeout").toString());
+					break;
+				}
 				}
 				user.addTemplateProbe(probeParams);
 			} catch (Exception e) {

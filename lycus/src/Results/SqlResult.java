@@ -1,8 +1,8 @@
 package Results;
 
-import org.json.simple.JSONArray;
+import java.io.File;
 
-import GlobalConstants.Constants;
+import org.json.simple.JSONArray;
 import GlobalConstants.ProbeTypes;
 
 public class SqlResult extends BaseResult {
@@ -29,7 +29,11 @@ public class SqlResult extends BaseResult {
 	@Override
 	public Object getResultObject() {
 		JSONArray result = new JSONArray();
-//		result.add(1);
+		for (String res : sqlResults) 
+		{
+			result.add(res);
+		}
+		
 //		if (this.getErrorMessage().equals("")) {
 //			result.add(packetLoss);
 //			result.add(rtt);
