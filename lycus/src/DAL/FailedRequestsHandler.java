@@ -97,7 +97,7 @@ public class FailedRequestsHandler implements IFailedRequestsHandler {
 				}
 				try {
 					if(obj==null)
-						Logit.LogError(" ", failedRequestFile.getAbsolutePath());
+						Logit.LogError("request body is empty for request file: ", failedRequestFile.getAbsolutePath());
 					if (DAL.getInstanece().put(
 							ApiAction.valueOf(FilenameUtils.getExtension(failedRequestFile.getName())), obj) != null)
 						failedRequestFile.delete();
