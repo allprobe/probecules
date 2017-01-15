@@ -58,6 +58,11 @@ public class FailedRequestsHandler implements IFailedRequestsHandler {
 
 			String fileContent = request.getRequestBody().toString();
 
+			if(fileContent==null||fileContent.isEmpty())
+			{	
+				Logit.LogError("FailedRequestsHandler - addRequest", "attempt to add faulty request, body is empty: "+request.toString()+", ignoring...");
+				return;
+			}
 			File file = new File(
 					failedRequestsDir.getName() + "/" + System.currentTimeMillis() + "." + request.getAction().name());
 
