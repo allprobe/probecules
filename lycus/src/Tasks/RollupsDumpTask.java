@@ -17,27 +17,17 @@ import Rollups.DataPointsRollup;
 
 public class RollupsDumpTask extends BaseTask {
 	private long interval = 30;
-	private boolean isRollupsMerged;
-
-	public boolean isRollupsMerged() {
-		return isRollupsMerged;
-	}
-
-	public void setRollupsMerged(boolean isRollupsMerged) {
-		this.isRollupsMerged = isRollupsMerged;
-	}
 
 	@Override
 	public void run() {
-		if (!this.isRollupsMerged()) // check if existing rollups pulled from
+		if (!RollupsContainer.getInstance().isRollupsMergedAtStart()) // check if existing rollups pulled from
 			// API
 			
 		{
 			if (RollupsContainer.getInstance().mergeExistingRollupsFromMemDump())
-				this.setRollupsMerged(true);
+				RollupsContainer.getInstance().setRollupsMergedAtStart(true);
 			else
-				;
-//				return;
+				return;
 		}
 
 		String rollups = RollupsContainer.getInstance().getAllCurrentLiveRollups();

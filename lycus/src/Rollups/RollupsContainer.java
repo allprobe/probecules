@@ -49,6 +49,7 @@ public class RollupsContainer implements IRollupsContainer {
 
 	private JSONArray finishedRollups = new JSONArray();
 	private Object lockFinishedRollups = new Object();
+	private boolean rollupsMergedAtStart;
 
 	public static RollupsContainer getInstance() {
 		if (instance == null) {
@@ -60,6 +61,9 @@ public class RollupsContainer implements IRollupsContainer {
 	@Override
 	public boolean addResult(BaseResult result) {
 
+		if(!this.isRollupsMergedAtStart())
+			return false;
+		
 		if (result.getRunnableProbeId().contains("discovery_d3c95875-4947-4388-989f-64ffd863c704@dmVuZXQw"))
 			Logit.LogDebug("BREAKPOINT");
 
@@ -76,7 +80,7 @@ public class RollupsContainer implements IRollupsContainer {
 		} else if (result instanceof DiskResult) {
 			addDiskResult(result);
 		}
-		return false;
+		return true;
 	}
 
 	@Override
@@ -599,6 +603,14 @@ public class RollupsContainer implements IRollupsContainer {
 				}
 			}
 		}
+	}
+
+	public boolean isRollupsMergedAtStart() {
+		return rollupsMergedAtStart;
+	}
+
+	public void setRollupsMergedAtStart(boolean rollupsMergedAtStart) {
+		this.rollupsMergedAtStart = rollupsMergedAtStart;
 	}
 
 	// public void clear() {
