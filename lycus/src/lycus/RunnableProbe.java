@@ -220,7 +220,7 @@ public class RunnableProbe implements Runnable {
 			ResultsContainer.getInstance().addResult(result);
 		} catch (Exception e) {
 			Logit.LogError("RunnableProbe - addResult()",
-					"Error processing runnable probe results to results container! " + this.getId());
+					"Error processing runnable probe results to results container! RPID=" + this.getId()+" , RESULT: "+result.toString(),e);
 		}
 	}
 
