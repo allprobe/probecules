@@ -170,7 +170,7 @@ public class DAL implements IDAL {
 		try {
 			response = executePutRequest(conn, reqBody.toJSONString());
 		} catch (Exception e) {
-			Logit.LogFatal("DAL - put", "Failed to request URL: " + fullUrl + ", E: " + e.getMessage(), e);
+			Logit.LogWarn("Failed to request URL: " + fullUrl + ", E: " + e.getMessage());
 			return null;
 
 		} finally {

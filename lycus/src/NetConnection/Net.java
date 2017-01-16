@@ -1436,10 +1436,10 @@ public class Net {
 
 			results.add(true);
 		} catch (UnknownHostException e) {
-			Logit.LogCheck("UnknownHostException: "+GeneralFunctions.invertIPAddress(ip) + "." + RBL);
+			Logit.LogCheck("Results RBL: "+GeneralFunctions.invertIPAddress(ip) + "." + RBL+", are: No record found.");
 			results.add(false);
 		} catch (Exception e2) {
-			Logit.LogCheck("OtherException: "+GeneralFunctions.invertIPAddress(ip) + "." + RBL);
+			Logit.LogError("Net - RBLCheck","OtherException: "+GeneralFunctions.invertIPAddress(ip) + "." + RBL,e2);
 			results.add(false);
 		}
 		return results;
