@@ -20,15 +20,15 @@ public class RollupsDumpTask extends BaseTask {
 
 	@Override
 	public void run() {
-//		if (!RollupsContainer.getInstance().isRollupsMergedAtStart()) // check if existing rollups pulled from
-//			// API
-//
-//		{
-//			if (RollupsContainer.getInstance().mergeExistingRollupsFromMemDump())
-//				RollupsContainer.getInstance().setRollupsMergedAtStart(true);
-//			else
-//				return;
-//		}
+		if (!RollupsContainer.getInstance().isRollupsMergedAtStart()) // check if existing rollups pulled from
+			// API
+			
+		{
+			if (RollupsContainer.getInstance().mergeExistingRollupsFromMemDump())
+				RollupsContainer.getInstance().setRollupsMergedAtStart(true);
+			else
+				return;
+		}
 
 		String rollups = RollupsContainer.getInstance().getAllCurrentLiveRollups();
 		

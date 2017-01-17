@@ -61,8 +61,8 @@ public class RollupsContainer implements IRollupsContainer {
 	@Override
 	public boolean addResult(BaseResult result) {
 
-//		if(!this.isRollupsMergedAtStart())
-//			return false;
+		if(!this.isRollupsMergedAtStart())
+			return false;
 		
 		if (result.getRunnableProbeId().contains("discovery_d3c95875-4947-4388-989f-64ffd863c704@dmVuZXQw"))
 			Logit.LogDebug("BREAKPOINT");
