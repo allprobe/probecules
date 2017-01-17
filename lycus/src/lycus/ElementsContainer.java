@@ -40,15 +40,22 @@ public class ElementsContainer {
 		if (discoveryResult == null)
 			return false;
 		if (currentElements == null) {
-			ConcurrentHashMap<String, BaseElement> map = new ConcurrentHashMap<String, BaseElement>(
-					(Map) discoveryResult.getElements());
+			ConcurrentHashMap<String, BaseElement> map;
+			if (discoveryResult.getElements() == null) {
+				map = new ConcurrentHashMap<String, BaseElement>();
+			} else
+				map = new ConcurrentHashMap<String, BaseElement>((Map) discoveryResult.getElements());
 			diskElements.put(discoveryResult.getRunnableProbeId(), map);
 			return true;
 		}
 		Map<String, BaseElement> newElements = discoveryResult.getElements();
 
-		ConcurrentHashMap<String, BaseElement> newMap = new ConcurrentHashMap<String, BaseElement>(
-				(Map) discoveryResult.getElements());
+		ConcurrentHashMap<String, BaseElement> newMap;
+		if (newElements == null) {
+			newMap = new ConcurrentHashMap<String, BaseElement>();
+		} else {
+			newMap = new ConcurrentHashMap<String, BaseElement>((Map) newElements);
+		}
 		updateStatuses(currentElements, newMap);
 		if (currentElements.size() != newElements.size()) {
 			diskElements.put(discoveryResult.getRunnableProbeId(), newMap);
