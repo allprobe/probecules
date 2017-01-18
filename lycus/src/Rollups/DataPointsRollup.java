@@ -14,7 +14,6 @@ public class DataPointsRollup {
 	private double avg;
 	private long endTime;
 
-
 	public DataPointsRollup(String rpID, DataPointsRollupSize timePeriod) {
 		this.setRunnableProbeId(rpID);
 		this.startTime = 0;
@@ -90,7 +89,6 @@ public class DataPointsRollup {
 		this.endTime = endTime;
 	}
 
-
 	public void add(long lastTimestamp, double results) {
 		if (this.getStartTime() == 0) {
 			this.setStartTime(lastTimestamp);
@@ -114,7 +112,6 @@ public class DataPointsRollup {
 		return ((System.currentTimeMillis() - this.getStartTime()) > this.getTimePeriod().getValue())
 				&& (this.getStartTime() != 0);
 	}
-
 
 	public void mergeRollup(DataPointsRollup existing) {
 		long rollupEndTime = existing.getStartTime() + this.getTimePeriod().getValue();

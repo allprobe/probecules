@@ -122,7 +122,6 @@ public class RunnableProbe implements Runnable {
 							"0eb888bc-ba24-49f0-8468-da89ca830c77@discovery_35667a76-cb01-4108-9429-cac2dbcf933e"))
 						Logit.LogDebug("BREAKPOINT - RunnableProbe");
 
-
 					if (rpStr.contains(
 							"15a29f39-5baf-4672-8853-c08b4b247be0@discovery_3ee653fc-adaa-468e-9430-b1793b1d1c7d"))
 						Logit.LogDebug("BREAKPOINT - RunnableProbe");
@@ -132,8 +131,10 @@ public class RunnableProbe implements Runnable {
 						continue;
 
 					long timeStamp = System.currentTimeMillis();
-//					if(getProbe() instanceof RBLProbe)
-//					Logit.LogCheck("Checking RBL: "+GeneralFunctions.invertIPAddress(host.getHostIp()) + "." + ((RBLProbe)getProbe()).getRBL());
+					// if(getProbe() instanceof RBLProbe)
+					// Logit.LogCheck("Checking RBL:
+					// "+GeneralFunctions.invertIPAddress(host.getHostIp()) +
+					// "." + ((RBLProbe)getProbe()).getRBL());
 
 					result = getResult();
 					result = buildErrorResultWhenEmpty(result);
@@ -220,7 +221,9 @@ public class RunnableProbe implements Runnable {
 			ResultsContainer.getInstance().addResult(result);
 		} catch (Exception e) {
 			Logit.LogError("RunnableProbe - addResult()",
-					"Error processing runnable probe results to results container! RPID=" + this.getId()+" , RESULT: "+result.toString(),e);
+					"Error processing runnable probe results to results container! RPID=" + this.getId() + " , RESULT: "
+							+ result.toString(),
+					e);
 		}
 	}
 

@@ -5,9 +5,11 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
 
+import GlobalConstants.Constants;
 import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
 import org.json.simple.parser.JSONParser;
+import org.json.simple.parser.ParseException;
 
 import com.google.common.reflect.TypeToken;
 import com.google.gson.Gson;
@@ -18,6 +20,7 @@ import com.google.gson.JsonParser;
 
 import DAL.DAL;
 import GlobalConstants.DataPointsRollupSize;
+import GlobalConstants.DataPointsRollupType;
 import GlobalConstants.Enums;
 import GlobalConstants.Enums.SnmpError;
 import Interfaces.IRollupsContainer;
@@ -36,6 +39,7 @@ import lycus.RunnableProbeContainer;
 public class RollupsContainer implements IRollupsContainer {
 
 	private static RollupsContainer instance;
+
 	private HashMap<String, DataPointsRollup[]> packetLossRollups = new HashMap<String, DataPointsRollup[]>();
 	private HashMap<String, DataPointsRollup[]> rttRollups = new HashMap<String, DataPointsRollup[]>();
 	private HashMap<String, DataPointsRollup[]> portResponseTimeRollups = new HashMap<String, DataPointsRollup[]>();
@@ -61,9 +65,9 @@ public class RollupsContainer implements IRollupsContainer {
 	@Override
 	public boolean addResult(BaseResult result) {
 
-		if(!this.isRollupsMergedAtStart())
-			return false;
-		
+		// if (!this.isRollupsMergedAtStart())
+		// return false;
+
 		if (result.getRunnableProbeId().contains("discovery_d3c95875-4947-4388-989f-64ffd863c704@dmVuZXQw"))
 			Logit.LogDebug("BREAKPOINT");
 
@@ -104,21 +108,39 @@ public class RollupsContainer implements IRollupsContainer {
 	public synchronized String getAllCurrentLiveRollups() {
 		JSONObject rollups = new JSONObject();
 
-		rollups.put("packetLossRollups", JsonUtil.ToJson(packetLossRollups));
-		rollups.put("rttRollups", JsonUtil.ToJson(rttRollups));
-		rollups.put("portResponseTimeRollups", JsonUtil.ToJson(portResponseTimeRollups));
-		rollups.put("webResponseTimeRollups", JsonUtil.ToJson(webResponseTimeRollups));
-		rollups.put("snmpDataRollups", JsonUtil.ToJson(snmpDataRollups));
-		rollups.put("nicInDataRollups", JsonUtil.ToJson(nicInDataRollups));
-		rollups.put("nicOutDataRollups", JsonUtil.ToJson(nicOutDataRollups));
-		rollups.put("diskSizeDataRollups", JsonUtil.ToJson(diskSizeDataRollups));
-		rollups.put("diskUsedDataRollups", JsonUtil.ToJson(diskUsedDataRollups));
+		for (DataPointsRollupType rollupType : DataPointsRollupType.values()) {
+			rollups.put(rollupType.name(), JsonUtil.ToJson(getRollupsTable(rollupType)));
+		}
 
 		if (rollups.toString()
 				.contains("788b1b9e-d753-4dfa-ac46-61c4374eeb84@inner_7be55137-c5d8-438e-bca7-325f56656071"))
 			Logit.LogDebug("BREAKPOINT");
 
 		return rollups.toString();
+	}
+
+	private HashMap<String, DataPointsRollup[]> getRollupsTable(DataPointsRollupType rollupType) {
+		switch (rollupType) {
+		case packetLoss:
+			return this.packetLossRollups;
+		case rtt:
+			return this.rttRollups;
+		case webResponseTime:
+			return this.webResponseTimeRollups;
+		case snmpData:
+			return this.snmpDataRollups;
+		case portResponseTime:
+			return this.portResponseTimeRollups;
+		case nicInData:
+			return this.nicInDataRollups;
+		case nicOutData:
+			return this.nicOutDataRollups;
+		case diskSize:
+			return this.diskSizeDataRollups;
+		case diskUsed:
+			return this.diskSizeDataRollups;
+		}
+		return null;
 	}
 
 	private void addFinished(int i, DataPointsRollup[] rolups) {
@@ -521,52 +543,38 @@ public class RollupsContainer implements IRollupsContainer {
 			return false;
 		}
 
-		JSONObject pakcketLossRollupsJson = null;
-		JSONObject rttRollupsJson = null;
-		JSONObject portResponseTimeRollupsJson = null;
-		JSONObject webResponseTimeRollupsJson = null;
-		JSONObject snmpDataRollupsJson = null;
+		Type rollupsMapType = new TypeToken<HashMap<String, DataPointsRollup[]>>() {
+		}.getType();
 
-		try {
-			pakcketLossRollupsJson = (JSONObject) jsonParser.parse((String) rollupsJson.get("packetLossRollups"));
-			rttRollupsJson = (JSONObject) jsonParser.parse((String) rollupsJson.get("rttRollups"));
-			portResponseTimeRollupsJson = (JSONObject) jsonParser
-					.parse((String) rollupsJson.get("portResponseTimeRollups"));
-			webResponseTimeRollupsJson = (JSONObject) jsonParser
-					.parse((String) rollupsJson.get("webResponseTimeRollups"));
-			snmpDataRollupsJson = (JSONObject) jsonParser.parse((String) rollupsJson.get("snmpDataRollups"));
-		} catch (Exception e) {
-			Logit.LogError("RollupsContainer - mergeExistingRollupsFromMemDump",
-					"Unable to parse rollups dump to JSON objects. E: " + e.getMessage());
-			return false;
+		for (DataPointsRollupType rollupType : DataPointsRollupType.values()) {
+			JSONObject rollupsJsonSpecificType = null;
+			HashMap<String, DataPointsRollup[]> rollupsDumpSpecificType;
+			try {
+				String jsonString = (String) rollupsJson.get(rollupType.name());
+				if (jsonString == null)
+					continue;
+				rollupsJsonSpecificType = (JSONObject) jsonParser.parse((String) rollupsJson.get(rollupType.name()));
+			} catch (ParseException e) {
+				Logit.LogError("RollupsContainer - mergeExistingRollupsFromMemDump()",
+						"Error parsing rollups from type " + rollupType.name() + " json string is: "
+								+ (String) rollupsJson.get(rollupType.name()));
+				continue;
+			} catch (Exception e1) {
+				e1.printStackTrace();
+				Logit.LogError("RollupsContainer - mergeExistingRollupsFromMemDump()",
+						"Error parsing rollups from type " + rollupType.name() + " json string is: "
+								+ (String) rollupsJson.get(rollupType.name()));
+				continue;
+			}
+			try {
+				rollupsDumpSpecificType = JsonUtil.ToObject(rollupsJsonSpecificType, rollupsMapType);
+			} catch (Exception e) {
+				Logit.LogError("RollupsContainer - mergeExistingRollupsFromMemDump",
+						"Unable to parse rollups dump to JSON objects. E: " + e.getMessage());
+				continue;
+			}
+			this.mergeRollups(rollupsDumpSpecificType, getRollupsTable(rollupType));
 		}
-		HashMap<String, DataPointsRollup[]> packetLossRollupsFromDump;
-		HashMap<String, DataPointsRollup[]> rttRollupsFromDump;
-		HashMap<String, DataPointsRollup[]> portResponseTimeRollupsFromDump;
-		HashMap<String, DataPointsRollup[]> webResponseTimeRollupsFromDump;
-		HashMap<String, DataPointsRollup[]> snmpDataRollupsFromDump;
-		try {
-			Type rollupsMapType = new TypeToken<HashMap<String, DataPointsRollup[]>>() {
-			}.getType();
-
-			packetLossRollupsFromDump = JsonUtil.ToObject(pakcketLossRollupsJson, rollupsMapType);
-			rttRollupsFromDump = JsonUtil.ToObject(rttRollupsJson, rollupsMapType);
-			portResponseTimeRollupsFromDump = JsonUtil.ToObject(portResponseTimeRollupsJson, rollupsMapType);
-			webResponseTimeRollupsFromDump = JsonUtil.ToObject(webResponseTimeRollupsJson, rollupsMapType);
-			snmpDataRollupsFromDump = JsonUtil.ToObject(snmpDataRollupsJson, rollupsMapType);
-
-		} catch (Exception e) {
-			Logit.LogError("RollupsContainer - mergeExistingRollupsFromMemDump",
-					"Unable to parse rollups dump to JSON objects. E: " + e.getMessage());
-			return false;
-
-		}
-
-		this.mergeRollups(packetLossRollupsFromDump, packetLossRollups);
-		this.mergeRollups(rttRollupsFromDump, rttRollups);
-		this.mergeRollups(portResponseTimeRollupsFromDump, portResponseTimeRollups);
-		this.mergeRollups(webResponseTimeRollupsFromDump, webResponseTimeRollups);
-		this.mergeRollups(snmpDataRollupsFromDump, snmpDataRollups);
 
 		return true;
 	}

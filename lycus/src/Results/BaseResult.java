@@ -196,33 +196,33 @@ public class BaseResult implements IResult {
 			values.add(((PingResult) this).getPacketLost());
 			break;
 		case DFDS:
-			if(!this.getErrorMessage().equals(Enums.SnmpError.NO_COMUNICATION.name()))
-			values.add(((DiskResult) this).getStorageFree());
+			if (!this.getErrorMessage().equals(Enums.SnmpError.NO_COMUNICATION.name()))
+				values.add(((DiskResult) this).getStorageFree());
 			break;
 		case DUDS:
-			if(!this.getErrorMessage().equals(Enums.SnmpError.NO_COMUNICATION.name()))
+			if (!this.getErrorMessage().equals(Enums.SnmpError.NO_COMUNICATION.name()))
 				values.add(((DiskResult) this).getStorageUsed());
 			break;
 		case DTDS:
-			if(!this.getErrorMessage().equals(Enums.SnmpError.NO_COMUNICATION.name()))
+			if (!this.getErrorMessage().equals(Enums.SnmpError.NO_COMUNICATION.name()))
 				values.add(((DiskResult) this).getStorageSize());
 			break;
 		case DPFDS:
-			if(!this.getErrorMessage().equals(Enums.SnmpError.NO_COMUNICATION.name()))
+			if (!this.getErrorMessage().equals(Enums.SnmpError.NO_COMUNICATION.name()))
 				values.add(((DiskResult) this).getStorageFreePercentage());
 			break;
 		case DPUDS:
-			if(!this.getErrorMessage().equals(Enums.SnmpError.NO_COMUNICATION.name()))
+			if (!this.getErrorMessage().equals(Enums.SnmpError.NO_COMUNICATION.name()))
 				values.add(((DiskResult) this).getStorageUsedPercentage());
 			break;
 		case DBI:
 			Long inBW = ((NicResult) this).getInBW();
-			if(inBW != null)
-			values.add(inBW);
+			if (inBW != null)
+				values.add(inBW);
 			break;
 		case DBO:
 			Long outBW = ((NicResult) this).getOutBW();
-			if(outBW != null)
+			if (outBW != null)
 				values.add(outBW);
 			break;
 		case WSERT:

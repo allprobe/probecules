@@ -58,9 +58,9 @@ public class FailedRequestsHandler implements IFailedRequestsHandler {
 
 			String fileContent = request.getRequestBody().toString();
 
-			if(fileContent==null||fileContent.isEmpty())
-			{	
-				Logit.LogError("FailedRequestsHandler - addRequest", "attempt to add faulty request, body is empty: "+request.toString()+", ignoring...");
+			if (fileContent == null || fileContent.isEmpty()) {
+				Logit.LogError("FailedRequestsHandler - addRequest",
+						"attempt to add faulty request, body is empty: " + request.toString() + ", ignoring...");
 				return;
 			}
 			File file = new File(
@@ -88,11 +88,11 @@ public class FailedRequestsHandler implements IFailedRequestsHandler {
 		Logit.LogInfo("Executing failed requests.");
 
 		synchronized (lockFiles) {
-		if (this.getNumberOfFailedRequests() == 0)
-			return;
-		List<File> files = getFilesOrganized();
-		for (final File failedRequestFile : files) {
-			JSONObject obj = null;
+			if (this.getNumberOfFailedRequests() == 0)
+				return;
+			List<File> files = getFilesOrganized();
+			for (final File failedRequestFile : files) {
+				JSONObject obj = null;
 				try {
 					obj = (JSONObject) new JSONParser()
 							.parse(new String(Files.readAllBytes(failedRequestFile.toPath())));
@@ -101,7 +101,7 @@ public class FailedRequestsHandler implements IFailedRequestsHandler {
 							"Unable to read failed api request file! E: " + e.getMessage());
 				}
 				try {
-					if(obj==null)
+					if (obj == null)
 						Logit.LogError("request body is empty for request file: ", failedRequestFile.getAbsolutePath());
 					if (DAL.getInstanece().put(
 							ApiAction.valueOf(FilenameUtils.getExtension(failedRequestFile.getName())), obj) != null)

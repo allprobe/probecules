@@ -239,7 +239,7 @@ public class UsersManager {
 					collectorParams.sql_type = (String) collectorJson.get("sql_type");
 					collectorParams.sql_password = (String) collectorJson.get("sql_password");
 					collectorParams.sql_port = Integer.parseInt(collectorJson.get("sql_port").toString());
-					
+
 					User user = getUsers().get(UUID.fromString(collectorParams.user_id));
 					if (user == null)
 						continue;
@@ -599,17 +599,19 @@ public class UsersManager {
 			UUID userID = rp.getValue();
 			String rpID = rp.getKey();
 
-//			if (rpID.contains("e2db0595-5fd9-4fe2-9004-eed959cfa6b0@9dc99972-e28a-4e90-aabd-7e8bad61b232@rbl_0f6fff1a-e2fa-499e-a44c-c2caf04fd811"))
-//				Logit.LogCheck("RRBBLL");
+			// if
+			// (rpID.contains("e2db0595-5fd9-4fe2-9004-eed959cfa6b0@9dc99972-e28a-4e90-aabd-7e8bad61b232@rbl_0f6fff1a-e2fa-499e-a44c-c2caf04fd811"))
+			// Logit.LogCheck("RRBBLL");
 
 			User u = getUsers().get(userID);
 			Host host = u.getHosts().get(UUID.fromString(rpID.split("@")[1]));
 			BaseProbe probe = u.getTemplateProbes().get(rpID.split("@")[2]);
 
-//			if(probe instanceof RBLProbe)
-//				Logit.LogCheck("Checking RBL: "+GeneralFunctions.invertIPAddress(host.getHostIp()) + "." + ((RBLProbe)probe).getRBL());
+			// if(probe instanceof RBLProbe)
+			// Logit.LogCheck("Checking RBL:
+			// "+GeneralFunctions.invertIPAddress(host.getHostIp()) + "." +
+			// ((RBLProbe)probe).getRBL());
 
-			
 			if (host == null || probe == null) {
 				Logit.LogWarn("Unable to initiate RunnableProbe, one of its elements is missing! ID: " + rpID);
 				continue;

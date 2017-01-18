@@ -252,8 +252,10 @@ public class NetResults implements INetResults {
 
 	@Override
 	public RblResult getRblResult(Host host, RBLProbe probe) {
-		
-//		Logit.LogCheck("Checking RBL: "+GeneralFunctions.invertIPAddress(host.getHostIp()) + "." + probe.getRBL());
+
+		// Logit.LogCheck("Checking RBL:
+		// "+GeneralFunctions.invertIPAddress(host.getHostIp()) + "." +
+		// probe.getRBL());
 
 		ArrayList<Object> rawResults = Net.RBLCheck(host.getHostIp(), probe.getRBL());
 		if (rawResults == null || rawResults.size() == 0)
@@ -423,8 +425,9 @@ public class NetResults implements INetResults {
 
 		int snmpVersion = snmpTemplate.getVersion();
 		if (snmpVersion == 2) {
-			hrStorageResults = Net.Snmp2Walk(host.getHostIp(), snmpTemplate.getPort(), host.getSnmpCollector().getTimeout(),
-					snmpTemplate.getCommunityName(), Constants.storageAll.toString());
+			hrStorageResults = Net.Snmp2Walk(host.getHostIp(), snmpTemplate.getPort(),
+					host.getSnmpCollector().getTimeout(), snmpTemplate.getCommunityName(),
+					Constants.storageAll.toString());
 		} else if (snmpVersion == 3) {
 			hrStorageResults = Net.Snmp3Walk(host.getHostIp(), snmpTemplate.getPort(), snmpTemplate.getTimeout(),
 					snmpTemplate.getName(), snmpTemplate.getAuthPass(), snmpTemplate.getAlgo(),
@@ -448,16 +451,17 @@ public class NetResults implements INetResults {
 		SnmpCollector snmpTemplate = (SnmpCollector) host.getSnmpCollector();
 		int snmpVersion = snmpTemplate.getVersion();
 		if (snmpVersion == 2) {
-			ifDescrResults = Net.Snmp2Walk(host.getHostIp(), snmpTemplate.getPort(), host.getSnmpCollector().getTimeout(),
-					snmpTemplate.getCommunityName(), Constants.ifAll.toString());
+			ifDescrResults = Net.Snmp2Walk(host.getHostIp(), snmpTemplate.getPort(),
+					host.getSnmpCollector().getTimeout(), snmpTemplate.getCommunityName(), Constants.ifAll.toString());
 			ArrayList<OID> oids = new ArrayList<OID>();
 			oids.add(Constants.sysDescr);
 			sysDescrResults = Net.Snmp2GETBULK(host.getHostIp(), snmpTemplate.getPort(),
 					host.getSnmpCollector().getTimeout(), snmpTemplate.getCommunityName(), oids);
 		} else if (snmpVersion == 3) {
-			ifDescrResults = Net.Snmp3Walk(host.getHostIp(), snmpTemplate.getPort(), host.getSnmpCollector().getTimeout(),
-					snmpTemplate.getUserName(), snmpTemplate.getAuthPass(), snmpTemplate.getAlgo(),
-					snmpTemplate.getCryptPass(), snmpTemplate.getCryptType(), Constants.ifAll.toString());
+			ifDescrResults = Net.Snmp3Walk(host.getHostIp(), snmpTemplate.getPort(),
+					host.getSnmpCollector().getTimeout(), snmpTemplate.getUserName(), snmpTemplate.getAuthPass(),
+					snmpTemplate.getAlgo(), snmpTemplate.getCryptPass(), snmpTemplate.getCryptType(),
+					Constants.ifAll.toString());
 			ArrayList<OID> oids = new ArrayList<OID>();
 			oids.add(Constants.sysDescr);
 			sysDescrResults = Net.Snmp3GETBULK(host.getHostIp(), snmpTemplate.getPort(), snmpTemplate.getTimeout(),
@@ -599,22 +603,25 @@ public class NetResults implements INetResults {
 
 	@Override
 	public SqlResult getSqlResult(Host host, SqlProbe probe) {
-//		try {
-////			SqlResult sqlResult = new SqlResult(runnableProbeId, timestamp, sqlResults)
-//			Class.forName("com.microsoft.sqlserver.jdbc.SqlServerDriver");
-//			Connection con = DriverManager
-//					.getConnection("jdbc:sqlserver://Servername;database=LargainDb;" + "IntegratedSecurity=true;");
-//
-//			Statement stmt = con.createStatement();
-//			ResultSet rs = stmt.executeQuery(probe.getSql_query());
-//			while (rs.next())
-//				System.out.println(rs.getInt(1) + " " + rs.getString(2) + " " + rs.getString(3));
-//			con.close();
-//			return null;
-//		} catch (Exception e) {
-//			Logit.LogError("NetResults - getSqlResult",
-//					"Error getting sql results, Probe name: " + probe.getName(), e);
-//		}
+		// try {
+		//// SqlResult sqlResult = new SqlResult(runnableProbeId, timestamp,
+		// sqlResults)
+		// Class.forName("com.microsoft.sqlserver.jdbc.SqlServerDriver");
+		// Connection con = DriverManager
+		// .getConnection("jdbc:sqlserver://Servername;database=LargainDb;" +
+		// "IntegratedSecurity=true;");
+		//
+		// Statement stmt = con.createStatement();
+		// ResultSet rs = stmt.executeQuery(probe.getSql_query());
+		// while (rs.next())
+		// System.out.println(rs.getInt(1) + " " + rs.getString(2) + " " +
+		// rs.getString(3));
+		// con.close();
+		// return null;
+		// } catch (Exception e) {
+		// Logit.LogError("NetResults - getSqlResult",
+		// "Error getting sql results, Probe name: " + probe.getName(), e);
+		// }
 		return null;
 	}
 

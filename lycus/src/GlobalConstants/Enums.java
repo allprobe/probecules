@@ -89,7 +89,7 @@ public class Enums {
 	public static enum CollectorType {
 		Snmp, Sql
 	}
-	
+
 	public static enum LastType {
 		N, // Last-N
 		P, // Last-Period

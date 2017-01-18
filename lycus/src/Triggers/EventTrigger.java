@@ -105,14 +105,14 @@ public class EventTrigger {
 	}
 
 	public void appendSubType(Event eventExist) {
-		RunnableProbe runnableProbe= RunnableProbeContainer.getInstanece().get(runnableProbeId);
+		RunnableProbe runnableProbe = RunnableProbeContainer.getInstanece().get(runnableProbeId);
 		if ((runnableProbe.getProbe() instanceof NicProbe)) {
-            NicElement element = ((NicProbe) runnableProbe.getProbe()).getNicElement();
-            eventExist.setSubType("nic-element@" + GeneralFunctions.Base64Encode(element.getName()));
-        } else if ((runnableProbe.getProbe() instanceof DiskProbe)) {
-            DiskElement element = ((DiskProbe) runnableProbe.getProbe()).getDiskElement();
-            eventExist.setSubType("disk-element@" + GeneralFunctions.Base64Encode(element.getName()));
-        }
+			NicElement element = ((NicProbe) runnableProbe.getProbe()).getNicElement();
+			eventExist.setSubType("nic-element@" + GeneralFunctions.Base64Encode(element.getName()));
+		} else if ((runnableProbe.getProbe() instanceof DiskProbe)) {
+			DiskElement element = ((DiskProbe) runnableProbe.getProbe()).getDiskElement();
+			eventExist.setSubType("disk-element@" + GeneralFunctions.Base64Encode(element.getName()));
+		}
 	}
 
 	public boolean removeEvent(String triggerId) {

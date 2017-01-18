@@ -150,7 +150,7 @@ public class User {
 			}
 
 			String sql_template = hostParams.sqlTemplate;
-			SnmpCollector snmpTemplate = (SnmpCollector)this.getCollectors().get(hostParams.snmpTemplate);
+			SnmpCollector snmpTemplate = (SnmpCollector) this.getCollectors().get(hostParams.snmpTemplate);
 
 			Host host = new Host(host_id, name, ip, snmpTemplate, status, bucket, notif_groups, getUserId().toString());
 			addHost(host);
@@ -193,21 +193,21 @@ public class User {
 	public void addSqlTemplate(CollectorParams snmpCollectorParams) {
 		try {
 			// UUID userId = UUID.fromString(snmpTemplateParams.user_id);
-			
+
 			// Complete add.
 			String collectorId = snmpCollectorParams.id;
 			String name = snmpCollectorParams.name;
 			String user_id = snmpCollectorParams.user_id;
 			Integer timeout = snmpCollectorParams.timeout;
-			
+
 			String sql_sec = snmpCollectorParams.sql_sec;
 			String sql_user = snmpCollectorParams.sql_user;
 			String sql_password = snmpCollectorParams.sql_password;
 			Integer sql_port = snmpCollectorParams.sql_port;
 			String sql_type = snmpCollectorParams.sql_type;
-			
-			SqlCollector sqlCollector = new SqlCollector(collectorId, name, user_id, timeout, sql_port, sql_sec, sql_user, sql_type,
-					sql_password);
+
+			SqlCollector sqlCollector = new SqlCollector(collectorId, name, user_id, timeout, sql_port, sql_sec,
+					sql_user, sql_type, sql_password);
 
 			this.getCollectors().put(sqlCollector.getId(), sqlCollector);
 
@@ -215,7 +215,7 @@ public class User {
 			Logit.LogWarn("Unable to add SNMP Template: " + snmpCollectorParams.id.toString() + " , not added!");
 		}
 	}
-	
+
 	public boolean removeTemplateProbe(String templateId) {
 		templateProbes.remove(templateId);
 		return true;
