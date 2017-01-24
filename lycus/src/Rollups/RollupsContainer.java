@@ -54,6 +54,7 @@ public class RollupsContainer implements IRollupsContainer {
 	private JSONArray finishedRollups = new JSONArray();
 	private Object lockFinishedRollups = new Object();
 	private boolean rollupsMergedAtStart;
+//	private Object lockRollupsTable = new Object();
 
 	public static RollupsContainer getInstance() {
 		if (instance == null) {
@@ -581,33 +582,35 @@ public class RollupsContainer implements IRollupsContainer {
 
 	private void mergeRollups(HashMap<String, DataPointsRollup[]> rollupsFromDump,
 			HashMap<String, DataPointsRollup[]> currentRollups) {
-		for (Map.Entry<String, DataPointsRollup[]> runnableProbeIdRollups : rollupsFromDump.entrySet()) {
+		synchronized (currentRollups) {
+			for (Map.Entry<String, DataPointsRollup[]> runnableProbeIdRollups : rollupsFromDump.entrySet()) {
 
-			if (runnableProbeIdRollups.getKey()
-					.contains("788b1b9e-d753-4dfa-ac46-61c4374eeb84@inner_7be55137-c5d8-438e-bca7-325f56656071")) {
-				Logit.LogDebug("BREAKPOINT");
-			}
-			DataPointsRollup dumpRollups[] = new DataPointsRollup[6];
-			DataPointsRollup[] existingRollups = new DataPointsRollup[6];
-			try {
-				dumpRollups = runnableProbeIdRollups.getValue();
-				existingRollups = currentRollups.get(runnableProbeIdRollups.getKey());
-			} catch (Exception e) {
-				Logit.LogDebug("BREAKPOINT");
-				continue;
-			}
-			if (dumpRollups == null || existingRollups == null)
-				continue;
-			else {
-				for (int i = 0; i < dumpRollups.length; i++) {
-					if (dumpRollups[i] != null && existingRollups[i] == null)
-						existingRollups[i] = dumpRollups[i];
-					else if (dumpRollups[i] == null && existingRollups[i] != null)
-						continue;
-					else if (dumpRollups[i] == null && existingRollups[i] == null)
-						continue;
-					else
-						existingRollups[i].mergeRollup(dumpRollups[i]);
+				if (runnableProbeIdRollups.getKey()
+						.contains("788b1b9e-d753-4dfa-ac46-61c4374eeb84@inner_7be55137-c5d8-438e-bca7-325f56656071")) {
+					Logit.LogDebug("BREAKPOINT");
+				}
+				DataPointsRollup dumpRollups[] = new DataPointsRollup[6];
+				DataPointsRollup[] existingRollups = new DataPointsRollup[6];
+				try {
+					dumpRollups = runnableProbeIdRollups.getValue();
+					existingRollups = currentRollups.get(runnableProbeIdRollups.getKey());
+				} catch (Exception e) {
+					Logit.LogDebug("BREAKPOINT");
+					continue;
+				}
+				if (dumpRollups == null || existingRollups == null)
+					continue;
+				else {
+					for (int i = 0; i < dumpRollups.length; i++) {
+						if (dumpRollups[i] != null && existingRollups[i] == null)
+							existingRollups[i] = dumpRollups[i];
+						else if (dumpRollups[i] == null && existingRollups[i] != null)
+							continue;
+						else if (dumpRollups[i] == null && existingRollups[i] == null)
+							continue;
+						else
+							existingRollups[i].mergeRollup(dumpRollups[i]);
+					}
 				}
 			}
 		}
