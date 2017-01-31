@@ -13,7 +13,7 @@ public class Logit {
 	// static Logger log = Logger.getLogger("");
 	// static Logger log = LogManager.getLogger("syslog-debug");
 	static Logger log = LogManager.getRootLogger();
-	static boolean isDebug = false;
+	static boolean isDebug = true;
 	static boolean isInfo = false;
 	static boolean isWarn = false;
 	static boolean isCheck = true;
