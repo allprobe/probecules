@@ -13,7 +13,7 @@ public class Logit {
 	// static Logger log = Logger.getLogger("");
 	// static Logger log = LogManager.getLogger("syslog-debug");
 	static Logger log = LogManager.getRootLogger();
-	static boolean isDebug = true;
+	private static boolean isDebug = true;
 	static boolean isInfo = false;
 	static boolean isWarn = false;
 	static boolean isCheck = true;
@@ -27,7 +27,7 @@ public class Logit {
 	}
 
 	public static void LogDebug(String message) {
-		if (log.isDebugEnabled() && isDebug)
+		if (log.isDebugEnabled() && isDebug())
 			log.debug(formatMessage(message));
 	}
 
@@ -88,4 +88,9 @@ public class Logit {
 	public static void LogTrace(String message) {
 		log.trace(formatMessage(message));
 	}
+
+	public static boolean isDebug() {
+		return isDebug;
+	}
+
 }
