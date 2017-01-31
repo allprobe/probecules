@@ -1,6 +1,8 @@
 package Results;
 
 import org.json.simple.JSONArray;
+import org.json.simple.JSONObject;
+
 import GlobalConstants.ProbeTypes;
 
 public class PortResult extends BaseResult {
@@ -21,9 +23,8 @@ public class PortResult extends BaseResult {
 	public boolean isActive() {
 		return portStatus > 0;
 	}
-	
-	public Integer getPortStatus()
-	{
+
+	public Integer getPortStatus() {
 		return this.portStatus;
 	}
 
@@ -51,4 +52,18 @@ public class PortResult extends BaseResult {
 
 		return result;
 	}
+
+	@Override
+	public String toString() {
+		String resultString = "";
+		resultString += super.toString();
+		JSONObject resultJson = new JSONObject();
+		resultJson.put("portStatus", this.portStatus);
+		resultJson.put("responseTime", this.responseTime);
+		resultJson.put("resultType", ProbeTypes.PORT.name());
+		resultString += resultJson.toJSONString();
+		return resultString;
+
+	}
+
 }

@@ -31,10 +31,17 @@ public class EventTrigger {
 			for (Trigger trigger : probe.getTriggers().values()) {
 				try {
 					if (trigger.getStatus()) {
-						if (isConditionMet(result, trigger))
+						Logit.LogDebug("Checking condition for RPID: " + result.getRunnableProbeId() + " ,result are: "
+								+ result.toString());
+						if (isConditionMet(result, trigger)) {
+							Logit.LogDebug(
+									"Result condition for RPID: " + result.getRunnableProbeId() + ", condition met.");
 							triggerEvent(trigger);
-						else
+						} else {
+							Logit.LogDebug("Result condition for RPID: " + result.getRunnableProbeId()
+									+ ", condition didn't met.");
 							cancelEvent(trigger);
+						}
 					}
 				} catch (Exception e) {
 					Logit.LogError("EventTrigger - addResult()", "Error, checking trigger: name = " + trigger.getName()
