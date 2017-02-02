@@ -32,6 +32,7 @@ public class ProbeParams {
 	//SQL
 	public String sql_query;
 	public String sql_db;
+	public String[] sql_fields;
 	
 	// Discovery
 	public String discovery_type;

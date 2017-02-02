@@ -452,6 +452,9 @@ public class UsersManager {
 					break;
 				}
 				case Constants.sql: {
+					probeParams.sql_db = probeKeyJson.get("sql_db").toString();
+//					probeParams.sql_fields = probeKeyJson.get("sql_fields");
+					probeParams.sql_query = GeneralFunctions.Base64Decode(probeKeyJson.get("sql_query").toString());
 					probeParams.timeout = Integer.parseInt(probeKeyJson.get("timeout").toString());
 					break;
 				}

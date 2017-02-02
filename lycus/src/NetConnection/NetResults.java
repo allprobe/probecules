@@ -608,10 +608,11 @@ public class NetResults implements INetResults {
 			SqlCollector sqlTemplate = host.getSqlCollector();
 			Class.forName("com.mysql.jdbc.Driver").newInstance();
 			Connection con = DriverManager
-					.getConnection("jdbc:mysql://" + host.getHostIp() + ":" + sqlTemplate.getSql_port() + "/mysql", sqlTemplate.getSql_user(),  host.getSqlCollector().getSql_password());
+					.getConnection("jdbc:mysql://" + host.getHostIp() + ":" + sqlTemplate.getSql_port() + "/" + probe.getSql_db(), sqlTemplate.getSql_user(),  host.getSqlCollector().getSql_password());
 			
 			Statement stmt = con.createStatement();
-			String sql = "SELECT COUNT(*) AS users FROM mysql.`user`";
+			String sql = probe.getSql_query();
+//			String sql = "SELECT COUNT(*) AS users FROM mysql.`user`";
 			ResultSet rs = stmt.executeQuery(sql);
 			int index = 1;
 			List<String> results = new ArrayList<String>();
