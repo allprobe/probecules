@@ -616,7 +616,7 @@ public class NetResults implements INetResults {
 			int index = 1;
 			List<String> results = new ArrayList<String>();
 			while (rs.next())
-			{
+			{ 
 				results.add(rs.getString(index++));
 //				System.out.println(rs.getInt(1) + " " + rs.getString(2) + " " + rs.getString(3));
 			}
