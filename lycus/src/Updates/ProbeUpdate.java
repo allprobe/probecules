@@ -54,7 +54,7 @@ public class ProbeUpdate extends BaseUpdate {
 				Logit.LogError("ProbeUpdate - New()", "Failed update from type NEW PROBE - unknown host");
 				return false;
 			}
-
+ 
 			if (!getUser().isProbeExist(getUpdate().probe_id)) {
 				ProbeParams probeParams = new ProbeParams();
 				probeParams.template_id = getUpdate().template_id;

@@ -30,7 +30,7 @@ public class RunnableProbe implements Runnable {
 	private EventTrigger eventTrigger;
 
 	public RunnableProbe(Host host, BaseProbe probe) {
-		this.setHost(host);
+		this.setHost(host); 
 		this.setProbe(probe);
 		this.setRunning(true);
 		this.setActive(true);

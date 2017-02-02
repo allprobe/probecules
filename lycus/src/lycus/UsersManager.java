@@ -51,7 +51,7 @@ public class UsersManager {
 	// static Logger log = Logger.getLogger(UsersManager.class);
 
 	public static void Initialize() {
-		BasicConfigurator.configure();
+		BasicConfigurator.configure(); 
 
 		setUsers(new HashMap<UUID, User>());
 		if (!UsersManager.Build()) {

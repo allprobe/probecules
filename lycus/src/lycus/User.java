@@ -156,7 +156,7 @@ public class User {
 			
 			Host host = new Host(host_id, name, ip, snmpTemplate, sqlTemplate, status, bucket, notif_groups, getUserId().toString());
 			addHost(host);
-
+ 
 		} catch (Exception e) {
 			Logit.LogWarn("Creation of Host Failed: " + hostParams + " , not added! E: " + e.getMessage());
 		}

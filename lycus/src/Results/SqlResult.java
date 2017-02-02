@@ -31,15 +31,8 @@ public class SqlResult extends BaseResult {
 		JSONArray result = new JSONArray();
 		for (String res : sqlResults) 
 		{
-			result.add(res);
+			result.add(res);  
 		}
-		
-//		if (this.getErrorMessage().equals("")) {
-//			result.add(packetLoss);
-//			result.add(rtt);
-//			result.add(ttl);
-//		} else
-//			result.add(this.getErrorMessage());
 		return result;
 	}
 }
