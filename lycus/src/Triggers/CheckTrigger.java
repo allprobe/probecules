@@ -252,6 +252,8 @@ public class CheckTrigger {
 			}
 		} catch (Exception e) {
 			Logit.LogError("EventTrigger - isCondition()", "Error, is condition", e);
+			Logit.LogError("EventTrigger - isCondition()", "The condition is: " + condition.name(), e);
+
 			e.printStackTrace();
 		}
 		return false;
