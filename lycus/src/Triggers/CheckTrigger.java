@@ -239,6 +239,11 @@ public class CheckTrigger {
 
 	private boolean isCondition(Double result, XvalueUnit resultUnit, Condition condition, double xValue,
 			XvalueUnit xvalueUnit) {
+		if (resultUnit == null || xvalueUnit == null) {
+			Logit.LogError("EventTrigger - isCondition()",
+					"Error while processing condition, one of valueUnits is null!");
+			return false;
+		}
 		try {
 			switch (condition) {
 			case bigger:
