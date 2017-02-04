@@ -1,10 +1,14 @@
 package Results;
 
 import org.json.simple.JSONArray;
+import org.json.simple.JSONObject;
+
 import GlobalConstants.Enums.SnmpError;
 import GlobalConstants.ProbeTypes;
 
 public class SnmpResult extends BaseResult {
+
+	
 
 	private String oid;
 	private String data;
@@ -78,4 +82,18 @@ public class SnmpResult extends BaseResult {
 	public void setError(SnmpError error) {
 		this.error = error;
 	}
+
+	@Override
+	public String toString() {
+		String resultString = "";
+		resultString += super.toString();
+		JSONObject resultJson = new JSONObject();
+		resultJson.put("data", this.data);
+		resultJson.put("resultType", ProbeTypes.SNMP.name());
+		resultString += resultJson.toJSONString();
+		return resultString;
+
+	}
+	
+	
 }
