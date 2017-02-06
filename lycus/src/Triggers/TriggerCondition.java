@@ -1,6 +1,9 @@
 package Triggers;
 
+import org.json.simple.JSONObject;
+
 import GlobalConstants.Enums;
+import GlobalConstants.ProbeTypes;
 import GlobalConstants.Enums.Condition;
 import GlobalConstants.Enums.LastType;
 import GlobalConstants.Enums.ResultValueType;
@@ -95,5 +98,21 @@ public class TriggerCondition {
 	public void setLast_type(LastType last_type) {
 		this.last_type = last_type;
 	}
+	@Override
+	public String toString() {
+		String conditionString = "";
+		conditionString += super.toString();
+		JSONObject conditionJson = new JSONObject();
+		conditionJson.put("objectType", "condition");
+		conditionJson.put("condition", this.condition.name());
+		conditionJson.put("xValue", this.xValue);
+		conditionJson.put("elementType", this.elementType);
+		conditionJson.put("xvalueUnit", this.xvalueUnit);
+		conditionJson.put("function", this.function);
+		conditionJson.put("nValue", this.nValue);
+		conditionJson.put("last_type", this.last_type.name());
+		conditionString += conditionJson.toJSONString();
+		return conditionString;
 
+	}
 }

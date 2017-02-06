@@ -54,7 +54,7 @@ public class RollupsContainer implements IRollupsContainer {
 	private JSONArray finishedRollups = new JSONArray();
 	private Object lockFinishedRollups = new Object();
 	private boolean rollupsMergedAtStart;
-//	private Object lockRollupsTable = new Object();
+	// private Object lockRollupsTable = new Object();
 
 	public static RollupsContainer getInstance() {
 		if (instance == null) {

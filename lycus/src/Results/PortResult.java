@@ -58,6 +58,7 @@ public class PortResult extends BaseResult {
 		String resultString = "";
 		resultString += super.toString();
 		JSONObject resultJson = new JSONObject();
+		resultJson.put("objectType", "result");
 		resultJson.put("portStatus", this.portStatus);
 		resultJson.put("responseTime", this.responseTime);
 		resultJson.put("resultType", ProbeTypes.PORT.name());

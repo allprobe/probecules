@@ -35,7 +35,7 @@ public class EventTrigger {
 								+ result.toString());
 						if (isConditionMet(result, trigger)) {
 							Logit.LogDebug(
-									"Result condition for RPID: " + result.getRunnableProbeId() + ", condition met.");
+									"Result condition for RPID: " + result.getRunnableProbeId() + ", condition met!!!");
 							triggerEvent(trigger);
 						} else {
 							Logit.LogDebug("Result condition for RPID: " + result.getRunnableProbeId()

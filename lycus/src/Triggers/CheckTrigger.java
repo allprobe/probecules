@@ -44,6 +44,8 @@ public class CheckTrigger {
 			// "+result.getRunnableProbeId()+" , trigger condition Xvalue:
 			// "+triggerCondition.getxValue()+" , last result:
 			// "+result.getResultElementValue(triggerCondition.getElementType().toString()).get(0));
+			Logit.LogDebug("Checking condition for RPID: " + result.getRunnableProbeId() + " ,condition is: "+triggerCondition.getCondition().toString());
+
 			try {
 				if (result instanceof SnmpResult && ((SnmpResult) result).getNumData() == null
 						&& ((SnmpResult) result).getData() != null) {

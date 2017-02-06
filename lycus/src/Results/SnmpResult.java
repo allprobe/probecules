@@ -8,8 +8,6 @@ import GlobalConstants.ProbeTypes;
 
 public class SnmpResult extends BaseResult {
 
-	
-
 	private String oid;
 	private String data;
 	private SnmpError error;
@@ -94,6 +92,5 @@ public class SnmpResult extends BaseResult {
 		return resultString;
 
 	}
-	
-	
+
 }
