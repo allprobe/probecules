@@ -3,6 +3,7 @@ package NetConnection;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.HashSet;
@@ -12,6 +13,7 @@ import java.util.Set;
 import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
 import org.snmp4j.smi.OID;
+import com.mysql.jdbc.ResultSetMetaData;
 import Collectors.SnmpCollector;
 import Collectors.SqlCollector;
 import Elements.BaseElement;
@@ -607,26 +609,25 @@ public class NetResults implements INetResults {
 		try {
 			SqlCollector sqlTemplate = host.getSqlCollector();
 			Class.forName("com.mysql.jdbc.Driver").newInstance();
-			Connection con = DriverManager
-					.getConnection("jdbc:mysql://" + host.getHostIp() + ":" + sqlTemplate.getSql_port() + "/" + probe.getSql_db(), sqlTemplate.getSql_user(),  host.getSqlCollector().getSql_password());
-			
+			Connection con = DriverManager.getConnection(
+					"jdbc:mysql://" + host.getHostIp() + ":" + sqlTemplate.getSql_port() + "/" + probe.getSql_db(),
+					sqlTemplate.getSql_user(), host.getSqlCollector().getSql_password());
+
 			Statement stmt = con.createStatement();
 			String sql = probe.getSql_query();
-//			String sql = "SELECT COUNT(*) AS users FROM mysql.`user`";
 			ResultSet rs = stmt.executeQuery(sql);
-			int index = 1;
-			List<String> results = new ArrayList<String>();
-			while (rs.next())
-			{ 
-				results.add(rs.getString(index++));
-//				System.out.println(rs.getInt(1) + " " + rs.getString(2) + " " + rs.getString(3));
+//			List<String> results = new ArrayList<String>();
+			String[] sqlResults = new String[probe.getSql_fields().length];
+			rs.next();
+			int index = 0;
+			
+			for (String columnName : probe.getSql_fields())
+			{
+				int column = rs.findColumn(columnName);
+				sqlResults[index++] = rs.getString(column);
 			}
-			
-			String[] sqlResults = new String[results.size()];
-			for (int i = 0; i < results.size(); i++)
-				sqlResults[i] = results.get(i);
-			
-			SqlResult result = new SqlResult(getRunnableProbeId(probe, host), sqlTemplate.getTimeout(), sqlResults);
+
+			SqlResult result = new SqlResult(getRunnableProbeId(probe, host), sqlTemplate.getTimeout(), sqlResults, probe.getSql_fields());
 			con.close();
 			return result;
 		} catch (Exception e) {

@@ -327,11 +327,8 @@ public class User {
 				break;
 			}
 			case Constants.sql: {
-//     			int npings = probeParams.npings; 
-//				int bytes = probeParams.bytes;
-//				int timeout = probeParams.timeout;
 				probe = new SqlProbe(this, probeId, templateId, name, interval, multiplier, status, probeParams.timeout, probeParams.sql_db,
-						probeParams.sql_query);
+						probeParams.sql_query, probeParams.sql_fields);
 				break;
 			}
 			}

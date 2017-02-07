@@ -13,13 +13,15 @@ import lycus.User;
 public class SqlProbe extends BaseProbe {
 	private String sql_query;
 	private String sql_db;
+	private String[] sql_fields;
 	private int timeout;
 
 	public SqlProbe(User user, String probe_id, UUID template_id, String name, int interval, float multiplier,
-			boolean status, int timeout, String sql_db, String sql_query) {
+			boolean status, int timeout, String sql_db, String sql_query, String[] sql_fields) {
 		super(user, probe_id, template_id, name, interval, multiplier, status);
 		this.setSql_db(sql_db);
 		this.setSql_query(sql_query);
+		this.setSql_fields(sql_fields);
 		this.setTimeout(timeout);
 	}
 
@@ -84,5 +86,13 @@ public class SqlProbe extends BaseProbe {
 			Logit.LogCheck("Timeout for" + getName() + " has changed to " + updateValue.key.timeout);
 		}
 		return true;
+	}
+
+	public String[] getSql_fields() {
+		return sql_fields;
+	}
+
+	public void setSql_fields(String[] sql_fields) {
+		this.sql_fields = sql_fields;
 	}
 }

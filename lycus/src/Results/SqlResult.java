@@ -1,18 +1,21 @@
 package Results;
 
 import java.io.File;
-
 import org.json.simple.JSONArray;
+import org.json.simple.JSONObject;
+
 import GlobalConstants.ProbeTypes;
 
 public class SqlResult extends BaseResult {
 	private String[] sqlResults;
+	private String[] sqlFields;
 	private ProbeTypes probeType;
 	
-	public SqlResult(String runnableProbeId, long timestamp, String[] sqlResults) {
+	public SqlResult(String runnableProbeId, long timestamp, String[] sqlResults, String[] sqlFields) {
 		super(runnableProbeId, timestamp);
 		this.probeType = ProbeTypes.SQL;
 		this.sqlResults = sqlResults;
+		this.sqlFields = sqlFields;
 	}
 
 	@Override
@@ -29,10 +32,30 @@ public class SqlResult extends BaseResult {
 	@Override
 	public Object getResultObject() {
 		JSONArray result = new JSONArray();
-		for (String res : sqlResults) 
+		for (int i = 0; i < sqlResults.length; i++)
 		{
-			result.add(res);  
+			JSONObject jsonObject = new JSONObject();
+			if (sqlResults[i].matches("\\-?\\d+"))
+			{
+				jsonObject.put(sqlFields[i], Integer.parseInt(sqlResults[i]));
+			}
+			else if (isDouble(sqlResults[i]))
+			{
+				jsonObject.put(sqlFields[i], Double.parseDouble(sqlResults[i]));
+			}
+			else
+				jsonObject.put(sqlFields[i], sqlResults[i]);
+			result.add(jsonObject);
 		}
 		return result;
-	}
+	} 
+	
+	private boolean isDouble(String str) {
+        try {
+            Double.parseDouble(str);
+            return true;
+        } catch (NumberFormatException e) {
+            return false;
+        }
+    }
 }

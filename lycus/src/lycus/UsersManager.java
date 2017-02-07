@@ -28,13 +28,11 @@ import GlobalConstants.TriggerSeverity;
 import GlobalConstants.Enums.ApiAction;
 import Interfaces.IDAL;
 import Model.ConditionModel;
-import Model.ConditionUpdateModel;
 import Model.DiscoveryElementParams;
 import Model.HostParams;
 import Model.ProbeParams;
 import Model.CollectorParams;
 import Probes.BaseProbe;
-import Probes.RBLProbe;
 import Utils.GeneralFunctions;
 import Utils.Logit;
 import Rollups.DataPointsRollup;
@@ -51,7 +49,7 @@ public class UsersManager {
 	// static Logger log = Logger.getLogger(UsersManager.class);
 
 	public static void Initialize() {
-		BasicConfigurator.configure(); 
+		BasicConfigurator.configure();
 
 		setUsers(new HashMap<UUID, User>());
 		if (!UsersManager.Build()) {
@@ -453,9 +451,20 @@ public class UsersManager {
 				}
 				case Constants.sql: {
 					probeParams.sql_db = probeKeyJson.get("sql_db").toString();
-//					probeParams.sql_fields = probeKeyJson.get("sql_fields");
+					// probeParams.sql_fields = probeKeyJson.get("sql_fields");
 					probeParams.sql_query = GeneralFunctions.Base64Decode(probeKeyJson.get("sql_query").toString());
 					probeParams.timeout = Integer.parseInt(probeKeyJson.get("timeout").toString());
+					String temp = probeKeyJson.get("sql_fields").toString();
+
+					Object object = null;
+					JSONArray arrayObj = null;
+					JSONParser jsonParser = new JSONParser();
+					object = jsonParser.parse(temp);
+					arrayObj = (JSONArray) object;
+					probeParams.sql_fields = new String[arrayObj.size()];
+					for (int index = 0, size = arrayObj.size(); index < size; index++) {
+						probeParams.sql_fields[index] = arrayObj.get(index).toString();
+					}
 					break;
 				}
 				}

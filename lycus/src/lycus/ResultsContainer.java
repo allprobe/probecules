@@ -7,18 +7,14 @@ import java.util.List;
 import java.util.Map;
 import java.util.UUID;
 import java.util.concurrent.ConcurrentHashMap;
-
 import Triggers.Trigger;
 import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
-import com.google.gson.Gson;
-import com.google.gson.GsonBuilder;
 import DAL.DAL;
 import Events.EvenetsQueue;
 import Events.Event;
 import GlobalConstants.Enums.ApiAction;
 import Interfaces.IResultsContainer;
-import Model.EventsObject;
 import Results.BaseResult;
 import Results.DiscoveryResult;
 import Utils.GeneralFunctions;

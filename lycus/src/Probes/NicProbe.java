@@ -4,7 +4,6 @@ import java.util.HashMap;
 import java.util.UUID;
 import org.json.simple.JSONObject;
 import org.snmp4j.smi.OID;
-
 import Elements.NicElement;
 import GlobalConstants.Enums.HostType;
 import NetConnection.NetResults;
@@ -72,91 +71,6 @@ public class NicProbe extends BaseProbe {
 	public Trigger getTrigger(String triggerId) {
 		return discoveryProbe.getTrigger(triggerId);
 	}
-
-	// public NicProbe(User user,String probe_id, UUID template_id, String name,
-	// long interval, float multiplier,
-	// boolean status, int index, long ifSpeed, Enums.HostType hostType) {
-	// super(user, probe_id, template_id, name, interval, multiplier, status,
-	// index);
-	// this.setIfSpeed(ifSpeed);
-	// this.hostType = hostType;
-	//
-	// this.ifInOctets = new SnmpProbe(user,probe_id+"@"+Constants.inBW,
-	// template_id, name, interval, multiplier, status,
-	// new OID(this.getIfinoctetsOID()), SnmpDataType.Numeric, SnmpUnit.bytes,
-	// SnmpStoreAs.deltaBytesPerSecond);
-	// this.ifOutOctets = new SnmpProbe(user,probe_id+"@"+Constants.outBW,
-	// template_id, name, interval, multiplier, status,
-	// new OID(this.getIfoutoctetsOID()), SnmpDataType.Numeric, SnmpUnit.bytes,
-	// SnmpStoreAs.deltaBytesPerSecond);
-	//
-	// }
-
-	// @Override
-	// public BaseResult getResult(Host host) {
-	// super.getResult(host);
-	// try {
-	// List<String> listOids = new ArrayList<String>();
-	// NicResult result = null;;
-	//
-	// if (host.isHostStatus() && host.isSnmpStatus()) {
-	// listOids.add(this.getIfinoctetsOID());
-	// listOids.add(this.getIfoutoctetsOID());
-	// }
-	//
-	// Map<String, SnmpResult> response = null;
-	//// if (host.getSnmpTemp().getVersion() == 2) {
-	//// response = Net.Snmp2GETBULK(host.getHostIp(),
-	// host.getSnmpTemp().getPort(),
-	//// host.getSnmpTemp().getTimeout(), host.getSnmpTemp().getCommunityName(),
-	// listOids);
-	//// }
-	//// else if (host.getSnmpTemp().getVersion() == 3) {
-	//// response = Net.Snmp3GETBULK(host.getHostIp(),
-	// host.getSnmpTemp().getPort(),
-	//// host.getSnmpTemp().getTimeout(), host.getSnmpTemp().getUserName(),
-	//// host.getSnmpTemp().getAuthPass(), host.getSnmpTemp().getAlgo(),
-	//// host.getSnmpTemp().getCryptPass(), host.getSnmpTemp().getCryptType(),
-	// listOids,
-	//// GeneralFunctions.getRunnableProbeId(getTemplate_id(), host.getHostId(),
-	// getProbe_id()));
-	//// }
-	//
-	// if (response == null) {
-	//
-	// Logit.LogInfo("no response for nic element probe" +
-	// GeneralFunctions.getRunnableProbeId(getTemplate_id(), host.getHostId(),
-	// getProbe_id()));
-	// }
-	// else {
-	// long resultsTimestamp = System.currentTimeMillis();
-	//
-	// SnmpResult ifInResults = response.get(this.getIfinoctetsOID());
-	// SnmpResult ifOutResults = response.get(this.getIfoutoctetsOID());
-	//
-	// if (ifInResults == null || ifOutResults == null) {
-	// Logit.LogInfo("no response for nic element probe" +
-	// GeneralFunctions.getRunnableProbeId(getTemplate_id(), host.getHostId(),
-	// getProbe_id()));
-	// return null;
-	// }
-	//
-	//
-	//
-	//// long ifTotalTraffic = Long.parseLong(ifInResults) +
-	// Long.parseLong(ifOutResults);
-	//// results.add(ifTotalTraffic);
-	//
-	//
-	// return result;
-	// }
-	// } catch (Throwable th) {
-	// Logit.LogError("NicElement - Check","Error running discovery element
-	// probe:" + GeneralFunctions.getRunnableProbeId(getTemplate_id(),
-	// host.getHostId(), getProbe_id()));
-	// }
-	// return null;
-	// }
 
 	@Override
 	public BaseResult getResult(Host h) {
