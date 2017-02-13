@@ -30,6 +30,7 @@ import Results.NicResult;
 import Results.PingResult;
 import Results.PortResult;
 import Results.SnmpResult;
+import Results.SqlResult;
 import Results.WebResult;
 import Utils.GeneralFunctions;
 import Utils.JsonUtil;
@@ -50,6 +51,7 @@ public class RollupsContainer implements IRollupsContainer {
 	private HashMap<String, DataPointsRollup[]> diskSizeDataRollups = new HashMap<String, DataPointsRollup[]>();
 	private HashMap<String, DataPointsRollup[]> diskUsedDataRollups = new HashMap<String, DataPointsRollup[]>();
 	private HashMap<String, DataPointsRollup[]> diskFreeDataRollups = new HashMap<String, DataPointsRollup[]>();
+	private HashMap<String, HashMap<String, DataPointsRollup[]>> sqlDataRollups = new HashMap<String, HashMap<String, DataPointsRollup[]>>();
 
 	private JSONArray finishedRollups = new JSONArray();
 	private Object lockFinishedRollups = new Object();
@@ -84,6 +86,8 @@ public class RollupsContainer implements IRollupsContainer {
 			addNicResult(result);
 		} else if (result instanceof DiskResult) {
 			addDiskResult(result);
+		} else if (result instanceof SqlResult) {
+			addSqlResult(result);
 		}
 		return true;
 	}
@@ -510,6 +514,52 @@ public class RollupsContainer implements IRollupsContainer {
 			rttRollup.add(pingerResults.getLastTimestamp(), pingerResults.getRtt());
 
 			addFinished(i, packetLostRollups, pingResponseTimeRollups);
+		}
+	}
+
+	private void addSqlResult(BaseResult result) {
+		String runnableProbeId = result.getRunnableProbeId();
+		SqlResult sqlResult = (SqlResult) result;
+		HashMap<String, DataPointsRollup[]> sqlRollups = sqlDataRollups.get(runnableProbeId);
+
+		if (sqlRollups == null) {
+			sqlRollups = new HashMap<String, DataPointsRollup[]>();
+			sqlDataRollups.put(runnableProbeId, sqlRollups);
+		}
+
+		for (String field : sqlResult.getSqlFields()) {
+			DataPointsRollup[] fieldRollup = sqlRollups.get(field);
+
+			if (fieldRollup == null) {
+				fieldRollup = new DataPointsRollup[6];
+				sqlRollups.put(field, fieldRollup);
+			}
+
+			for (int i = 0; i < result.getNumberOfRollupTables(); i++) {
+				DataPointsRollup sqlRollup = null;
+				if (fieldRollup[i] == null)
+					fieldRollup[i] = new  DataPointsRollup(runnableProbeId, this.getRollupSize(i));
+					
+				sqlRollup = fieldRollup[i];
+				
+				Double fieldResult = sqlResult.getSqlResult(field);
+				sqlRollup.add(sqlResult.getLastTimestamp(), fieldResult);
+
+//				addFinished(i, sqlResult, pingResponseTimeRollups);
+				
+//				if (sqlRollup == null)
+//					return;
+//				DataPointsRollup currentDataRollup = sqlRollup;
+//				if (currentDataRollup == null)
+//					return;
+				DataPointsRollup finishedDataRollup = sqlRollup.isCompleted() ? sqlRollup : null;
+
+				if (finishedDataRollup == null)
+					return;
+
+				addFinishedRollup(finishedDataRollup);
+//				fieldRollup[i] = null;
+			}
 		}
 	}
 
