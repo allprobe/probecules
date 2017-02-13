@@ -555,7 +555,7 @@ public class RollupsContainer implements IRollupsContainer {
 				DataPointsRollup finishedDataRollup = sqlRollup.isCompleted() ? sqlRollup : null;
 
 				if (finishedDataRollup == null)
-					return;
+					continue;
 
 				addFinishedRollup(finishedDataRollup);
 //				fieldRollup[i] = null;
