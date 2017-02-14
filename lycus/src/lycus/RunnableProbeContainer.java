@@ -131,33 +131,37 @@ public class RunnableProbeContainer implements IRunnableProbeContainer {
 															// removes it from
 															// the system
 
-		runnableProbe.removeAllEvents();
-		runnableProbe.setRunning(false);
-		runnableProbes.remove(runnableProbe.getId());
+		try {
+			runnableProbe.removeAllEvents();
+			runnableProbe.setRunning(false);
+			runnableProbes.remove(runnableProbe.getId());
 
-		UUID hostId = runnableProbe.getHost().getHostId();
-		UUID userId = runnableProbe.getProbe().getUser().getUserId();
-		String probeId = runnableProbe.getProbe().getProbe_id();
+			UUID hostId = runnableProbe.getHost().getHostId();
+			UUID userId = runnableProbe.getProbe().getUser().getUserId();
+			String probeId = runnableProbe.getProbe().getProbe_id();
 
-		removeFromMap(runnableProbe, hostId.toString(), hostRunnableProbes);
-		if (!hostRunnableProbes.containsKey(hostId.toString()))
-			UsersManager.removeHost(hostId, userId);
+			removeFromMap(runnableProbe, hostId.toString(), hostRunnableProbes);
+			if (!hostRunnableProbes.containsKey(hostId.toString()))
+				UsersManager.removeHost(hostId, userId);
 
-		removeFromMap(runnableProbe, userId.toString(), userRunnableProbes);
-		if (!userRunnableProbes.containsKey(userId.toString()))
-			UsersManager.removeUser(userId);
+			removeFromMap(runnableProbe, userId.toString(), userRunnableProbes);
+			if (!userRunnableProbes.containsKey(userId.toString()))
+				UsersManager.removeUser(userId);
 
-		removeFromMap(runnableProbe, probeId, probeRunnableProbes);
+			removeFromMap(runnableProbe, probeId, probeRunnableProbes);
 
-		String templateId = runnableProbe.getProbe().getTemplate_id().toString();
-		removeFromMap(runnableProbe, templateId, templateRunnableProbes);
+			String templateId = runnableProbe.getProbe().getTemplate_id().toString();
+			removeFromMap(runnableProbe, templateId, templateRunnableProbes);
 
-		if (runnableProbe.getProbeType() == ProbeTypes.SNMP) {
-			// todo: add proper error
-			boolean isSnmpStart = stopSnmpProbe(runnableProbe);
-			if (!isSnmpStart)
-				return false;
-			return true;
+			if (runnableProbe.getProbeType() == ProbeTypes.SNMP) {
+				// todo: add proper error
+				boolean isSnmpStart = stopSnmpProbe(runnableProbe);
+				if (!isSnmpStart)
+					return false;
+				return true;
+			}
+		} catch (Exception e) {
+			Logit.LogError("RunnableProbeContainer - remove()", "Error removing runnableProbe:  " + runnableProbe.getId(), e);
 		}
 
 		return true;
