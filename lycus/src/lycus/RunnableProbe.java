@@ -252,9 +252,9 @@ public class RunnableProbe implements Runnable {
 		return true;
 	}
 
-	public boolean removeEvents(String triggerId) {
+	public boolean removeEvents(String triggerId, boolean isPaused) {
 		try {
-			getEventTrigger().removeEvent(triggerId);
+			getEventTrigger().removeEvent(triggerId, isPaused);
 		} catch (Exception e) {
 			Logit.LogError("RunnableProbe - removeEvents()", "Error Removing event of trigger! " + triggerId);
 			return false;
@@ -262,15 +262,15 @@ public class RunnableProbe implements Runnable {
 		return true;
 	}
 
-	public boolean removeAllEvents() {
+	public boolean removeAllEvents(boolean isPaused) {
 		HashMap<String, Trigger> triggers = getProbe().getTriggers();
 		if (triggers == null)
 			return true;
 		for (Trigger trigger : triggers.values())
-			removeEvents(trigger.getTriggerId());
+			removeEvents(trigger.getTriggerId(), isPaused);
 		return true;
 	}
-
+	
 	public EventTrigger getEventTrigger() {
 		return eventTrigger;
 	}

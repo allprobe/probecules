@@ -40,7 +40,7 @@ public class EventTrigger {
 						} else {
 							Logit.LogDebug("Result condition for RPID: " + result.getRunnableProbeId()
 									+ ", condition didn't met.");
-							cancelEvent(trigger, result);
+							cancelEvent(trigger, result, false);
 						}
 					}
 				} catch (Exception e) {
@@ -89,12 +89,12 @@ public class EventTrigger {
 		return true;
 	}
 
-	private boolean cancelEvent(Trigger trigger, BaseResult result) {
+	private boolean cancelEvent(Trigger trigger, BaseResult result, boolean isPaused) {
 		Event eventExist = ResultsContainer.getInstance().getEvent(runnableProbeId, trigger.getTriggerId());
 		try {
 			if (eventExist != null) {
 				eventExist.setIsStatus(true);
-
+				eventExist.setIsPaused(isPaused);
 				appendSubType(eventExist);
 
 				EvenetsQueue.getInstance().add(eventExist, result);
@@ -122,9 +122,9 @@ public class EventTrigger {
 		}
 	}
 
-	public boolean removeEvent(String triggerId) {
+	public boolean removeEvent(String triggerId, boolean isPaused) {
 		Trigger trigger = probe.getTrigger(triggerId);
-		cancelEvent(trigger, null);
+		cancelEvent(trigger, null, isPaused);
 		return true;
 	}
 }

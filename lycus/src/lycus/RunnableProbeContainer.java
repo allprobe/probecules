@@ -132,7 +132,7 @@ public class RunnableProbeContainer implements IRunnableProbeContainer {
 															// the system
 
 		try {
-			runnableProbe.removeAllEvents();
+			runnableProbe.removeAllEvents(false);
 			runnableProbe.setRunning(false);
 			runnableProbes.remove(runnableProbe.getId());
 

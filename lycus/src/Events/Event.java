@@ -18,6 +18,7 @@ public class Event {
 	private String triggerName;
 	private String triggerSeverity;
 	private String runnableProbeId;
+	private Boolean isPaused;
 	
 	public Event(String triggerId, String userId, String bucketId, String hostName, String hostNotificationGroup, String triggerName, String triggerSeverity, String runnableProbeId) {
 		this.triggerId = triggerId;
@@ -34,6 +35,7 @@ public class Event {
 		this.setTriggerName(triggerName);
 		this.setTriggerSeverity(triggerSeverity);
 		this.setRunnableProbeId(runnableProbeId);
+		this.setIsPaused(false);
 	}
 	
 	public String getTriggerId() {
@@ -152,5 +154,13 @@ public class Event {
 
 	public void setRunnableProbeId(String runnableProbeId) {
 		this.runnableProbeId = runnableProbeId;
+	}
+
+	public Boolean getIsPaused() {
+		return isPaused;
+	}
+
+	public void setIsPaused(Boolean isPaused) {
+		this.isPaused = isPaused;
 	}
 }

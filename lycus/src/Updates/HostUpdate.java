@@ -81,6 +81,8 @@ public class HostUpdate extends BaseUpdate {
 			ConcurrentHashMap<String, RunnableProbe>  runnableProbes = RunnableProbeContainer.getInstanece().getByHost(getUpdate().host_id);
 			for (RunnableProbe runnableProbe : runnableProbes.values()) {
 				runnableProbe.setActive(isActive);
+				if (!isActive)
+					runnableProbe.removeAllEvents(true);
 				Logit.LogCheck("Status for " + runnableProbe.getProbe().getName() + " Is " + isActive);
 			}
 			

@@ -93,7 +93,7 @@ public class TriggerUpdate extends BaseUpdate {
 					.getByProbe(getUpdate().probe_id);
 			ResultsContainer.getInstance().resendEvents(getUpdate().object_id, Constants.object_removed, null, null);
 			for (RunnableProbe runnbleProbe : runnbaleProbes.values())
-				runnbleProbe.removeEvents(getUpdate().object_id);
+				runnbleProbe.removeEvents(getUpdate().object_id, false);
 
 			probe.removeTrigger(getUpdate().object_id);
 

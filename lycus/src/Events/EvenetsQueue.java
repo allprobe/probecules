@@ -43,9 +43,10 @@ public class EvenetsQueue implements IEventsQueue {
 			eventJson.put("result", result.getResultObject());
 		if (event.isDeleted())
 			eventJson.put("remove_object", "true");
-
-		if (event.getIsStatus())
+		if (event.getIsPaused())
 			eventJson.put("origin_timestamp", String.valueOf(event.getOriginalTimeStamp()));
+		if (event.getIsStatus())
+			eventJson.put("extra_info", "object_removed");
 
 		runnableEventJson.put(event.getRunnableProbeId(), eventJson);
 

@@ -7,6 +7,8 @@ package Probes;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.UUID;
+import java.util.concurrent.ConcurrentHashMap;
+
 import GlobalConstants.Constants;
 import Model.ConditionModel;
 import Model.TriggerModel;
@@ -16,6 +18,8 @@ import Results.BaseResult;
 import Utils.GeneralFunctions;
 import Utils.Logit;
 import lycus.Host;
+import lycus.RunnableProbe;
+import lycus.RunnableProbeContainer;
 import Triggers.Trigger;
 import Triggers.TriggerCondition;
 import lycus.User;
@@ -169,6 +173,13 @@ public class BaseProbe {
 		if (updateValue.status != null && isActive() != updateValue.status.equals(Constants._true)) {
 			boolean isActive = updateValue.status.equals(Constants._true);
 			setActive(isActive);
+			if (!isActive) {
+				ConcurrentHashMap<String, RunnableProbe> runnableProbesPerProbe = RunnableProbeContainer.getInstanece()
+						.getByProbe(updateModel.probe_id);
+				for (RunnableProbe runnableProbe : runnableProbesPerProbe.values()) {
+					runnableProbe.removeAllEvents(true);
+				}
+			}
 			Logit.LogCheck("Is active for " + getName() + " Is " + isActive + "Update_id: " + updateModel.update_id
 					+ ", probe_id: " + updateModel.probe_id);
 		}
