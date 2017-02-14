@@ -231,7 +231,7 @@ public class ResultsContainer implements IResultsContainer {
 					if (runnableProbe == null || !runnableProbe.getProbe().getTriggers().containsKey(triggerId)) {
 						event.setIsStatus(true);
 						event.setDeleted(true);
-						EvenetsQueue.getInstance().add(event);
+						EvenetsQueue.getInstance().add(event, null);
 					} else
 						addEvent(runnableProbeId, triggerId, event);
 
@@ -465,7 +465,7 @@ public class ResultsContainer implements IResultsContainer {
 
 				RunnableProbeContainer.getInstanece().get(event.getRunnableProbeId()).getEventTrigger().appendSubType(event);
 
-				EvenetsQueue.getInstance().add(event);
+				EvenetsQueue.getInstance().add(event, null);
 			}
 		}
 	}

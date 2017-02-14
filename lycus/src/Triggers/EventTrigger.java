@@ -36,11 +36,11 @@ public class EventTrigger {
 						if (isConditionMet(result, trigger)) {
 							Logit.LogDebug(
 									"Result condition for RPID: " + result.getRunnableProbeId() + ", condition met!!!");
-							triggerEvent(trigger);
+							triggerEvent(trigger, result);
 						} else {
 							Logit.LogDebug("Result condition for RPID: " + result.getRunnableProbeId()
 									+ ", condition didn't met.");
-							cancelEvent(trigger);
+							cancelEvent(trigger, result);
 						}
 					}
 				} catch (Exception e) {
@@ -61,7 +61,7 @@ public class EventTrigger {
 		return lastResults.isConditionMet(result, trigger);
 	}
 
-	private boolean triggerEvent(Trigger trigger) {
+	private boolean triggerEvent(Trigger trigger, BaseResult result) {
 		Event eventExist = ResultsContainer.getInstance().getEvent(runnableProbeId, trigger.getTriggerId());
 		try {
 			if (eventExist == null) {
@@ -77,7 +77,7 @@ public class EventTrigger {
 						trigger.getSvrty().toString(), runnableProbeId);
 				appendSubType(event);
 				ResultsContainer.getInstance().addEvent(runnableProbeId, trigger.getTriggerId(), event);
-				EvenetsQueue.getInstance().add(event);
+				EvenetsQueue.getInstance().add(event, result);
 			}
 		} catch (Exception e) {
 			Logit.LogError("EventTrigger - triggerEvent()",
@@ -89,7 +89,7 @@ public class EventTrigger {
 		return true;
 	}
 
-	private boolean cancelEvent(Trigger trigger) {
+	private boolean cancelEvent(Trigger trigger, BaseResult result) {
 		Event eventExist = ResultsContainer.getInstance().getEvent(runnableProbeId, trigger.getTriggerId());
 		try {
 			if (eventExist != null) {
@@ -97,7 +97,7 @@ public class EventTrigger {
 
 				appendSubType(eventExist);
 
-				EvenetsQueue.getInstance().add(eventExist);
+				EvenetsQueue.getInstance().add(eventExist, result);
 				ResultsContainer.getInstance().removeEvent(runnableProbeId, trigger.getTriggerId());
 				// eventExist.setTime(System.currentTimeMillis());
 			}
@@ -124,7 +124,7 @@ public class EventTrigger {
 
 	public boolean removeEvent(String triggerId) {
 		Trigger trigger = probe.getTrigger(triggerId);
-		cancelEvent(trigger);
+		cancelEvent(trigger, null);
 		return true;
 	}
 }

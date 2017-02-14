@@ -4,6 +4,7 @@ import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
 import Interfaces.IEventsQueue;
 import Model.EventsObject;
+import Results.BaseResult;
 
 public class EvenetsQueue implements IEventsQueue {
 	private static EvenetsQueue instance;
@@ -23,7 +24,7 @@ public class EvenetsQueue implements IEventsQueue {
 		int count = 0;
 	}
 
-	public void add(Event event) {
+	public void add(Event event, BaseResult result) {
 		JSONObject runnableEventJson = new JSONObject();
 		JSONObject eventJson = new JSONObject();
 		eventJson.put("trigger_id", event.getTriggerId());
@@ -38,7 +39,8 @@ public class EvenetsQueue implements IEventsQueue {
 		eventJson.put("trigger_severity", event.getTriggerSeverity());
 		eventJson.put("host_name", event.getHostName());
 		eventJson.put("host_notifs_groups", event.getHostNotificationGroup());
-
+		if (result != null)
+			eventJson.put("result", result.getResultObject());
 		if (event.isDeleted())
 			eventJson.put("remove_object", "true");
 
