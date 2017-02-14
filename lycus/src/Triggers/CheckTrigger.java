@@ -258,7 +258,7 @@ public class CheckTrigger {
 				return xvalueUnit.getBasic(result, resultUnit) != xvalueUnit.getBasic(xValue, xvalueUnit);
 			}
 		} catch (Exception e) {
-			Logit.LogError("EventTrigger - isCondition()", "Error, is condition", e);
+			Logit.LogError("EventTrigger - isCondition()", "Error, is condition: " + xvalueUnit.toString(), e);
 			Logit.LogError("EventTrigger - isCondition()", "The condition is: " + condition.name(), e);
 
 			e.printStackTrace();
