@@ -609,14 +609,15 @@ public class NetResults implements INetResults {
 		try {
 			SqlCollector sqlTemplate = host.getSqlCollector();
 			Class.forName("com.mysql.jdbc.Driver").newInstance();
+//			jdbc:mysql://localhost/test?user=fred&password=secret&ssl=true
+			String ssl = (sqlTemplate.getSql_sec().equals("1")) ? "?ssl=true" : "";
 			Connection con = DriverManager.getConnection(
-					"jdbc:mysql://" + host.getHostIp() + ":" + sqlTemplate.getSql_port() + "/" + probe.getSql_db(),
+					"jdbc:mysql://" + host.getHostIp() + ":" + sqlTemplate.getSql_port() + "/" + probe.getSql_db() + ssl,
 					sqlTemplate.getSql_user(), host.getSqlCollector().getSql_password());
 
 			Statement stmt = con.createStatement();
 			String sql = probe.getSql_query();
 			ResultSet rs = stmt.executeQuery(sql);
-//			List<String> results = new ArrayList<String>();
 			String[] sqlResults = new String[probe.getSql_fields().length];
 			rs.next();
 			int index = 0;

@@ -2,7 +2,9 @@ package Updates;
 
 import java.util.UUID;
 
+import Collectors.BaseCollector;
 import Collectors.SnmpCollector;
+import Collectors.SqlCollector;
 import Model.UpdateModel;
 import Utils.GeneralFunctions;
 import Utils.Logit;
@@ -25,10 +27,53 @@ public class SnmpUpdate extends BaseUpdate {
 		super.Update();
 		Logit.LogCheck("Updating snmp collector");
 		try {
+			SnmpCollector snmpCollector = null;
+			SqlCollector sqlCollector = null;
 			Logit.LogCheck("Updating snmp collector: "+getUpdate().object_id);
-			SnmpCollector snmpCollector = (SnmpCollector) getUser().getCollectors().get(getUpdate().object_id);
+			BaseCollector collector = getUser().getCollectors().get(getUpdate().object_id);
+			if (collector instanceof SnmpCollector)
+				snmpCollector = (SnmpCollector) getUser().getCollectors().get(getUpdate().object_id);
+			else if (collector instanceof SqlCollector)
+				sqlCollector = (SqlCollector) getUser().getCollectors().get(getUpdate().object_id);
 			String failedObject = getUpdate().update_value.name;
-			if (snmpCollector != null) {
+			if (sqlCollector != null) {
+				if (GeneralFunctions.isChanged(sqlCollector.getName(), getUpdate().update_value.name)) {
+					sqlCollector.setName(getUpdate().update_value.name);
+					Logit.LogCheck(
+							"Sql name " + sqlCollector.getName() + " has changed to " + getUpdate().update_value.name);
+				}
+				
+				if (GeneralFunctions.isChanged(sqlCollector.getSql_port(), getUpdate().update_value.sql_port)) {
+					sqlCollector.setSql_port(getUpdate().update_value.sql_port);
+					Logit.LogCheck("Snmp sql port for " + sqlCollector.getSql_port() + " has changed to "
+							+ getUpdate().update_value.sql_port);
+				}
+
+				if (GeneralFunctions.isChanged(sqlCollector.getSql_password(), getUpdate().update_value.sql_password)) {
+					sqlCollector.setSql_password(getUpdate().update_value.sql_password);
+					Logit.LogCheck("Snmp sql password for " + sqlCollector.getSql_password() + " has changed to "
+							+ getUpdate().update_value.sql_password);
+				}
+				
+				if (GeneralFunctions.isChanged(sqlCollector.getSql_type(), getUpdate().update_value.sql_type)) {
+					sqlCollector.setSql_type(getUpdate().update_value.sql_type);
+					Logit.LogCheck("Snmp sql type for " + sqlCollector.getSql_type() + " has changed to "
+							+ getUpdate().update_value.sql_type);
+				}
+
+				if (GeneralFunctions.isChanged(sqlCollector.getSql_user(), getUpdate().update_value.sql_user)) {
+					sqlCollector.setSql_user(getUpdate().update_value.sql_user);
+					Logit.LogCheck("Snmp sql user for " + sqlCollector.getSql_user() + " has changed to "
+							+ getUpdate().update_value.sql_user);
+				}
+
+				if (GeneralFunctions.isChanged(sqlCollector.getSql_sec(), getUpdate().update_value.sql_sec)) {
+					sqlCollector.setSql_sec(getUpdate().update_value.sql_sec);
+					Logit.LogCheck("Snmp sql sqc for " + sqlCollector.getSql_sec() + " has changed to "
+							+ getUpdate().update_value.sql_sec);
+				}
+			}
+			else if (snmpCollector != null) {
 				try {
 					if (GeneralFunctions.isChanged(snmpCollector.getName(), getUpdate().update_value.name)) {
 						snmpCollector.setName(getUpdate().update_value.name);

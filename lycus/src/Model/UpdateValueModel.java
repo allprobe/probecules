@@ -35,4 +35,10 @@ public class UpdateValueModel {
 	public Integer timeout;
 	public Integer snmp_port;
 	public String results_vector_type;
+	
+	public Integer sql_port;
+	public String sql_password;
+	public String sql_type;
+	public String sql_user;
+	public String sql_sec;
 }
