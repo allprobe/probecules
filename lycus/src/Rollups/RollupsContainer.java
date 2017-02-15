@@ -258,9 +258,9 @@ public class RollupsContainer implements IRollupsContainer {
 		return true;
 	}
 
-	private boolean addFinishedRollup(String field, DataPointsRollup dataPointsRollup) {
+	private boolean addFinishedRollup(DataPointsRollup dataPointsRollup, String result) {
 		synchronized (lockFinishedRollups) {
-			finishedRollups.add(rollupResultsSqlDBFormat(field, dataPointsRollup));
+			finishedRollups.add(rollupResultsSqlDBFormat(dataPointsRollup,result ));
 		}
 		return true;
 	}
@@ -324,18 +324,14 @@ public class RollupsContainer implements IRollupsContainer {
 		return rollup;
 	}
 
-	private JSONObject rollupResultsSqlDBFormat(String field, DataPointsRollup dataPointsRollup) {
+	private JSONObject rollupResultsSqlDBFormat(DataPointsRollup dataPointsRollup, String result) {
 		JSONObject rollup = new JSONObject();
 
 		if (dataPointsRollup.getRunnableProbeId().contains(
 				"0b05919c-6cc0-42cc-a74b-de3b0dcd4a2a@98437013-a93f-4b27-9963-a4800860b90f@snmp_924430db-e1d7-43ce-ba98-a9b7883a440a"))
 			Logit.LogDebug("BREAKPOINT");
 		rollup.put("RESULTS_TIME", System.currentTimeMillis());
-		JSONObject resultObject = new JSONObject();
-		JSONArray resultsStrings = new JSONArray();
-		resultsStrings.add(dataPointsRollup.getRollupObj());
-		resultObject.put(field, resultsStrings.toString());
-		rollup.put("RESULTS", resultObject);
+		rollup.put("RESULTS", result);
 		rollup.put("RUNNABLE_PROBE_ID", dataPointsRollup.getRunnableProbeId());
 		rollup.put("ROLLUP_SIZE", dataPointsRollup.getTimePeriod().toString());
 		rollup.put("USER_ID", RunnableProbeContainer.getInstanece().get(dataPointsRollup.getRunnableProbeId())
@@ -543,7 +539,9 @@ public class RollupsContainer implements IRollupsContainer {
 		String runnableProbeId = result.getRunnableProbeId();
 		SqlResult sqlResult = (SqlResult) result;
 		HashMap<String, DataPointsRollup[]> sqlRollups = sqlDataRollups.get(runnableProbeId);
-
+		JSONObject resultObject = new JSONObject();
+		JSONArray resultsStrings = new JSONArray();
+		DataPointsRollup finishedDataRollup = null;
 		if (sqlRollups == null) {
 			sqlRollups = new HashMap<String, DataPointsRollup[]>();
 			sqlDataRollups.put(runnableProbeId, sqlRollups);
@@ -568,14 +566,20 @@ public class RollupsContainer implements IRollupsContainer {
 				sqlRollup.add(sqlResult.getLastTimestamp(), fieldResult);
 
 				// addFinished(i, sqlResult, pingResponseTimeRollups);
-				DataPointsRollup finishedDataRollup = sqlRollup.isCompleted() ? sqlRollup : null;
+				finishedDataRollup = sqlRollup.isCompleted() ? sqlRollup : null;
 
 				if (finishedDataRollup == null)
 					continue;
 
-				addFinishedRollup(field, finishedDataRollup);
-				// fieldRollup[i] = null;
+				resultsStrings.add(finishedDataRollup.getRollupObj());
+				resultObject.put(field, resultsStrings.toString());
+				resultsStrings = new JSONArray();
 			}
+		}
+		if (finishedDataRollup != null)
+		{
+			addFinishedRollup(finishedDataRollup, resultObject.toString());
+			// fieldRollup[i] = null;
 		}
 	}
 
