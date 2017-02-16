@@ -617,6 +617,7 @@ public class NetResults implements INetResults {
 
 			Statement stmt = con.createStatement();
 			String sql = probe.getSql_query();
+//			sql = "SHOW STATUS LIKE 'Ssl_cipher';";
 			ResultSet rs = stmt.executeQuery(sql);
 			String[] sqlResults = new String[probe.getSql_fields().length];
 			rs.next();
