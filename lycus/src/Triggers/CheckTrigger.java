@@ -44,40 +44,44 @@ public class CheckTrigger {
 			// "+result.getRunnableProbeId()+" , trigger condition Xvalue:
 			// "+triggerCondition.getxValue()+" , last result:
 			// "+result.getResultElementValue(triggerCondition.getElementType().toString()).get(0));
-			Logit.LogDebug("Checking condition for RPID: " + result.getRunnableProbeId() + " ,condition is: "+triggerCondition.getCondition().toString());
+			Logit.LogDebug("Checking condition for RPID: " + result.getRunnableProbeId() + " ,condition is: "
+					+ triggerCondition.getCondition().toString());
 
 			try {
-				if (result instanceof SnmpResult && ((SnmpResult) result).getNumData() == null
-						&& ((SnmpResult) result).getData() != null) {
-					String xValue = ((SnmpResult) result).getData();
-					if (!isNoFunctionConditionMet(triggerCondition, xValue))
+				// if (result instanceof SnmpResult && ((SnmpResult)
+				// result).getNumData() == null
+				// && ((SnmpResult) result).getData() != null) {
+				// String xValue = ((SnmpResult) result).getData();
+				// if (!isNoFunctionConditionMet(triggerCondition, xValue))
+				// return false;
+				// } else {
+				if (result instanceof SnmpResult)
+					Logit.LogDebug("xxx");
+				Double xValue = getDouble(triggerCondition.getxValue());
+
+				XvalueUnit resultUnit = result.getResultUnit(triggerCondition.getElementType().toString());
+
+				if (triggerCondition.getFunction() == Function.none) {
+					if (!isNoFunctionConditionMet(resultUnit, triggerCondition, xValue))
 						return false;
-				} else {
-					Double xValue = getDouble(triggerCondition.getxValue());
-
-					XvalueUnit resultUnit = result.getResultUnit(triggerCondition.getElementType().toString());
-
-					if (triggerCondition.getFunction() == Function.none) {
-						if (!isNoFunctionConditionMet(resultUnit, triggerCondition, xValue))
-							return false;
-					} else if (triggerCondition.getFunction() == Function.delta) {
-						Double delta = getDelta(triggerCondition.getElementType().toString());
-						if (delta == null)
-							return false;
-						if (!isCondition(delta, resultUnit, triggerCondition.getCondition(), xValue,
-								triggerCondition.getXvalueUnit()))
-							return false;
-					} else if (triggerCondition.getFunction() == Function.max) {
-						if (!isMaxConditionMet(resultUnit, triggerCondition, xValue))
-							return false;
-					} else if (triggerCondition.getFunction() == Function.avg) {
-						if (!isAvgConditionMet(resultUnit, triggerCondition, xValue))
-							return false;
-					} else if (triggerCondition.getFunction() == Function.delta_avg) {
-						if (!isDeltaAvgConditionMet(resultUnit, triggerCondition, xValue))
-							return false;
-					}
+				} else if (triggerCondition.getFunction() == Function.delta) {
+					Double delta = getDelta(triggerCondition.getElementType().toString());
+					if (delta == null)
+						return false;
+					if (!isCondition(delta, resultUnit, triggerCondition.getCondition(), xValue,
+							triggerCondition.getXvalueUnit()))
+						return false;
+				} else if (triggerCondition.getFunction() == Function.max) {
+					if (!isMaxConditionMet(resultUnit, triggerCondition, xValue))
+						return false;
+				} else if (triggerCondition.getFunction() == Function.avg) {
+					if (!isAvgConditionMet(resultUnit, triggerCondition, xValue))
+						return false;
+				} else if (triggerCondition.getFunction() == Function.delta_avg) {
+					if (!isDeltaAvgConditionMet(resultUnit, triggerCondition, xValue))
+						return false;
 				}
+				// }
 			} catch (Exception e) {
 				Logit.LogError("EventTrigger - isConditionMet()", "Error, conditioning event, triggerName: "
 						+ trigger.getName() + " , TriggerId: " + trigger.getTriggerId(), e);
