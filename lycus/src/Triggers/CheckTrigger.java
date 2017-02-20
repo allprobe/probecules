@@ -55,8 +55,8 @@ public class CheckTrigger {
 				// if (!isNoFunctionConditionMet(triggerCondition, xValue))
 				// return false;
 				// } else {
-				if (result instanceof SnmpResult)
-					Logit.LogDebug("xxx");
+//				if (result instanceof SnmpResult)
+//					Logit.LogDebug("xxx");
 				Double xValue = getDouble(triggerCondition.getxValue());
 
 				XvalueUnit resultUnit = result.getResultUnit(triggerCondition.getElementType().toString());
