@@ -30,7 +30,7 @@ public class RunnableProbe implements Runnable {
 	private EventTrigger eventTrigger;
 
 	public RunnableProbe(Host host, BaseProbe probe) {
-		this.setHost(host); 
+		this.setHost(host);
 		this.setProbe(probe);
 		this.setRunning(true);
 		this.setActive(true);
@@ -138,6 +138,9 @@ public class RunnableProbe implements Runnable {
 
 					result = getResult();
 					result = buildErrorResultWhenEmpty(result);
+
+					if (result == null)
+						return;
 
 					addResult(result, timeStamp);
 					addResultToTrigger(result);
@@ -270,7 +273,7 @@ public class RunnableProbe implements Runnable {
 			removeEvents(trigger.getTriggerId(), isPaused);
 		return true;
 	}
-	
+
 	public EventTrigger getEventTrigger() {
 		return eventTrigger;
 	}

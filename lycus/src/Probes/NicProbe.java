@@ -52,10 +52,10 @@ public class NicProbe extends BaseProbe {
 		return getNicElement().getName();
 	}
 
-//	@Override
-//	public boolean isActive() {
-//		return discoveryProbe.isActive();
-//	}
+	// @Override
+	// public boolean isActive() {
+	// return discoveryProbe.isActive();
+	// }
 
 	@Override
 	public float getMultiplier() {
@@ -79,7 +79,8 @@ public class NicProbe extends BaseProbe {
 			return null;
 
 		NicResult nicResult = NetResults.getInstanece().getNicResult(h, this);
-
+		if (nicResult.getInBW() == null || nicResult.getOutBW() == null)
+			return null;
 		return nicResult;
 	}
 
