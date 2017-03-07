@@ -453,7 +453,7 @@ public class ResultsContainer implements IResultsContainer {
 
 	public void resendEvents(String triggerId, String eventInfo, String newTriggerName, String newSeverity) {
 		for (ConcurrentHashMap<String, Event> events : eventsPerRunnableProbe.values()) {
-			if (events.containsKey(triggerId)) {
+			if (events.containsKey(triggerId) && events.get(triggerId).isSent()) {
 				// events.get(triggerId).setTime(System.currentTimeMillis());
 				Event event = events.get(triggerId);
 				event.setSent(false);
