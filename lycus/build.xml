@@ -113,6 +113,7 @@
         <pathelement location="lib/http/htmlunit-2.22/lib/httpcore-4.4.4.jar"/>
         <pathelement location="lib/http/htmlunit-2.22/lib/httpmime-4.5.2.jar"/>
         <pathelement location="lib/http/htmlunit-2.22/lib/xercesImpl-2.11.0.jar"/>
+	<pathelement location="lib/other/mysql-connector-java-5.1.40-bin.jar"/>
     </path>
     <target name="init">
         <mkdir dir="bin"/>
