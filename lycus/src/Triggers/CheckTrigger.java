@@ -39,24 +39,10 @@ public class CheckTrigger {
 
 	public boolean isConditionMet(BaseResult result, Trigger trigger) {
 		for (TriggerCondition triggerCondition : trigger.getCondtions()) {
-			// if(result.getResultElementValue(triggerCondition.getElementType().toString()).size()!=0)
-			// Logit.LogInfo("Checking trigger condition for runnable probe:
-			// "+result.getRunnableProbeId()+" , trigger condition Xvalue:
-			// "+triggerCondition.getxValue()+" , last result:
-			// "+result.getResultElementValue(triggerCondition.getElementType().toString()).get(0));
 			Logit.LogDebug("Checking condition for RPID: " + result.getRunnableProbeId() + " ,condition is: "
 					+ triggerCondition.getCondition().toString());
 
 			try {
-				// if (result instanceof SnmpResult && ((SnmpResult)
-				// result).getNumData() == null
-				// && ((SnmpResult) result).getData() != null) {
-				// String xValue = ((SnmpResult) result).getData();
-				// if (!isNoFunctionConditionMet(triggerCondition, xValue))
-				// return false;
-				// } else {
-//				if (result instanceof SnmpResult)
-//					Logit.LogDebug("xxx");
 				Double xValue = getDouble(triggerCondition.getxValue());
 
 				XvalueUnit resultUnit = result.getResultUnit(triggerCondition.getElementType().toString());

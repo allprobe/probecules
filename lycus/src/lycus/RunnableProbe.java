@@ -245,8 +245,8 @@ public class RunnableProbe implements Runnable {
 		}
 
 		try {
-			if (probe.getTriggers().size() > 0)
-				getEventTrigger().addResult(result);
+			if (probe.getTriggers().size() > 0 && result != null)
+					getEventTrigger().addResult(result);
 		} catch (Exception e) {
 			Logit.LogError("RunnableProbe - addResultToTrigger()",
 					"Error Adding result to eventTrigger! " + this.getId() + " Error Message: " + e);
