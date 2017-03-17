@@ -143,7 +143,8 @@ public class RunnableProbe implements Runnable {
 						return;
 
 					addResult(result, timeStamp);
-					addResultToTrigger(result);
+					if (result.getErrorMessage() == null)
+						addResultToTrigger(result);
 					addResultToRollups(result);
 					addResultToSLA(result);
 
