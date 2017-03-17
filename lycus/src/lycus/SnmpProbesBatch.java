@@ -204,7 +204,7 @@ public class SnmpProbesBatch implements Runnable {
 				result.setLastTimestamp(resultsTimestamp);
 				ResultsContainer.getInstance().addResult(result);
 				RollupsContainer.getInstance().addResult(result);
-				if (result.getData() != null || result.getNumData() != null)
+				if (result.getErrorMessage() == null && (result.getData() != null || result.getNumData() != null))
 					runnableProbe.addResultToTrigger(result);
 
 			} else if (storeAs == SnmpStoreAs.delta) {

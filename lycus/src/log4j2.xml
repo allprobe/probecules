@@ -10,13 +10,11 @@
 	</Appenders>
 	<Loggers>
 		<Root level="debug" additivity="false">
-			<AppenderRef ref="syslog" />
+			<AppenderRef ref="console" >ConsoleConsole</AppenderRef>
 		</Root>
 		<logger name="syslogger-production" level="error">
-			<AppenderRef ref="syslog" />
-		</logger>
-		<logger name="syslog-debug" level="debug">
-			<AppenderRef ref="syslog" />
+			<AppenderRef ref="console" ><loggeme="syslog-debug="console"" level="debug">
+			<AppenderRef ref="console" >ConsoleConsole</AppenderRef>
 		</logger>
 	</Loggers>
 </Configuration>
