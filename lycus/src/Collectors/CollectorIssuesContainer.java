@@ -31,6 +31,14 @@ public class CollectorIssuesContainer implements ICollectorIssuesContainer {
 		return instance;
 	}
 
+	public boolean isIssue(String hostId, Enums.CollectorType collectorType) {
+		if (this.liveIssues.get(hostId) == null)
+			return false;
+		if (!this.liveIssues.get(hostId).contains(collectorType))
+			return false;
+		return true;
+	}
+
 	private CollectorIssuesContainer() {
 		issuesArray = new JSONArray();
 		liveIssues = new HashMap<String, HashSet<Enums.CollectorType>>();
@@ -57,8 +65,7 @@ public class CollectorIssuesContainer implements ICollectorIssuesContainer {
 					this.liveIssues.put(hostId, newIssueTable);
 				}
 			} else {
-				if (!this.liveIssues.containsKey(hostId)
-						|| !this.liveIssues.get(hostId).contains(type))
+				if (!this.liveIssues.containsKey(hostId) || !this.liveIssues.get(hostId).contains(type))
 					return;
 				else {
 					this.liveIssues.get(hostId).remove(type);
@@ -67,7 +74,7 @@ public class CollectorIssuesContainer implements ICollectorIssuesContainer {
 				}
 			}
 			JSONObject issueObject = new JSONObject();
-			
+
 			try {
 				userId = host.getUserId();
 				if (userId != null)
@@ -86,7 +93,8 @@ public class CollectorIssuesContainer implements ICollectorIssuesContainer {
 			count++;
 			issuesArray.add(issueObject);
 		} catch (Exception e) {
-			Logit.LogError("CollectorIssuesContainer - addIssue()", "Error adding issue. Host:" + hostId + ", UserId: " + userId, e);
+			Logit.LogError("CollectorIssuesContainer - addIssue()",
+					"Error adding issue. Host:" + hostId + ", UserId: " + userId, e);
 			e.printStackTrace();
 		}
 	}

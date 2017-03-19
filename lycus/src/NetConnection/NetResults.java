@@ -10,6 +10,9 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+
+import javax.persistence.EnumType;
+
 import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
 import org.snmp4j.smi.OID;
@@ -452,67 +455,119 @@ public class NetResults implements INetResults {
 		Map<String, String> sysDescrResults = null;
 
 		SnmpCollector snmpTemplate = (SnmpCollector) host.getSnmpCollector();
+
+		ArrayList<OID> oids = new ArrayList<OID>();
+		oids.add(Constants.sysDescr);
+
+		String ifAllOid = Constants.ifAll_high.toString();
+
+		Enums.InterfaceSpeed nicSpeed = Enums.InterfaceSpeed.high;
+
 		int snmpVersion = snmpTemplate.getVersion();
 		if (snmpVersion == 2) {
 			ifDescrResults = Net.Snmp2Walk(host.getHostIp(), snmpTemplate.getPort(),
-					host.getSnmpCollector().getTimeout(), snmpTemplate.getCommunityName(), Constants.ifAll.toString());
-			ArrayList<OID> oids = new ArrayList<OID>();
-			oids.add(Constants.sysDescr);
+					host.getSnmpCollector().getTimeout(), snmpTemplate.getCommunityName(), ifAllOid);
 			sysDescrResults = Net.Snmp2GETBULK(host.getHostIp(), snmpTemplate.getPort(),
 					host.getSnmpCollector().getTimeout(), snmpTemplate.getCommunityName(), oids);
 		} else if (snmpVersion == 3) {
 			ifDescrResults = Net.Snmp3Walk(host.getHostIp(), snmpTemplate.getPort(),
 					host.getSnmpCollector().getTimeout(), snmpTemplate.getUserName(), snmpTemplate.getAuthPass(),
-					snmpTemplate.getAlgo(), snmpTemplate.getCryptPass(), snmpTemplate.getCryptType(),
-					Constants.ifAll.toString());
-			ArrayList<OID> oids = new ArrayList<OID>();
-			oids.add(Constants.sysDescr);
+					snmpTemplate.getAlgo(), snmpTemplate.getCryptPass(), snmpTemplate.getCryptType(), ifAllOid);
 			sysDescrResults = Net.Snmp3GETBULK(host.getHostIp(), snmpTemplate.getPort(), snmpTemplate.getTimeout(),
 					snmpTemplate.getUserName(), snmpTemplate.getAuthPass(), snmpTemplate.getAlgo(),
 					snmpTemplate.getCryptPass(), snmpTemplate.getCryptType(), oids);
 		}
 		if (ifDescrResults == null || sysDescrResults == null || ifDescrResults.size() == 0
-				|| sysDescrResults.size() == 0)
-			return null;
-
+				|| sysDescrResults.size() == 0) {
+			ifAllOid = Constants.ifAll_low.toString();
+			if (snmpVersion == 2) {
+				ifDescrResults = Net.Snmp2Walk(host.getHostIp(), snmpTemplate.getPort(),
+						host.getSnmpCollector().getTimeout(), snmpTemplate.getCommunityName(), ifAllOid);
+				sysDescrResults = Net.Snmp2GETBULK(host.getHostIp(), snmpTemplate.getPort(),
+						host.getSnmpCollector().getTimeout(), snmpTemplate.getCommunityName(), oids);
+			} else if (snmpVersion == 3) {
+				ifDescrResults = Net.Snmp3Walk(host.getHostIp(), snmpTemplate.getPort(),
+						host.getSnmpCollector().getTimeout(), snmpTemplate.getUserName(), snmpTemplate.getAuthPass(),
+						snmpTemplate.getAlgo(), snmpTemplate.getCryptPass(), snmpTemplate.getCryptType(), ifAllOid);
+				sysDescrResults = Net.Snmp3GETBULK(host.getHostIp(), snmpTemplate.getPort(), snmpTemplate.getTimeout(),
+						snmpTemplate.getUserName(), snmpTemplate.getAuthPass(), snmpTemplate.getAlgo(),
+						snmpTemplate.getCryptPass(), snmpTemplate.getCryptType(), oids);
+			}
+			if (ifDescrResults == null || sysDescrResults == null || ifDescrResults.size() == 0
+					|| sysDescrResults.size() == 0)
+				return null;
+			nicSpeed = Enums.InterfaceSpeed.low;
+		}
 		Enums.HostType hostType = Utils.GeneralFunctions
 				.getHostType(sysDescrResults.get(Constants.sysDescr.toString()));
 
-		HashMap<String, BaseElement> lastScanElements = this.convertNicsWalkToElements(ifDescrResults, hostType);
+		HashMap<String, BaseElement> lastScanElements = this.convertNicsWalkToElements(ifDescrResults, hostType,
+				nicSpeed);
 		return lastScanElements;
 	}
 
-	private HashMap<String, BaseElement> convertNicsWalkToElements(Map<String, String> nicsWalk, HostType hostType) {
+	private HashMap<String, BaseElement> convertNicsWalkToElements(Map<String, String> nicsWalk, HostType hostType,
+			Enums.InterfaceSpeed nicSpeed) {
+
+		HashMap<String, Integer> duplicationCounters = new HashMap<String, Integer>();
+
 		HashMap<String, BaseElement> lastElements = new HashMap<String, BaseElement>();
 		if (hostType == null)
 			return null;
 		for (Map.Entry<String, String> entry : nicsWalk.entrySet()) {
-			if (!entry.getKey().toString().contains("1.3.6.1.2.1.2.2.1.1."))
+			if (!entry.getKey().toString().contains("1.3.6.1.2.1.2.2.1.1.")
+					|| !entry.getKey().toString().contains("1.3.6.1.2.1.31.1.1.1.1."))
 				continue;
-			int index = Integer.parseInt(entry.getValue());
-			if (index == 0) {
-				continue;
-			}
-
+			int index;
 			String name;
 			long ifSpeed;
 
-			ifSpeed = Long.parseLong(nicsWalk.get("1.3.6.1.2.1.2.2.1.5." + index));
-			switch (hostType) {
-			case Windows:
-				name = GeneralFunctions.convertHexToString(nicsWalk.get("1.3.6.1.2.1.2.2.1.2." + index));
-				if (name == null) {
-					continue;
+			if (nicSpeed == Enums.InterfaceSpeed.low) {
+				index = Integer.parseInt(entry.getValue());
+				ifSpeed = Long.parseLong(nicsWalk.get("1.3.6.1.2.1.2.2.1.5." + index));
+				switch (hostType) {
+				case Windows:
+					name = GeneralFunctions.convertHexToString(nicsWalk.get("1.3.6.1.2.1.2.2.1.2." + index));
+					if (name == null) {
+						continue;
+					}
+					break;
+				case Linux:
+					name = nicsWalk.get("1.3.6.1.2.1.2.2.1.2." + index);
+					break;
+				default:
+					return null;
 				}
-				break;
-			case Linux:
-				name = nicsWalk.get("1.3.6.1.2.1.2.2.1.2." + index);
-				break;
-			default:
-				return null;
+
+			} else {
+				index = Integer.parseInt(
+						entry.getKey().toString().split(".")[entry.getKey().toString().split(".").length - 1]);
+				ifSpeed = Long.parseLong(nicsWalk.get("1.3.6.1.2.1.31.1.1.1.15." + index));
+				name = nicsWalk.get("1.3.6.1.2.1.31.1.1.1.1." + index);
 			}
-			NicElement nicElement = new NicElement(index, name, hostType, ifSpeed);
-			lastElements.put(name, nicElement);
+			if (index == 0) {
+				continue;
+			}
+			if (duplicationCounters.containsKey(name)) {
+				String newName = name + "_" + duplicationCounters.get(name);
+				duplicationCounters.put(name, duplicationCounters.get(name) + 1);
+				NicElement nicElement = new NicElement(index, newName, hostType, ifSpeed, nicSpeed);
+				lastElements.put(newName, nicElement);
+
+			} else if (lastElements.containsKey(name) && !duplicationCounters.containsKey(name)) {
+				String newNameFirstDuplication = name + "_0";
+				lastElements.get(name).setName(newNameFirstDuplication);
+				lastElements.put(newNameFirstDuplication, lastElements.get(name));
+				lastElements.remove(name);
+				duplicationCounters.put(name, 1);
+				String newName = name + "_" + duplicationCounters.get(name);
+				duplicationCounters.put(name, duplicationCounters.get(name) + 1);
+				NicElement nicElement = new NicElement(index, newName, hostType, ifSpeed, nicSpeed);
+				lastElements.put(newName, nicElement);
+			} else {
+				NicElement nicElement = new NicElement(index, name, hostType, ifSpeed, nicSpeed);
+				lastElements.put(name, nicElement);
+			}
 		}
 
 		if (lastElements.size() == 0)
@@ -609,27 +664,29 @@ public class NetResults implements INetResults {
 		try {
 			SqlCollector sqlTemplate = host.getSqlCollector();
 			Class.forName("com.mysql.jdbc.Driver").newInstance();
-//			jdbc:mysql://localhost/test?user=fred&password=secret&ssl=true
+			// jdbc:mysql://localhost/test?user=fred&password=secret&ssl=true
 			String ssl = (sqlTemplate.getSql_sec().equals("1")) ? "?ssl=true" : "";
-			Connection con = DriverManager.getConnection(
-					"jdbc:mysql://" + host.getHostIp() + ":" + sqlTemplate.getSql_port() + "/" + probe.getSql_db() + ssl,
-					sqlTemplate.getSql_user(), host.getSqlCollector().getSql_password());
+			Connection con = DriverManager
+					.getConnection(
+							"jdbc:mysql://" + host.getHostIp() + ":" + sqlTemplate.getSql_port() + "/"
+									+ probe.getSql_db() + ssl,
+							sqlTemplate.getSql_user(), host.getSqlCollector().getSql_password());
 
 			Statement stmt = con.createStatement();
 			String sql = probe.getSql_query();
-//			sql = "SHOW STATUS LIKE 'Ssl_cipher';";
+			// sql = "SHOW STATUS LIKE 'Ssl_cipher';";
 			ResultSet rs = stmt.executeQuery(sql);
 			String[] sqlResults = new String[probe.getSql_fields().length];
 			rs.next();
 			int index = 0;
-			
-			for (String columnName : probe.getSql_fields())
-			{
+
+			for (String columnName : probe.getSql_fields()) {
 				int column = rs.findColumn(columnName);
 				sqlResults[index++] = rs.getString(column);
 			}
 
-			SqlResult result = new SqlResult(getRunnableProbeId(probe, host), sqlTemplate.getTimeout(), sqlResults, probe.getSql_fields());
+			SqlResult result = new SqlResult(getRunnableProbeId(probe, host), sqlTemplate.getTimeout(), sqlResults,
+					probe.getSql_fields());
 			con.close();
 			return result;
 		} catch (Exception e) {

@@ -43,6 +43,15 @@ public class CheckTrigger {
 					+ triggerCondition.getCondition().toString());
 
 			try {
+				// if (result instanceof SnmpResult && ((SnmpResult)
+				// result).getNumData() == null
+				// && ((SnmpResult) result).getData() != null) {
+				// String xValue = ((SnmpResult) result).getData();
+				// if (!isNoFunctionConditionMet(triggerCondition, xValue))
+				// return false;
+				// } else {
+				// if (result instanceof SnmpResult)
+				// Logit.LogDebug("xxx");
 				Double xValue = getDouble(triggerCondition.getxValue());
 
 				XvalueUnit resultUnit = result.getResultUnit(triggerCondition.getElementType().toString());

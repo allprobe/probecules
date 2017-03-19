@@ -6,6 +6,7 @@ import java.util.concurrent.ConcurrentHashMap;
 import Elements.BaseElement;
 import Elements.DiskElement;
 import Elements.NicElement;
+import GlobalConstants.Enums;
 import GlobalConstants.Enums.DiscoveryElementType;
 import Model.ElementModel;
 import Model.UpdateModel;
@@ -254,7 +255,7 @@ public class ElementsContainer {
 					baseElement = getElement(runnableProbeId, element.name, elementType.bw);
 					if (baseElement == null) {
 						baseElement = new NicElement(element.index, element.name, HostType.valueOf(element.hostType),
-								element.ifSpeed);
+								element.ifSpeed,Enums.InterfaceSpeed.valueOf(element.nicSpeed));
 						addElement(update.user_id, runnableProbeId, baseElement);
 					}
 				} else if (element.hrStorageAllocationUnits != null) {

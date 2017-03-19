@@ -79,7 +79,13 @@ public class Constants {
 
 	public static final String and = "and";
 	public static final String or = "or";
-	public static final OID ifAll = new OID("1.3.6.1.2.1.2.2.1");
+	public static final OID ifAll_low = new OID("1.3.6.1.2.1.2.2.1");
+	public static final OID ifOutOctetsOID_low = new OID("1.3.6.1.2.1.2.2.1.16");
+	public static final OID ifInOctetsOID_low = new OID("1.3.6.1.2.1.2.2.1.10");
+	public static final OID ifAll_high = new OID("1.3.6.1.2.1.31.1.1.1");
+	public static final OID ifOutOctetsOID_high = new OID("1.3.6.1.2.1.31.1.1.1.10");
+	public static final OID ifInOctetsOID_high = new OID("1.3.6.1.2.1.31.1.1.1.6");
+
 	public static final OID storageAll = new OID("1.3.6.1.2.1.25.2.3.1");
 
 	public static final OID sysDescr = new OID("1.3.6.1.2.1.1.1.0");

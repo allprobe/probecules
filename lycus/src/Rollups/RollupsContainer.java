@@ -260,7 +260,7 @@ public class RollupsContainer implements IRollupsContainer {
 
 	private boolean addFinishedRollup(DataPointsRollup dataPointsRollup, String result) {
 		synchronized (lockFinishedRollups) {
-			finishedRollups.add(rollupResultsSqlDBFormat(dataPointsRollup,result ));
+			finishedRollups.add(rollupResultsSqlDBFormat(dataPointsRollup, result));
 		}
 		return true;
 	}
@@ -576,8 +576,7 @@ public class RollupsContainer implements IRollupsContainer {
 				resultsStrings = new JSONArray();
 			}
 		}
-		if (finishedDataRollup != null)
-		{
+		if (finishedDataRollup != null) {
 			addFinishedRollup(finishedDataRollup, resultObject.toString());
 			// fieldRollup[i] = null;
 		}

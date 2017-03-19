@@ -169,7 +169,7 @@ public class SnmpProbesBatch implements Runnable {
 					"Error, The Batch Thread was Interrupted, Probe type: SNMP Batch of Interval: " + this.getInterval()
 							+ ", BatchId: " + this.getBatchId() + "\nException: " + e.getMessage());
 		}
-		
+
 		Logit.LogInfo("Snmp Batch probe was terminated, Host: " + this.getHost() + " Interval: " + this.getInterval());
 	}
 

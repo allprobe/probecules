@@ -9,7 +9,9 @@ public class Enums {
 		bw, ds // bw = band width, ds = discs space/block device
 		, unknown
 	}
-
+	public static enum InterfaceSpeed {
+		high,low
+	}
 	public static enum SnmpStoreAs {
 		asIs, delta, deltaBytesPerSecond
 	}

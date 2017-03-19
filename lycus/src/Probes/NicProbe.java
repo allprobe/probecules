@@ -5,7 +5,9 @@ import java.util.UUID;
 import org.json.simple.JSONObject;
 import org.snmp4j.smi.OID;
 import Elements.NicElement;
+import GlobalConstants.Constants;
 import GlobalConstants.Enums.HostType;
+import GlobalConstants.Enums.InterfaceSpeed;
 import NetConnection.NetResults;
 import Results.BaseResult;
 import Results.NicResult;
@@ -16,11 +18,9 @@ import lycus.User;
 
 public class NicProbe extends BaseProbe {
 
-	private static final String ifOutOctetsOID = "1.3.6.1.2.1.2.2.1.16.";
-	private static final String ifInOctetsOID = "1.3.6.1.2.1.2.2.1.10.";
-	private int index;
-	private long ifSpeed;
-	HostType hostType;
+	// private int index;
+	// private long ifSpeed;
+	// private HostType hostType;
 	DiscoveryProbe discoveryProbe;
 	private NicElement nicElement;
 
@@ -89,11 +89,23 @@ public class NicProbe extends BaseProbe {
 	}
 
 	public OID getIfoutoctetsOID() {
-		return new OID(NicProbe.ifOutOctetsOID + this.getIndex());
+		switch (this.getNicElement().getNicSpeed()) {
+		case low:
+			return new OID(Constants.ifOutOctetsOID_low.toString() + "." + this.getIndex());
+		case high:
+			return new OID(Constants.ifOutOctetsOID_high.toString() + "." + this.getIndex());
+		}
+		return null;
 	}
 
 	public OID getIfinoctetsOID() {
-		return new OID(NicProbe.ifInOctetsOID + this.getIndex());
+		switch (this.getNicElement().getNicSpeed()) {
+		case low:
+			return new OID(Constants.ifInOctetsOID_low.toString() + "." + this.getIndex());
+		case high:
+			return new OID(Constants.ifInOctetsOID_high.toString() + "." + this.getIndex());
+		}
+		return null;
 	}
 
 	@Override

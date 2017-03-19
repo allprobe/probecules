@@ -39,8 +39,8 @@ public class Logit {
 	public static void LogInfo(String message) {
 		// if (log.isInfoEnabled())
 		// log.info(message);
-//		if (log.isInfoEnabled() && isInfo)
-			log.info(formatMessage(message));
+		// if (log.isInfoEnabled() && isInfo)
+		log.info(formatMessage(message));
 	}
 
 	// extraInfo - Class name + Function name
