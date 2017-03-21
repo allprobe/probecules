@@ -615,9 +615,9 @@ public class UsersManager {
 			UUID userID = rp.getValue();
 			String rpID = rp.getKey();
 
-			// if
-			// (rpID.contains("e2db0595-5fd9-4fe2-9004-eed959cfa6b0@9dc99972-e28a-4e90-aabd-7e8bad61b232@rbl_0f6fff1a-e2fa-499e-a44c-c2caf04fd811"))
-			// Logit.LogCheck("RRBBLL");
+			if (rpID.contains(
+					"f84b117c-03fb-40aa-8003-4283a72c35e4@d0f50422-8887-4032-a36f-a0c193095923@discovery_3ee653fc-adaa-468e-9430-b1793b1d1c7d"))
+				Logit.LogCheck("RRBBLL");
 
 			User u = getUsers().get(userID);
 			Host host = u.getHosts().get(UUID.fromString(rpID.split("@")[1]));

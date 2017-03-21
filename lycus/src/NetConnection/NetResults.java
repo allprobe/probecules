@@ -449,6 +449,8 @@ public class NetResults implements INetResults {
 
 	private HashMap<String, BaseElement> getNicElements(Host host) {
 
+		if (host.getHostIp().contains("62.90.102.34"))
+			Logit.LogDebug("BP");
 		long checkTime;
 
 		Map<String, String> ifDescrResults = null;
@@ -515,8 +517,8 @@ public class NetResults implements INetResults {
 		if (hostType == null)
 			return null;
 		for (Map.Entry<String, String> entry : nicsWalk.entrySet()) {
-			if (!entry.getKey().toString().contains("1.3.6.1.2.1.2.2.1.1.")
-					|| !entry.getKey().toString().contains("1.3.6.1.2.1.31.1.1.1.1."))
+			if (!(entry.getKey().toString().contains("1.3.6.1.2.1.2.2.1.1.")
+					|| entry.getKey().toString().contains("1.3.6.1.2.1.31.1.1.1.1.")))
 				continue;
 			int index;
 			String name;
@@ -541,7 +543,7 @@ public class NetResults implements INetResults {
 
 			} else {
 				index = Integer.parseInt(
-						entry.getKey().toString().split(".")[entry.getKey().toString().split(".").length - 1]);
+						entry.getKey().toString().split("\\.")[entry.getKey().toString().split("\\.").length - 1]);
 				ifSpeed = Long.parseLong(nicsWalk.get("1.3.6.1.2.1.31.1.1.1.15." + index));
 				name = nicsWalk.get("1.3.6.1.2.1.31.1.1.1.1." + index);
 			}
