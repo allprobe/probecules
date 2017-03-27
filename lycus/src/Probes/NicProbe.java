@@ -80,7 +80,8 @@ public class NicProbe extends BaseProbe {
 
 		NicResult nicResult = NetResults.getInstanece().getNicResult(h, this);
 		if (nicResult.getInBW() == null || nicResult.getOutBW() == null)
-			return null;
+			nicResult.setErrorMessage("one of NicResult values are null.");
+		
 		return nicResult;
 	}
 
