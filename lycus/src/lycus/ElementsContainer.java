@@ -92,6 +92,7 @@ public class ElementsContainer {
 			ConcurrentHashMap<String, BaseElement> map = new ConcurrentHashMap<String, BaseElement>(
 					(Map) discoveryResult.getElements());
 			nicElements.put(discoveryResult.getRunnableProbeId(), map);
+			runFirstNicElement(discoveryResult, map);
 			return true;
 		}
 		Map<String, BaseElement> newElements = discoveryResult.getElements();
@@ -101,16 +102,38 @@ public class ElementsContainer {
 		updateStatuses(currentElements, newMap);
 		if (currentElements.size() != newElements.size()) {
 			nicElements.put(discoveryResult.getRunnableProbeId(), newMap);
+			runFirstNicElement(discoveryResult, newMap);
 			return true;
 		}
 		for (BaseElement newElement : newElements.values()) {
 			if (currentElements.get(newElement.getName()) == null
 					|| !currentElements.get(newElement.getName()).isIdentical(newElement)) {
 				nicElements.put(discoveryResult.getRunnableProbeId(), newMap);
+				runFirstNicElement(discoveryResult, newMap);
 				return true;
 			}
 		}
 		return false;
+	}
+
+	private void runFirstNicElement(DiscoveryResult discoveryResult, ConcurrentHashMap<String, BaseElement> map) {
+		BaseElement firstElement = getFirstElement(map);
+		firstElement.setActive(true);
+		ElementsContainer.getInstance().addElement(RunnableProbeContainer.getInstanece()
+				.get(discoveryResult.getRunnableProbeId()).getProbe().getUser().getUserId().toString(),
+				discoveryResult.getRunnableProbeId(), firstElement);
+	}
+
+	private BaseElement getFirstElement(ConcurrentHashMap<String, BaseElement> map) {
+		int minIndex = Integer.MAX_VALUE;
+		BaseElement minElement = null;
+		for (BaseElement element : map.values()) {
+			if (element.getIndex() < minIndex) {
+				minIndex = element.getIndex();
+				minElement = element;
+			}
+		}
+		return minElement;
 	}
 
 	private void updateStatuses(Map<String, BaseElement> currentElements,
@@ -255,7 +278,7 @@ public class ElementsContainer {
 					baseElement = getElement(runnableProbeId, element.name, elementType.bw);
 					if (baseElement == null) {
 						baseElement = new NicElement(element.index, element.name, HostType.valueOf(element.hostType),
-								element.ifSpeed,Enums.InterfaceSpeed.valueOf(element.nicSpeed));
+								element.ifSpeed, Enums.InterfaceSpeed.valueOf(element.nicSpeed));
 						addElement(update.user_id, runnableProbeId, baseElement);
 					}
 				} else if (element.hrStorageAllocationUnits != null) {
