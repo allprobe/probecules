@@ -120,7 +120,7 @@ public class SnmpProbesBatch implements Runnable {
 
 								String rpStr = runnableProbe.getId();
 								if (rpStr.contains(
-										"8b0104e7-5902-4419-933f-668582fc3acd@6b999cd6-fcbb-4ca8-9936-5529b4c66976@snmp_5d937636-eb75-4165-b339-38a729aa2b7d"))
+										"6a10a32d-0d33-415b-a1f6-e9aeb2826d03@98437013-a93f-4b27-9963-a4800860b90f@snmp_1e189e8e-ec48-40bf-baba-88b61b18978a"))
 									Logit.LogDebug("BREAKPOINT");
 
 								_runnableProbes.add(runnableProbe);
@@ -204,7 +204,8 @@ public class SnmpProbesBatch implements Runnable {
 				result.setLastTimestamp(resultsTimestamp);
 				ResultsContainer.getInstance().addResult(result);
 				RollupsContainer.getInstance().addResult(result);
-				if (result.getErrorMessage() == null && (result.getData() != null || result.getNumData() != null))
+				if ((result.getErrorMessage() == "" || result.getErrorMessage() == null)
+						&& (result.getData() != null || result.getNumData() != null))
 					runnableProbe.addResultToTrigger(result);
 
 			} else if (storeAs == SnmpStoreAs.delta) {
