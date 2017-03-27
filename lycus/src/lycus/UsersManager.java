@@ -273,7 +273,7 @@ public class UsersManager {
 
 					String rpStr = runnableProbeId;
 					if (rpStr.contains(
-							"0122dc0b-2de1-4d9c-abe1-1c65371775f2@7352a46f-5189-428c-b4c0-fb98dedd10b1@discovery_d3c95875-4947-4388-989f-64ffd863c704"))
+							"632092d6-0ecb-4d2f-8fb2-ba16dc7a460b@84e1f0fe-9b57-4ee7-a724-e0a44d9f6b57@discovery_eb2ec21e-e870-4932-b9b4-d0423228ce62"))
 						Logit.LogDebug("BREAKPOINT");
 
 					// JSONObject elementN=(JSONObject)elements.get();
@@ -286,8 +286,8 @@ public class UsersManager {
 
 					if (((String) hostElementsJson.get("elements_type")).contains("bw")) {
 						elementParams.hostType = (String) elementJson.get("hostType");
-						elementParams.ifSpeedPackets = (long) elementJson.get("ifSpeed");
-						elementParams.ifSpeedType = null;
+						elementParams.nicSpeedPackets = (long) elementJson.get("nicSpeedPackets");
+						elementParams.nicSpeedType = (String) elementJson.get("nicSpeedType");;
 
 					} else if (((String) hostElementsJson.get("elements_type")).contains("ds"))
 						elementParams.hrStorageAllocationUnits = (long) elementJson.get("hrStorageAllocationUnits");
@@ -302,7 +302,7 @@ public class UsersManager {
 						// DiscoveryProbe
 						// probe=(DiscoveryProbe)user.getTemplateProbes().get(elementParams.discovery_id);
 						baseElement = new NicElement(elementParams.index, elementParams.name, elementParams.status,
-								Utils.GeneralFunctions.getHostType(elementParams.hostType), elementParams.ifSpeedPackets,Enums.InterfaceSpeed.valueOf(elementParams.ifSpeedType));
+								Utils.GeneralFunctions.getHostType(elementParams.hostType), elementParams.nicSpeedPackets,Enums.InterfaceSpeed.valueOf(elementParams.nicSpeedType));
 						break;
 					case Constants.ds:
 						baseElement = new DiskElement(elementParams.index, elementParams.name, elementParams.status);

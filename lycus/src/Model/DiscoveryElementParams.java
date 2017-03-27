@@ -6,8 +6,8 @@ public class DiscoveryElementParams {
 	public String discovery_id;
 	public String name;
 	public boolean status;
-	public long ifSpeedPackets;
-	public String ifSpeedType;
+	public long nicSpeedPackets;
+	public String nicSpeedType;
 	public int index;
 	public String user_id;
 	public String template_id;

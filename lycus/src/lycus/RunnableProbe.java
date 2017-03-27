@@ -119,11 +119,11 @@ public class RunnableProbe implements Runnable {
 				try {
 					String rpStr = this.getId();
 					if (rpStr.contains(
-							"0eb888bc-ba24-49f0-8468-da89ca830c77@discovery_35667a76-cb01-4108-9429-cac2dbcf933e"))
+							"f84b117c-03fb-40aa-8003-4283a72c35e4@7352a46f-5189-428c-b4c0-fb98dedd10b1@discovery_3ee653fc-adaa-468e-9430-b1793b1d1c7d@bG8="))
 						Logit.LogDebug("BREAKPOINT - RunnableProbe");
 
 					if (rpStr.contains(
-							"f84b117c-03fb-40aa-8003-4283a72c35e4@d0f50422-8887-4032-a36f-a0c193095923@discovery_3ee653fc-adaa-468e-9430-b1793b1d1c7d"))
+							"71c322c8-15db-45d6-9351-187c3636049e@72f8ea77-d294-427b-9ab2-6409bca88fa7@icmp_f046fd67-628c-4119-a055-1ee54de258ea"))
 						Logit.LogDebug("BREAKPOINT - RunnableProbe");
 
 					// isActive = false will pause the thread
@@ -143,7 +143,7 @@ public class RunnableProbe implements Runnable {
 						return;
 
 					addResult(result, timeStamp);
-					if (result.getErrorMessage() == null)
+					if (result.getErrorMessage() == null || result.getErrorMessage() == "")
 						addResultToTrigger(result);
 					addResultToRollups(result);
 					addResultToSLA(result);
