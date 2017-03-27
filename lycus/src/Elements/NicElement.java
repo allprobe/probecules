@@ -5,28 +5,30 @@ import GlobalConstants.Enums.InterfaceSpeed;
 
 public class NicElement extends BaseElement {
 	private HostType hostType;
-	private long ifSpeed;
-	private GlobalConstants.Enums.InterfaceSpeed nicSpeed;
+	private long nicSpeedPackets;
+	private GlobalConstants.Enums.InterfaceSpeed nicSpeedType;
 
 	public NicElement(int index, String name, HostType hostType, long ifSpeed,InterfaceSpeed nicSpeed) {
 		super(index, name);
 		this.setHostType(hostType);
 		this.setIfSpeed(ifSpeed);
 		this.setActive(false);
+		this.setNicSpeed(nicSpeed);
 	}
 
-	public NicElement(int index, String name, boolean active, HostType hostType, long ifSpeed) {
+	public NicElement(int index, String name, boolean active, HostType hostType, long ifSpeed,InterfaceSpeed nicSpeed) {
 		super(index, name, active);
 		this.setHostType(hostType);
 		this.setIfSpeed(ifSpeed);
+		this.setNicSpeed(nicSpeed);
 	}
 
 	public long getIfSpeed() {
-		return ifSpeed;
+		return nicSpeedPackets;
 	}
 
 	public void setIfSpeed(long ifSpeed) {
-		this.ifSpeed = ifSpeed;
+		this.nicSpeedPackets = ifSpeed;
 	}
 
 	public HostType getHostType() {
@@ -38,11 +40,11 @@ public class NicElement extends BaseElement {
 	}
 
 	public GlobalConstants.Enums.InterfaceSpeed getNicSpeed() {
-		return nicSpeed;
+		return nicSpeedType;
 	}
 
 	public void setNicSpeed(GlobalConstants.Enums.InterfaceSpeed nicSpeed) {
-		this.nicSpeed = nicSpeed;
+		this.nicSpeedType = nicSpeed;
 	}
 
 }

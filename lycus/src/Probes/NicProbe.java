@@ -89,6 +89,9 @@ public class NicProbe extends BaseProbe {
 	}
 
 	public OID getIfoutoctetsOID() {
+		if(this.getNicElement().getNicSpeed()==null)
+			return null;
+
 		switch (this.getNicElement().getNicSpeed()) {
 		case low:
 			return new OID(Constants.ifOutOctetsOID_low.toString() + "." + this.getIndex());
@@ -99,6 +102,8 @@ public class NicProbe extends BaseProbe {
 	}
 
 	public OID getIfinoctetsOID() {
+		if(this.getNicElement().getNicSpeed()==null)
+			return null;
 		switch (this.getNicElement().getNicSpeed()) {
 		case low:
 			return new OID(Constants.ifInOctetsOID_low.toString() + "." + this.getIndex());

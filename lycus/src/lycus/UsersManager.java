@@ -286,7 +286,9 @@ public class UsersManager {
 
 					if (((String) hostElementsJson.get("elements_type")).contains("bw")) {
 						elementParams.hostType = (String) elementJson.get("hostType");
-						elementParams.ifSpeed = (long) elementJson.get("ifSpeed");
+						elementParams.ifSpeedPackets = (long) elementJson.get("ifSpeed");
+						elementParams.ifSpeedType = null;
+
 					} else if (((String) hostElementsJson.get("elements_type")).contains("ds"))
 						elementParams.hrStorageAllocationUnits = (long) elementJson.get("hrStorageAllocationUnits");
 					User user = getUsers().get(UUID.fromString(elementParams.user_id));
@@ -300,7 +302,7 @@ public class UsersManager {
 						// DiscoveryProbe
 						// probe=(DiscoveryProbe)user.getTemplateProbes().get(elementParams.discovery_id);
 						baseElement = new NicElement(elementParams.index, elementParams.name, elementParams.status,
-								Utils.GeneralFunctions.getHostType(elementParams.hostType), elementParams.ifSpeed);
+								Utils.GeneralFunctions.getHostType(elementParams.hostType), elementParams.ifSpeedPackets,Enums.InterfaceSpeed.valueOf(elementParams.ifSpeedType));
 						break;
 					case Constants.ds:
 						baseElement = new DiskElement(elementParams.index, elementParams.name, elementParams.status);
