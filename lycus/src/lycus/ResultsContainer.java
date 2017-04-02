@@ -181,7 +181,8 @@ public class ResultsContainer implements IResultsContainer {
 			for (Iterator iterator = events.keySet().iterator(); iterator.hasNext();) {
 				String it = (String) iterator.next();
 
-				if(it.contains("0eb888bc-ba24-49f0-8468-da89ca830c77@4031d0c0-39da-4bd3-bcf1-6d081148680f@discovery_35667a76-cb01-4108-9429-cac2dbcf933e@e99ebb11-5e5c-4db3-9573-b54eda1f5ba9"))
+				if (it.contains(
+						"0eb888bc-ba24-49f0-8468-da89ca830c77@4031d0c0-39da-4bd3-bcf1-6d081148680f@discovery_35667a76-cb01-4108-9429-cac2dbcf933e@e99ebb11-5e5c-4db3-9573-b54eda1f5ba9"))
 					Logit.LogDebug("BP");
 
 				try {
@@ -191,8 +192,8 @@ public class ResultsContainer implements IResultsContainer {
 					UUID templateId = UUID.fromString(it.split("@")[3]);
 					String probeId = it.split("@")[4];
 					String triggerId = templateId + "@" + probeId + "@" + it.split("@")[5];
-					if(it.split("@").length == 7)
-						probeId+="@"+it.split("@")[6];
+					if (it.split("@").length == 7)
+						probeId += "@" + it.split("@")[6];
 					String hostName = "";
 					String hostNotificationGroup = "";
 					String triggerName = "";
@@ -232,6 +233,9 @@ public class ResultsContainer implements IResultsContainer {
 						event.setIsStatus(true);
 						event.setDeleted(true);
 						EvenetsQueue.getInstance().add(event, null);
+						Logit.LogDebug(
+								"Event for RunnableProbeID: " + runnableProbeId + ", added = " + event.toString());
+
 					} else
 						addEvent(runnableProbeId, triggerId, event);
 
@@ -463,8 +467,11 @@ public class ResultsContainer implements IResultsContainer {
 				if (newSeverity != null)
 					event.setTriggerSeverity(newSeverity);
 
-				RunnableProbeContainer.getInstanece().get(event.getRunnableProbeId()).getEventTrigger().appendSubType(event);
+				RunnableProbeContainer.getInstanece().get(event.getRunnableProbeId()).getEventTrigger()
+						.appendSubType(event);
 
+				Logit.LogDebug("Event for RunnableProbeID: " + event.getRunnableProbeId() + ", added (resend) = "
+						+ event.toString());
 				EvenetsQueue.getInstance().add(event, null);
 			}
 		}

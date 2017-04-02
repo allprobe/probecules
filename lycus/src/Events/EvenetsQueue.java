@@ -42,14 +42,15 @@ public class EvenetsQueue implements IEventsQueue {
 		eventJson.put("trigger_severity", event.getTriggerSeverity());
 		eventJson.put("host_name", event.getHostName());
 		eventJson.put("host_notifs_groups", event.getHostNotificationGroup());
-		
-		if (result instanceof SqlResult || result instanceof TraceRouteResult || result instanceof WebExtendedResult);
-			// Do nothing;
+
+		if (result instanceof SqlResult || result instanceof TraceRouteResult || result instanceof WebExtendedResult)
+			;
+		// Do nothing;
 		else if (result != null)
 			eventJson.put("result", result.getResultObject());
-		else 
+		else
 			eventJson.put("result", null);
-		
+
 		if (event.isDeleted())
 			eventJson.put("remove_object", "true");
 		if (event.getIsPaused())
