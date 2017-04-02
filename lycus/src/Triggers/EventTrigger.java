@@ -80,10 +80,11 @@ public class EventTrigger {
 				EvenetsQueue.getInstance().add(event, result);
 				Logit.LogDebug("Event for RunnableProbeID: " + runnableProbeId + ", added = " + event.toString());
 			}
+			Logit.LogDebug("Event for RunnableProbeID: " + runnableProbeId + ", was not added, already exists = "
+					+ eventExist.toString());
 		} catch (Exception e) {
-			Logit.LogError("EventTrigger - triggerEvent()",
-					"Error, triggering event, triggerName: " + trigger.getName() + " , TriggerId: "
-							+ trigger.getTriggerId() + " RunnableProbeId: " + result.getRunnableProbeId(),
+			Logit.LogError("EventTrigger - triggerEvent()", "Error, triggering event, triggerName: " + trigger.getName()
+					+ " , TriggerId: " + trigger.getTriggerId() + " RunnableProbeId: " + result.getRunnableProbeId(),
 					e);
 			e.printStackTrace();
 		}
