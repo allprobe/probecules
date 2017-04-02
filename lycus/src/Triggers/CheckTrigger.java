@@ -40,7 +40,7 @@ public class CheckTrigger {
 	public boolean isConditionMet(BaseResult result, Trigger trigger) {
 		for (TriggerCondition triggerCondition : trigger.getCondtions()) {
 			Logit.LogDebug("Checking condition for RPID: " + result.getRunnableProbeId() + " ,condition is: "
-					+ triggerCondition.getCondition().toString());
+					+ triggerCondition.getCondition().toString() + " ( " + triggerCondition.getxValue() + " )");
 
 			try {
 				// if (result instanceof SnmpResult && ((SnmpResult)
