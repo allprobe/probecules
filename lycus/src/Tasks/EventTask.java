@@ -21,6 +21,11 @@ public class EventTask extends BaseTask {
 			EvenetsQueue evenetsQueue = EvenetsQueue.getInstance();
 			EventsObject eventsObject = evenetsQueue.getEventsPerRunnableProbe();
 			String events = eventsObject.getEventsJson();
+
+			if (events.contains(
+					"f103831a-1154-4d74-b608-67c65fc2a41e@63895a27-6225-46aa-9a45-01924e4aca38@snmp_bb18c7c4-19cf-4897-9234-292bc5980420"))
+				Logit.LogDebug(events);
+
 			if (events != null && events.length() > 2) {
 				Logit.LogInfo("Sending collected Events to API...");
 
