@@ -1,16 +1,19 @@
 package Events;
 
+import org.json.simple.JSONObject;
+
 import Utils.Logit;
 
 public class Event {
 	private String triggerId;
-	private boolean isStatus;   // false -The trigger is triggered /  true - when trigger is no longer active.
-	private long time;          // TimeStamp
+	private boolean isStatus; // false -The trigger is triggered / true - when
+								// trigger is no longer active.
+	private long time; // TimeStamp
 	private boolean isSent;
 	private String userId;
 	private String bucketId;
 	private boolean isDeleted;
-	private long originalTimeStamp;     
+	private long originalTimeStamp;
 	private String extraInfo;
 	private String subType;
 	private String hostName;
@@ -19,8 +22,9 @@ public class Event {
 	private String triggerSeverity;
 	private String runnableProbeId;
 	private Boolean isPaused;
-	
-	public Event(String triggerId, String userId, String bucketId, String hostName, String hostNotificationGroup, String triggerName, String triggerSeverity, String runnableProbeId) {
+
+	public Event(String triggerId, String userId, String bucketId, String hostName, String hostNotificationGroup,
+			String triggerName, String triggerSeverity, String runnableProbeId) {
 		this.triggerId = triggerId;
 		this.setUserId(userId);
 		this.setBucketId(bucketId);
@@ -37,7 +41,7 @@ public class Event {
 		this.setRunnableProbeId(runnableProbeId);
 		this.setIsPaused(false);
 	}
-	
+
 	public String getTriggerId() {
 		return triggerId;
 	}
@@ -51,8 +55,7 @@ public class Event {
 	}
 
 	public synchronized void setIsStatus(boolean status) {
-		if (status == true)
-		{
+		if (status == true) {
 			this.time = System.currentTimeMillis();
 		}
 		this.isStatus = status;
@@ -71,7 +74,8 @@ public class Event {
 	}
 
 	public synchronized void setSent(boolean sent) {
-		if(this.getTriggerId().contains("b631bd96-e2e6-4163-940b-ff376d7d2138@port_5da313b7-d802-4b95-80b3-34e1747cb60a@57593ba5-9d91-4686-ad2b-83e824a334b0"))
+		if (this.getTriggerId().contains(
+				"b631bd96-e2e6-4163-940b-ff376d7d2138@port_5da313b7-d802-4b95-80b3-34e1747cb60a@57593ba5-9d91-4686-ad2b-83e824a334b0"))
 			Logit.LogDebug("BREAKPOINT");
 		this.isSent = sent;
 	}
@@ -119,15 +123,19 @@ public class Event {
 	public void setSubType(String subType) {
 		this.subType = subType;
 	}
+
 	public String getHostName() {
 		return hostName;
 	}
+
 	public void setHostName(String hostName) {
 		this.hostName = hostName;
 	}
+
 	public String getHostNotificationGroup() {
 		return hostNotificationGroup;
 	}
+
 	public void setHostNotificationGroup(String hostNotificationGroup) {
 		this.hostNotificationGroup = hostNotificationGroup;
 	}
@@ -163,4 +171,15 @@ public class Event {
 	public void setIsPaused(Boolean isPaused) {
 		this.isPaused = isPaused;
 	}
+
+	@Override
+	public String toString() {
+		JSONObject event = new JSONObject();
+		event.put("trigger_name", this.getTriggerName());
+		event.put("event_status", this.isStatus);
+		event.put("event_sent", this.isSent);
+		event.put("event_deleted", this.isDeleted);
+		return event.toJSONString();
+	}
+
 }

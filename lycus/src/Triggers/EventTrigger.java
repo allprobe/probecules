@@ -78,6 +78,7 @@ public class EventTrigger {
 				appendSubType(event);
 				ResultsContainer.getInstance().addEvent(runnableProbeId, trigger.getTriggerId(), event);
 				EvenetsQueue.getInstance().add(event, result);
+				Logit.LogDebug("Event for RunnableProbeID: " + runnableProbeId + ", added = " + event.toString());
 			}
 		} catch (Exception e) {
 			Logit.LogError("EventTrigger - triggerEvent()",
