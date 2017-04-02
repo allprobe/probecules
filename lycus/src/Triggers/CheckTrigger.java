@@ -56,6 +56,10 @@ public class CheckTrigger {
 
 				XvalueUnit resultUnit = result.getResultUnit(triggerCondition.getElementType().toString());
 
+				if (result.getRunnableProbeId().contains(
+						"6a10a32d-0d33-415b-a1f6-e9aeb2826d03@98437013-a93f-4b27-9963-a4800860b90f@snmp_1e189e8e-ec48-40bf-baba-88b61b18978a"))
+					Logit.LogDebug("BREAKPOINT");
+
 				if (triggerCondition.getFunction() == Function.none) {
 					if (!isNoFunctionConditionMet(resultUnit, triggerCondition, xValue))
 						return false;
@@ -211,7 +215,7 @@ public class CheckTrigger {
 			int nValue = lastN.getElementCount();
 
 			while (nValue > 0) {
-				if (result == null || xValue == null)
+				if (result == null)
 					return false;
 				for (Object oneResult : (ArrayList<Object>) result) {
 					if (oneResult == null)
