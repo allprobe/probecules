@@ -87,7 +87,7 @@ public class ResultsContainer implements IResultsContainer {
 
 	public boolean addEvent(String runnableProbeId, String triggerId, Event event) {
 
-		Logit.LogDebug("Event for RunnableProbeID: " + runnableProbeId + ", added (Container) = " + event.toString());
+		Logit.LogDebug("Event for RunnableProbeID: " + runnableProbeId + ", added (Container) = " + event.toString()+", trace: "+Thread.currentThread().getStackTrace().toString());
 
 		ConcurrentHashMap<String, Event> runnableProbeEvents = null;
 		if (eventsPerRunnableProbe.containsKey(runnableProbeId)) {
