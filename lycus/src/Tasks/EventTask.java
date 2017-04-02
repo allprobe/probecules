@@ -36,8 +36,10 @@ public class EventTask extends BaseTask {
 
 					if (FailedRequestsHandler.getInstance().getNumberOfFailedRequests() != 0)
 						FailedRequestsHandler.getInstance().executeRequests();
-					if (DAL.DAL.getInstanece().put(Enums.ApiAction.PutEvents, eventsJson) == null)
+					if (DAL.DAL.getInstanece().put(Enums.ApiAction.PutEvents, eventsJson) == null) {
 						FailedRequestsHandler.getInstance().addRequest(new ApiRequest(ApiAction.PutEvents, eventsJson));
+						Logit.LogError("EventTask - run()", "Failed to send events, writing locally...");
+					}
 
 					Logit.LogInfo("Packet with " + eventsObject.getLegth() + " events was just sent.");
 					// evenetsQueue.clearAll();
