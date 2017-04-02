@@ -83,7 +83,7 @@ public class EventTrigger {
 		} catch (Exception e) {
 			Logit.LogError("EventTrigger - triggerEvent()",
 					"Error, triggering event, triggerName: " + trigger.getName() + " , TriggerId: "
-							+ trigger.getTriggerId() + " RunnableProbeId: " + eventExist.getRunnableProbeId(),
+							+ trigger.getTriggerId() + " RunnableProbeId: " + result.getRunnableProbeId(),
 					e);
 			e.printStackTrace();
 		}
