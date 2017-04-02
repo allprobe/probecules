@@ -101,6 +101,7 @@ public class EventTrigger {
 				appendSubType(eventExist);
 
 				EvenetsQueue.getInstance().add(eventExist, result);
+				Logit.LogDebug("Event for RunnableProbeID: " + runnableProbeId + ", added = " + eventExist.toString());
 				ResultsContainer.getInstance().removeEvent(runnableProbeId, trigger.getTriggerId());
 				// eventExist.setTime(System.currentTimeMillis());
 			}
