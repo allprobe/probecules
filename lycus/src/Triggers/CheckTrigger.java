@@ -56,13 +56,19 @@ public class CheckTrigger {
 
 				XvalueUnit resultUnit = result.getResultUnit(triggerCondition.getElementType().toString());
 
-				if (resultUnit == null || triggerCondition.getXvalueUnit() == null) {
+				if (resultUnit == null) {
 					Logit.LogError("CheckTrigger - isConditionMet()",
-							"Error while processing condition, one of valueUnits is null! RPID = "+result.getRunnableProbeId());
+							"Error while processing condition, one of resultsValueUnit is null! RPID = "
+									+ result.getRunnableProbeId());
+					return false;
+				}
+				if (triggerCondition.getXvalueUnit() == null) {
+					Logit.LogError("CheckTrigger - isConditionMet()",
+							"Error while processing condition, one of conditionsValueUnit is null! RPID = "
+									+ result.getRunnableProbeId());
 					return false;
 				}
 
-				
 				if (result.getRunnableProbeId().contains(
 						"6a10a32d-0d33-415b-a1f6-e9aeb2826d03@98437013-a93f-4b27-9963-a4800860b90f@snmp_1e189e8e-ec48-40bf-baba-88b61b18978a"))
 					Logit.LogDebug("BREAKPOINT");
