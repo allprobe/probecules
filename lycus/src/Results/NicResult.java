@@ -111,7 +111,10 @@ public class NicResult extends BaseResult {
 		long ifSpeed = ((Probes.NicProbe) RunnableProbeContainer.getInstanece().get(getRunnableProbeId()).getProbe())
 				.getIfSpeed();
 		// long bwPrecentageUsage=(delta*8*100)/(deltaTimeInSec*ifSpeed);
-		long bwInBits = (delta * 8) / (deltaTimeInSec);
+		long bwInBits;
+		if (deltaTimeInSec == 0)
+			return 0;
+		bwInBits = (delta * 8) / (deltaTimeInSec);
 		return bwInBits;
 	}
 
