@@ -399,10 +399,16 @@ public class RollupsContainer implements IRollupsContainer {
 		DataPointsRollup[] nicOutRollups = nicOutDataRollups.get(result.getRunnableProbeId());
 
 		if (nicInRollups == null || nicOutRollups == null) {
-			nicInDataRollups.put(result.getRunnableProbeId(), new DataPointsRollup[6]);
-			nicOutDataRollups.put(result.getRunnableProbeId(), new DataPointsRollup[6]);
+			nicInRollups=new DataPointsRollup[6];
+			nicOutRollups=new DataPointsRollup[6];
+			nicInDataRollups.put(result.getRunnableProbeId(), nicInRollups);
+			nicOutDataRollups.put(result.getRunnableProbeId(), nicOutRollups);
 		}
 		for (int i = 0; i < result.getNumberOfRollupTables(); i++) {
+			
+			if(result.getRunnableProbeId()==null)
+				Logit.LogError("RollupsContainer - addNicResult", "RPID is null!");
+			
 			DataPointsRollup nicInRollup = nicInDataRollups.get(result.getRunnableProbeId())[i];
 			DataPointsRollup nicOutRollup = nicOutDataRollups.get(result.getRunnableProbeId())[i];
 
