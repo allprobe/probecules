@@ -56,6 +56,13 @@ public class CheckTrigger {
 
 				XvalueUnit resultUnit = result.getResultUnit(triggerCondition.getElementType().toString());
 
+				if (resultUnit == null || triggerCondition.getXvalueUnit() == null) {
+					Logit.LogError("CheckTrigger - isConditionMet()",
+							"Error while processing condition, one of valueUnits is null! RPID = "+result.getRunnableProbeId());
+					return false;
+				}
+
+				
 				if (result.getRunnableProbeId().contains(
 						"6a10a32d-0d33-415b-a1f6-e9aeb2826d03@98437013-a93f-4b27-9963-a4800860b90f@snmp_1e189e8e-ec48-40bf-baba-88b61b18978a"))
 					Logit.LogDebug("BREAKPOINT");
@@ -82,7 +89,7 @@ public class CheckTrigger {
 				}
 				// }
 			} catch (Exception e) {
-				Logit.LogError("EventTrigger - isConditionMet()", "Error, conditioning event, triggerName: "
+				Logit.LogError("CheckTrigger - isConditionMet()", "Error, conditioning event, triggerName: "
 						+ trigger.getName() + " , TriggerId: " + trigger.getTriggerId(), e);
 				e.printStackTrace();
 			}
@@ -112,7 +119,7 @@ public class CheckTrigger {
 				result = lastN.getNextResult(triggerCondition.getElementType().toString());
 			}
 		} catch (Exception e) {
-			Logit.LogError("EventTrigger - isNoFunctionConditionMet()", "Error, no function conditioning", e);
+			Logit.LogError("CheckTrigger - isNoFunctionConditionMet()", "Error, no function conditioning", e);
 			e.printStackTrace();
 		}
 		return false;
@@ -143,7 +150,7 @@ public class CheckTrigger {
 			return isCondition(max, resultUnit, triggerCondition.getCondition(), xValue,
 					triggerCondition.getXvalueUnit());
 		} catch (NumberFormatException e) {
-			Logit.LogError("EventTrigger - isMaxConditionMet()", "Error, no max function conditioning", e);
+			Logit.LogError("CheckTrigger - isMaxConditionMet()", "Error, no max function conditioning", e);
 			e.printStackTrace();
 		}
 
@@ -171,7 +178,7 @@ public class CheckTrigger {
 			return isCondition(sum / lastN.getElementCount(), resultUnit, triggerCondition.getCondition(), xValue,
 					triggerCondition.getXvalueUnit());
 		} catch (NumberFormatException e) {
-			Logit.LogError("EventTrigger - isAvgConditionMet()", "Error, average function conditioning", e);
+			Logit.LogError("CheckTrigger - isAvgConditionMet()", "Error, average function conditioning", e);
 			e.printStackTrace();
 		}
 		return false;
@@ -200,7 +207,7 @@ public class CheckTrigger {
 			return isCondition(delta_avg, resultUnit, triggerCondition.getCondition(), xValue,
 					triggerCondition.getXvalueUnit());
 		} catch (NumberFormatException e) {
-			Logit.LogError("EventTrigger - isDeltaAvgConditionMet()", "Error, delta average function conditioning", e);
+			Logit.LogError("CheckTrigger - isDeltaAvgConditionMet()", "Error, delta average function conditioning", e);
 			e.printStackTrace();
 		}
 		return false;
@@ -236,7 +243,7 @@ public class CheckTrigger {
 				result = lastN.getNextResult(triggerCondition.getElementType().toString());
 			}
 		} catch (NumberFormatException e) {
-			Logit.LogError("EventTrigger - isNoFunctionConditionMet()", "Error, no function conditioning", e);
+			Logit.LogError("CheckTrigger - isNoFunctionConditionMet()", "Error, no function conditioning", e);
 			e.printStackTrace();
 		}
 		return false;
@@ -245,8 +252,8 @@ public class CheckTrigger {
 	private boolean isCondition(Double result, XvalueUnit resultUnit, Condition condition, double xValue,
 			XvalueUnit xvalueUnit) {
 		if (resultUnit == null || xvalueUnit == null) {
-			Logit.LogError("EventTrigger - isCondition()",
-					"Error while processing condition, one of valueUnits is null!");
+			Logit.LogError("CheckTrigger - isCondition()",
+					"Error while processing condition, one of valueUnits is null! ");
 			return false;
 		}
 		try {
@@ -261,8 +268,8 @@ public class CheckTrigger {
 				return xvalueUnit.getBasic(result, resultUnit) != xvalueUnit.getBasic(xValue, xvalueUnit);
 			}
 		} catch (Exception e) {
-			Logit.LogError("EventTrigger - isCondition()", "Error, is condition: " + xvalueUnit.toString(), e);
-			Logit.LogError("EventTrigger - isCondition()", "The condition is: " + condition.name(), e);
+			Logit.LogError("CheckTrigger - isCondition()", "Error, is condition: " + xvalueUnit.toString(), e);
+			Logit.LogError("CheckTrigger - isCondition()", "The condition is: " + condition.name(), e);
 
 			e.printStackTrace();
 		}
@@ -332,7 +339,7 @@ public class CheckTrigger {
 
 			}
 		} catch (Exception e) {
-			Logit.LogError("EventTrigger - getDelta()", "Error, get delta", e);
+			Logit.LogError("CheckTrigger - getDelta()", "Error, get delta", e);
 			e.printStackTrace();
 		}
 		return null;
