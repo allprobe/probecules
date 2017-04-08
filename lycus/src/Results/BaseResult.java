@@ -282,6 +282,8 @@ public class BaseResult implements IResult {
 			return XvalueUnit.B;
 		case DUDS:
 			return XvalueUnit.B;
+		case DPUDS:
+			return XvalueUnit.as_is;
 		case DTDS:
 			return XvalueUnit.B;
 		case DBI:
