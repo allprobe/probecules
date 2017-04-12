@@ -43,6 +43,7 @@ public class SnmpProbesBatch implements Runnable {
 				+ rp.getProbe().getInterval() + "@" + UUID.randomUUID().toString();
 		this.setRunning(false);
 		setSnmp(null);
+
 	}
 
 	public Host getHost() {
@@ -190,6 +191,9 @@ public class SnmpProbesBatch implements Runnable {
 	private void createResponse(List<SnmpResult> response) {
 		long resultsTimestamp = System.currentTimeMillis();
 		for (SnmpResult result : response) {
+			if (result.getRunnableProbeId().contains(
+					"4031d0c0-39da-4bd3-bcf1-6d081148680f@120a1542-cc11-4b64-9b95-80637a69c1fc@discovery_35667a76-cb01-4108-9429-cac2dbcf933e@U3dhcCBzcGFjZQ=="))
+				Logit.LogDebug("BREAKPOINT");
 
 			RunnableProbe runnableProbe = createSnmpErrorResult(result);
 			addSnmpResult(resultsTimestamp, result, runnableProbe);

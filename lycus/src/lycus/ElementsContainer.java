@@ -128,12 +128,20 @@ public class ElementsContainer {
 		int minIndex = Integer.MAX_VALUE;
 		BaseElement minElement = null;
 		for (BaseElement element : map.values()) {
-			if (element.getIndex() < minIndex) {
+			if (element.getIndex() < minIndex && isValidNic(element)) {
 				minIndex = element.getIndex();
 				minElement = element;
 			}
 		}
 		return minElement;
+	}
+
+	private boolean isValidNic(BaseElement element) {
+		for (Enums.NicBlackList nic : Enums.NicBlackList.values()) {
+			if (element.getName() == nic.name())
+				return false;
+		}
+		return true;
 	}
 
 	private void updateStatuses(Map<String, BaseElement> currentElements,
