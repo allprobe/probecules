@@ -68,4 +68,13 @@ public class PingResult extends BaseResult {
 			result.add(this.getErrorMessage());
 		return result;
 	}
+
+	@Override
+	public String toString() {
+		return "PingResult{" +
+				"packetLoss=" + packetLoss +
+				", rtt=" + rtt +
+				", ttl=" + ttl +
+				'}';
+	}
 }
