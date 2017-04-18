@@ -1,12 +1,10 @@
 package Triggers;
 
 import java.util.ArrayList;
-import java.util.Date;
 import GlobalConstants.Enums.Condition;
 import GlobalConstants.Enums.Function;
 import GlobalConstants.XvalueUnit;
 import Results.BaseResult;
-import Results.SnmpResult;
 import Utils.Logit;
 
 public class CheckTrigger {
@@ -15,7 +13,7 @@ public class CheckTrigger {
 	private int head = 0;
 	private int tail = 0;
 	private boolean empty = true;
-	private int actualSize = 0;
+	// private int actualSize = 0;
 	private int interval;
 
 	public CheckTrigger(int interval) {
@@ -29,11 +27,11 @@ public class CheckTrigger {
 		setTail((getTail() + 1) % getSize());
 		if (getHead() == getTail()) {
 			setHead(getHead() + 1);
-			if (getHead() > getSize())
+			if (getHead() >= getSize())
 				setHead(0);
 		}
-		if (actualSize < size)
-			actualSize++;
+		// if (actualSize < size)
+		// actualSize++;
 		empty = false;
 	}
 
@@ -52,36 +50,17 @@ public class CheckTrigger {
 				// } else {
 				// if (result instanceof SnmpResult)
 				// Logit.LogDebug("xxx");
+
 				Double xValue = getDouble(triggerCondition.getxValue());
 
 				XvalueUnit resultUnit = result.getResultUnit(triggerCondition.getElementType().toString());
-
-				// if (this.queue[0]
-				// .getRunnableProbeId() ==
-				// "4031d0c0-39da-4bd3-bcf1-6d081148680f@120a1542-cc11-4b64-9b95-80637a69c1fc@discovery_35667a76-cb01-4108-9429-cac2dbcf933e@U3dhcCBzcGFjZQ==")
-				// Logit.LogError("BreakPoint",
-				// triggerCondition.getElementType().toString());
-
-				if (resultUnit == null) {
-					Logit.LogError("CheckTrigger - isConditionMet()",
-							"Error while processing condition, resultsValueUnit is null! the string is: "
-									+ triggerCondition.getElementType().toString() + " RPID = "
-									+ result.getRunnableProbeId());
-					return false;
-				}
-				if (triggerCondition.getXvalueUnit() == null) {
-					Logit.LogError("CheckTrigger - isConditionMet()",
-							"Error while processing condition, conditionsValueUnit is null! RPID = "
-									+ result.getRunnableProbeId());
-					return false;
-				}
 
 				if (result.getRunnableProbeId().contains(
 						"6a10a32d-0d33-415b-a1f6-e9aeb2826d03@98437013-a93f-4b27-9963-a4800860b90f@snmp_1e189e8e-ec48-40bf-baba-88b61b18978a"))
 					Logit.LogDebug("BREAKPOINT");
 
 				if (triggerCondition.getFunction() == Function.none) {
-					if (!isNoFunctionConditionMet(resultUnit, triggerCondition, xValue))
+					if (!isNoFunctionConditionMet(resultUnit, triggerCondition, xValue, result))
 						return false;
 				} else if (triggerCondition.getFunction() == Function.delta) {
 					Double delta = getDelta(triggerCondition.getElementType().toString());
@@ -102,7 +81,7 @@ public class CheckTrigger {
 				}
 				// }
 			} catch (Exception e) {
-				Logit.LogError("CheckTrigger - isConditionMet()", "Error, conditioning event, triggerName: "
+				Logit.LogError("EventTrigger - isConditionMet()", "Error, conditioning event, triggerName: "
 						+ trigger.getName() + " , TriggerId: " + trigger.getTriggerId(), e);
 				e.printStackTrace();
 			}
@@ -110,34 +89,39 @@ public class CheckTrigger {
 		return true;
 	}
 
-	private boolean isNoFunctionConditionMet(TriggerCondition triggerCondition, String xValue) {
-		try {
-			LastN lastN = getLast(triggerCondition);
-			if (!lastN.isEnoughElements())
-				return false;
-			Object result = lastN.getNextResult(triggerCondition.getElementType().toString());
-			int nValue = lastN.getElementCount();
-
-			while (nValue > 0) {
-				if (result == null || xValue == null)
-					return false;
-				for (Object oneResult : (ArrayList<Object>) result) {
-					if (oneResult == null)
-						continue;
-					if (isCondition(oneResult.toString(), triggerCondition.getCondition(), triggerCondition.getxValue(),
-							triggerCondition.getXvalueUnit()))
-						return true;
-				}
-				nValue--;
-				result = lastN.getNextResult(triggerCondition.getElementType().toString());
-			}
-		} catch (Exception e) {
-			Logit.LogError("CheckTrigger - isNoFunctionConditionMet()", "Error, no function conditioning", e);
-			e.printStackTrace();
-		}
-		return false;
-
-	}
+	// private boolean isNoFunctionConditionMet(TriggerCondition
+	// triggerCondition, String xValue) {
+	// try {
+	// LastN lastN = getLast(triggerCondition);
+	// if (!lastN.isEnoughElements())
+	// return false;
+	// Object result =
+	// lastN.getNextResult(triggerCondition.getElementType().toString());
+	// int nValue = lastN.getElementCount();
+	//
+	// while (nValue > 0) {
+	// if (result == null || xValue == null)
+	// return false;
+	// for (Object oneResult : (ArrayList<Object>) result) {
+	// if (oneResult == null)
+	// continue;
+	// if (isCondition(oneResult.toString(), triggerCondition.getCondition(),
+	// triggerCondition.getxValue(),
+	// triggerCondition.getXvalueUnit()))
+	// return true;
+	// }
+	// nValue--;
+	// result =
+	// lastN.getNextResult(triggerCondition.getElementType().toString());
+	// }
+	// } catch (Exception e) {
+	// Logit.LogError("EventTrigger - isNoFunctionConditionMet()", "Error, no
+	// function conditioning", e);
+	// e.printStackTrace();
+	// }
+	// return false;
+	//
+	// }
 
 	private boolean isMaxConditionMet(XvalueUnit resultUnit, TriggerCondition triggerCondition, Double xValue) {
 		try {
@@ -163,7 +147,7 @@ public class CheckTrigger {
 			return isCondition(max, resultUnit, triggerCondition.getCondition(), xValue,
 					triggerCondition.getXvalueUnit());
 		} catch (NumberFormatException e) {
-			Logit.LogError("CheckTrigger - isMaxConditionMet()", "Error, no max function conditioning", e);
+			Logit.LogError("EventTrigger - isMaxConditionMet()", "Error, no max function conditioning", e);
 			e.printStackTrace();
 		}
 
@@ -191,7 +175,7 @@ public class CheckTrigger {
 			return isCondition(sum / lastN.getElementCount(), resultUnit, triggerCondition.getCondition(), xValue,
 					triggerCondition.getXvalueUnit());
 		} catch (NumberFormatException e) {
-			Logit.LogError("CheckTrigger - isAvgConditionMet()", "Error, average function conditioning", e);
+			Logit.LogError("EventTrigger - isAvgConditionMet()", "Error, average function conditioning", e);
 			e.printStackTrace();
 		}
 		return false;
@@ -220,24 +204,22 @@ public class CheckTrigger {
 			return isCondition(delta_avg, resultUnit, triggerCondition.getCondition(), xValue,
 					triggerCondition.getXvalueUnit());
 		} catch (NumberFormatException e) {
-			Logit.LogError("CheckTrigger - isDeltaAvgConditionMet()", "Error, delta average function conditioning", e);
+			Logit.LogError("EventTrigger - isDeltaAvgConditionMet()", "Error, delta average function conditioning", e);
 			e.printStackTrace();
 		}
 		return false;
 	}
 
-	private boolean isNoFunctionConditionMet(XvalueUnit resultUnit, TriggerCondition triggerCondition, Double xValue) {
+	private boolean isNoFunctionConditionMet(XvalueUnit resultUnit, TriggerCondition triggerCondition, Double xValue,
+			BaseResult result1) {
 		try {
 			LastN lastN = getLast(triggerCondition);
 			if (!lastN.isEnoughElements())
 				return false;
-			Object result = lastN.getNextResult(triggerCondition.getElementType().toString());
-			int nValue = lastN.getElementCount();
 
-			while (nValue > 0) {
-				if (result == null)
-					return false;
-				for (Object oneResult : (ArrayList<Object>) result) {
+			if (triggerCondition.getnValue() == 1) {
+				ArrayList<Object> results = result1.getResultElementValue(triggerCondition.getElementType().toString());
+				for (Object oneResult : (ArrayList<Object>) results) {
 					if (oneResult == null)
 						continue;
 					if (!(oneResult instanceof Double) && !(oneResult instanceof Integer)
@@ -252,11 +234,35 @@ public class CheckTrigger {
 							return true;
 					}
 				}
-				nValue--;
-				result = lastN.getNextResult(triggerCondition.getElementType().toString());
+			}
+			else {
+				Object result = lastN.getNextResult(triggerCondition.getElementType().toString());
+				int nValue = lastN.getElementCount();
+
+				while (nValue > 0) {
+					if (result == null)
+						return false;
+					for (Object oneResult : (ArrayList<Object>) result) {
+						if (oneResult == null)
+							continue;
+						if (!(oneResult instanceof Double) && !(oneResult instanceof Integer)
+								&& !(oneResult instanceof Long)) {
+							if (isCondition(oneResult.toString(), triggerCondition.getCondition(),
+									triggerCondition.getxValue(), triggerCondition.getXvalueUnit()))
+								return true;
+
+						} else {
+							if (isCondition(Double.parseDouble(oneResult.toString()), resultUnit,
+									triggerCondition.getCondition(), xValue, triggerCondition.getXvalueUnit()))
+								return true;
+						}
+					}
+					nValue--;
+					result = lastN.getNextResult(triggerCondition.getElementType().toString());
+				}
 			}
 		} catch (NumberFormatException e) {
-			Logit.LogError("CheckTrigger - isNoFunctionConditionMet()", "Error, no function conditioning", e);
+			Logit.LogError("EventTrigger - isNoFunctionConditionMet()", "Error, no function conditioning", e);
 			e.printStackTrace();
 		}
 		return false;
@@ -265,8 +271,8 @@ public class CheckTrigger {
 	private boolean isCondition(Double result, XvalueUnit resultUnit, Condition condition, double xValue,
 			XvalueUnit xvalueUnit) {
 		if (resultUnit == null || xvalueUnit == null) {
-			Logit.LogError("CheckTrigger - isCondition()",
-					"Error while processing condition, one of valueUnits is null! ");
+			Logit.LogError("EventTrigger - isCondition()",
+					"Error while processing condition, one of valueUnits is null!");
 			return false;
 		}
 		try {
@@ -281,8 +287,8 @@ public class CheckTrigger {
 				return xvalueUnit.getBasic(result, resultUnit) != xvalueUnit.getBasic(xValue, xvalueUnit);
 			}
 		} catch (Exception e) {
-			Logit.LogError("CheckTrigger - isCondition()", "Error, is condition: " + xvalueUnit.toString(), e);
-			Logit.LogError("CheckTrigger - isCondition()", "The condition is: " + condition.name(), e);
+			Logit.LogError("EventTrigger - isCondition()", "Error, is condition: " + xvalueUnit.toString(), e);
+			Logit.LogError("EventTrigger - isCondition()", "The condition is: " + condition.name(), e);
 
 			e.printStackTrace();
 		}
@@ -352,7 +358,7 @@ public class CheckTrigger {
 
 			}
 		} catch (Exception e) {
-			Logit.LogError("CheckTrigger - getDelta()", "Error, get delta", e);
+			Logit.LogError("EventTrigger - getDelta()", "Error, get delta", e);
 			e.printStackTrace();
 		}
 		return null;
@@ -396,120 +402,5 @@ public class CheckTrigger {
 
 	public void setInterval(int interval) {
 		this.interval = interval;
-	}
-}
-
-class LastN {
-	private int head; // Head of the selected group
-	private int tail; // Tail of the selected group
-	private int current;
-	private int size;
-	private BaseResult[] queue;
-	private int elementsPopped;
-	private int elenemtCount;
-
-	// Gets the set of indexes for last N Items
-	public LastN(int nValue, CheckTrigger checkTrigger) {
-		try {
-			this.setSize(checkTrigger.getSize());
-			this.queue = checkTrigger.getQueue();
-			this.setTail(checkTrigger.getTail());
-			if (checkTrigger.getTail() > nValue - 1)
-				this.setHead(checkTrigger.getTail() - nValue);
-			if (checkTrigger.getHead() > checkTrigger.getTail()) {
-				int start = checkTrigger.getTail() - nValue + 1;
-				if (start < 0)
-					start = checkTrigger.getTail() - nValue + 1 + checkTrigger.getSize();
-				this.setHead(start);
-			}
-			elenemtCount = nValue;
-			this.current = head;
-			this.elementsPopped = nValue;
-		} catch (Exception e) {
-			Logit.LogError("EventTrigger - LastN()", "Error, Creating N vector", e);
-			e.printStackTrace();
-		}
-	}
-
-	public boolean isEnoughElements() {
-		if (tail > head)
-			return elenemtCount <= tail - head + 1;
-
-		return true;
-	}
-
-	// Implement
-	// Gets the set of indexes for last N hours
-	public LastN(CheckTrigger checkTrigger, int pValue) {
-		this.setSize(pValue * 60 * 60 / checkTrigger.getInterval());
-		this.setHead(checkTrigger.getHead());
-		this.setTail(checkTrigger.getTail());
-		this.queue = checkTrigger.getQueue();
-		this.current = head;
-		// elenemtCount = nValue;
-	}
-
-	// Implement
-	// Gets the set of indexes for time interval
-	public LastN(Date time1, Date time2, CheckTrigger checkTrigger) {
-		this.setSize(checkTrigger.getSize());
-		this.setHead(checkTrigger.getHead());
-		this.setTail(checkTrigger.getTail());
-		this.queue = checkTrigger.getQueue();
-		this.current = head;
-		// elenemtCount = nValue;
-	}
-
-	public Object getNextResult(String elementType) {
-		if (this.current >= getSize())
-			this.current = 0;
-
-		int cur = current++;
-		if (this.elementsPopped < 0)
-			return null;
-
-		this.elementsPopped--;
-		if (queue[cur] == null || (queue[cur] != null && queue[cur] instanceof SnmpResult
-				&& ((SnmpResult) queue[cur]).getData() != null
-				&& ((SnmpResult) queue[cur]).getData().startsWith("WRONG_"))) // cur
-																				// is
-																				// the
-																				// new
-																				// pointer
-																				// to
-																				// the
-																				// array
-																				// index
-			// that havent been intialized yet
-			return null;
-		return queue[cur].getResultElementValue(elementType);
-	}
-
-	public int getElementCount() {
-		return elenemtCount;
-	}
-
-	public int getHead() {
-		return head;
-	}
-
-	public void setHead(int head) {
-		this.head = head;
-	}
-
-	public int getTail() {
-		return tail;
-	}
-
-	public void setTail(int tail) {
-		this.tail = tail;
-	}
-
-	public int getSize() {
-		return size;
-	}
-
-	public void setSize(int size) {
-		this.size = size;
 	}
 }

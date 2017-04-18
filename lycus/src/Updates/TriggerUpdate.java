@@ -91,6 +91,7 @@ public class TriggerUpdate extends BaseUpdate {
 			probe = getUser().getProbeFor(getUpdate().probe_id);
 			ConcurrentHashMap<String, RunnableProbe> runnbaleProbes = RunnableProbeContainer.getInstanece()
 					.getByProbe(getUpdate().probe_id);
+			
 			ResultsContainer.getInstance().resendEvents(getUpdate().object_id, Constants.object_removed, null, null);
 			for (RunnableProbe runnbleProbe : runnbaleProbes.values())
 				runnbleProbe.removeEvents(getUpdate().object_id, false);
