@@ -356,10 +356,10 @@ public class Net {
 
 			StringBuilder b = new StringBuilder();
 			if (user != null && pass != null)
-				b.append("phantomjs/phantomjs").append(" ").append("phantomjs/netsniff_auth.js").append(" ").append(url)
+				b.append("phantomjs/phantomjs").append(" ").append("--ignore-ssl-errors=yes").append(" ").append("phantomjs/netsniff_auth.js").append(" ").append(url)
 						.append(" ").append(user).append(" ").append(pass).append(" ").append(timeout);
 			else
-				b.append("phantomjs/phantomjs").append(" ").append("phantomjs/netsniff.js").append(" ").append(url)
+				b.append("phantomjs/phantomjs").append(" ").append("--ignore-ssl-errors=yes").append(" ").append("phantomjs/netsniff.js").append(" ").append(url)
 						.append(" ").append(timeout);
 
 			p = Runtime.getRuntime().exec(b.toString());
