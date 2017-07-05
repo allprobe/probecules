@@ -177,13 +177,23 @@ public class NetResults implements INetResults {
 		Long timestamp = fromHarTimeToEpoch(
 				(String) ((JSONObject) ((JSONArray) ((JSONObject) rawResults.get("log")).get("pages")).get(0))
 						.get("startedDateTime"));
+		long responseTime = -1;
+		int responseCode = -1;
+		long responseSize = -1;
+		try {
 
-		long responseTime = (long) ((JSONObject) ((JSONObject) ((JSONArray) ((JSONObject) rawResults.get("log"))
-				.get("pages")).get(0)).get("pageTimings")).get("onLoad");
-		int responseCode = ((Long) ((JSONObject) ((JSONObject) ((JSONArray) ((JSONObject) rawResults.get("log"))
-				.get("entries")).get(0)).get("response")).get("status")).intValue();
-		long responseSize = (long) ((JSONObject) ((JSONObject) ((JSONArray) ((JSONObject) rawResults.get("log"))
-				.get("entries")).get(0)).get("response")).get("bodySize");
+			responseTime = (long) ((JSONObject) ((JSONObject) ((JSONArray) ((JSONObject) rawResults.get("log"))
+					.get("pages")).get(0)).get("pageTimings")).get("onLoad");
+			responseCode = ((Long) ((JSONObject) ((JSONObject) ((JSONArray) ((JSONObject) rawResults.get("log"))
+					.get("entries")).get(0)).get("response")).get("status")).intValue();
+			responseSize = (long) ((JSONObject) ((JSONObject) ((JSONArray) ((JSONObject) rawResults.get("log"))
+					.get("entries")).get(0)).get("response")).get("bodySize");
+
+		} catch (Exception e) {
+			Logit.LogWarn("Error while processing deep web result! RPID= " + GeneralFunctions
+					.getRunnableProbeId(probe.getTemplate_id(), host.getHostId(), probe.getProbe_id()));
+
+		}
 
 		ArrayList<DOMElement> allElements = convertDOMElementsResult(
 				((JSONArray) ((JSONObject) rawResults.get("log")).get("entries")));
