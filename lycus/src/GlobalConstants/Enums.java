@@ -1,28 +1,28 @@
 package GlobalConstants;
 
 public class Enums {
-	public static enum ApiAction {
+	public enum ApiAction {
 		InitServer, GetServerMemoryDump, FlushServerMemory, InsertDatapointsBatches, PutEvents, GetServerLiveEvents, GetThreadsUpdates, DevGetThreadsUpdates, GetHosts, GetCollectors, PutSlaBatches, PutCollectorsIssue, DiagnosticResults
 	}
 
-	public static enum DiscoveryElementType {
+	public enum DiscoveryElementType {
 		bw, ds // bw = band width, ds = discs space/block device
 		, unknown
 	}
 
-	public static enum InterfaceSpeed {
+	public enum InterfaceSpeed {
 		high, low
 	}
 
-	public static enum SnmpStoreAs {
+	public enum SnmpStoreAs {
 		asIs, delta, deltaBytesPerSecond
 	}
 
-	public static enum NicBlackList {
+	public enum NicBlackList {
 		lo, loopback
 	}
 
-	public static enum UpdateType {
+	public enum UpdateType {
 		pod, // Update Probe
 		npob, // New Probe
 		pdel, // Delete probe
@@ -42,24 +42,24 @@ public class Enums {
 		rdisc // Delete discovery
 	}
 
-	public static enum Action {
+	public enum Action {
 		New, Update, Delete
 	}
 
-	public static enum HostType {
+	public enum HostType {
 		Windows, Linux
 	}
 
-	public static enum SnmpError {
-		NO_COMUNICATION, EXCEPTION_ON_REQUEST;
-	}
+	public enum SnmpError {
+		NO_COMUNICATION, EXCEPTION_ON_REQUEST
+    }
 
-	public static enum ElementChange {
+	public enum ElementChange {
 		addedElement, removedElement, indexElementChanged
 
 	}
 
-	public static enum ResultValueType {
+	public enum ResultValueType {
 		PRT, WRT, RC, PS, PST, RTA, PL, DFDS, DUDS, DBI, DBO, WSERT, WAERC, TRARHRT, TRDHRT, DTDS, SNMP, RBL, WSC, DPFDS, DPUDS
 
 	}
@@ -68,7 +68,7 @@ public class Enums {
 	// as_is, b, B, Kb, KB, Mb, MB, Gb, GB
 	// }
 
-	public static enum Condition {
+	public enum Condition {
 		no_condition, bigger, tinier, equal, not_equal
 	}
 
@@ -86,19 +86,19 @@ public class Enums {
 		return null;
 	}
 
-	public static enum Function {
+	public enum Function {
 		none, avg, delta, max, delta_avg
 	}
 
-	public static enum SnmpDataType {
+	public enum SnmpDataType {
 		Numeric, Text
 	}
 
-	public static enum CollectorType {
+	public enum CollectorType {
 		Snmp, Sql
 	}
 
-	public static enum LastType {
+	public enum LastType {
 		N, // Last-N
 		P, // Last-Period
 		H, // Last-Hours

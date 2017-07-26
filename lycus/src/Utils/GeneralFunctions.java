@@ -219,7 +219,7 @@ public class GeneralFunctions {
 
 	public static boolean isChanged(String oldStr, String newStr) {
 
-		return !isNullOrEmpty(newStr) && (oldStr != null ? !oldStr.equals(newStr) : true);
+		return !isNullOrEmpty(newStr) && (oldStr == null || !oldStr.equals(newStr));
 	}
 
 	public static boolean isChanged(float oldVal, float newVal) {

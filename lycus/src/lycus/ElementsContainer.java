@@ -45,7 +45,7 @@ public class ElementsContainer {
 			if (discoveryResult.getElements() == null) {
 				map = new ConcurrentHashMap<String, BaseElement>();
 			} else
-				map = new ConcurrentHashMap<String, BaseElement>((Map) discoveryResult.getElements());
+				map = new ConcurrentHashMap<String, BaseElement>(discoveryResult.getElements());
 			diskElements.put(discoveryResult.getRunnableProbeId(), map);
 			return true;
 		}
@@ -55,7 +55,7 @@ public class ElementsContainer {
 		if (newElements == null) {
 			newMap = new ConcurrentHashMap<String, BaseElement>();
 		} else {
-			newMap = new ConcurrentHashMap<String, BaseElement>((Map) newElements);
+			newMap = new ConcurrentHashMap<String, BaseElement>(newElements);
 		}
 		updateStatuses(currentElements, newMap);
 		if (currentElements.size() != newElements.size()) {
@@ -90,7 +90,7 @@ public class ElementsContainer {
 			return false;
 		if (currentElements == null) {
 			ConcurrentHashMap<String, BaseElement> map = new ConcurrentHashMap<String, BaseElement>(
-					(Map) discoveryResult.getElements());
+                    discoveryResult.getElements());
 			nicElements.put(discoveryResult.getRunnableProbeId(), map);
 			runFirstNicElement(discoveryResult, map);
 			return true;
@@ -98,7 +98,7 @@ public class ElementsContainer {
 		Map<String, BaseElement> newElements = discoveryResult.getElements();
 
 		ConcurrentHashMap<String, BaseElement> newMap = new ConcurrentHashMap<String, BaseElement>(
-				(Map) discoveryResult.getElements());
+                discoveryResult.getElements());
 		updateStatuses(currentElements, newMap);
 		if (currentElements.size() != newElements.size()) {
 			nicElements.put(discoveryResult.getRunnableProbeId(), newMap);
@@ -147,8 +147,7 @@ public class ElementsContainer {
 	private void updateStatuses(Map<String, BaseElement> currentElements,
 			ConcurrentHashMap<String, BaseElement> newMap) {
 		for (Map.Entry<String, BaseElement> element : newMap.entrySet()) {
-			boolean oldStatus = currentElements.get(element.getKey()) == null ? false
-					: currentElements.get(element.getKey()).isActive();
+			boolean oldStatus = currentElements.get(element.getKey()) != null && currentElements.get(element.getKey()).isActive();
 			element.getValue().setActive(oldStatus);
 		}
 	}
@@ -227,7 +226,7 @@ public class ElementsContainer {
 		ConcurrentHashMap<String, BaseElement> elementMap = diskElements.get(runnableProbeId);
 		if (elementMap == null)
 			elementMap = new ConcurrentHashMap<String, BaseElement>();
-		elementMap.put(element.getName(), (DiskElement) element);
+		elementMap.put(element.getName(), element);
 		diskElements.put(runnableProbeId, elementMap);
 	}
 
@@ -253,15 +252,15 @@ public class ElementsContainer {
 		ConcurrentHashMap<String, BaseElement> elementMap = nicElements.get(runnableProbeId);
 		if (elementMap == null)
 			elementMap = new ConcurrentHashMap<String, BaseElement>();
-		elementMap.put(element.getName(), (NicElement) element);
+		elementMap.put(element.getName(), element);
 		nicElements.put(runnableProbeId, elementMap);
 	}
 
 	public BaseElement getElement(String runnableProbeId, String elementName, DiscoveryElementType elementType) {
 		ConcurrentHashMap<String, BaseElement> elementMap = null;
-		if (elementType == elementType.ds) {
+		if (elementType == DiscoveryElementType.ds) {
 			elementMap = diskElements.get(runnableProbeId);
-		} else if (elementType == elementType.bw) {
+		} else if (elementType == DiscoveryElementType.bw) {
 			elementMap = nicElements.get(runnableProbeId);
 		}
 
@@ -283,14 +282,14 @@ public class ElementsContainer {
 		for (ElementModel element : update.elements) {
 			try {
 				if (element.ifSpeed != null) {
-					baseElement = getElement(runnableProbeId, element.name, elementType.bw);
+					baseElement = getElement(runnableProbeId, element.name, DiscoveryElementType.bw);
 					if (baseElement == null) {
 						baseElement = new NicElement(element.index, element.name, HostType.valueOf(element.hostType),
 								element.ifSpeed, Enums.InterfaceSpeed.valueOf(element.nicSpeed));
 						addElement(update.user_id, runnableProbeId, baseElement);
 					}
 				} else if (element.hrStorageAllocationUnits != null) {
-					baseElement = getElement(runnableProbeId, element.name, elementType.ds);
+					baseElement = getElement(runnableProbeId, element.name, DiscoveryElementType.ds);
 					if (baseElement == null) {
 						baseElement = new DiskElement(element.index, element.name, element.active);
 						addElement(update.user_id, runnableProbeId, baseElement);

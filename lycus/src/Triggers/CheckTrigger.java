@@ -219,7 +219,7 @@ public class CheckTrigger {
 
 			if (triggerCondition.getnValue() == 1) {
 				ArrayList<Object> results = result1.getResultElementValue(triggerCondition.getElementType().toString());
-				for (Object oneResult : (ArrayList<Object>) results) {
+				for (Object oneResult : results) {
 					if (oneResult == null)
 						continue;
 					if (!(oneResult instanceof Double) && !(oneResult instanceof Integer)
@@ -278,13 +278,13 @@ public class CheckTrigger {
 		try {
 			switch (condition) {
 			case bigger:
-				return xvalueUnit.getBasic(result, resultUnit) > xvalueUnit.getBasic(xValue, xvalueUnit);
+				return XvalueUnit.getBasic(result, resultUnit) > XvalueUnit.getBasic(xValue, xvalueUnit);
 			case equal:
-				return xvalueUnit.getBasic(result, resultUnit) == xvalueUnit.getBasic(xValue, xvalueUnit);
+				return XvalueUnit.getBasic(result, resultUnit) == XvalueUnit.getBasic(xValue, xvalueUnit);
 			case tinier:
-				return xvalueUnit.getBasic(result, resultUnit) < xvalueUnit.getBasic(xValue, xvalueUnit);
+				return XvalueUnit.getBasic(result, resultUnit) < XvalueUnit.getBasic(xValue, xvalueUnit);
 			case not_equal:
-				return xvalueUnit.getBasic(result, resultUnit) != xvalueUnit.getBasic(xValue, xvalueUnit);
+				return XvalueUnit.getBasic(result, resultUnit) != XvalueUnit.getBasic(xValue, xvalueUnit);
 			}
 		} catch (Exception e) {
 			Logit.LogError("EventTrigger - isCondition()", "Error, is condition: " + xvalueUnit.toString(), e);

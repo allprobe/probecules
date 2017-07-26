@@ -142,7 +142,7 @@ public class BaseResult implements IResult {
 				if ((Boolean) lastValue == Boolean.parseBoolean(triggerValue))
 					return true;
 			if (lastValue.getClass().equals(String.class))
-				if ((String) lastValue == triggerValue)
+				if (lastValue == triggerValue)
 					return true;
 			break;
 		case 4:
@@ -159,7 +159,7 @@ public class BaseResult implements IResult {
 				if ((Boolean) lastValue == Boolean.parseBoolean(triggerValue))
 					return true;
 			if (lastValue.getClass().equals(String.class))
-				if ((String) lastValue == triggerValue)
+				if (lastValue == triggerValue)
 					return true;
 			break;
 		}
@@ -237,11 +237,11 @@ public class BaseResult implements IResult {
 			break;
 		case TRARHRT:
 			for (ArrayList<Object> route : ((TraceRouteResult) this).getRoutes()) {
-				values.add((Double) route.get(1));
+				values.add(route.get(1));
 			}
 			break;
 		case TRDHRT:
-			values.add((Double) ((TraceRouteResult) this).getRoutes()
+			values.add(((TraceRouteResult) this).getRoutes()
 					.get(((TraceRouteResult) this).getRoutes().size() - 1).get(1));
 			break;
 		case SNMP:

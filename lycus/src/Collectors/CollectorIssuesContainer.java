@@ -34,10 +34,8 @@ public class CollectorIssuesContainer implements ICollectorIssuesContainer {
 	public boolean isIssue(String hostId, Enums.CollectorType collectorType) {
 		if (this.liveIssues.get(hostId) == null)
 			return false;
-		if (!this.liveIssues.get(hostId).contains(collectorType))
-			return false;
-		return true;
-	}
+        return this.liveIssues.get(hostId).contains(collectorType);
+    }
 
 	private CollectorIssuesContainer() {
 		issuesArray = new JSONArray();

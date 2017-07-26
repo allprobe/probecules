@@ -10,6 +10,6 @@ package GlobalConstants;
  */
 public enum CasType
 {
-	String,UUID;
+	String,UUID
 }
 
