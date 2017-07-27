@@ -137,7 +137,7 @@ public class User {
 			UUID host_id = UUID.fromString(hostParams.host_id);
 			String name = hostParams.name;
 			String ip = hostParams.hostIp;
-			boolean status = (hostParams.hostStatus).equals("1") ? true : false;
+			boolean status = (hostParams.hostStatus).equals("1");
 			String bucket = hostParams.bucket;
 
 			String notif_groups = null;
@@ -264,7 +264,7 @@ public class User {
 				String authUser = GeneralFunctions.Base64Decode(probeParams.http_auth_username);
 				String authPass = GeneralFunctions.Base64Decode(probeParams.http_auth_password);
 
-				boolean deepCheck = probeParams.http_deep != null && probeParams.http_deep == 1 ? true : false;
+				boolean deepCheck = probeParams.http_deep != null && probeParams.http_deep == 1;
 
 				int timeout = probeParams.timeout;
 

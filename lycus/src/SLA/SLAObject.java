@@ -45,7 +45,7 @@ public class SLAObject {
 	public Double getResults() {
 		if (count == 0)
 			return null;
-		Double percentage = (double)(sum / count);
+		Double percentage = sum / count;
 		addDailySum(percentage);
 		
 		count = 0;

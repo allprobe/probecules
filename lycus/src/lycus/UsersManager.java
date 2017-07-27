@@ -287,9 +287,9 @@ public class UsersManager {
 					if (((String) hostElementsJson.get("elements_type")).contains("bw")) {
 						elementParams.hostType = (String) elementJson.get("hostType");
 						elementParams.nicSpeedPackets = (long) elementJson.get("nicSpeedPackets");
-						elementParams.nicSpeedType = (String) elementJson.get("nicSpeedType");;
+						elementParams.nicSpeedType = (String) elementJson.get("nicSpeedType");
 
-					} else if (((String) hostElementsJson.get("elements_type")).contains("ds"))
+                    } else if (((String) hostElementsJson.get("elements_type")).contains("ds"))
 						elementParams.hrStorageAllocationUnits = (long) elementJson.get("hrStorageAllocationUnits");
 					User user = getUsers().get(UUID.fromString(elementParams.user_id));
 					if (user == null)
@@ -400,7 +400,7 @@ public class UsersManager {
 				probeParams.multiplier = GeneralFunctions.isNullOrEmpty(probeJson.get("probe_multiplier").toString())
 						? 1 : Float.parseFloat(probeJson.get("probe_multiplier").toString());
 
-				probeParams.is_active = probeJson.get("probe_status").toString().equals("1") ? true : false;
+				probeParams.is_active = probeJson.get("probe_status").toString().equals("1");
 				probeParams.type = (String) probeJson.get("probe_type");
 				probeKeyJson = (JSONObject) probeJson.get("probe_key");
 
@@ -518,7 +518,7 @@ public class UsersManager {
 				TriggerSeverity severity = getTriggerSev((String) triggerJson.get("severity"));
 				if (severity == null)
 					Logit.LogWarn("Unable to get trigger severity for: " + triggerId);
-				boolean status = ((String) triggerJson.get("status")).equals("1") ? true : false;
+				boolean status = triggerJson.get("status").equals("1");
 				String elementType = (String) triggerJson.get("results_vector_type");
 
 				ArrayList<TriggerCondition> conditions = getTriggerConds((JSONArray) triggerJson.get("conditions"));

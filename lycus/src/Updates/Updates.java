@@ -43,7 +43,7 @@ public class Updates implements Runnable {
 	private Boolean runUpdates(JSONObject jsonObject) {
 
 		try {
-			ThreadsUpdates threadsUpdates = (ThreadsUpdates) JsonUtil.ToObject(jsonObject, ThreadsUpdates.class);
+			ThreadsUpdates threadsUpdates = JsonUtil.ToObject(jsonObject, ThreadsUpdates.class);
 			if (threadsUpdates.threads_updates.length < 1)
 				return false;
 

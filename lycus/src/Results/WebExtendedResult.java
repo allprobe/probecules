@@ -54,7 +54,7 @@ public class WebExtendedResult extends WebResult {
 		Gson gson = new GsonBuilder().disableHtmlEscaping().create();
 
 		try {
-			result.add((JSONArray) (new JSONParser()).parse(gson.toJson(this.getAllElementsResults())));
+			result.add((new JSONParser()).parse(gson.toJson(this.getAllElementsResults())));
 		} catch (ParseException e) {
 			Logit.LogError("WebExtendedResult - getResultObject()",
 					"Unable to parse all elements of extended http probe " + this.getRunnableProbeId() + " to json! ",
