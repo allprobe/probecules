@@ -88,8 +88,12 @@ public class FailedRequestsHandler implements IFailedRequestsHandler {
 		Logit.LogInfo("Executing failed requests.");
 
 		synchronized (lockFiles) {
-			if (this.getNumberOfFailedRequests() == 0)
+			int numOfFiles = this.getNumberOfFailedRequests();
+			if (numOfFiles == 0) {
+				Logit.LogDebug("No failed requests files on local disk.");
 				return;
+			}
+			Logit.LogDebug("Number of failed requests files on local disk is: " + numOfFiles);
 			List<File> files = getFilesOrganized();
 			for (final File failedRequestFile : files) {
 				JSONObject obj = null;
