@@ -156,10 +156,8 @@ public class RunnableProbeContainer implements IRunnableProbeContainer {
 			if (runnableProbe.getProbeType() == ProbeTypes.SNMP) {
 				// todo: add proper error
 				boolean isSnmpStart = stopSnmpProbe(runnableProbe);
-				if (!isSnmpStart)
-					return false;
-				return true;
-			}
+                return isSnmpStart;
+            }
 		} catch (Exception e) {
 			Logit.LogError("RunnableProbeContainer - remove()", "Error removing runnableProbe:  " + runnableProbe.getId(), e);
 		}

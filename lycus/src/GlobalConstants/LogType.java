@@ -10,5 +10,5 @@ package GlobalConstants;
  */
 public enum LogType
 {
-	Info,Warn,Error,Debug;
+	Info,Warn,Error,Debug
 }

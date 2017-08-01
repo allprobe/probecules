@@ -11,12 +11,12 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
-import javax.persistence.EnumType;
+//import javax.persistence.EnumType;
 
 import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
 import org.snmp4j.smi.OID;
-import com.mysql.jdbc.ResultSetMetaData;
+//import com.mysql.jdbc.ResultSetMetaData;
 import Collectors.SnmpCollector;
 import Collectors.SqlCollector;
 import Elements.BaseElement;
@@ -291,7 +291,7 @@ public class NetResults implements INetResults {
 		List<SnmpResult> allResults = new ArrayList<SnmpResult>();
 
 		try {
-			SnmpCollector snmpCollector = (SnmpCollector) host.getSnmpCollector();
+			SnmpCollector snmpCollector = host.getSnmpCollector();
 
 			HashMap<String, OID> probesOids = new HashMap<String, OID>();
 			for (SnmpProbe snmpProbe : snmpProbes)
@@ -345,7 +345,7 @@ public class NetResults implements INetResults {
 	@Override
 	public NicResult getNicResult(Host host, NicProbe probe) {
 
-		SnmpCollector snmpTemplate = (SnmpCollector) host.getSnmpCollector();
+		SnmpCollector snmpTemplate = host.getSnmpCollector();
 
 		Set<OID> nicOids = new HashSet<OID>();
 		nicOids.add(probe.getIfinoctetsOID());
@@ -437,7 +437,7 @@ public class NetResults implements INetResults {
 		long checkTime;
 
 		Map<String, String> hrStorageResults = null;
-		SnmpCollector snmpTemplate = (SnmpCollector) host.getSnmpCollector();
+		SnmpCollector snmpTemplate = host.getSnmpCollector();
 
 		int snmpVersion = snmpTemplate.getVersion();
 		if (snmpVersion == 2) {
@@ -466,7 +466,7 @@ public class NetResults implements INetResults {
 		Map<String, String> ifDescrResults = null;
 		Map<String, String> sysDescrResults = null;
 
-		SnmpCollector snmpTemplate = (SnmpCollector) host.getSnmpCollector();
+		SnmpCollector snmpTemplate = host.getSnmpCollector();
 
 		ArrayList<OID> oids = new ArrayList<OID>();
 		oids.add(Constants.sysDescr);
@@ -625,7 +625,7 @@ public class NetResults implements INetResults {
 	}
 
 	public DiskResult getDiskResult(Host host, DiskProbe probe) {
-		SnmpCollector snmpTemplate = (SnmpCollector) host.getSnmpCollector();
+		SnmpCollector snmpTemplate = host.getSnmpCollector();
 
 		Set<OID> storageOids = new HashSet<OID>();
 		storageOids.add(probe.getHrstorageallocationunitsoid());

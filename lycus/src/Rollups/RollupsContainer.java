@@ -633,13 +633,13 @@ public class RollupsContainer implements IRollupsContainer {
 			} catch (ParseException e) {
 				Logit.LogError("RollupsContainer - mergeExistingRollupsFromMemDump()",
 						"Error parsing rollups from type " + rollupType.name() + " json string is: "
-								+ (String) rollupsJson.get(rollupType.name()));
+								+ rollupsJson.get(rollupType.name()));
 				continue;
 			} catch (Exception e1) {
 				e1.printStackTrace();
 				Logit.LogError("RollupsContainer - mergeExistingRollupsFromMemDump()",
 						"Error parsing rollups from type " + rollupType.name() + " json string is: "
-								+ (String) rollupsJson.get(rollupType.name()));
+								+ rollupsJson.get(rollupType.name()));
 				continue;
 			}
 			try {
