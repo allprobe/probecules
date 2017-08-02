@@ -13,7 +13,6 @@ import java.util.UUID;
 import Triggers.Trigger;
 import Triggers.TriggerCondition;
 import org.json.simple.JSONObject;
-import org.apache.log4j.BasicConfigurator;
 import org.json.simple.JSONArray;
 import org.json.simple.parser.JSONParser;
 import com.google.gson.Gson;
@@ -49,7 +48,6 @@ public class UsersManager {
 	// static Logger log = Logger.getLogger(UsersManager.class);
 
 	public static void Initialize() {
-		BasicConfigurator.configure();
 
 		setUsers(new HashMap<UUID, User>());
 		if (!UsersManager.Build()) {

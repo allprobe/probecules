@@ -1,7 +1,6 @@
 package Updates;
 
 import GlobalConstants.Constants;
-import org.apache.log4j.Logger;
 import org.json.simple.JSONObject;
 import DAL.DAL;
 import GlobalConstants.Enums;
@@ -38,7 +37,7 @@ public class Updates implements Runnable {
 		}
 	}
 
-	static Logger log = Logger.getLogger(Updates.class.getName());
+//	static Logger log = Logger.getLogger(Updates.class.getName());
 
 	private Boolean runUpdates(JSONObject jsonObject) {
 
