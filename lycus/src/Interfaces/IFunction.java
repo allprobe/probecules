@@ -1,6 +1,6 @@
 package Interfaces;
 
 public interface IFunction {
-public Double[] get();
+Double[] get();
 void add(Double result);
 }

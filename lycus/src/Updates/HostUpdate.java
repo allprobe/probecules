@@ -59,7 +59,7 @@ public class HostUpdate extends BaseUpdate {
 		getSnmpCollector(host, snmpCollectorId);
 		getSqlCollector(host, sqlCollectorId);
 		
-		String notificationGroup = host.getNotificationGroups() != null ? host.getNotificationGroups() : null;
+		String notificationGroup = host.getNotificationGroups();
 		
 		if (GeneralFunctions.isChanged(notificationGroup, getUpdate().update_value.notifications_group)) {
 			if (!GeneralFunctions.isNullOrEmpty(getUpdate().update_value.notifications_group))

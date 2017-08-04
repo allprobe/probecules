@@ -4,15 +4,20 @@
  */
 package GlobalConstants;
 
+import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStream;
+import java.net.URL;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.Properties;
+
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.core.util.Loader;
 
 import Utils.Logit;
 
@@ -85,7 +90,7 @@ public class GlobalConfig {
 	public static int getSqlThreadCount() {
 		return SqlThreadCount;
 	}
-	
+
 	public static String getThisHostIP() {
 		return ThisHostIP;
 	}
@@ -193,9 +198,17 @@ public class GlobalConfig {
 		Properties prop = new Properties();
 		InputStream input = null;
 		try {
-			if (getConfPath() == null)
-				input = new FileInputStream("../config.properties");
-			else
+			if (getConfPath() == null) {
+				File configFile = new File("config.properties");
+				if (configFile.exists() && !configFile.isDirectory()) {
+					System.out.println("Loading config: " + configFile.getAbsolutePath());
+					input = new FileInputStream(configFile);
+				} else {
+					Logit.LogError("No Config Found!", "");
+					System.err.println("No Config Found!");
+					return false;
+				}
+			} else
 				input = new FileInputStream(getConfPath());
 			prop.load(input);
 			ThisHostIP = prop.getProperty("Server_IP");
@@ -215,8 +228,43 @@ public class GlobalConfig {
 			RblThreadCount = Integer.parseInt(prop.getProperty("RBL_thread_count"));
 			Debug = Boolean.valueOf(prop.getProperty("Debug")).booleanValue();
 			Development = Boolean.valueOf(prop.getProperty("Development")).booleanValue();
-			syslogHost = prop.getProperty("Syslog_host");
-			log4jConfigLocation = prop.getProperty("Log4j2_config_location");
+//			syslogHost = prop.getProperty("Syslog_host");
+//			log4jConfigLocation = prop.getProperty("Log4j2_config");
+//			File log4jConfigFile;
+//			if (log4jConfigLocation == null || log4jConfigLocation == "") {
+//				log4jConfigFile = new File("..", "log4j.xml");
+//				System.out.println("Log4j file was not configured in config file, searching for: "
+//						+ log4jConfigFile.getAbsolutePath());
+//			} else {
+//				log4jConfigFile = new File(log4jConfigLocation);
+//				System.out.println(
+//						"Log4j file configured in config file, searching for: " + log4jConfigFile.getAbsolutePath());
+//
+//			}
+//			if (log4jConfigFile.exists())
+//				System.out.println("Loading Log4j config file: " + log4jConfigFile.getAbsolutePath());
+//			else
+//				System.out.println("Loading default Log4j config file.");
+//			System.setProperty("log4j.configuration", log4jConfigFile.getAbsolutePath());
+//			DOMConfigurator.configure(log4jConfigFile.getAbsolutePath());
+//			File log4jFile =log4jConfigFile ;
+//			  if (log4jFile.exists()) {
+//				  ((org.apache.logging.log4j.core.LoggerContext) LogManager.getContext(false)).reconfigure();
+//				  PropertyConfigurator.configureAndWatch("./"+log4jFile.toString(), 10 * 1000); //every 10 secs
+//				  ((org.apache.logging.log4j.core.LoggerContext) LogManager.getContext(false)).reconfigure();
+//			    Object log = LoggerFactory.getLogger(Server.class);
+//			  }
+//			PropertyConfigurator.configureAndWatch("log4j.properties");
+//		    String prop2 = System.getProperty("log4j.configuration");
+//		    if (prop2 == null) prop2          = "log4j.properties";
+//		    URL log4jConfig =org.ayache.log4j.helpers.getResource(prop2);
+//		    if (log4jConfIG.GETPROTOCOL().EQUALSIGNORECASE("FILE")) {
+//		        PROPERTYCONFIGURATOR.CONFIGUREANDWATCH(LOG4JCONFIG.GETFILE().SUBSTRING(1), 10000);
+//		    }
+//		    ELSE {
+//		        // CANNOT MONITOR IF FILE CHANGED BECAUSE URL IS NOT A FILE
+//		    }
+//			LogManager.getRootLogger().info("test");
 			ArraySeperator = prop.getProperty("Array_seperator").charAt(0);
 			KeySeperator = prop.getProperty("Key_seperator").charAt(0);
 		} catch (FileNotFoundException e) {
@@ -232,9 +280,10 @@ public class GlobalConfig {
 			System.err.println("Error Loading Config File!(config is not valid)");
 			return false;
 		}
-		if (!validateGlobalVars()) {
+		String missingConfigs = validateGlobalVars();
+		if (missingConfigs == "" ? false : true) {
 			Logit.LogError("Global Initialization Failed!", "");
-			System.err.println("Global Initialization Failed!");
+			System.err.println("Global Initialization Failed! at config: " + missingConfigs);
 			return false;
 		}
 		DateFormat dateFormat = new SimpleDateFormat("yyyy/MM/dd HH:mm:ss");
@@ -271,40 +320,41 @@ public class GlobalConfig {
 		return s.toString();
 	}
 
-	public static boolean validateGlobalVars() {
+	// returns missing configuration name or null if otherwise
+	public static String validateGlobalVars() {
 		if (PingerThreadCount == -1)
-			return false;
+			return "PingerThreadCount";
 		if (PorterThreadCount == -1)
-			return false;
+			return "PorterThreadCount";
 		if (WeberThreadCount == -1)
-			return false;
+			return "WeberThreadCount";
 		if (RblThreadCount == -1)
-			return false;
+			return "RblThreadCount";
 		if (SnmpThreadCount == -1)
-			return false;
+			return "SnmpThreadCount";
 		if (SnmpBatchThreadCount == -1)
-			return false;
+			return "SnmpBatchThreadCount";
 		if (ThisHostIP == null)
-			return false;
+			return "ThisHostIP";
 		if (ThisHostToken == null)
-			return false;
+			return "ThisHostToken";
 		if (DataCenterID == null)
-			return false;
+			return "DataCenterID";
 		if (ArraySeperator == null)
-			return false;
+			return "ArraySeperator";
 		if (KeySeperator == -1)
-			return false;
+			return "KeySeperator";
 		if (DataCenterID == null)
-			return false;
+			return "DataCenterID";
 		if (Debug == null)
-			return false;
+			return "Debug";
 		if (Development == null)
-			return false;
-		if (log4jConfigLocation == null)
-			return false;
+			return "Development";
+//		if (log4jConfigLocation == null)
+//			return "log4jConfigLocation";
 		// if (syslogHost==null)
 		// return false;
-		return true;
+		return "";
 
 	}
 
