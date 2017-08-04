@@ -7,10 +7,17 @@
 			<PatternLayout
 				pattern="[%-5level] %d{yyyy-MM-dd HH:mm:ss.SSS} [%t] %c{1} - %msg%n" />
 		</Console>
+		<appender name="RollingAppender" class="org.apache.log4j.DailyRollingFileAppender">
+			<param name="File" value="large-prober.log" />
+			<param name="DatePattern" value="'.'yyyy-MM-dd" />
+			<layout class="org.apache.log4j.PatternLayout">
+				<param name="ConversionPattern" value="[%p] %d %c %M - %m%n" />
+			</layout>
+		</appender>
 	</Appenders>
 	<Loggers>
 		<Root level="debug" additivity="false">
-			<AppenderRef ref="syslog" />
+			<AppenderRef ref="console" />
 		</Root>
 		<logger name="syslogger-production" level="error">
 			<AppenderRef ref="syslog" />
