@@ -21,3 +21,4 @@ hs_err_pid*
 # log4j
 /src/log4j2.xml
 /bin/log4j2.xml
+/target/

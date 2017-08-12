@@ -5,7 +5,6 @@
 	<classpathentry kind="lib" path="lib/json/json-simple-1.1.1.jar"/>
 	<classpathentry kind="lib" path="lib/Apache/Commons/io-2.4/commons-io-2.4.jar"/>
 	<classpathentry kind="lib" path="lib/base/snmp4j-2.4.1.jar"/>
-	<classpathentry kind="lib" path="lib/Apache/apache-log4j-2.5-bin/log4j-1.2-api-2.5.jar"/>
 	<classpathentry kind="lib" path="lib/google/gson-2.6.2.jar"/>
 	<classpathentry kind="lib" path="lib/Apache/HttpClient/httpclient-4.3.1.jar"/>
 	<classpathentry kind="lib" path="lib/Apache/HttpClient/httpcore-4.3.jar"/>
@@ -17,5 +16,6 @@
 	<classpathentry kind="lib" path="lib/Apache/HttpClient/httpmime-4.3.1.jar"/>
 	<classpathentry kind="lib" path="lib/Apache/HttpClient/commons-logging-1.1.3.jar"/>
 	<classpathentry kind="lib" path="lib/Apache/HttpClient/httpclient-cache-4.3.1.jar"/>
+	<classpathentry kind="lib" path="lib/Apache/apache-log4j-2.5-bin/log4j-1.2-api-2.5.jar"/>
 	<classpathentry kind="output" path="target/classes"/>
 </classpath>
