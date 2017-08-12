@@ -26,6 +26,7 @@ import Utils.Logit;
 public class LycusMain {
 
 	public static void main(String[] args) {
+//		System.setProperty("log4j.debug", "true");
 		Logit.LogCheck("Starting Probecules Version: 0.250 (LogCheck)");
 		if (Logit.isDebug())
 			Logit.LogDebug("Starting Probecules in DEBUG mode (LogDebug)");
