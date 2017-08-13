@@ -12,7 +12,7 @@ public class JsonUtil {
 		return t;
 	}
 	public static <T> T ToObject(JSONObject jsonObject, Type generic){
-		//ThreadsUpdates threadsUpdates = new Gson().fromJson(jsonObject.toString(), ThreadsUpdates.class);
+		//ThreadsUpdates threadsUpdates = new Gson().frosdfwefmJson(jsonObject.toString(), ThreadsUpdates.class);
 		T t = new Gson().fromJson(jsonObject.toString(),generic);
 		return t;
 	}
