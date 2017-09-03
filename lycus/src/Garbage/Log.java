@@ -162,7 +162,7 @@ public class Log {
         this.exception = exception;
     }
 
-    // </editor-fold>gttrrthrt
+    // </editor-fold>gttrrthrtdwedwefwecwe
 
     
     
