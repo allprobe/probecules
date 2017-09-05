@@ -162,7 +162,7 @@ public class Log {
         this.exception = exception;
     }
 
-    // </editor-fold>gedfwsheghkjkjlhsdfsdfdfgvdfg
+    // </editor-fold>gedfwsheghkjkjlhsdfsdfdfgvdfgsdfsdf
 
     
     
