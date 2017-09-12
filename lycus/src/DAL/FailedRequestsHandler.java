@@ -102,7 +102,8 @@ public class FailedRequestsHandler implements IFailedRequestsHandler {
 							.parse(new String(Files.readAllBytes(failedRequestFile.toPath())));
 				} catch (ParseException | IOException e) {
 					Logit.LogError("FailedRequestsHandler - executeRequests",
-							"Unable to read failed api request file! E: " + e.getMessage());
+							"Unable to read failed api request file! (filename = " + failedRequestFile.getAbsoluteFile()
+									+ ") E: " + e.getMessage());
 				}
 				try {
 					if (obj == null)
