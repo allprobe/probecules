@@ -70,4 +70,9 @@ public class DiscoveryResult extends BaseResult {
 	public void setElements(HashMap<String, BaseElement> elements) {
 		this.elements = elements;
 	}
+
+	@Override
+	public String toString() {
+		return this.getResultObject().toString();
+	}
 }

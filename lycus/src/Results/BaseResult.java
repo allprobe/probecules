@@ -241,8 +241,8 @@ public class BaseResult implements IResult {
 			}
 			break;
 		case TRDHRT:
-			values.add(((TraceRouteResult) this).getRoutes()
-					.get(((TraceRouteResult) this).getRoutes().size() - 1).get(1));
+			values.add(
+					((TraceRouteResult) this).getRoutes().get(((TraceRouteResult) this).getRoutes().size() - 1).get(1));
 			break;
 		case SNMP:
 			if (((SnmpProbe) RunnableProbeContainer.getInstanece().get(this.getRunnableProbeId()).getProbe())
@@ -308,5 +308,10 @@ public class BaseResult implements IResult {
 		}
 
 		return null;
+	}
+
+	@Override
+	public String toString() {
+		return super.toString();
 	}
 }

@@ -123,7 +123,7 @@ public class RunnableProbe implements Runnable {
 						Logit.LogDebug("BREAKPOINT - RunnableProbe");
 
 					if (rpStr.contains(
-							"0eb888bc-ba24-49f0-8468-da89ca830c77@discovery_35667a76-cb01-4108-9429-cac2dbcf933e"))
+							"1eeae8f7-b632-4d24-8be7-df8b94264b30@discovery_17b6eece-59dc-4b77-9706-7a1ef641e05a"))
 						Logit.LogDebug("BREAKPOINT - RunnableProbe");
 
 					// isActive = false will pause the thread
@@ -137,8 +137,6 @@ public class RunnableProbe implements Runnable {
 					// "." + ((RBLProbe)getProbe()).getRBL());
 
 					result = getResult();
-
-					Logit.LogDebug("Results of RunnableProbe " + this.getId() + " are: " + result.toString());
 
 					result = buildErrorResultWhenEmpty(result);
 
@@ -159,7 +157,7 @@ public class RunnableProbe implements Runnable {
 				} finally {
 					try {
 						Logit.LogInfo("Running Probe: " + this.getId() + " at Host: " + this.getHost().getHostIp() + "("
-								+ this.getHost().getName() + ")" + ", Results: " + result + " ...");
+								+ this.getHost().getName() + ")" + ", Results: " + result.toString() + " ...");
 
 						synchronized (this) {
 							wait(this.getProbe().getInterval() * 1000);
