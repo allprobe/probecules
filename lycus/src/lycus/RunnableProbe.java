@@ -123,7 +123,7 @@ public class RunnableProbe implements Runnable {
 						Logit.LogDebug("BREAKPOINT - RunnableProbe");
 
 					if (rpStr.contains(
-							"1eeae8f7-b632-4d24-8be7-df8b94264b30@discovery_17b6eece-59dc-4b77-9706-7a1ef641e05a"))
+							"f9c50de8-649a-4b0f-97e0-4e056bba4284@discovery_17b6eece-59dc-4b77-9706-7a1ef641e05a"))
 						Logit.LogDebug("BREAKPOINT - RunnableProbe");
 
 					// isActive = false will pause the thread
