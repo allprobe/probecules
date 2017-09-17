@@ -1,7 +1,9 @@
 package DAL;
 
+import java.io.BufferedReader;
 import java.io.BufferedWriter;
 import java.io.File;
+import java.io.FileReader;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.nio.file.Files;
@@ -98,9 +100,16 @@ public class FailedRequestsHandler implements IFailedRequestsHandler {
 			for (final File failedRequestFile : files) {
 				JSONObject obj = null;
 				try {
-					obj = (JSONObject) new JSONParser()
-							.parse(new String(Files.readAllBytes(failedRequestFile.toPath())));
-				} catch (ParseException | IOException e) {
+					BufferedReader br = new BufferedReader(new FileReader(failedRequestFile.getAbsoluteFile()));
+					if (br.readLine() == null) {
+						Logit.LogDebug("failed request file is empty (filename = " + failedRequestFile.getAbsolutePath()
+								+ " ), deleting...");
+						failedRequestFile.delete();
+					} else {
+						obj = (JSONObject) new JSONParser()
+								.parse(new String(Files.readAllBytes(failedRequestFile.toPath())));
+					}
+				} catch (Exception e) {
 					Logit.LogError("FailedRequestsHandler - executeRequests",
 							"Unable to read failed api request file! (filename = " + failedRequestFile.getAbsoluteFile()
 									+ ") E: " + e.getMessage());
