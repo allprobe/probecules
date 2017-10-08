@@ -53,6 +53,8 @@ public abstract class BaseUpdate implements IUpdate {
 
 	@Override
 	public Boolean Run() {
+
+		Logit.LogDebug("Received an update, update_id: "+this.update.update_id);
 		if (action == Action.New)
 			return New();
 		else if (action == Action.Update) {
