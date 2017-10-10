@@ -296,7 +296,7 @@ public class ResultsContainer implements IResultsContainer {
 				}
 				break;
 			default:
-				return false;
+				Logit.LogDebug("unknown elements found for RP: "+result.getRunnableProbeId());
 			}
 		}
 
