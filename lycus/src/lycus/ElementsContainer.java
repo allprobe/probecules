@@ -3,6 +3,9 @@ package lycus;
 import java.util.Map;
 import java.util.UUID;
 import java.util.concurrent.ConcurrentHashMap;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
+
 import Elements.BaseElement;
 import Elements.DiskElement;
 import Elements.NicElement;
@@ -90,50 +93,52 @@ public class ElementsContainer {
 			return false;
 		if (currentElements == null) {
 			ConcurrentHashMap<String, BaseElement> map = new ConcurrentHashMap<String, BaseElement>(
-                    discoveryResult.getElements());
+					discoveryResult.getElements());
 			nicElements.put(discoveryResult.getRunnableProbeId(), map);
-			runFirstNicElement(discoveryResult, map);
+			runRelevantNicElement(discoveryResult, map);
 			return true;
 		}
 		Map<String, BaseElement> newElements = discoveryResult.getElements();
 
 		ConcurrentHashMap<String, BaseElement> newMap = new ConcurrentHashMap<String, BaseElement>(
-                discoveryResult.getElements());
+				discoveryResult.getElements());
 		updateStatuses(currentElements, newMap);
 		if (currentElements.size() != newElements.size()) {
 			nicElements.put(discoveryResult.getRunnableProbeId(), newMap);
-			runFirstNicElement(discoveryResult, newMap);
+			runRelevantNicElement(discoveryResult, newMap);
 			return true;
 		}
 		for (BaseElement newElement : newElements.values()) {
 			if (currentElements.get(newElement.getName()) == null
 					|| !currentElements.get(newElement.getName()).isIdentical(newElement)) {
 				nicElements.put(discoveryResult.getRunnableProbeId(), newMap);
-				runFirstNicElement(discoveryResult, newMap);
+				runRelevantNicElement(discoveryResult, newMap);
 				return true;
 			}
 		}
 		return false;
 	}
 
-	private void runFirstNicElement(DiscoveryResult discoveryResult, ConcurrentHashMap<String, BaseElement> map) {
-		BaseElement firstElement = getFirstElement(map);
-		firstElement.setActive(true);
-		ElementsContainer.getInstance().addElement(RunnableProbeContainer.getInstanece()
-				.get(discoveryResult.getRunnableProbeId()).getProbe().getUser().getUserId().toString(),
-				discoveryResult.getRunnableProbeId(), firstElement);
+	private void runRelevantNicElement(DiscoveryResult discoveryResult, ConcurrentHashMap<String, BaseElement> map) {
+		BaseElement relevantElement = getRelevantElement(map);
+		relevantElement.setActive(true);
+		ElementsContainer.getInstance()
+				.addElement(
+						RunnableProbeContainer.getInstanece().get(discoveryResult.getRunnableProbeId()).getProbe()
+								.getUser().getUserId().toString(),
+						discoveryResult.getRunnableProbeId(), relevantElement);
 	}
 
-	private BaseElement getFirstElement(ConcurrentHashMap<String, BaseElement> map) {
-		int minIndex = Integer.MAX_VALUE;
+	private BaseElement getRelevantElement(ConcurrentHashMap<String, BaseElement> map) {
 		BaseElement minElement = null;
+		String pattern = "(eth|vmbr)0";
 		for (BaseElement element : map.values()) {
-			if (element.getIndex() < minIndex && isValidNic(element)) {
-				minIndex = element.getIndex();
-				minElement = element;
-			}
+			Pattern r = Pattern.compile(pattern);
+			Matcher m = r.matcher(element.getName());
+			if (m.matches())
+				return element;
 		}
-		return minElement;
+		return map.entrySet().iterator().next().getValue();
 	}
 
 	private boolean isValidNic(BaseElement element) {
@@ -147,7 +152,8 @@ public class ElementsContainer {
 	private void updateStatuses(Map<String, BaseElement> currentElements,
 			ConcurrentHashMap<String, BaseElement> newMap) {
 		for (Map.Entry<String, BaseElement> element : newMap.entrySet()) {
-			boolean oldStatus = currentElements.get(element.getKey()) != null && currentElements.get(element.getKey()).isActive();
+			boolean oldStatus = currentElements.get(element.getKey()) != null
+					&& currentElements.get(element.getKey()).isActive();
 			element.getValue().setActive(oldStatus);
 		}
 	}

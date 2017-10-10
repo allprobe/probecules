@@ -48,7 +48,7 @@ public class RunnableProbeContainer implements IRunnableProbeContainer {
 	private ExecutorService diskProbeExec = Executors.newFixedThreadPool(GlobalConfig.getDiskhreadCount());
 	private ExecutorService tracerouteExec = Executors.newFixedThreadPool(GlobalConfig.getTracerouteThreadCount());
 	private ExecutorService sqlExec = Executors.newFixedThreadPool(GlobalConfig.getSqlThreadCount());
-	
+
 	private HashMap<String, SnmpProbesBatch> batches = new HashMap<String, SnmpProbesBatch>(); // HashMap<runnableProbeId,
 
 	// SnmpProbesBatch>
@@ -156,10 +156,11 @@ public class RunnableProbeContainer implements IRunnableProbeContainer {
 			if (runnableProbe.getProbeType() == ProbeTypes.SNMP) {
 				// todo: add proper error
 				boolean isSnmpStart = stopSnmpProbe(runnableProbe);
-                return isSnmpStart;
-            }
+				return isSnmpStart;
+			}
 		} catch (Exception e) {
-			Logit.LogError("RunnableProbeContainer - remove()", "Error removing runnableProbe:  " + runnableProbe.getId(), e);
+			Logit.LogError("RunnableProbeContainer - remove()",
+					"Error removing runnableProbe:  " + runnableProbe.getId(), e);
 		}
 
 		return true;
@@ -186,12 +187,11 @@ public class RunnableProbeContainer implements IRunnableProbeContainer {
 	@Override
 	public boolean removeByTemplateId(String teplateId) {
 		ConcurrentHashMap<String, RunnableProbe> templates = getByTemplate(teplateId);
-		if (templates == null)
-		{
+		if (templates == null) {
 			Logit.LogError("RunnableProbeContainer - removeByTemplateId()", "Error getting TemplateId:  " + teplateId);
 			return true;
 		}
-			
+
 		try {
 			for (RunnableProbe runnableProbe : templates.values())
 				remove(runnableProbe);

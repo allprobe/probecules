@@ -287,7 +287,7 @@ public class UsersManager {
 						elementParams.nicSpeedPackets = (long) elementJson.get("nicSpeedPackets");
 						elementParams.nicSpeedType = (String) elementJson.get("nicSpeedType");
 
-                    } else if (((String) hostElementsJson.get("elements_type")).contains("ds"))
+					} else if (((String) hostElementsJson.get("elements_type")).contains("ds"))
 						elementParams.hrStorageAllocationUnits = (long) elementJson.get("hrStorageAllocationUnits");
 					User user = getUsers().get(UUID.fromString(elementParams.user_id));
 					if (user == null)
@@ -300,7 +300,9 @@ public class UsersManager {
 						// DiscoveryProbe
 						// probe=(DiscoveryProbe)user.getTemplateProbes().get(elementParams.discovery_id);
 						baseElement = new NicElement(elementParams.index, elementParams.name, elementParams.status,
-								Utils.GeneralFunctions.getHostType(elementParams.hostType), elementParams.nicSpeedPackets,Enums.InterfaceSpeed.valueOf(elementParams.nicSpeedType));
+								Utils.GeneralFunctions.getHostType(elementParams.hostType),
+								elementParams.nicSpeedPackets,
+								Enums.InterfaceSpeed.valueOf(elementParams.nicSpeedType));
 						break;
 					case Constants.ds:
 						baseElement = new DiskElement(elementParams.index, elementParams.name, elementParams.status);
@@ -396,7 +398,8 @@ public class UsersManager {
 				probeParams.name = (String) probeJson.get("probe_name");
 				probeParams.interval = Integer.parseInt(probeJson.get("probe_interval").toString());
 				probeParams.multiplier = GeneralFunctions.isNullOrEmpty(probeJson.get("probe_multiplier").toString())
-						? 1 : Float.parseFloat(probeJson.get("probe_multiplier").toString());
+						? 1
+						: Float.parseFloat(probeJson.get("probe_multiplier").toString());
 
 				probeParams.is_active = probeJson.get("probe_status").toString().equals("1");
 				probeParams.type = (String) probeJson.get("probe_type");
@@ -615,8 +618,7 @@ public class UsersManager {
 			UUID userID = rp.getValue();
 			String rpID = rp.getKey();
 
-			if (rpID.contains(
-					"1eeae8f7-b632-4d24-8be7-df8b94264b30@discovery_17b6eece-59dc-4b77-9706-7a1ef641e05a"))
+			if (rpID.contains("1eeae8f7-b632-4d24-8be7-df8b94264b30@discovery_17b6eece-59dc-4b77-9706-7a1ef641e05a"))
 				Logit.LogCheck("RRBBLL");
 
 			User u = getUsers().get(userID);
