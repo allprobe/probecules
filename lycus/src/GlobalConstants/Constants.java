@@ -101,6 +101,8 @@ public class Constants {
 
 	public static final String issues = "issues";
 
+	public static final String discoveryBestElementRegex = "((eth|vmbr)0)|(/|/var/lib/vz)";
+	
 	public static int getBatchesSize() {
 		return 1400 / GlobalConfig.getMaxSnmpResponseInBytes();
 	}
