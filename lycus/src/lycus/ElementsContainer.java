@@ -50,6 +50,7 @@ public class ElementsContainer {
 			} else
 				map = new ConcurrentHashMap<String, BaseElement>(discoveryResult.getElements());
 			diskElements.put(discoveryResult.getRunnableProbeId(), map);
+			runBestMatchElement(discoveryResult, map);
 			return true;
 		}
 		Map<String, BaseElement> newElements = discoveryResult.getElements();
@@ -63,12 +64,14 @@ public class ElementsContainer {
 		updateStatuses(currentElements, newMap);
 		if (currentElements.size() != newElements.size()) {
 			diskElements.put(discoveryResult.getRunnableProbeId(), newMap);
+			runBestMatchElement(discoveryResult, newMap);
 			return true;
 		}
 		for (BaseElement newElement : newElements.values()) {
 			if (currentElements.get(newElement.getName()) == null
 					|| !currentElements.get(newElement.getName()).isIdentical(newElement)) {
 				diskElements.put(discoveryResult.getRunnableProbeId(), newMap);
+				runBestMatchElement(discoveryResult, newMap);
 				return true;
 			}
 		}
@@ -95,7 +98,7 @@ public class ElementsContainer {
 			ConcurrentHashMap<String, BaseElement> map = new ConcurrentHashMap<String, BaseElement>(
 					discoveryResult.getElements());
 			nicElements.put(discoveryResult.getRunnableProbeId(), map);
-			runRelevantNicElement(discoveryResult, map);
+			runBestMatchElement(discoveryResult, map);
 			return true;
 		}
 		Map<String, BaseElement> newElements = discoveryResult.getElements();
@@ -105,21 +108,21 @@ public class ElementsContainer {
 		updateStatuses(currentElements, newMap);
 		if (currentElements.size() != newElements.size()) {
 			nicElements.put(discoveryResult.getRunnableProbeId(), newMap);
-			runRelevantNicElement(discoveryResult, newMap);
+			runBestMatchElement(discoveryResult, newMap);
 			return true;
 		}
 		for (BaseElement newElement : newElements.values()) {
 			if (currentElements.get(newElement.getName()) == null
 					|| !currentElements.get(newElement.getName()).isIdentical(newElement)) {
 				nicElements.put(discoveryResult.getRunnableProbeId(), newMap);
-				runRelevantNicElement(discoveryResult, newMap);
+				runBestMatchElement(discoveryResult, newMap);
 				return true;
 			}
 		}
 		return false;
 	}
 
-	private void runRelevantNicElement(DiscoveryResult discoveryResult, ConcurrentHashMap<String, BaseElement> map) {
+	private void runBestMatchElement(DiscoveryResult discoveryResult, ConcurrentHashMap<String, BaseElement> map) {
 		BaseElement relevantElement = getRelevantElement(map);
 		relevantElement.setActive(true);
 		ElementsContainer.getInstance()
@@ -131,7 +134,7 @@ public class ElementsContainer {
 
 	private BaseElement getRelevantElement(ConcurrentHashMap<String, BaseElement> map) {
 		BaseElement minElement = null;
-		String pattern = "(eth|vmbr)0";
+		String pattern = GlobalConstants.Constants.discoveryBestElementRegex;
 		for (BaseElement element : map.values()) {
 			Pattern r = Pattern.compile(pattern);
 			Matcher m = r.matcher(element.getName());
