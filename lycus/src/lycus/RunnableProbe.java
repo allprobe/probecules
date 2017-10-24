@@ -119,7 +119,7 @@ public class RunnableProbe implements Runnable {
 				try {
 					String rpStr = this.getId();
 					if (rpStr.contains(
-							"4031d0c0-39da-4bd3-bcf1-6d081148680f@120a1542-cc11-4b64-9b95-80637a69c1fc@discovery_35667a76-cb01-4108-9429-cac2dbcf933e@U3dhcCBzcGFjZQ=="))
+							"d934aa3b-f703-4d4b-99c6-66b470c782f2@d934aa3b-f703-4d4b-99c6-66b470c782f2@http_2b6187a3-2d80-4dbf-824d-76125875dc49"))
 						Logit.LogDebug("BREAKPOINT - RunnableProbe");
 
 					if (rpStr.contains(
@@ -144,7 +144,7 @@ public class RunnableProbe implements Runnable {
 						return;
 
 					addResult(result, timeStamp);
-					if (result.getErrorMessage() == null || result.getErrorMessage() == "")
+					if (result.getErrorMessage() == null || result.getErrorMessage() == "" || result.getErrorMessage() == "Issue while running extended http probe - might be timeout")
 						addResultToTrigger(result);
 					addResultToRollups(result);
 					addResultToSLA(result);
