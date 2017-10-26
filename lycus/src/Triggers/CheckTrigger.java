@@ -234,8 +234,7 @@ public class CheckTrigger {
 							return true;
 					}
 				}
-			}
-			else {
+			} else {
 				Object result = lastN.getNextResult(triggerCondition.getElementType().toString());
 				int nValue = lastN.getElementCount();
 
@@ -270,9 +269,15 @@ public class CheckTrigger {
 
 	private boolean isCondition(Double result, XvalueUnit resultUnit, Condition condition, double xValue,
 			XvalueUnit xvalueUnit) {
+		if (this.getQueue().length == 0) {
+			Logit.LogError("EventTrigger - isCondition()",
+					"Error while processing condition, no results to process trigger!");
+			return false;
+		}
 		if (resultUnit == null || xvalueUnit == null) {
 			Logit.LogError("EventTrigger - isCondition()",
-					"Error while processing condition, one of valueUnits is null!");
+					"Error while processing condition, one of valueUnits is null! RPID= "
+							+ this.getQueue()[0].getRunnableProbeId());
 			return false;
 		}
 		try {
