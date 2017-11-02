@@ -5,7 +5,7 @@ public class ElementModel {
 	public Boolean active;
 	public String hostType;
 	public Long ifSpeed;
-	public String nicSpeed;
+	public String nicSpeedType;
 	public Integer index;
 	public String hrStorageAllocationUnits;
 }

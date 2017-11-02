@@ -290,11 +290,11 @@ public class ElementsContainer {
 			return true;
 		for (ElementModel element : update.elements) {
 			try {
-				if (element.ifSpeed != null) {
+				if (element.nicSpeedType != null) {
 					baseElement = getElement(runnableProbeId, element.name, DiscoveryElementType.bw);
 					if (baseElement == null) {
 						baseElement = new NicElement(element.index, element.name, HostType.valueOf(element.hostType),
-								element.ifSpeed, Enums.InterfaceSpeed.valueOf(element.nicSpeed));
+								element.ifSpeed, Enums.InterfaceSpeed.valueOf(element.nicSpeedType));
 						addElement(update.user_id, runnableProbeId, baseElement);
 					}
 				} else if (element.hrStorageAllocationUnits != null) {
