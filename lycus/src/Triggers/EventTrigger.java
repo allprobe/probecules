@@ -43,6 +43,11 @@ public class EventTrigger {
 							cancelEvent(trigger, result, false);
 						}
 					}
+					else
+					{
+						Logit.LogDebug("Trigger status is false so no trigger checking, RPID: " + result.getRunnableProbeId() + " ,result are: "
+								+ result.toString());
+					}
 				} catch (Exception e) {
 					Logit.LogError("EventTrigger - addResult()", "Error, checking trigger: name = " + trigger.getName()
 							+ " , TriggerId: " + trigger.getTriggerId(), e);
