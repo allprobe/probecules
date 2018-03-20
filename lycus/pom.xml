@@ -5,6 +5,7 @@
 	<artifactId>full-prober</artifactId>
 	<version>0.2.5</version>
 	<build>
+		<defaultGoal>install</defaultGoal>
 		<sourceDirectory>src</sourceDirectory>
 		<resources>
 			<resource>

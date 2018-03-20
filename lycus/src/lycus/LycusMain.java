@@ -32,6 +32,7 @@ public class LycusMain {
 			Logit.LogDebug("Starting Probecules in DEBUG mode (LogDebug)");
 
 		System.setProperty("log4j.debug", "true");
+
 		if (args.length == 0 || args[0] == "")
 			GlobalConfig.setConfPath(null);
 		else
