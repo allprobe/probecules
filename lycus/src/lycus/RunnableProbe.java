@@ -195,7 +195,7 @@ public class RunnableProbe implements Runnable {
 		if (result == null) {
 			result = new BaseResult(this.getId());
 			result.setErrorMessage("RESULT_OBJECT_NULL");
-			Logit.LogError("RunnableProbe - buildErrorResultWhenEmpty()",
+			Logit.LogWarn("Class: RunnableProbe - Func: buildErrorResultWhenEmpty() "+
 					"Error, getting runnable probe results from probe! Returned object is null " + this.getProbeType()
 							+ " " + this.getProbe().getName() + ", \nRunnabelProbeId: " + this.getId());
 		}

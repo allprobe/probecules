@@ -439,6 +439,10 @@ public class NetResults implements INetResults {
 		Map<String, String> hrStorageResults = null;
 		SnmpCollector snmpTemplate = host.getSnmpCollector();
 
+		if (snmpTemplate == null)
+		{
+			Logit.LogWarn("Unable to get host's snmp collector: hostID=" + host.getHostId());
+		}
 		int snmpVersion = snmpTemplate.getVersion();
 		if (snmpVersion == 2) {
 			hrStorageResults = Net.Snmp2Walk(host.getHostIp(), snmpTemplate.getPort(),

@@ -181,9 +181,15 @@ public class User {
 			SnmpCollector snmpTemplate = null;
 			if (version <= 2)
 				snmpTemplate = new SnmpCollector(templateId, name, commName, version, port, timeout, true);
-			else
+			else if (version == 3) {
 				snmpTemplate = new SnmpCollector(templateId, name, version, port, sec, authUser, authPass, authMethod,
 						cryptPass, cryptMethod, timeout, true);
+			}
+			else
+			{
+				Logit.LogWarn("Snmp template with bad version, will skip: templateID=" + templateId);
+
+			}
 
 			this.getCollectors().put(snmpTemplate.getId(), snmpTemplate);
 
