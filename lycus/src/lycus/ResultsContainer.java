@@ -229,6 +229,10 @@ public class ResultsContainer implements IResultsContainer {
 								hostNotificationGroup = host.getNotificationGroups();
 						}
 					}
+					else
+					{
+						Logit.LogWarn("User: " + userId + " not found on this probecules.");
+					}
 
 					if (runnableProbe != null) {
 						Trigger trigger = runnableProbe.getProbe().getTrigger(triggerId);
@@ -438,7 +442,7 @@ public class ResultsContainer implements IResultsContainer {
 	// }
 	// }
 
-	private HashMap<String, HashMap<String, String>> eventDBFormat(String runnableProbeId, String triggerId,
+	/*private HashMap<String, HashMap<String, String>> eventDBFormat(String runnableProbeId, String triggerId,
 			Event event) {
 		HashMap<String, HashMap<String, String>> sendingEvents = new HashMap<String, HashMap<String, String>>();
 		HashMap<String, String> eventValues = new HashMap<String, String>();
@@ -466,7 +470,7 @@ public class ResultsContainer implements IResultsContainer {
 
 		sendingEvents.put(runnableProbeId, eventValues);
 		return sendingEvents;
-	}
+	}*/
 
 	public void resendEvents(String triggerId, String eventInfo, String newTriggerName, String newSeverity) {
 		for (ConcurrentHashMap<String, Event> events : eventsPerRunnableProbe.values()) {

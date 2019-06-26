@@ -10,6 +10,9 @@ import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
 import java.util.UUID;
+
+import Probes.PortProbe;
+import Probes.SqlProbe;
 import Triggers.Trigger;
 import Triggers.TriggerCondition;
 import org.json.simple.JSONObject;
@@ -630,6 +633,10 @@ public class UsersManager {
 			// "+GeneralFunctions.invertIPAddress(host.getHostIp()) + "." +
 			// ((RBLProbe)probe).getRBL());
 
+			if (probe instanceof SqlProbe) {
+				Logit.LogWarn("Unable to initiate RunnableProbe, probe is SQL so skipped! ID: " + rpID);
+				continue;
+			}
 			if (host == null || probe == null) {
 				Logit.LogWarn("Unable to initiate RunnableProbe, one of its elements is missing! ID: " + rpID);
 				continue;

@@ -2,6 +2,7 @@ package Results;
 
 import org.json.simple.JSONArray;
 import GlobalConstants.Constants;
+import Utils.Logit;
 
 public class SnmpDeltaResult extends SnmpResult {
 	private String previosData;
@@ -19,7 +20,13 @@ public class SnmpDeltaResult extends SnmpResult {
 			super.setData(null);
 		else if (!data2.equals(Constants.WRONG_OID) && !data1.equals(Constants.WRONG_OID)
 				&& !data2.equals(Constants.WRONG_VALUE_FORMAT) && !data1.equals(Constants.WRONG_VALUE_FORMAT))
-			super.setData(((Double) (Double.parseDouble(data2) - Double.parseDouble(data1))).toString());
+			try {
+				super.setData(((Double) (Double.parseDouble(data2) - Double.parseDouble(data1))).toString());
+			}
+			catch (Exception e)
+			{
+				Logit.LogWarn("Error (parsing or otherwise) when calculating snmp delta: RPID="+super.getRunnableProbeId());
+			}
 	}
 
 	@Override
